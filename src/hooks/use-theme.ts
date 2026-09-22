@@ -1,23 +1,19 @@
-/**
- * Learn more about light and dark modes:
- * https://docs.expo.dev/guides/color-schemes/
- */
-
 import { BandColors, Colors, HeatmapRamp } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAppearance } from '@/features/appearance/appearance-provider';
 
-function useMode() {
-  return useColorScheme() === 'dark' ? 'dark' : 'light';
+/** The active color mode, from the user's appearance preference (light by default). */
+export function useColorMode() {
+  return useAppearance().mode;
 }
 
 export function useTheme() {
-  return Colors[useMode()];
+  return Colors[useColorMode()];
 }
 
 export function useBandColors() {
-  return BandColors[useMode()];
+  return BandColors[useColorMode()];
 }
 
 export function useHeatmapRamp() {
-  return HeatmapRamp[useMode()];
+  return HeatmapRamp[useColorMode()];
 }

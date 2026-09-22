@@ -5,7 +5,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withSequence, withSpring } 
 
 import { Icon } from '@/components/icon';
 import { ThemedText } from '@/components/themed-text';
-import { Spacing } from '@/constants/theme';
+import { Radius, Shadow, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 import { isDone, type ScheduledItem } from '../build-schedule';
@@ -52,25 +52,30 @@ export function HabitCheckRow({ item, anchor, onToggle }: Props) {
     <View
       style={[
         styles.row,
-        { backgroundColor: theme.background, opacity: done ? 0.75 : 1, marginLeft: item.anchorHabitId ? Math.min(item.depth, 3) * Spacing.three : 0 },
+        {
+          backgroundColor: theme.backgroundElement,
+          boxShadow: Shadow.card,
+          opacity: done ? 0.7 : 1,
+          marginLeft: item.anchorHabitId ? Math.min(item.depth, 3) * Spacing.three : 0,
+        },
       ]}>
       <Pressable
         style={styles.body}
         onPress={() => router.push({ pathname: '/habit/[id]', params: { id: item.habit.id } })}
         onLongPress={() => item.habit.two_minute_version && !done && toggle('done_minimum')}
         accessibilityHint={item.habit.two_minute_version ? t('today.longPressHint') : undefined}>
-        <View style={[styles.emoji, { backgroundColor: color + '22' }]}>
+        <View style={[styles.emoji, { backgroundColor: color + '26' }]}>
           <ThemedText style={styles.emojiText}>{item.habit.icon}</ThemedText>
         </View>
         <View style={styles.texts}>
           <ThemedText
-            type="default"
+            type="heading"
             numberOfLines={1}
             style={done && { textDecorationLine: 'line-through' }}>
             {item.habit.name}
           </ThemedText>
           {subtitle ? (
-            <ThemedText type="small" themeColor="textSecondary" numberOfLines={1}>
+            <ThemedText type="caption" themeColor="textSecondary" numberOfLines={1}>
               {subtitle}
             </ThemedText>
           ) : null}
@@ -86,10 +91,10 @@ export function HabitCheckRow({ item, anchor, onToggle }: Props) {
         <Animated.View
           style={[
             styles.check,
-            { borderColor: color, backgroundColor: done ? color : 'transparent' },
+            { borderColor: done ? color : color + '66', backgroundColor: done ? color : color + '12' },
             checkStyle,
           ]}>
-          {done && <Icon name="check" size={18} color="#fff" />}
+          {done && <Icon name="check" size={20} color="#fff" />}
         </Animated.View>
       </Pressable>
     </View>
@@ -101,24 +106,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.three,
-    padding: Spacing.three,
-    borderRadius: Spacing.three,
+    paddingVertical: 14,
+    paddingHorizontal: Spacing.three,
+    borderRadius: Radius.lg,
   },
   body: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
   emoji: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 52,
+    height: 52,
+    borderRadius: Radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  emojiText: { fontSize: 22, lineHeight: 28 },
+  emojiText: { fontSize: 26, lineHeight: 32 },
   texts: { flex: 1 },
   check: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    borderWidth: 2,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 2.5,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -1,10 +1,21 @@
-import { Platform, StyleSheet, Text, type TextProps } from 'react-native';
+import { StyleSheet, Text, type TextProps } from 'react-native';
 
-import { Fonts, ThemeColor } from '@/constants/theme';
+import { FontFamily, Fonts, ThemeColor } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 export type ThemedTextProps = TextProps & {
-  type?: 'default' | 'title' | 'small' | 'smallBold' | 'subtitle' | 'link' | 'linkPrimary' | 'code';
+  type?:
+    | 'default'
+    | 'hero'
+    | 'title'
+    | 'subtitle'
+    | 'heading'
+    | 'small'
+    | 'smallBold'
+    | 'caption'
+    | 'link'
+    | 'linkPrimary'
+    | 'code';
   themeColor?: ThemeColor;
 };
 
@@ -15,14 +26,8 @@ export function ThemedText({ style, type = 'default', themeColor, ...rest }: The
     <Text
       style={[
         { color: theme[themeColor ?? 'text'] },
-        type === 'default' && styles.default,
-        type === 'title' && styles.title,
-        type === 'small' && styles.small,
-        type === 'smallBold' && styles.smallBold,
-        type === 'subtitle' && styles.subtitle,
-        type === 'link' && styles.link,
-        type === 'linkPrimary' && styles.linkPrimary,
-        type === 'code' && styles.code,
+        styles[type],
+        type === 'linkPrimary' && { color: theme.primary },
         style,
       ]}
       {...rest}
@@ -30,44 +35,17 @@ export function ThemedText({ style, type = 'default', themeColor, ...rest }: The
   );
 }
 
+// Weight comes from the font family (never fontWeight) so custom fonts render on Android.
 const styles = StyleSheet.create({
-  small: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: 500,
-  },
-  smallBold: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: 700,
-  },
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: 500,
-  },
-  title: {
-    fontSize: 48,
-    fontWeight: 600,
-    lineHeight: 52,
-  },
-  subtitle: {
-    fontSize: 32,
-    lineHeight: 44,
-    fontWeight: 600,
-  },
-  link: {
-    lineHeight: 30,
-    fontSize: 14,
-  },
-  linkPrimary: {
-    lineHeight: 30,
-    fontSize: 14,
-    color: '#3c87f7',
-  },
-  code: {
-    fontFamily: Fonts.mono,
-    fontWeight: Platform.select({ android: 700 }) ?? 500,
-    fontSize: 12,
-  },
+  default: { fontFamily: FontFamily.regular, fontSize: 16, lineHeight: 22 },
+  hero: { fontFamily: FontFamily.black, fontSize: 64, lineHeight: 70 },
+  title: { fontFamily: FontFamily.black, fontSize: 36, lineHeight: 42 },
+  subtitle: { fontFamily: FontFamily.black, fontSize: 26, lineHeight: 32 },
+  heading: { fontFamily: FontFamily.bold, fontSize: 18, lineHeight: 24 },
+  small: { fontFamily: FontFamily.regular, fontSize: 14, lineHeight: 20 },
+  smallBold: { fontFamily: FontFamily.bold, fontSize: 14, lineHeight: 20 },
+  caption: { fontFamily: FontFamily.medium, fontSize: 12, lineHeight: 16 },
+  link: { fontFamily: FontFamily.medium, fontSize: 14, lineHeight: 30 },
+  linkPrimary: { fontFamily: FontFamily.bold, fontSize: 14, lineHeight: 30 },
+  code: { fontFamily: Fonts.mono, fontSize: 12 },
 });

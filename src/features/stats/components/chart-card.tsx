@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { Radius, Shadow, Spacing } from '@/constants/theme';
 
 type Props = PropsWithChildren<{
   title: string;
@@ -15,7 +15,7 @@ type Props = PropsWithChildren<{
 export function ChartCard({ title, subtitle, detail, children }: Props) {
   return (
     <ThemedView type="backgroundElement" style={styles.card}>
-      <ThemedText type="smallBold">{title}</ThemedText>
+      <ThemedText type="heading">{title}</ThemedText>
       {subtitle && (
         <ThemedText type="small" themeColor="textSecondary">
           {subtitle}
@@ -30,6 +30,6 @@ export function ChartCard({ title, subtitle, detail, children }: Props) {
 }
 
 const styles = StyleSheet.create({
-  card: { borderRadius: Spacing.three, padding: Spacing.three, gap: Spacing.two },
+  card: { borderRadius: Radius.lg, padding: Spacing.three, gap: Spacing.two, boxShadow: Shadow.card },
   detail: { minHeight: 20 },
 });

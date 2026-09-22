@@ -24,6 +24,13 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - ✅ Progress tab: stat tiles, month heatmap, weekly consistency columns, per-band rates with insight, 1% curve (one axis, index vs ideal)
 - ⏳ Move garden aggregates to a Postgres RPC when log volume grows (today computed on the client over 120 days; `garden_state` table unused)
 
+## Design pass ✅
+- ✅ Pastel design system (light default + dark + system), Nunito, cards with soft shadows, chunky buttons
+- ✅ Duolingo-style top bar and roomy emoji tab bar
+- ✅ App-wide day streak ("never miss twice", rest days) + streak screen with week, challenge, record, milestones
+- ✅ Today redesign: hero card with progress ring, card rows, friendly empty state
+- ✅ Week view: band cards, only the user's hours
+
 ## Phase 3: Advanced science 🚧
 - ✅ Habit stacking: "after [habit]" cue, stacked habits shown right after their anchor (display slot borrowed, log identity kept), "next in your chain" prompt, roots in the tree
 - ✅ Context cues ("when I get home"), temptation bundling field

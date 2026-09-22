@@ -34,7 +34,7 @@ export function DayBandsEditor({ profile }: Props) {
 
   return (
     <View style={styles.container}>
-      <ThemedText type="smallBold">{t('profile.dayBands')}</ThemedText>
+      <ThemedText type="heading">{t('profile.dayBands')}</ThemedText>
       <ThemedText type="small" themeColor="textSecondary">
         {t('profile.dayBandsHint')}
       </ThemedText>

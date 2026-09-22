@@ -10,6 +10,7 @@ import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { isDone } from '@/features/schedule/build-schedule';
 import { WeekGrid } from '@/features/schedule/components/week-grid';
 import { useSchedule } from '@/features/schedule/use-schedule';
+import { TopBar } from '@/features/streak/components/top-bar';
 import { useNow } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
 import { addDays, startOfWeek } from '@/lib/recurrence';
@@ -37,6 +38,7 @@ export default function WeekScreen() {
     <ThemedView style={styles.flex}>
       <SafeAreaView style={styles.flex} edges={['top']}>
         <View style={styles.inner}>
+          <TopBar />
           <View style={styles.header}>
             <RoundButton icon="back" label={t('week.previous')} onPress={() => setOffset(offset - 1)} />
             <Pressable onPress={() => setOffset(0)} style={styles.titleBlock}>

@@ -19,7 +19,7 @@ export function IdentitiesSection() {
 
   return (
     <View style={styles.container}>
-      <ThemedText type="smallBold">{t('identity.title')}</ThemedText>
+      <ThemedText type="heading">{t('identity.title')}</ThemedText>
       <ThemedText type="small" themeColor="textSecondary">
         {t('identity.sectionHint')}
       </ThemedText>
@@ -30,7 +30,7 @@ export function IdentitiesSection() {
           <Pressable
             key={identity.id}
             onPress={() => router.push({ pathname: '/identity/[id]', params: { id: identity.id } })}
-            style={[styles.row, { backgroundColor: theme.backgroundElement, borderLeftColor: identity.color ?? theme.primary }]}>
+            style={[styles.row, { backgroundColor: theme.background, borderLeftColor: identity.color ?? theme.primary }]}>
             <ThemedText style={styles.emoji}>{identityEmoji(identity)}</ThemedText>
             <View style={styles.flex}>
               <ThemedText type="smallBold">{identity.statement}</ThemedText>

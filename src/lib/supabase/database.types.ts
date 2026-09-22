@@ -206,6 +206,7 @@ export type Database = {
           morning_starts_at: number
           night_ends_at: number
           night_starts_at: number
+          theme_preference: string
           timezone: string
           updated_at: string
           week_starts_on: number
@@ -219,6 +220,7 @@ export type Database = {
           morning_starts_at?: number
           night_ends_at?: number
           night_starts_at?: number
+          theme_preference?: string
           timezone?: string
           updated_at?: string
           week_starts_on?: number
@@ -232,6 +234,7 @@ export type Database = {
           morning_starts_at?: number
           night_ends_at?: number
           night_starts_at?: number
+          theme_preference?: string
           timezone?: string
           updated_at?: string
           week_starts_on?: number

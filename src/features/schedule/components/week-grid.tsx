@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { BandEmoji, Spacing, type BandKey } from '@/constants/theme';
+import { BandEmoji, FontFamily, Spacing, type BandKey } from '@/constants/theme';
 import { useBandColors, useTheme } from '@/hooks/use-theme';
 import { addDays, daysBetween, WEEKDAYS } from '@/lib/recurrence';
 import { visibleHourSegments, type DayBandConfig } from '@/lib/time/day-bands';
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  checkText: { fontSize: 9, lineHeight: 11, fontWeight: 800 },
+  checkText: { fontSize: 9, lineHeight: 11, fontFamily: FontFamily.black },
   nowLine: { position: 'absolute', left: 0, right: 0, flexDirection: 'row', alignItems: 'center' },
   nowDot: { width: 7, height: 7, borderRadius: 4, marginLeft: -3 },
   nowBar: { flex: 1, height: 2, borderRadius: 1 },

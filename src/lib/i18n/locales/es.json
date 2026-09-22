@@ -5,7 +5,8 @@
     "delete": "Eliminar",
     "loading": "Cargando…",
     "error": "Algo salió mal. Intenta de nuevo.",
-    "optional": "opcional"
+    "optional": "opcional",
+    "close": "Cerrar"
   },
   "auth": {
     "title": "Cada acción es un voto por la persona que quieres ser.",
@@ -45,7 +46,10 @@
     "longPressHint": "Mantén presionado para marcar la versión de 2 minutos",
     "afterHabit": "↳ Después de {{habit}}",
     "nextInChain": "Siguiente en tu cadena",
-    "markDone": "Hecho"
+    "markDone": "Hecho",
+    "heroEmpty": "Crea tu primer hábito para empezar a sumar votos.",
+    "emptyTitle": "Tu jardín empieza con una semilla",
+    "createFirst": "Crear mi primer hábito"
   },
   "week": {
     "title": "Semana",
@@ -149,7 +153,14 @@
     "consistency": "{{percent}}% en 30 días",
     "automaticity": "{{count}} de ~{{total}} repeticiones hacia el automatismo",
     "neverMissTwice": "Fallaste la última vez. No pasa nada: hoy es el día de no fallar dos veces.",
-    "otherHabits": "Otros hábitos"
+    "otherHabits": "Otros hábitos",
+    "stageShort": {
+      "0": "Semilla",
+      "1": "Brote",
+      "2": "Arbolito",
+      "3": "Árbol",
+      "4": "Frutos"
+    }
   },
   "progress": {
     "title": "Tu progreso",
@@ -192,5 +203,39 @@
     "habitCount_one": "{{count}} hábito",
     "habitCount_other": "{{count}} hábitos",
     "deleteConfirm": "¿Eliminar esta identidad? Sus hábitos se conservan sin identidad."
+  },
+  "topBar": {
+    "streak_one": "Racha de {{count}} día",
+    "streak_other": "Racha de {{count}} días",
+    "votes_one": "{{count}} voto",
+    "votes_other": "{{count}} votos"
+  },
+  "appearance": {
+    "title": "Apariencia",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema"
+  },
+  "streak": {
+    "title": "Racha",
+    "days_one": "día de racha",
+    "days_other": "días de racha",
+    "safeToday": "¡Racha asegurada por hoy! 🎉",
+    "keepItUp": "Completa al menos un hábito hoy para mantener tu racha.",
+    "rule": "🛡️ Un día fallado se perdona. Dos seguidos reinician la racha. 💤 Los días sin hábitos no cuentan.",
+    "challenge": "Próximo reto",
+    "challengeName_one": "Reto de {{count}} día",
+    "challengeName_other": "Reto de {{count}} días",
+    "challengeProgress": "Día {{current}} de {{total}}",
+    "started": "Inicio de la racha",
+    "record": "Récord",
+    "milestones": "Hitos",
+    "milestone_one": "{{count}} día de racha",
+    "milestone_other": "{{count}} días de racha",
+    "milestone66": "~66 días: la mediana para que un hábito se vuelva automático",
+    "reached": "¡Logrado!",
+    "locked": "Por desbloquear",
+    "dayCount_one": "{{count}} día",
+    "dayCount_other": "{{count}} días"
   }
 }

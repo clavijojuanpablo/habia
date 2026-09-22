@@ -5,13 +5,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { GardenScene } from '@/features/garden/components/garden-scene';
 import { HabitGrowthRow } from '@/features/garden/components/habit-growth-row';
 import { useGarden } from '@/features/garden/use-garden';
 import { identityEmoji, useIdentities } from '@/features/identities/api';
 import { isDone } from '@/features/schedule/build-schedule';
 import { useSchedule } from '@/features/schedule/use-schedule';
+import { TopBar } from '@/features/streak/components/top-bar';
 import { useNow, useTodayRange } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
 import { getDayBand } from '@/lib/time/day-bands';
@@ -51,6 +52,7 @@ export default function GardenScreen() {
   return (
     <ThemedView style={styles.flex}>
       <SafeAreaView style={styles.flex} edges={['top']}>
+        <TopBar />
         <ScrollView contentContainerStyle={styles.content}>
           <View
             style={[styles.scene, { backgroundColor: theme.backgroundElement }]}
@@ -107,7 +109,7 @@ const styles = StyleSheet.create({
     maxWidth: MaxContentWidth,
     alignSelf: 'center',
   },
-  scene: { height: SCENE_HEIGHT, borderRadius: Spacing.four, overflow: 'hidden' },
+  scene: { height: SCENE_HEIGHT, borderRadius: Radius.xl, overflow: 'hidden' },
   header: { gap: Spacing.one },
   section: { gap: Spacing.two },
 });

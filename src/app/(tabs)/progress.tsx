@@ -12,6 +12,7 @@ import { OnePercentChart } from '@/features/stats/components/one-percent-chart';
 import { StatTile } from '@/features/stats/components/stat-tile';
 import { WeeklyColumns } from '@/features/stats/components/weekly-columns';
 import { useStats } from '@/features/stats/use-stats';
+import { TopBar } from '@/features/streak/components/top-bar';
 import { useNow, useTodayRange } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
 
@@ -33,6 +34,7 @@ export default function ProgressScreen() {
   return (
     <ThemedView style={styles.flex}>
       <SafeAreaView style={styles.flex} edges={['top']}>
+        <TopBar />
         <ScrollView contentContainerStyle={styles.content}>
           <ThemedText type="subtitle">{t('progress.title')}</ThemedText>
 

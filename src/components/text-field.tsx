@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Spacing } from '@/constants/theme';
+import { FontFamily, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 type TextFieldProps = TextInputProps & {
@@ -10,20 +11,29 @@ type TextFieldProps = TextInputProps & {
   error?: string | null;
 };
 
-export function TextField({ label, hint, error, style, ...rest }: TextFieldProps) {
+export function TextField({ label, hint, error, style, onFocus, onBlur, ...rest }: TextFieldProps) {
   const theme = useTheme();
+  const [focused, setFocused] = useState(false);
 
   return (
     <View style={styles.container}>
       {label && <ThemedText type="smallBold">{label}</ThemedText>}
       <TextInput
         placeholderTextColor={theme.textSecondary}
+        onFocus={(e) => {
+          setFocused(true);
+          onFocus?.(e);
+        }}
+        onBlur={(e) => {
+          setFocused(false);
+          onBlur?.(e);
+        }}
         style={[
           styles.input,
           {
             color: theme.text,
             backgroundColor: theme.backgroundElement,
-            borderColor: error ? theme.danger : 'transparent',
+            borderColor: error ? theme.danger : focused ? theme.primary : theme.border,
           },
           style,
         ]}
@@ -47,10 +57,11 @@ export function TextField({ label, hint, error, style, ...rest }: TextFieldProps
 const styles = StyleSheet.create({
   container: { gap: Spacing.one },
   input: {
-    minHeight: 48,
-    borderRadius: Spacing.three,
-    borderWidth: 1,
+    minHeight: 52,
+    borderRadius: Radius.md,
+    borderWidth: 2,
     paddingHorizontal: Spacing.three,
     fontSize: 16,
+    fontFamily: FontFamily.regular,
   },
 });

@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { FontFamily, Radius, Shadow, Spacing } from '@/constants/theme';
 
 type Props = { label: string; value: string; caption?: string };
 
@@ -24,6 +24,6 @@ export function StatTile({ label, value, caption }: Props) {
 }
 
 const styles = StyleSheet.create({
-  tile: { flexGrow: 1, flexBasis: '45%', borderRadius: Spacing.three, padding: Spacing.three, gap: Spacing.half },
-  value: { fontSize: 28, lineHeight: 34, fontWeight: 700 },
+  tile: { flexGrow: 1, flexBasis: '45%', borderRadius: Radius.lg, padding: Spacing.three, gap: Spacing.half, boxShadow: Shadow.card },
+  value: { fontSize: 30, lineHeight: 36, fontFamily: FontFamily.black },
 });

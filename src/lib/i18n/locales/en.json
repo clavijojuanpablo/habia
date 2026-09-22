@@ -5,7 +5,8 @@
     "delete": "Delete",
     "loading": "Loading…",
     "error": "Something went wrong. Please try again.",
-    "optional": "optional"
+    "optional": "optional",
+    "close": "Close"
   },
   "auth": {
     "title": "Every action is a vote for the person you want to become.",
@@ -45,7 +46,10 @@
     "longPressHint": "Long press to log the 2-minute version",
     "afterHabit": "↳ After {{habit}}",
     "nextInChain": "Next in your chain",
-    "markDone": "Done"
+    "markDone": "Done",
+    "heroEmpty": "Create your first habit to start casting votes.",
+    "emptyTitle": "Your garden starts with a seed",
+    "createFirst": "Create my first habit"
   },
   "week": {
     "title": "Week",
@@ -149,7 +153,14 @@
     "consistency": "{{percent}}% over 30 days",
     "automaticity": "{{count}} of ~{{total}} repetitions toward automaticity",
     "neverMissTwice": "You missed last time. That is fine: today is the day you never miss twice.",
-    "otherHabits": "Other habits"
+    "otherHabits": "Other habits",
+    "stageShort": {
+      "0": "Seed",
+      "1": "Sprout",
+      "2": "Sapling",
+      "3": "Tree",
+      "4": "Fruits"
+    }
   },
   "progress": {
     "title": "Your progress",
@@ -192,5 +203,39 @@
     "habitCount_one": "{{count}} habit",
     "habitCount_other": "{{count}} habits",
     "deleteConfirm": "Delete this identity? Its habits are kept without an identity."
+  },
+  "topBar": {
+    "streak_one": "{{count}}-day streak",
+    "streak_other": "{{count}}-day streak",
+    "votes_one": "{{count}} vote",
+    "votes_other": "{{count}} votes"
+  },
+  "appearance": {
+    "title": "Appearance",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "streak": {
+    "title": "Streak",
+    "days_one": "day streak",
+    "days_other": "day streak",
+    "safeToday": "Streak secured for today! 🎉",
+    "keepItUp": "Complete at least one habit today to keep your streak.",
+    "rule": "🛡️ One missed day is forgiven. Two in a row reset the streak. 💤 Days without habits do not count.",
+    "challenge": "Next challenge",
+    "challengeName_one": "{{count}}-day challenge",
+    "challengeName_other": "{{count}}-day challenge",
+    "challengeProgress": "Day {{current}} of {{total}}",
+    "started": "Streak started",
+    "record": "Record",
+    "milestones": "Milestones",
+    "milestone_one": "{{count}}-day streak",
+    "milestone_other": "{{count}}-day streak",
+    "milestone66": "~66 days: the median time for a habit to become automatic",
+    "reached": "Reached!",
+    "locked": "Locked",
+    "dayCount_one": "{{count}} day",
+    "dayCount_other": "{{count}} days"
   }
 }
