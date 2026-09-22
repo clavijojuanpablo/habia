@@ -41,3 +41,11 @@ example
 # generated native folders
 /ios
 /android
+
+# Supabase
+supabase/.temp/
+supabase/.branches/
+.env
+
+# Claude Code personal settings
+.claude/settings.local.json

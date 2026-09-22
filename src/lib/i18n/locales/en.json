@@ -1,0 +1,108 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "loading": "Loading…",
+    "error": "Something went wrong. Please try again.",
+    "optional": "optional"
+  },
+  "auth": {
+    "title": "Every action is a vote for the person you want to become.",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signUp": "Create account",
+    "switchToSignUp": "No account? Create one",
+    "switchToSignIn": "Already have an account? Sign in",
+    "checkEmail": "We sent you an email to confirm your account. Confirm it and sign in again.",
+    "signOut": "Sign out"
+  },
+  "tabs": {
+    "today": "Today",
+    "week": "Week",
+    "profile": "Profile"
+  },
+  "bands": {
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "night": "Night",
+    "anytime": "Any time"
+  },
+  "today": {
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "night": "Good evening"
+    },
+    "progress": "{{done}} of {{total}} done",
+    "empty": "No habits yet. Start with a tiny one: so easy you can't say no.",
+    "allDone": "Day complete! Every vote counts.",
+    "addHabit": "New habit",
+    "minimumDone": "2-min version",
+    "longPressHint": "Long press to log the 2-minute version"
+  },
+  "week": {
+    "title": "Week",
+    "allDay": "All day",
+    "thisWeek": "This week"
+  },
+  "habit": {
+    "new": "New habit",
+    "edit": "Edit habit",
+    "name": "Name",
+    "namePlaceholder": "Read, meditate, drink water…",
+    "icon": "Icon",
+    "color": "Color",
+    "frequency": "Frequency",
+    "freq": {
+      "daily": "Daily",
+      "interval_days": "Every N days",
+      "weekdays": "Specific days",
+      "interval_hours": "Every N hours"
+    },
+    "everyNDays": "Every {{count}} days",
+    "everyNHours": "Every {{count}} hours",
+    "time": "Time",
+    "timeHint": "HH:MM. Leave empty to do it any time of the day.",
+    "windowStart": "From",
+    "windowEnd": "Until",
+    "twoMinute": "2-minute version",
+    "twoMinuteHint": "The minimum version for hard days. It still counts.",
+    "twoMinutePlaceholder": "Read one page",
+    "intention": "Implementation intention",
+    "intentionHint": "\"I will [habit] at [time] in [place]\". It doubles your odds of doing it.",
+    "intentionPlaceholder": "I will read at 9 pm in bed",
+    "nameRequired": "Give the habit a name",
+    "daysRequired": "Pick at least one day",
+    "invalidTime": "Use the HH:MM format",
+    "deleteConfirm": "Archive this habit? Your history is kept.",
+    "reminder": "Reminder",
+    "reminderNone": "No reminder",
+    "reminderAtTime": "At the time",
+    "reminderBefore": "{{count}} min before",
+    "reminderWebHint": "Reminders are delivered by the phone app (iOS / Android)."
+  },
+  "weekdays": {
+    "MO": "M",
+    "TU": "T",
+    "WE": "W",
+    "TH": "T",
+    "FR": "F",
+    "SA": "S",
+    "SU": "S"
+  },
+  "profile": {
+    "title": "Profile",
+    "dayBands": "Day bands",
+    "morningStartsAt": "Morning starts at {{hour}}:00",
+    "afternoonStartsAt": "Afternoon starts at {{hour}}:00",
+    "nightStartsAt": "Night starts at {{hour}}:00",
+    "dayBandsHint": "Sets how your day is painted and grouped."
+  },
+  "reminders": {
+    "channel": "Habit reminders",
+    "body": "It is time. A small vote for who you want to be.",
+    "bodyMinimum": "Even the minimum version counts: {{minimum}}"
+  }
+}
