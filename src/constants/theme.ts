@@ -50,6 +50,15 @@ export const BandColors = {
 
 export type BandKey = keyof typeof BandColors.light;
 
+/**
+ * Sequential ramp for the completion heatmap (low → high), one hue.
+ * Validated for step visibility and contrast against each mode's surface.
+ */
+export const HeatmapRamp = {
+  light: ['#7CC59D', '#52AD7D', '#358F61', '#26714C', '#1A5236'],
+  dark: ['#2C6446', '#2F8158', '#37A06C', '#4FC088', '#93E2BA'],
+} as const;
+
 /** Palette offered when creating a habit. */
 export const HabitColors = [
   '#2F9E6B',

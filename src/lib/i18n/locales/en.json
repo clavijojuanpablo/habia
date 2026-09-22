@@ -22,6 +22,7 @@
     "today": "Today",
     "week": "Week",
     "garden": "Garden",
+    "progress": "Progress",
     "profile": "Profile"
   },
   "bands": {
@@ -123,5 +124,26 @@
     "consistency": "{{percent}}% over 30 days",
     "automaticity": "{{count}} of ~{{total}} repetitions toward automaticity",
     "neverMissTwice": "You missed last time. That is fine: today is the day you never miss twice."
+  },
+  "progress": {
+    "title": "Your progress",
+    "today": "Today",
+    "thisWeek": "This week",
+    "bestStreak": "Best streak",
+    "votes": "Votes",
+    "heatmapSubtitle": "How much you completed each day. Tap a day for details.",
+    "dayDetail": "{{date}}: {{done}} of {{due}} habits",
+    "less": "Less",
+    "more": "More",
+    "weeklyTitle": "Weekly consistency",
+    "weeklySubtitle": "This week you are at {{percent}}",
+    "weekDetail": "Week of {{week}}: {{done}} of {{due}} ({{percent}})",
+    "bandsTitle": "When in the day do you do best?",
+    "bandsInsight": "The {{band}} is harder for you. Try anchoring those habits to a routine you already have.",
+    "onePercentTitle": "The 1% rule",
+    "onePercentSubtitle": "A complete day lifts you 1%; a missed day drops you 1%. Small gains compound.",
+    "onePercentDetail": "Day {{day}}: you {{you}} · improving 1% daily {{ideal}}",
+    "onePercentA11y": "Your index: {{you}}. Improving 1% every day: {{ideal}}.",
+    "you": "You"
   }
 }

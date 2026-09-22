@@ -17,11 +17,11 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - ✅ Local reminders (expo-notifications): per-habit offset, next 3 days, auto-cancel when done. Not available on web
 - ✅ Edit day bands from Perfil
 
-## Phase 2: Gamification & stats 🚧
+## Phase 2: Gamification & stats ✅
 - ✅ Skia Identity Tree (procedural, growth + sway animations) with dynamic sky (sun/moon arc, stars, clouds = pending habits)
 - ✅ Streaks with "never miss twice", 30-day consistency, automaticity progress toward ~66, weekly flowers, fruits
 - ✅ Garden tab (Jardín) with per-habit growth cards
-- ⏳ Charts (rings, heatmap, trend, per-band rate, 1% curve) with Victory Native XL
+- ✅ Progress tab: stat tiles, month heatmap, weekly consistency columns, per-band rates with insight, 1% curve (one axis, index vs ideal)
 - ⏳ Move garden aggregates to a Postgres RPC when log volume grows (today computed on the client over 120 days; `garden_state` table unused)
 
 ## Phase 3: Advanced science ⏳

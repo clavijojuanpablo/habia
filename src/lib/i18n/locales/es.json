@@ -22,6 +22,7 @@
     "today": "Hoy",
     "week": "Semana",
     "garden": "Jardín",
+    "progress": "Progreso",
     "profile": "Perfil"
   },
   "bands": {
@@ -123,5 +124,26 @@
     "consistency": "{{percent}}% en 30 días",
     "automaticity": "{{count}} de ~{{total}} repeticiones hacia el automatismo",
     "neverMissTwice": "Fallaste la última vez. No pasa nada: hoy es el día de no fallar dos veces."
+  },
+  "progress": {
+    "title": "Tu progreso",
+    "today": "Hoy",
+    "thisWeek": "Esta semana",
+    "bestStreak": "Mejor racha",
+    "votes": "Votos",
+    "heatmapSubtitle": "Cada día, qué tanto cumpliste. Toca un día para ver el detalle.",
+    "dayDetail": "{{date}}: {{done}} de {{due}} hábitos",
+    "less": "Menos",
+    "more": "Más",
+    "weeklyTitle": "Constancia por semana",
+    "weeklySubtitle": "Esta semana vas en {{percent}}",
+    "weekDetail": "Semana del {{week}}: {{done}} de {{due}} ({{percent}})",
+    "bandsTitle": "¿En qué momento del día te va mejor?",
+    "bandsInsight": "Te cuesta más en la {{band}}. Prueba a anclar esos hábitos a una rutina que ya tengas.",
+    "onePercentTitle": "La regla del 1 %",
+    "onePercentSubtitle": "Un día completo te sube un 1 %; un día sin cumplir te baja un 1 %. Pequeñas mejoras se acumulan.",
+    "onePercentDetail": "Día {{day}}: tú {{you}} · mejorando 1 % diario {{ideal}}",
+    "onePercentA11y": "Tu índice: {{you}}. Mejorando 1 % cada día: {{ideal}}.",
+    "you": "Tú"
   }
 }

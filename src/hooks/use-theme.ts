@@ -3,17 +3,21 @@
  * https://docs.expo.dev/guides/color-schemes/
  */
 
-import { BandColors, Colors } from '@/constants/theme';
+import { BandColors, Colors, HeatmapRamp } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-export function useTheme() {
-  const scheme = useColorScheme();
-  const theme = scheme === 'dark' ? 'dark' : 'light';
+function useMode() {
+  return useColorScheme() === 'dark' ? 'dark' : 'light';
+}
 
-  return Colors[theme];
+export function useTheme() {
+  return Colors[useMode()];
 }
 
 export function useBandColors() {
-  const scheme = useColorScheme();
-  return BandColors[scheme === 'dark' ? 'dark' : 'light'];
+  return BandColors[useMode()];
+}
+
+export function useHeatmapRamp() {
+  return HeatmapRamp[useMode()];
 }

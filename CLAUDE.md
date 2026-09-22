@@ -15,7 +15,7 @@ A visual, gamified habit tracker grounded in *Atomic Habits* (James Clear) and h
 ## Stack
 - **App:** Expo SDK 57 (React Native 0.86) + Expo Router + TypeScript (strict) — one codebase for iOS, Android and web.
 - **Backend:** Supabase (Postgres + RLS, Auth, Realtime, Edge Functions). Migrations in `supabase/migrations/`.
-- **Graphics:** `@shopify/react-native-skia` + Reanimated 4; charts with Victory Native XL.
+- **Graphics:** `@shopify/react-native-skia` + Reanimated 4 for the garden (on web, Skia loads `public/canvaskit.wasm` on demand via `WithSkiaWeb`). Charts are plain Views + `react-native-svg` (no Skia/wasm needed); heatmap colors come from the validated `HeatmapRamp` in `theme.ts`.
 - **Data:** TanStack Query (persisted) for server state, Zustand for UI state.
 - **Recurrence:** RFC 5545 RRULE strings (supported subset), expanded on the client by our own engine in `src/lib/recurrence/` (local-time arithmetic, DST-safe).
 - **Notifications:** `expo-notifications` (local scheduled reminders; push via Expo Push from Edge Functions).
