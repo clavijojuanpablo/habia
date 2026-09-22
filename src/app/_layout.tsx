@@ -90,7 +90,11 @@ function RootNavigator() {
       </Stack.Protected>
       <Stack.Protected guard={!session}>
         <Stack.Screen name="sign-in" />
+        <Stack.Screen name="forgot-password" />
       </Stack.Protected>
+      {/* Reachable in both states: email links land here, before and after sign-in. */}
+      <Stack.Screen name="auth-callback" />
+      <Stack.Screen name="reset-password" />
     </Stack>
   );
 }

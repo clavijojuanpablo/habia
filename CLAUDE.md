@@ -36,7 +36,7 @@ npx supabase db push         # apply migrations to the linked cloud project
 npx supabase gen types typescript --linked --schema public > src/lib/supabase/database.types.ts
 ```
 
-The project is linked to the Supabase cloud project "Habits Project" (no local Docker stack). Auth is email + password for now.
+The project is linked to the Supabase cloud project "Habits Project" (no local Docker stack). Auth is email + password with PKCE deep links (`habits://auth-callback`); auth settings live in `supabase/config.toml` and ship with `npx supabase config push`. Edge Functions are Deno and excluded from the app's tsconfig/eslint; deploy with `npx supabase functions deploy <name>`.
 
 ## Project structure
 ```

@@ -17,7 +17,21 @@
     "switchToSignUp": "No account? Create one",
     "switchToSignIn": "Already have an account? Sign in",
     "checkEmail": "We sent you an email to confirm your account. Confirm it and sign in again.",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "welcome": "Welcome back",
+    "forgotPassword": "Forgot your password?",
+    "forgotTitle": "Reset password",
+    "forgotSubtitle": "We will email you a link to create a new password.",
+    "sendReset": "Send link",
+    "resetSent": "Check {{email}}. If that account exists, a reset link is on its way.",
+    "backToSignIn": "Back to sign in",
+    "newPasswordTitle": "New password",
+    "newPasswordSubtitle": "Choose a password with at least 6 characters.",
+    "newPassword": "New password",
+    "repeatPassword": "Repeat password",
+    "passwordsDiffer": "Passwords do not match",
+    "linkProblem": "Invalid link",
+    "linkInvalid": "This link was already used or has expired. Request a new one."
   },
   "tabs": {
     "today": "Today",
@@ -237,5 +251,14 @@
     "locked": "Locked",
     "dayCount_one": "{{count}} day",
     "dayCount_other": "{{count}} days"
+  },
+  "account": {
+    "dangerZone": "Danger zone",
+    "deleteAccount": "Delete my account",
+    "deleteHint": "You can delete your account and all your data at any time.",
+    "deleteWarning": "Your habits, logs, identities and tree will be deleted forever. This cannot be undone.",
+    "deleteKeyword": "DELETE",
+    "typeToConfirm": "Type {{keyword}} to confirm",
+    "deleteForever": "Delete forever"
   }
 }

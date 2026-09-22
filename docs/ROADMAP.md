@@ -40,8 +40,8 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - ⏳ AI coach Edge Function (Claude)
 
 ## Block 1: Ready for real users 🚧 (next)
-- ⏳ Merge branches into master, push to GitHub (private), PR workflow + CI (tests, lint, typecheck)
-- ⏳ Auth: password reset, email-confirmation deep link (today it lands on localhost:3000), Sign in with Apple/Google, **in-app account deletion** (App Store requirement)
+- ✅ Merged into `main`, pushed to GitHub, CI (typecheck, lint, tests) on push and PRs
+- 🚧 Auth: ✅ password reset, ✅ PKCE deep links for email links (`habits://auth-callback`), ✅ in-app account deletion (Edge Function `delete-account`), ✅ redesigned sign-in · ⏳ Sign in with Apple/Google
 - ⏳ Offline support: persist the TanStack Query cache + queued mutations
 - ⏳ Log past days ("I did it yesterday"), skip a day
 - ⏳ Use `profiles.timezone`; notification tap opens the habit

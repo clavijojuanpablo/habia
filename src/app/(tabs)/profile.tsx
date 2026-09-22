@@ -7,6 +7,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { FontFamily, MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
 import { AppearancePicker } from '@/features/appearance/components/appearance-picker';
+import { DangerZone } from '@/features/auth/components/danger-zone';
 import { useSession } from '@/features/auth/session-provider';
 import { IdentitiesSection } from '@/features/identities/components/identities-section';
 import { useProfile } from '@/features/profile/api';
@@ -52,6 +53,8 @@ export default function ProfileScreen() {
           )}
 
           <Button label={t('auth.signOut')} variant="secondary" onPress={() => supabase.auth.signOut()} />
+
+          <DangerZone />
         </ScrollView>
       </SafeAreaView>
     </ThemedView>

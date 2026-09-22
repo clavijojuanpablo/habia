@@ -17,7 +17,21 @@
     "switchToSignUp": "¿No tienes cuenta? Crea una",
     "switchToSignIn": "¿Ya tienes cuenta? Entra",
     "checkEmail": "Te enviamos un correo para confirmar tu cuenta. Confírmala y vuelve a entrar.",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "welcome": "Hola de nuevo",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "forgotTitle": "Recuperar contraseña",
+    "forgotSubtitle": "Te enviamos un enlace para crear una contraseña nueva.",
+    "sendReset": "Enviar enlace",
+    "resetSent": "Revisa {{email}}. Si esa cuenta existe, te llegará un enlace para cambiar tu contraseña.",
+    "backToSignIn": "Volver a iniciar sesión",
+    "newPasswordTitle": "Nueva contraseña",
+    "newPasswordSubtitle": "Elige una contraseña de al menos 6 caracteres.",
+    "newPassword": "Contraseña nueva",
+    "repeatPassword": "Repite la contraseña",
+    "passwordsDiffer": "Las contraseñas no coinciden",
+    "linkProblem": "Enlace no válido",
+    "linkInvalid": "Este enlace ya se usó o expiró. Pide uno nuevo."
   },
   "tabs": {
     "today": "Hoy",
@@ -237,5 +251,14 @@
     "locked": "Por desbloquear",
     "dayCount_one": "{{count}} día",
     "dayCount_other": "{{count}} días"
+  },
+  "account": {
+    "dangerZone": "Zona de peligro",
+    "deleteAccount": "Eliminar mi cuenta",
+    "deleteHint": "Puedes eliminar tu cuenta y todos tus datos en cualquier momento.",
+    "deleteWarning": "Se borrarán para siempre tus hábitos, registros, identidades y tu árbol. Esta acción no se puede deshacer.",
+    "deleteKeyword": "ELIMINAR",
+    "typeToConfirm": "Escribe {{keyword}} para confirmar",
+    "deleteForever": "Eliminar definitivamente"
   }
 }

@@ -18,6 +18,9 @@ export const supabase = createClient<Database>(supabaseUrl, supabasePublishableK
     storage: authStorage,
     autoRefreshToken: true,
     persistSession: true,
+    // Email links carry a one-time code that the app exchanges for a session.
+    flowType: 'pkce',
+    // Native has no URL to read; /auth-callback handles the deep link instead.
     detectSessionInUrl: false,
   },
 });
