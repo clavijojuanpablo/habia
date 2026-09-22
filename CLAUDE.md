@@ -23,7 +23,7 @@ A visual, gamified habit tracker grounded in *Atomic Habits* (James Clear) and h
 - **AI coach (Phase 3):** Claude API called only from a Supabase Edge Function — Haiku 4.5 (`claude-haiku-4-5-20251001`) for daily messages, Sonnet 5 (`claude-sonnet-5`) for weekly reviews.
 - **Observability:** Sentry + PostHog.
 
-Install libraries with `npx expo install <pkg>` (see AGENTS.md). Libraries with native code (Skia, MMKV, RevenueCat) require a development build, not Expo Go.
+Install libraries with `npx expo install <pkg>` (see AGENTS.md). Libraries with native code that Expo Go does not bundle (e.g. MMKV, RevenueCat) require a development build; Skia, SVG, notifications and SQLite work in Expo Go.
 
 ## Commands
 ```bash
