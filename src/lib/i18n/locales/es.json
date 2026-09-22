@@ -49,8 +49,12 @@
   },
   "week": {
     "title": "Semana",
-    "allDay": "Todo el día",
-    "thisWeek": "Esta semana"
+    "allDay": "En cualquier momento",
+    "thisWeek": "Esta semana",
+    "progress": "{{done}} de {{total}} esta semana",
+    "range": "{{from}}–{{to}}",
+    "previous": "Semana anterior",
+    "next": "Semana siguiente"
   },
   "habit": {
     "new": "Nuevo hábito",
@@ -117,10 +121,11 @@
   "profile": {
     "title": "Perfil",
     "dayBands": "Franjas del día",
-    "morningStartsAt": "La mañana empieza a las {{hour}}:00",
-    "afternoonStartsAt": "La tarde empieza a las {{hour}}:00",
-    "nightStartsAt": "La noche empieza a las {{hour}}:00",
-    "dayBandsHint": "Define cómo se pinta y agrupa tu día."
+    "morningStartsAt": "La mañana empieza a las {{time}}",
+    "afternoonStartsAt": "La tarde empieza a las {{time}}",
+    "nightStartsAt": "La noche empieza a las {{time}}",
+    "dayBandsHint": "Define cómo se pinta y agrupa tu día. Las horas después de que termina tu día no aparecen en la semana.",
+    "nightEndsAt": "Tu día termina a las {{time}}"
   },
   "reminders": {
     "channel": "Recordatorios de hábitos",

@@ -18,6 +18,7 @@ export const Colors = {
     onPrimary: '#ffffff',
     border: '#E0E1E6',
     danger: '#D64545',
+    todayColumn: 'rgba(255,255,255,0.6)',
   },
   dark: {
     text: '#ffffff',
@@ -29,6 +30,7 @@ export const Colors = {
     onPrimary: '#0B1A12',
     border: '#2E3135',
     danger: '#F07070',
+    todayColumn: 'rgba(255,255,255,0.07)',
   },
 } as const;
 
@@ -49,6 +51,13 @@ export const BandColors = {
 } as const;
 
 export type BandKey = keyof typeof BandColors.light;
+
+export const BandEmoji: Record<BandKey, string> = {
+  morning: '🌅',
+  afternoon: '☀️',
+  night: '🌙',
+  anytime: '✨',
+};
 
 /**
  * Sequential ramp for the completion heatmap (low → high), one hue.

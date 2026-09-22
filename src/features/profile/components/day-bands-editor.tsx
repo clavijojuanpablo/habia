@@ -11,17 +11,25 @@ import { useUpdateProfile } from '../api';
 
 type Props = { profile: Tables<'profiles'> };
 
-/** Three steppers bounded by each other so the bands always stay ordered. */
+const hourLabel = (hour: number) => `${String(hour % 24).padStart(2, '0')}:00`;
+
+/** Four steppers bounded by each other so the bands always stay ordered. */
 export function DayBandsEditor({ profile }: Props) {
   const { t } = useTranslation();
   const bandColors = useBandColors();
   const update = useUpdateProfile();
-  const { morning_starts_at: morning, afternoon_starts_at: afternoon, night_starts_at: night } = profile;
+  const {
+    morning_starts_at: morning,
+    afternoon_starts_at: afternoon,
+    night_starts_at: night,
+    night_ends_at: nightEnd,
+  } = profile;
 
   const rows = [
-    { key: 'morning', label: t('profile.morningStartsAt', { hour: morning }), value: morning, min: 0, max: afternoon - 1, field: 'morning_starts_at' },
-    { key: 'afternoon', label: t('profile.afternoonStartsAt', { hour: afternoon }), value: afternoon, min: morning + 1, max: night - 1, field: 'afternoon_starts_at' },
-    { key: 'night', label: t('profile.nightStartsAt', { hour: night }), value: night, min: afternoon + 1, max: 23, field: 'night_starts_at' },
+    { key: 'morningStart', band: 'morning', label: t('profile.morningStartsAt', { time: hourLabel(morning) }), value: morning, min: 0, max: afternoon - 1, field: 'morning_starts_at' },
+    { key: 'afternoonStart', band: 'afternoon', label: t('profile.afternoonStartsAt', { time: hourLabel(afternoon) }), value: afternoon, min: morning + 1, max: night - 1, field: 'afternoon_starts_at' },
+    { key: 'nightStart', band: 'night', label: t('profile.nightStartsAt', { time: hourLabel(night) }), value: night, min: afternoon + 1, max: nightEnd - 1, field: 'night_starts_at' },
+    { key: 'nightEnd', band: 'night', label: t('profile.nightEndsAt', { time: hourLabel(nightEnd) }), value: nightEnd, min: night + 1, max: 24, field: 'night_ends_at' },
   ] as const;
 
   return (
@@ -31,7 +39,7 @@ export function DayBandsEditor({ profile }: Props) {
         {t('profile.dayBandsHint')}
       </ThemedText>
       {rows.map((row) => (
-        <View key={row.key} style={[styles.row, { backgroundColor: bandColors[row.key].background }]}>
+        <View key={row.key} style={[styles.row, { backgroundColor: bandColors[row.band].background }]}>
           <Stepper
             label={row.label}
             value={row.value}

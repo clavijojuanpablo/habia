@@ -204,6 +204,7 @@ export type Database = {
           id: string
           locale: string
           morning_starts_at: number
+          night_ends_at: number
           night_starts_at: number
           timezone: string
           updated_at: string
@@ -216,6 +217,7 @@ export type Database = {
           id: string
           locale?: string
           morning_starts_at?: number
+          night_ends_at?: number
           night_starts_at?: number
           timezone?: string
           updated_at?: string
@@ -228,6 +230,7 @@ export type Database = {
           id?: string
           locale?: string
           morning_starts_at?: number
+          night_ends_at?: number
           night_starts_at?: number
           timezone?: string
           updated_at?: string

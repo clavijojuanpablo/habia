@@ -6,7 +6,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from '@/components/icon';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { isDone } from '@/features/schedule/build-schedule';
 import { WeekGrid } from '@/features/schedule/components/week-grid';
 import { useSchedule } from '@/features/schedule/use-schedule';
 import { useNow } from '@/hooks/use-now';
@@ -26,37 +27,79 @@ export default function WeekScreen() {
   }, [currentWeekKey, offset]);
 
   const { items, bands, toggleItem } = useSchedule(weekStart, weekEnd);
+  const done = items.filter(isDone).length;
+  const progress = items.length === 0 ? 0 : done / items.length;
 
   const format = (d: Date) => d.toLocaleDateString(i18n.language, { day: 'numeric', month: 'short' });
-  const title = offset === 0 ? t('week.thisWeek') : `${format(weekStart)} – ${format(addDays(weekEnd, -1))}`;
+  const range = `${format(weekStart)} – ${format(addDays(weekEnd, -1))}`;
 
   return (
     <ThemedView style={styles.flex}>
       <SafeAreaView style={styles.flex} edges={['top']}>
-        <View style={styles.header}>
-          <Pressable onPress={() => setOffset(offset - 1)} hitSlop={12} accessibilityLabel="previous week">
-            <Icon name="back" color={theme.text} />
-          </Pressable>
-          <Pressable onPress={() => setOffset(0)} style={styles.title}>
-            <ThemedText type="smallBold">{title}</ThemedText>
-          </Pressable>
-          <Pressable onPress={() => setOffset(offset + 1)} hitSlop={12} accessibilityLabel="next week">
-            <Icon name="forward" color={theme.text} />
-          </Pressable>
+        <View style={styles.inner}>
+          <View style={styles.header}>
+            <RoundButton icon="back" label={t('week.previous')} onPress={() => setOffset(offset - 1)} />
+            <Pressable onPress={() => setOffset(0)} style={styles.titleBlock}>
+              <ThemedText type="smallBold">{offset === 0 ? t('week.thisWeek') : range}</ThemedText>
+              {offset === 0 && (
+                <ThemedText type="small" themeColor="textSecondary">
+                  {range}
+                </ThemedText>
+              )}
+            </Pressable>
+            <RoundButton icon="forward" label={t('week.next')} onPress={() => setOffset(offset + 1)} />
+          </View>
+
+          {items.length > 0 && (
+            <View style={styles.progress}>
+              <View style={[styles.track, { backgroundColor: theme.backgroundElement }]}>
+                <View style={[styles.fill, { width: `${progress * 100}%`, backgroundColor: theme.primary }]} />
+              </View>
+              <ThemedText type="small" themeColor="textSecondary">
+                {t('week.progress', { done, total: items.length })}
+              </ThemedText>
+            </View>
+          )}
+
+          <WeekGrid weekStart={weekStart} items={items} bands={bands} now={now} onToggle={toggleItem} />
         </View>
-        <WeekGrid weekStart={weekStart} items={items} bands={bands} now={now} onToggle={toggleItem} />
       </SafeAreaView>
     </ThemedView>
   );
 }
 
+function RoundButton({ icon, label, onPress }: { icon: 'back' | 'forward'; label: string; onPress: () => void }) {
+  const theme = useTheme();
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityLabel={label}
+      hitSlop={8}
+      style={({ pressed }) => [styles.round, { backgroundColor: theme.backgroundElement, opacity: pressed ? 0.7 : 1 }]}>
+      <Icon name={icon} color={theme.text} size={18} />
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  inner: { flex: 1, width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center' },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
+    paddingTop: Spacing.two,
+    paddingBottom: Spacing.two,
   },
-  title: { flex: 1, alignItems: 'center' },
+  titleBlock: { flex: 1, alignItems: 'center' },
+  round: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
+  progress: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+    paddingHorizontal: Spacing.three,
+    paddingBottom: Spacing.three,
+  },
+  track: { flex: 1, height: 6, borderRadius: 3, overflow: 'hidden' },
+  fill: { height: '100%', borderRadius: 3 },
 });

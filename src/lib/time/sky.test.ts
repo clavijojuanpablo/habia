@@ -1,6 +1,6 @@
 import { skyProgress } from './sky';
 
-const bands = { morningStartsAt: 6, afternoonStartsAt: 12, nightStartsAt: 18 };
+const bands = { morningStartsAt: 6, afternoonStartsAt: 12, nightStartsAt: 18, nightEndsAt: 24 };
 const at = (h: number, m = 0) => new Date(2026, 8, 21, h, m);
 
 describe('skyProgress', () => {

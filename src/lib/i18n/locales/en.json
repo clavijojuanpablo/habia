@@ -49,8 +49,12 @@
   },
   "week": {
     "title": "Week",
-    "allDay": "All day",
-    "thisWeek": "This week"
+    "allDay": "Any time",
+    "thisWeek": "This week",
+    "progress": "{{done}} of {{total}} this week",
+    "range": "{{from}}–{{to}}",
+    "previous": "Previous week",
+    "next": "Next week"
   },
   "habit": {
     "new": "New habit",
@@ -117,10 +121,11 @@
   "profile": {
     "title": "Profile",
     "dayBands": "Day bands",
-    "morningStartsAt": "Morning starts at {{hour}}:00",
-    "afternoonStartsAt": "Afternoon starts at {{hour}}:00",
-    "nightStartsAt": "Night starts at {{hour}}:00",
-    "dayBandsHint": "Sets how your day is painted and grouped."
+    "morningStartsAt": "Morning starts at {{time}}",
+    "afternoonStartsAt": "Afternoon starts at {{time}}",
+    "nightStartsAt": "Night starts at {{time}}",
+    "dayBandsHint": "Sets how your day is painted and grouped. Hours after your day ends are hidden from the week.",
+    "nightEndsAt": "Your day ends at {{time}}"
   },
   "reminders": {
     "channel": "Habit reminders",
