@@ -7,7 +7,7 @@ import {
   Nunito_900Black,
   useFonts,
 } from '@expo-google-fonts/nunito';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
@@ -17,19 +17,26 @@ import { useTranslation } from 'react-i18next';
 import { Colors } from '@/constants/theme';
 import { AppearanceProvider, useAppearance } from '@/features/appearance/appearance-provider';
 import { SessionProvider, useSession } from '@/features/auth/session-provider';
-import { queryClient } from '@/lib/query/client';
+import { startNetworkWatcher } from '@/lib/network';
+import { persister, queryClient } from '@/lib/query/client';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  useEffect(startNetworkWatcher, []);
+
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister, maxAge: 7 * 24 * 60 * 60 * 1000 }}
+      // Replays check-ins that were queued while offline, even across restarts.
+      onSuccess={() => queryClient.resumePausedMutations()}>
       <SessionProvider>
         <AppearanceProvider>
           <ThemedNavigation />
         </AppearanceProvider>
       </SessionProvider>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }
 

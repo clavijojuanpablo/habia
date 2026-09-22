@@ -1,7 +1,7 @@
 const memory = new Map<string, string>();
 
 /** Browser localStorage, with an in-memory fallback for static rendering. */
-export const authStorage =
+export const storage =
   typeof window !== 'undefined' && window.localStorage
     ? window.localStorage
     : {

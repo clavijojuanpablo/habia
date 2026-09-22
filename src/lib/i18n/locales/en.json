@@ -260,5 +260,15 @@
     "deleteKeyword": "DELETE",
     "typeToConfirm": "Type {{keyword}} to confirm",
     "deleteForever": "Delete forever"
+  },
+  "offline": {
+    "title": "📡 Offline · your changes are saved here",
+    "pending_one": "📡 Offline · {{count}} change will sync when you are back",
+    "pending_other": "📡 Offline · {{count}} changes will sync when you are back"
+  },
+  "yesterday": {
+    "title_one": "{{count}} habit unlogged yesterday",
+    "title_other": "{{count}} habits unlogged yesterday",
+    "hint": "Did you do it and forget to log it? Tap to check it."
   }
 }

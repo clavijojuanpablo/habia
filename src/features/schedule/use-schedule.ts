@@ -23,7 +23,7 @@ export function useSchedule(from: Date, to: Date) {
     const done = isDone(item);
     if (done) hapticLight();
     else hapticSuccess();
-    toggle.mutate({ habitId: item.habit.id, at: item.at, existing: done ? item.log : undefined, status });
+    toggle.mutate({ habitId: item.habit.id, at: item.at.toISOString(), existing: done ? item.log : undefined, status });
   };
 
   return {

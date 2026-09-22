@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { requireUserId } from '@/features/auth/session-provider';
-import { supabase, type Tables } from '@/lib/supabase/client';
+import { supabase } from '@/lib/supabase/client';
 
-export type HabitLog = Tables<'habit_logs'>;
-export type LogStatus = HabitLog['status'];
+import { toggleLogRequest, TOGGLE_LOG_KEY, type HabitLog, type LogStatus, type ToggleInput } from './mutations';
+
+export type { HabitLog, LogStatus };
 
 const logsKey = (from: Date, to: Date) => ['logs', from.toISOString(), to.toISOString()] as const;
 
@@ -24,56 +24,34 @@ export function useLogs(from: Date, to: Date) {
   });
 }
 
-type ToggleInput = {
-  habitId: string;
-  at: Date;
-  /** Existing log to remove. When absent, a new log with `status` is created. */
-  existing?: HabitLog;
-  status?: LogStatus;
-};
-
-/** Checks or un-checks an occurrence, updating every cached range optimistically. */
+/**
+ * Checks or un-checks an occurrence, updating every cached range optimistically.
+ * Offline the write is paused and retried when the connection returns; the
+ * optimistic cache is persisted, so the check mark survives a restart.
+ */
 export function useToggleLog() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ habitId, at, existing, status = 'done' }: ToggleInput) => {
-      if (existing) {
-        const { error } = await supabase
-          .from('habit_logs')
-          .delete()
-          .eq('habit_id', existing.habit_id)
-          .eq('occurrence_at', existing.occurrence_at);
-        if (error) throw error;
-        return;
-      }
-      const user_id = await requireUserId();
-      const { error } = await supabase
-        .from('habit_logs')
-        .upsert(
-          { user_id, habit_id: habitId, occurrence_at: at.toISOString(), status },
-          { onConflict: 'habit_id,occurrence_at' },
-        );
-      if (error) throw error;
-    },
-    onMutate: async ({ habitId, at, existing, status = 'done' }) => {
+    mutationKey: TOGGLE_LOG_KEY,
+    mutationFn: toggleLogRequest,
+    onMutate: async ({ habitId, at, existing, status = 'done' }: ToggleInput) => {
       await queryClient.cancelQueries({ queryKey: ['logs'] });
       const snapshot = queryClient.getQueriesData<HabitLog[]>({ queryKey: ['logs'] });
-      const iso = at.toISOString();
 
       for (const [key, logs] of snapshot) {
         if (!logs) continue;
         const [, from, to] = key as ReturnType<typeof logsKey>;
-        if (iso < from || iso >= to) continue;
+        if (at < from || at >= to) continue;
         const next = existing
           ? logs.filter((l) => l.id !== existing.id)
           : [
               ...logs,
               {
-                id: `optimistic-${habitId}-${iso}`,
+                id: `optimistic-${habitId}-${at}`,
                 habit_id: habitId,
                 user_id: '',
-                occurrence_at: iso,
+                occurrence_at: at,
                 status,
                 note: null,
                 mood: null,

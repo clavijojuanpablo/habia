@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/button';
 import { Icon } from '@/components/icon';
+import { OfflineBanner } from '@/components/offline-banner';
 import { ProgressRing } from '@/components/progress-ring';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -13,6 +14,7 @@ import { BandEmoji, MaxContentWidth, Radius, Shadow, Spacing } from '@/constants
 import { isDone, nextInChain, type ScheduleBand, type ScheduledItem } from '@/features/schedule/build-schedule';
 import { ChainPrompt } from '@/features/schedule/components/chain-prompt';
 import { HabitCheckRow } from '@/features/schedule/components/habit-check-row';
+import { YesterdayCatchUp } from '@/features/schedule/components/yesterday-catch-up';
 import { useSchedule } from '@/features/schedule/use-schedule';
 import { TopBar } from '@/features/streak/components/top-bar';
 import { useNow, useTodayRange } from '@/hooks/use-now';
@@ -50,6 +52,7 @@ export default function TodayScreen() {
     <ThemedView style={styles.flex}>
       <SafeAreaView style={styles.flex} edges={['top']}>
         <TopBar />
+        <OfflineBanner />
         <ScrollView contentContainerStyle={styles.content}>
           {/* Hero: greeting + today's ring, painted with the current band's pastel */}
           <View style={[styles.hero, { backgroundColor: sky.background }]}>
@@ -95,6 +98,8 @@ export default function TodayScreen() {
               <Button label={t('today.createFirst')} onPress={() => router.push('/habit/new')} />
             </View>
           )}
+
+          <YesterdayCatchUp />
 
           {SECTION_ORDER.map((band) => {
             const sectionItems = items.filter((item) => item.band === band);

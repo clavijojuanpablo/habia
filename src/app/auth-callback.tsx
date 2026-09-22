@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator } from 'react-native';
 
 import { Button } from '@/components/button';
-import { ThemedText } from '@/components/themed-text';
 import { AuthLayout } from '@/features/auth/components/auth-layout';
 import { useTheme } from '@/hooks/use-theme';
 import { supabase } from '@/lib/supabase/client';

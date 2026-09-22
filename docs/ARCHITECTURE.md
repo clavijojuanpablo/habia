@@ -31,6 +31,6 @@ Planned:
 
 ## Key decisions
 - **Occurrences are computed, not stored.** Habits store an RRULE; the client expands it for the visible range. Only answers (logs) are persisted.
-- **Offline-first (basic):** persisted TanStack Query cache + optimistic mutations. Migrate to PowerSync if multi-device conflicts become a problem.
+- **Offline-first (basic):** the TanStack Query cache is persisted to disk (`src/lib/storage.ts`, 7-day max age) and `onlineManager` is fed by `src/lib/network.ts` (expo-network on native, `navigator.onLine` on web). Check-ins are optimistic; offline they pause and resume automatically, surviving restarts because their `mutationFn` is registered by mutation key (`TOGGLE_LOG_KEY`). Migrate to PowerSync if multi-device conflicts become a problem.
 - **Reminders:** time-based reminders are scheduled locally (they work offline). `useReminderSync` replaces all pending notifications with the next 3 days of timed, not-yet-done occurrences (max 60, under the iOS limit of 64). Context, coach and partner notifications are sent as push from Edge Functions.
 - **Payments:** in-app purchases are mandatory on iOS/Android; RevenueCat unifies them with Stripe on web.

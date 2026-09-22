@@ -42,8 +42,8 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 ## Block 1: Ready for real users 🚧 (next)
 - ✅ Merged into `main`, pushed to GitHub, CI (typecheck, lint, tests) on push and PRs
 - 🚧 Auth: ✅ password reset, ✅ PKCE deep links for email links (`habits://auth-callback`), ✅ in-app account deletion (Edge Function `delete-account`), ✅ redesigned sign-in · ⏳ Sign in with Apple/Google
-- ⏳ Offline support: persist the TanStack Query cache + queued mutations
-- ⏳ Log past days ("I did it yesterday"), skip a day
+- ✅ Offline: persisted query cache (7 days), online state from expo-network / browser events, check-ins queued and replayed after a restart, calm offline banner
+- 🚧 Log past days: ✅ yesterday catch-up card in Hoy + any past day from Semana · ⏳ skip a day
 - ⏳ Use `profiles.timezone`; notification tap opens the habit
 - ⏳ Personalized onboarding (identity quiz → first habit → notification permission)
 - ⏳ Mascot "Brote" v1 + celebrations

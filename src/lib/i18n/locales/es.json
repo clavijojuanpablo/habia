@@ -260,5 +260,15 @@
     "deleteKeyword": "ELIMINAR",
     "typeToConfirm": "Escribe {{keyword}} para confirmar",
     "deleteForever": "Eliminar definitivamente"
+  },
+  "offline": {
+    "title": "📡 Sin conexión · tus cambios se guardan aquí",
+    "pending_one": "📡 Sin conexión · {{count}} cambio se enviará al volver la red",
+    "pending_other": "📡 Sin conexión · {{count}} cambios se enviarán al volver la red"
+  },
+  "yesterday": {
+    "title_one": "Ayer quedó {{count}} sin marcar",
+    "title_other": "Ayer quedaron {{count}} sin marcar",
+    "hint": "¿Lo hiciste y olvidaste registrarlo? Tócalo para marcarlo."
   }
 }

@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { AppState, Platform } from 'react-native';
 
 import type { Database } from './database.types';
-import { authStorage } from './storage';
+import { storage } from '@/lib/storage';
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const supabasePublishableKey = process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
@@ -15,7 +15,7 @@ if (!supabaseUrl || !supabasePublishableKey) {
 
 export const supabase = createClient<Database>(supabaseUrl, supabasePublishableKey, {
   auth: {
-    storage: authStorage,
+    storage,
     autoRefreshToken: true,
     persistSession: true,
     // Email links carry a one-time code that the app exchanges for a session.
