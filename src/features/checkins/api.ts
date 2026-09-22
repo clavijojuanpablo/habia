@@ -87,6 +87,10 @@ export function useToggleLog() {
     onError: (_error, _input, context) => {
       context?.snapshot.forEach(([key, data]) => queryClient.setQueryData(key, data));
     },
-    onSettled: () => queryClient.invalidateQueries({ queryKey: ['logs'] }),
+    onSettled: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['logs'] }),
+        queryClient.invalidateQueries({ queryKey: ['votes'] }),
+      ]),
   });
 }

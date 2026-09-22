@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "dependencies": {
     "@expo/ui": "~57.0.19",
+    "@shopify/react-native-skia": "2.6.2",
     "@supabase/supabase-js": "^2.116.0",
     "@tanstack/react-query": "^5.103.2",
     "expo": "~57.0.24",
@@ -51,7 +52,8 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "test": "jest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "postinstall": "setup-skia-web public"
   },
   "private": true,
   "jest": {

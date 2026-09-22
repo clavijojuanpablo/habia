@@ -21,6 +21,7 @@
   "tabs": {
     "today": "Hoy",
     "week": "Semana",
+    "garden": "Jardín",
     "profile": "Perfil"
   },
   "bands": {
@@ -104,5 +105,23 @@
     "channel": "Recordatorios de hábitos",
     "body": "Es tu momento. Un pequeño voto por quien quieres ser.",
     "bodyMinimum": "Aunque sea la versión mínima: {{minimum}}"
+  },
+  "garden": {
+    "stage": {
+      "0": "Una semilla",
+      "1": "Un brote",
+      "2": "Un arbolito",
+      "3": "Un árbol",
+      "4": "Un árbol con frutos"
+    },
+    "votes_one": "{{count}} voto por la persona que quieres ser",
+    "votes_other": "{{count}} votos por la persona que quieres ser",
+    "healthGood": "Tu árbol está sano. Cada acción cuenta.",
+    "healthLow": "Algunas hojas se ven cansadas. Un fallo es un accidente: hoy retomas.",
+    "streak_one": "{{count}} seguido",
+    "streak_other": "{{count}} seguidos",
+    "consistency": "{{percent}}% en 30 días",
+    "automaticity": "{{count}} de ~{{total}} repeticiones hacia el automatismo",
+    "neverMissTwice": "Fallaste la última vez. No pasa nada: hoy es el día de no fallar dos veces."
   }
 }

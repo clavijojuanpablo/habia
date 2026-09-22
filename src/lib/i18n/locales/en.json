@@ -21,6 +21,7 @@
   "tabs": {
     "today": "Today",
     "week": "Week",
+    "garden": "Garden",
     "profile": "Profile"
   },
   "bands": {
@@ -104,5 +105,23 @@
     "channel": "Habit reminders",
     "body": "It is time. A small vote for who you want to be.",
     "bodyMinimum": "Even the minimum version counts: {{minimum}}"
+  },
+  "garden": {
+    "stage": {
+      "0": "A seed",
+      "1": "A sprout",
+      "2": "A sapling",
+      "3": "A tree",
+      "4": "A fruiting tree"
+    },
+    "votes_one": "{{count}} vote for the person you want to become",
+    "votes_other": "{{count}} votes for the person you want to become",
+    "healthGood": "Your tree is healthy. Every action counts.",
+    "healthLow": "Some leaves look tired. One miss is an accident: today you get back on track.",
+    "streak_one": "{{count}} in a row",
+    "streak_other": "{{count}} in a row",
+    "consistency": "{{percent}}% over 30 days",
+    "automaticity": "{{count}} of ~{{total}} repetitions toward automaticity",
+    "neverMissTwice": "You missed last time. That is fine: today is the day you never miss twice."
   }
 }

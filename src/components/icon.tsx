@@ -8,6 +8,7 @@ type SymbolName = ComponentProps<typeof SymbolView>['name'];
 const ICONS = {
   today: { ios: 'sun.max.fill', android: 'wb_sunny', web: 'wb_sunny' },
   week: { ios: 'calendar', android: 'calendar_month', web: 'calendar_month' },
+  garden: { ios: 'leaf.fill', android: 'park', web: 'park' },
   profile: { ios: 'person.crop.circle', android: 'account_circle', web: 'account_circle' },
   add: { ios: 'plus', android: 'add', web: 'add' },
   check: { ios: 'checkmark', android: 'check', web: 'check' },

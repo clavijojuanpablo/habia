@@ -33,6 +33,13 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="garden"
+        options={{
+          title: t('tabs.garden'),
+          tabBarIcon: ({ color }) => <Icon name="garden" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="profile"
         options={{
           title: t('tabs.profile'),
