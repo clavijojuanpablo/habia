@@ -39,12 +39,38 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - ✅ 2-minute rule and implementation intentions (since Phase 1)
 - ⏳ AI coach Edge Function (Claude)
 
-## Phase 4: Monetization & stores ⏳
-- RevenueCat + Stripe, paywall, entitlements
-- EAS Build/Submit → TestFlight + Play Internal Testing; Sentry + PostHog
+## Block 1: Ready for real users 🚧 (next)
+- ⏳ Merge branches into master, push to GitHub (private), PR workflow + CI (tests, lint, typecheck)
+- ⏳ Auth: password reset, email-confirmation deep link (today it lands on localhost:3000), Sign in with Apple/Google, **in-app account deletion** (App Store requirement)
+- ⏳ Offline support: persist the TanStack Query cache + queued mutations
+- ⏳ Log past days ("I did it yesterday"), skip a day
+- ⏳ Use `profiles.timezone`; notification tap opens the habit
+- ⏳ Personalized onboarding (identity quiz → first habit → notification permission)
+- ⏳ Mascot "Brote" v1 + celebrations
+- ⏳ Redesign habit form, sign-in, Garden and Progress with the new style
+- ⏳ App name, icon and splash; privacy policy + terms
 
-## Phase 5: Pro Parejas ⏳
-- couples schema + RLS, Realtime feed, cheers/nudges, intertwined trees
+## Block 2: Beta testers ⏳
+- EAS project + development build, TestFlight + Play Internal Testing
+- Sentry + PostHog (north star, D1/D7/D30 retention)
+- Ask testers about one-off reminders / calendar
+
+## Phase 4: Monetization ⏳
+- RevenueCat (in-app) + Stripe (web), paywall, entitlements, Free vs Pro limits
+
+## Phase 3B / Pro value ⏳
+- Guided programs ("Caminos", 3 initial) + micro-lessons
+- AI coach (hybrid: rules free, Claude weekly review via Batch, capped Pro chat)
+
+## Phase 5: Social & couples ⏳
+- Pro Parejas: couples schema + RLS, Realtime feed, cheers/nudges, intertwined trees
+- Share cards, referrals, friends, group challenges, weekly leagues by consistency
 
 ## Phase 6: Launch ⏳
-- Branding (Claude Design), landing page + waitlist, ASO, content & referrals
+- Branding (Claude Design), landing page + waitlist, ASO, content
+
+## Post-launch ⏳
+- Widgets, Apple Health / Health Connect, Apple Watch, Siri shortcuts (native, dev build)
+- Earnable streak shield; read-only calendar; one-off reminders (if validated)
+- Mood + journal correlations, monthly report, "Tu año en hábitos"
+- Family plan, gifts, B2B
