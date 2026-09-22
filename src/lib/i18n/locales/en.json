@@ -42,7 +42,10 @@
     "allDone": "Day complete! Every vote counts.",
     "addHabit": "New habit",
     "minimumDone": "2-min version",
-    "longPressHint": "Long press to log the 2-minute version"
+    "longPressHint": "Long press to log the 2-minute version",
+    "afterHabit": "↳ After {{habit}}",
+    "nextInChain": "Next in your chain",
+    "markDone": "Done"
   },
   "week": {
     "title": "Week",
@@ -83,7 +86,24 @@
     "reminderNone": "No reminder",
     "reminderAtTime": "At the time",
     "reminderBefore": "{{count}} min before",
-    "reminderWebHint": "Reminders are delivered by the phone app (iOS / Android)."
+    "reminderWebHint": "Reminders are delivered by the phone app (iOS / Android).",
+    "identity": "Identity",
+    "identityNone": "None",
+    "cue": "When will you do it?",
+    "cueType": {
+      "time": "At a time",
+      "after_habit": "After another habit",
+      "context": "At a moment"
+    },
+    "anchorHint": "Stack it on something you already do: \"After [habit], I will do this\".",
+    "noAnchors": "First create the habit you want to stack it on.",
+    "anchorRequired": "Pick which habit it follows",
+    "contextPlaceholder": "When I get home, after dinner…",
+    "contextHint": "The moment or place that will cue it.",
+    "contextRequired": "Describe the moment",
+    "temptation": "Temptation bundle",
+    "temptationHint": "Pair it with something you enjoy: you only get one while doing the other.",
+    "temptationPlaceholder": "I only listen to my podcast while walking"
   },
   "weekdays": {
     "MO": "M",
@@ -123,7 +143,8 @@
     "streak_other": "{{count}} in a row",
     "consistency": "{{percent}}% over 30 days",
     "automaticity": "{{count}} of ~{{total}} repetitions toward automaticity",
-    "neverMissTwice": "You missed last time. That is fine: today is the day you never miss twice."
+    "neverMissTwice": "You missed last time. That is fine: today is the day you never miss twice.",
+    "otherHabits": "Other habits"
   },
   "progress": {
     "title": "Your progress",
@@ -145,5 +166,26 @@
     "onePercentDetail": "Day {{day}}: you {{you}} · improving 1% daily {{ideal}}",
     "onePercentA11y": "Your index: {{you}}. Improving 1% every day: {{ideal}}.",
     "you": "You"
+  },
+  "identity": {
+    "new": "New identity",
+    "edit": "Edit identity",
+    "title": "Who do you want to become?",
+    "sectionHint": "Each identity is a branch of your tree. Your habits are votes for it.",
+    "explainer": "Habits stick when they are part of who you are. Write the person you want to be, not the goal.",
+    "statement": "I am a person who…",
+    "statementPlaceholder": "takes care of their body, reads every day, is present…",
+    "statementRequired": "Write who you want to be",
+    "area": "Area",
+    "areas": {
+      "health": "Health",
+      "mind": "Mind",
+      "relationships": "Relationships",
+      "work": "Work",
+      "growth": "Growth"
+    },
+    "habitCount_one": "{{count}} habit",
+    "habitCount_other": "{{count}} habits",
+    "deleteConfirm": "Delete this identity? Its habits are kept without an identity."
   }
 }

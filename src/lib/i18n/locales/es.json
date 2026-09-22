@@ -42,7 +42,10 @@
     "allDone": "¡Día completo! Cada voto cuenta.",
     "addHabit": "Nuevo hábito",
     "minimumDone": "Versión de 2 min",
-    "longPressHint": "Mantén presionado para marcar la versión de 2 minutos"
+    "longPressHint": "Mantén presionado para marcar la versión de 2 minutos",
+    "afterHabit": "↳ Después de {{habit}}",
+    "nextInChain": "Siguiente en tu cadena",
+    "markDone": "Hecho"
   },
   "week": {
     "title": "Semana",
@@ -83,7 +86,24 @@
     "reminderNone": "Sin recordatorio",
     "reminderAtTime": "A la hora",
     "reminderBefore": "{{count}} min antes",
-    "reminderWebHint": "Los recordatorios llegan en la app del teléfono (iOS / Android)."
+    "reminderWebHint": "Los recordatorios llegan en la app del teléfono (iOS / Android).",
+    "identity": "Identidad",
+    "identityNone": "Ninguna",
+    "cue": "¿Cuándo lo harás?",
+    "cueType": {
+      "time": "A una hora",
+      "after_habit": "Después de otro hábito",
+      "context": "En un momento"
+    },
+    "anchorHint": "Encadénalo a algo que ya haces: \"Después de [hábito], haré esto\".",
+    "noAnchors": "Crea primero el hábito al que quieres encadenarlo.",
+    "anchorRequired": "Elige después de qué hábito lo harás",
+    "contextPlaceholder": "Al llegar a casa, después de cenar…",
+    "contextHint": "El momento o lugar que te lo recordará.",
+    "contextRequired": "Describe el momento",
+    "temptation": "Tentación asociada",
+    "temptationHint": "Júntalo con algo que disfrutes: solo lo harás mientras lo haces.",
+    "temptationPlaceholder": "Solo escucho mi podcast mientras camino"
   },
   "weekdays": {
     "MO": "L",
@@ -123,7 +143,8 @@
     "streak_other": "{{count}} seguidos",
     "consistency": "{{percent}}% en 30 días",
     "automaticity": "{{count}} de ~{{total}} repeticiones hacia el automatismo",
-    "neverMissTwice": "Fallaste la última vez. No pasa nada: hoy es el día de no fallar dos veces."
+    "neverMissTwice": "Fallaste la última vez. No pasa nada: hoy es el día de no fallar dos veces.",
+    "otherHabits": "Otros hábitos"
   },
   "progress": {
     "title": "Tu progreso",
@@ -145,5 +166,26 @@
     "onePercentDetail": "Día {{day}}: tú {{you}} · mejorando 1 % diario {{ideal}}",
     "onePercentA11y": "Tu índice: {{you}}. Mejorando 1 % cada día: {{ideal}}.",
     "you": "Tú"
+  },
+  "identity": {
+    "new": "Nueva identidad",
+    "edit": "Editar identidad",
+    "title": "¿Quién quieres ser?",
+    "sectionHint": "Cada identidad es una rama de tu árbol. Tus hábitos son votos por ella.",
+    "explainer": "Los hábitos duran cuando son parte de quién eres. Escribe la persona que quieres ser, no la meta.",
+    "statement": "Soy una persona que…",
+    "statementPlaceholder": "cuida su cuerpo, lee cada día, está presente…",
+    "statementRequired": "Escribe quién quieres ser",
+    "area": "Área",
+    "areas": {
+      "health": "Salud",
+      "mind": "Mente",
+      "relationships": "Relaciones",
+      "work": "Trabajo",
+      "growth": "Crecimiento"
+    },
+    "habitCount_one": "{{count}} hábito",
+    "habitCount_other": "{{count}} hábitos",
+    "deleteConfirm": "¿Eliminar esta identidad? Sus hábitos se conservan sin identidad."
   }
 }

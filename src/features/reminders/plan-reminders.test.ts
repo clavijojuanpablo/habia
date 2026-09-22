@@ -19,7 +19,11 @@ function item(overrides: {
     habit,
     at: overrides.at,
     hasTime: overrides.hasTime ?? true,
+    displayAt: overrides.at,
+    displayHasTime: overrides.hasTime ?? true,
     band: 'morning',
+    anchorHabitId: null,
+    depth: 0,
     log: overrides.log as HabitLog | undefined,
   };
 }

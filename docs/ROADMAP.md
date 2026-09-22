@@ -24,9 +24,13 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - ✅ Progress tab: stat tiles, month heatmap, weekly consistency columns, per-band rates with insight, 1% curve (one axis, index vs ideal)
 - ⏳ Move garden aggregates to a Postgres RPC when log volume grows (today computed on the client over 120 days; `garden_state` table unused)
 
-## Phase 3: Advanced science ⏳
-- Habit stacking + context cues, 2-minute rule, identities, implementation intentions
-- AI coach Edge Function (Claude)
+## Phase 3: Advanced science 🚧
+- ✅ Habit stacking: "after [habit]" cue, stacked habits shown right after their anchor (display slot borrowed, log identity kept), "next in your chain" prompt, roots in the tree
+- ✅ Context cues ("when I get home"), temptation bundling field
+- ✅ Identities: CRUD in Perfil, assign habits, identities are tree branches with per-habit leaf colors
+- ✅ DB trigger: anchors/identities must belong to the same user; no stack cycles
+- ✅ 2-minute rule and implementation intentions (since Phase 1)
+- ⏳ AI coach Edge Function (Claude)
 
 ## Phase 4: Monetization & stores ⏳
 - RevenueCat + Stripe, paywall, entitlements

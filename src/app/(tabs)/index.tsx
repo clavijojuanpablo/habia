@@ -1,4 +1,5 @@
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,7 +8,8 @@ import { Icon } from '@/components/icon';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
-import { isDone, type ScheduleBand } from '@/features/schedule/build-schedule';
+import { isDone, nextInChain, type ScheduleBand, type ScheduledItem } from '@/features/schedule/build-schedule';
+import { ChainPrompt } from '@/features/schedule/components/chain-prompt';
 import { HabitCheckRow } from '@/features/schedule/components/habit-check-row';
 import { useSchedule } from '@/features/schedule/use-schedule';
 import { useNow, useTodayRange } from '@/hooks/use-now';
@@ -23,6 +25,18 @@ export default function TodayScreen() {
   const now = useNow();
   const { today, tomorrow } = useTodayRange(now);
   const { items, bands, hasHabits, isLoading, error, toggleItem } = useSchedule(today, tomorrow);
+
+  // Keep only the key: the item itself is read fresh from `items` on every render.
+  const [chainNextKey, setChainNextKey] = useState<string | null>(null);
+  const chainNext = items.find((item) => item.key === chainNextKey && !isDone(item));
+  const habitsById = new Map(items.map((item) => [item.habit.id, item.habit]));
+
+  // Checking an anchor surfaces the next habit of its chain (habit stacking).
+  const onToggle = (item: ScheduledItem, status?: 'done' | 'done_minimum') => {
+    const completing = !isDone(item);
+    toggleItem(item, status);
+    setChainNextKey(completing ? (nextInChain(item, items)?.key ?? null) : null);
+  };
 
   const currentBand = getDayBand(now.getHours(), bands);
   const sky = bandColors[currentBand];
@@ -73,12 +87,25 @@ export default function TodayScreen() {
                   {t(`bands.${band}`)}
                 </ThemedText>
                 {sectionItems.map((item) => (
-                  <HabitCheckRow key={item.key} item={item} onToggle={toggleItem} />
+                  <HabitCheckRow
+                    key={item.key}
+                    item={item}
+                    anchor={item.anchorHabitId ? habitsById.get(item.anchorHabitId) : undefined}
+                    onToggle={onToggle}
+                  />
                 ))}
               </View>
             );
           })}
         </ScrollView>
+
+        {chainNext && (
+          <ChainPrompt
+            item={chainNext}
+            onDone={() => onToggle(chainNext)}
+            onDismiss={() => setChainNextKey(null)}
+          />
+        )}
 
         <Pressable
           accessibilityRole="button"

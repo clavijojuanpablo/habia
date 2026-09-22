@@ -17,6 +17,11 @@ export type HabitInput = Pick<
   | 'two_minute_version'
   | 'implementation_intention'
   | 'reminder_minutes_before'
+  | 'cue_type'
+  | 'anchor_habit_id'
+  | 'context_label'
+  | 'identity_id'
+  | 'temptation_bundle'
 >;
 
 const habitsKey = ['habits'] as const;

@@ -9,6 +9,7 @@ import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { GardenScene } from '@/features/garden/components/garden-scene';
 import { HabitGrowthRow } from '@/features/garden/components/habit-growth-row';
 import { useGarden } from '@/features/garden/use-garden';
+import { identityEmoji, useIdentities } from '@/features/identities/api';
 import { isDone } from '@/features/schedule/build-schedule';
 import { useSchedule } from '@/features/schedule/use-schedule';
 import { useNow, useTodayRange } from '@/hooks/use-now';
@@ -26,6 +27,22 @@ export default function GardenScreen() {
   const { summary, isLoading, error } = useGarden(today, now);
   const { items, bands } = useSchedule(today, tomorrow);
   const [width, setWidth] = useState(0);
+  const { data: identities = [] } = useIdentities();
+  const branchIdentities = useMemo(() => identities.map((i) => ({ id: i.id, color: i.color })), [identities]);
+
+  // Cards grouped like the tree: one section per identity, then habits without one.
+  const sections = [
+    ...identities.map((identity) => ({
+      key: identity.id,
+      title: `${identityEmoji(identity)} ${identity.statement}`,
+      habits: summary.habits.filter((g) => g.habit.identity_id === identity.id),
+    })),
+    {
+      key: 'other',
+      title: identities.length > 0 ? t('garden.otherHabits') : null,
+      habits: summary.habits.filter((g) => !identities.some((i) => i.id === g.habit.identity_id)),
+    },
+  ].filter((section) => section.habits.length > 0);
 
   const pendingRatio = items.length === 0 ? 0 : items.filter((i) => !isDone(i)).length / items.length;
   const band = getDayBand(now.getHours(), bands);
@@ -41,6 +58,7 @@ export default function GardenScreen() {
             {width > 0 && (
               <GardenScene
                 summary={summary}
+                identities={branchIdentities}
                 band={band}
                 skyProgress={progress}
                 pendingRatio={pendingRatio}
@@ -65,8 +83,13 @@ export default function GardenScreen() {
             </ThemedText>
           )}
 
-          {summary.habits.map((growth) => (
-            <HabitGrowthRow key={growth.habit.id} growth={growth} />
+          {sections.map((section) => (
+            <View key={section.key} style={styles.section}>
+              {section.title && <ThemedText type="smallBold">{section.title}</ThemedText>}
+              {section.habits.map((growth) => (
+                <HabitGrowthRow key={growth.habit.id} growth={growth} />
+              ))}
+            </View>
           ))}
         </ScrollView>
       </SafeAreaView>
@@ -86,4 +109,5 @@ const styles = StyleSheet.create({
   },
   scene: { height: SCENE_HEIGHT, borderRadius: Spacing.four, overflow: 'hidden' },
   header: { gap: Spacing.one },
+  section: { gap: Spacing.two },
 });

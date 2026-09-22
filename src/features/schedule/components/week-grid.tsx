@@ -30,7 +30,7 @@ export function WeekGrid({ weekStart, items, bands, now, onToggle }: Props) {
   const todayIndex = daysBetween(weekStart, now);
 
   const byDay = days.map((_, i) => items.filter((item) => daysBetween(weekStart, item.at) === i));
-  const allDay = byDay.map((list) => list.filter((item) => !item.hasTime));
+  const allDay = byDay.map((list) => list.filter((item) => !item.displayHasTime));
   const hasAllDay = allDay.some((list) => list.length > 0);
   const bandStarts = new Set([bands.morningStartsAt, bands.afternoonStartsAt, bands.nightStartsAt]);
   const [gridWidth, setGridWidth] = useState(0);
@@ -100,7 +100,7 @@ export function WeekGrid({ weekStart, items, bands, now, onToggle }: Props) {
                 {byDay.map((list, i) => (
                   <View key={i} style={[styles.cell, i === todayIndex && styles.todayCell]}>
                     {list
-                      .filter((item) => item.hasTime && item.at.getHours() === hour)
+                      .filter((item) => item.displayHasTime && item.displayAt.getHours() === hour)
                       .map((item) => (
                         <HabitDot key={item.key} item={item} onPress={onToggle} />
                       ))}

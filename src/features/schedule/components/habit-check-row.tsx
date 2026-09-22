@@ -12,6 +12,8 @@ import { isDone, type ScheduledItem } from '../build-schedule';
 
 type Props = {
   item: ScheduledItem;
+  /** The habit this one is stacked after, when it applies today. */
+  anchor?: { icon: string; name: string };
   onToggle: (item: ScheduledItem, status?: 'done' | 'done_minimum') => void;
 };
 
@@ -19,7 +21,7 @@ export function formatTime(date: Date) {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-export function HabitCheckRow({ item, onToggle }: Props) {
+export function HabitCheckRow({ item, anchor, onToggle }: Props) {
   const { t } = useTranslation();
   const theme = useTheme();
   const scale = useSharedValue(1);
@@ -34,15 +36,24 @@ export function HabitCheckRow({ item, onToggle }: Props) {
     onToggle(item, status);
   };
 
+  const cue = anchor
+    ? t('today.afterHabit', { habit: `${anchor.icon} ${anchor.name}` })
+    : item.habit.cue_type === 'context' && item.habit.context_label
+      ? `📍 ${item.habit.context_label}`
+      : null;
   const subtitle = [
-    item.hasTime ? formatTime(item.at) : null,
+    cue ?? (item.hasTime ? formatTime(item.at) : null),
     minimum ? t('today.minimumDone') : item.habit.two_minute_version,
   ]
     .filter(Boolean)
     .join(' · ');
 
   return (
-    <View style={[styles.row, { backgroundColor: theme.background, opacity: done ? 0.75 : 1 }]}>
+    <View
+      style={[
+        styles.row,
+        { backgroundColor: theme.background, opacity: done ? 0.75 : 1, marginLeft: item.anchorHabitId ? Math.min(item.depth, 3) * Spacing.three : 0 },
+      ]}>
       <Pressable
         style={styles.body}
         onPress={() => router.push({ pathname: '/habit/[id]', params: { id: item.habit.id } })}

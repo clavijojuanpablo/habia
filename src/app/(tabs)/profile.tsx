@@ -7,6 +7,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useSession } from '@/features/auth/session-provider';
+import { IdentitiesSection } from '@/features/identities/components/identities-section';
 import { useProfile } from '@/features/profile/api';
 import { DayBandsEditor } from '@/features/profile/components/day-bands-editor';
 import { supabase } from '@/lib/supabase/client';
@@ -22,6 +23,8 @@ export default function ProfileScreen() {
         <ScrollView contentContainerStyle={styles.content}>
           <ThemedText type="subtitle">{profile?.display_name ?? t('profile.title')}</ThemedText>
           <ThemedText themeColor="textSecondary">{session?.user.email}</ThemedText>
+
+          <IdentitiesSection />
 
           {profile && <DayBandsEditor profile={profile} />}
 

@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
@@ -7,11 +8,13 @@ import { Stepper } from '@/components/stepper';
 import { TextField } from '@/components/text-field';
 import { ThemedText } from '@/components/themed-text';
 import { HabitColors, Spacing } from '@/constants/theme';
+import { identityEmoji, useIdentities } from '@/features/identities/api';
 import { REMINDERS_SUPPORTED } from '@/features/reminders/notifications';
 import { useTheme } from '@/hooks/use-theme';
 import { parseRRule, toRRule, WEEKDAYS, type Frequency, type Weekday } from '@/lib/recurrence';
 
-import type { Habit, HabitInput } from '../api';
+import { useHabits, type Habit, type HabitInput } from '../api';
+import { wouldCreateCycle } from '../stacking';
 
 const EMOJIS = [
   '💧', '📚', '🧘', '🏃', '💪', '🥗', '😴', '🦷', '🧴', '☕', '✍️', '🎸',
@@ -23,6 +26,8 @@ type FrequencyKind = Frequency['kind'];
 const FREQUENCY_KINDS: FrequencyKind[] = ['daily', 'interval_days', 'weekdays', 'interval_hours'];
 /** Minutes before the occurrence; null = no reminder. */
 const REMINDER_OPTIONS: (number | null)[] = [null, 0, 5, 15, 30];
+type CueType = Habit['cue_type'];
+const CUE_TYPES: CueType[] = ['time', 'after_habit', 'context'];
 const TIME_PATTERN = /^([01]?\d|2[0-3]):[0-5]\d$/;
 
 type Props = {
@@ -59,9 +64,21 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
   const [twoMinute, setTwoMinute] = useState(habit?.two_minute_version ?? '');
   const [intention, setIntention] = useState(habit?.implementation_intention ?? '');
   const [reminder, setReminder] = useState<number | null>(habit ? habit.reminder_minutes_before : 0);
+  const [cueType, setCueType] = useState<CueType>(habit?.cue_type ?? 'time');
+  const [anchorId, setAnchorId] = useState<string | null>(habit?.anchor_habit_id ?? null);
+  const [contextLabel, setContextLabel] = useState(habit?.context_label ?? '');
+  const [identityId, setIdentityId] = useState<string | null>(habit?.identity_id ?? null);
+  const [temptation, setTemptation] = useState(habit?.temptation_bundle ?? '');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const { data: allHabits = [] } = useHabits();
+  const { data: identities = [] } = useIdentities();
+  // Possible anchors: any other active habit that would not close a loop.
+  const anchorOptions = allHabits.filter((h) => h.id !== habit?.id && !wouldCreateCycle(allHabits, habit?.id, h.id));
+
+  const stacked = cueType === 'after_habit';
   const hourly = kind === 'interval_hours';
+  const hasTime = !stacked && (!!time || hourly);
 
   const submit = () => {
     const next: Record<string, string> = {};
@@ -69,6 +86,8 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
     if (kind === 'weekdays' && days.length === 0) next.days = t('habit.daysRequired');
     if (time && !TIME_PATTERN.test(time)) next.time = t('habit.invalidTime');
     if (hourly && windowEnd && !TIME_PATTERN.test(windowEnd)) next.windowEnd = t('habit.invalidTime');
+    if (stacked && !anchorId) next.anchor = t('habit.anchorRequired');
+    if (cueType === 'context' && !contextLabel.trim()) next.context = t('habit.contextRequired');
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 
@@ -86,12 +105,18 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
       icon,
       color,
       rrule: toRRule(frequency),
-      window_start: toDbTime(time),
-      window_end: hourly ? toDbTime(windowEnd) : null,
+      // A stacked habit has no clock time of its own: it happens right after its anchor.
+      window_start: stacked ? null : toDbTime(time),
+      window_end: hourly && !stacked ? toDbTime(windowEnd) : null,
       two_minute_version: twoMinute.trim() || null,
       implementation_intention: intention.trim() || null,
       // Reminders only apply to timed occurrences.
-      reminder_minutes_before: time || hourly ? reminder : null,
+      reminder_minutes_before: hasTime ? reminder : null,
+      cue_type: cueType,
+      anchor_habit_id: stacked ? anchorId : null,
+      context_label: cueType === 'context' ? contextLabel.trim() : null,
+      identity_id: identityId,
+      temptation_bundle: temptation.trim() || null,
     });
   };
 
@@ -139,7 +164,7 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
 
       <Section title={t('habit.frequency')}>
         <View style={styles.wrap}>
-          {FREQUENCY_KINDS.map((k) => (
+          {FREQUENCY_KINDS.filter((k) => !(stacked && k === 'interval_hours')).map((k) => (
             <Chip key={k} label={t(`habit.freq.${k}`)} selected={kind === k} color={color} onPress={() => setKind(k)} />
           ))}
         </View>
@@ -185,39 +210,122 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
         )}
       </Section>
 
-      <View style={styles.row}>
-        <View style={styles.flex}>
-          <TextField
-            label={hourly ? t('habit.windowStart') : t('habit.time')}
-            placeholder="07:30"
-            value={time}
-            onChangeText={setTime}
-            error={errors.time}
-            keyboardType="numbers-and-punctuation"
-            maxLength={5}
+      {/* Identity: which part of "who you want to be" this habit votes for */}
+      <Section title={`${t('habit.identity')} (${t('common.optional')})`}>
+        <View style={styles.wrap}>
+          <Chip
+            label={t('habit.identityNone')}
+            selected={identityId === null}
+            color={color}
+            onPress={() => setIdentityId(null)}
           />
+          {identities.map((identity) => (
+            <Chip
+              key={identity.id}
+              label={`${identityEmoji(identity)} ${identity.statement}`}
+              selected={identityId === identity.id}
+              color={color}
+              onPress={() => setIdentityId(identity.id)}
+            />
+          ))}
+          <Chip label={`+ ${t('identity.new')}`} selected={false} color={color} onPress={() => router.push('/identity/new')} />
         </View>
-        {hourly && (
+      </Section>
+
+      {/* Cue: the first law, "make it obvious" */}
+      <Section title={t('habit.cue')}>
+        <View style={styles.wrap}>
+          {CUE_TYPES.map((c) => (
+            <Chip
+              key={c}
+              label={t(`habit.cueType.${c}`)}
+              selected={cueType === c}
+              color={color}
+              onPress={() => {
+                setCueType(c);
+                // An hourly habit cannot also be "right after" another habit.
+                if (c === 'after_habit' && kind === 'interval_hours') setKind('daily');
+              }}
+            />
+          ))}
+        </View>
+
+        {stacked && (
+          <>
+            <ThemedText type="small" themeColor="textSecondary">
+              {t('habit.anchorHint')}
+            </ThemedText>
+            {anchorOptions.length === 0 ? (
+              <ThemedText type="small" themeColor="textSecondary">
+                {t('habit.noAnchors')}
+              </ThemedText>
+            ) : (
+              <View style={styles.wrap}>
+                {anchorOptions.map((h) => (
+                  <Chip
+                    key={h.id}
+                    label={`${h.icon} ${h.name}`}
+                    selected={anchorId === h.id}
+                    color={color}
+                    onPress={() => setAnchorId(h.id)}
+                  />
+                ))}
+              </View>
+            )}
+            {errors.anchor && (
+              <ThemedText type="small" style={{ color: theme.danger }}>
+                {errors.anchor}
+              </ThemedText>
+            )}
+          </>
+        )}
+
+        {cueType === 'context' && (
+          <TextField
+            placeholder={t('habit.contextPlaceholder')}
+            hint={t('habit.contextHint')}
+            value={contextLabel}
+            onChangeText={setContextLabel}
+            error={errors.context}
+          />
+        )}
+      </Section>
+
+      {!stacked && (
+        <View style={styles.row}>
           <View style={styles.flex}>
             <TextField
-              label={t('habit.windowEnd')}
-              placeholder="21:00"
-              value={windowEnd}
-              onChangeText={setWindowEnd}
-              error={errors.windowEnd}
+              label={hourly ? t('habit.windowStart') : t('habit.time')}
+              placeholder="07:30"
+              value={time}
+              onChangeText={setTime}
+              error={errors.time}
               keyboardType="numbers-and-punctuation"
               maxLength={5}
             />
           </View>
-        )}
-      </View>
-      {!hourly && (
+          {hourly && (
+            <View style={styles.flex}>
+              <TextField
+                label={t('habit.windowEnd')}
+                placeholder="21:00"
+                value={windowEnd}
+                onChangeText={setWindowEnd}
+                error={errors.windowEnd}
+                keyboardType="numbers-and-punctuation"
+                maxLength={5}
+              />
+            </View>
+          )}
+        </View>
+      )}
+      {!hourly && !stacked && (
         <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
           {t('habit.timeHint')}
         </ThemedText>
       )}
 
-      {(time || hourly) && (
+      {hasTime && (
         <Section title={t('habit.reminder')}>
           <View style={styles.wrap}>
             {REMINDER_OPTIONS.map((option) => (
@@ -259,6 +367,14 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
         value={intention}
         onChangeText={setIntention}
         multiline
+      />
+
+      <TextField
+        label={`${t('habit.temptation')} (${t('common.optional')})`}
+        hint={t('habit.temptationHint')}
+        placeholder={t('habit.temptationPlaceholder')}
+        value={temptation}
+        onChangeText={setTemptation}
       />
 
       <Button label={t('common.save')} onPress={submit} loading={submitting} />

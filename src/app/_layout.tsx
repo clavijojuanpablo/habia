@@ -48,6 +48,14 @@ function RootNavigator() {
           name="habit/[id]"
           options={{ presentation: 'modal', headerShown: true, title: t('habit.edit') }}
         />
+        <Stack.Screen
+          name="identity/new"
+          options={{ presentation: 'modal', headerShown: true, title: t('identity.new') }}
+        />
+        <Stack.Screen
+          name="identity/[id]"
+          options={{ presentation: 'modal', headerShown: true, title: t('identity.edit') }}
+        />
       </Stack.Protected>
       <Stack.Protected guard={!session}>
         <Stack.Screen name="sign-in" />

@@ -23,10 +23,12 @@ import {
 import type { DayBand } from '@/lib/time/day-bands';
 
 import type { GardenSummary } from '../compute-garden';
-import { buildTree, seededRandom, type Point } from '../tree-geometry';
+import { buildTree, seededRandom, type BranchIdentity, type Point } from '../tree-geometry';
 
 export type GardenCanvasProps = {
   summary: GardenSummary;
+  /** Identities become branches; habits without identity get their own branch. */
+  identities: BranchIdentity[];
   band: DayBand;
   /** 0–1 position of the sun (day) or moon (night) across the sky. */
   skyProgress: number;
@@ -55,8 +57,16 @@ function quadPath(start: Point, control: Point, end: Point) {
   return path;
 }
 
-export default function GardenCanvas({ summary, band, skyProgress, pendingRatio, width, height }: GardenCanvasProps) {
-  const tree = useMemo(() => buildTree(summary, width, height), [summary, width, height]);
+export default function GardenCanvas({
+  summary,
+  identities,
+  band,
+  skyProgress,
+  pendingRatio,
+  width,
+  height,
+}: GardenCanvasProps) {
+  const tree = useMemo(() => buildTree(summary, width, height, identities), [summary, width, height, identities]);
   const isNight = band === 'night';
 
   // --- Animation values (run on the UI thread via Reanimated) ---
@@ -90,6 +100,7 @@ export default function GardenCanvas({ summary, band, skyProgress, pendingRatio,
     () => ({
       trunk: tree.trunk ? quadPath(tree.trunk.start, tree.trunk.control, tree.trunk.end) : null,
       branches: tree.branches.map((b) => quadPath(b.start, b.control, b.end)),
+      roots: tree.roots.map((r) => quadPath(r.start, r.control, r.end)),
       ground: (() => {
         const p = Skia.Path.Make();
         p.moveTo(0, tree.ground.y + 6);
@@ -163,6 +174,20 @@ export default function GardenCanvas({ summary, band, skyProgress, pendingRatio,
         <LinearGradient start={vec(0, tree.ground.y - 20)} end={vec(0, height)} colors={GROUND[band]} />
       </Path>
 
+      {/* Roots: one per habit stack, growing underground */}
+      {tree.roots.map((root, i) => (
+        <Path
+          key={root.key}
+          path={paths.roots[i]}
+          style="stroke"
+          strokeWidth={2.5}
+          strokeCap="round"
+          color={root.color}
+          opacity={0.6}
+          end={branchEnd}
+        />
+      ))}
+
       {/* Tree, swaying gently around the base of the trunk */}
       <Group transform={swayTransform} origin={vec(tree.ground.x, tree.ground.y)}>
         {!tree.trunk && (
@@ -201,7 +226,7 @@ export default function GardenCanvas({ summary, band, skyProgress, pendingRatio,
         )}
 
         {tree.branches.map((branch, i) => (
-          <Group key={branch.habitId}>
+          <Group key={branch.key}>
             <Path
               path={paths.branches[i]}
               style="stroke"
@@ -220,8 +245,8 @@ export default function GardenCanvas({ summary, band, skyProgress, pendingRatio,
                     y={-leaf.size / 2.4}
                     width={leaf.size * 1.8}
                     height={leaf.size / 1.2}
-                    color={branch.color}
-                    opacity={branch.wilted ? 0.45 : 0.95}
+                    color={leaf.color}
+                    opacity={leaf.wilted ? 0.45 : 0.95}
                   />
                 </Group>
               ))}
@@ -231,12 +256,12 @@ export default function GardenCanvas({ summary, band, skyProgress, pendingRatio,
                   <Circle cx={f.x} cy={f.y} r={2} color="#FFE08A" />
                 </Group>
               ))}
-              {branch.fruit && (
-                <Group>
-                  <Circle cx={branch.fruit.x} cy={branch.fruit.y} r={8} color={branch.color} />
-                  <Circle cx={branch.fruit.x - 2.5} cy={branch.fruit.y - 2.5} r={2.5} color="rgba(255,255,255,0.7)" />
+              {branch.fruits.map((fruit, k) => (
+                <Group key={`fruit${k}`}>
+                  <Circle cx={fruit.x} cy={fruit.y} r={8} color={fruit.color} />
+                  <Circle cx={fruit.x - 2.5} cy={fruit.y - 2.5} r={2.5} color="rgba(255,255,255,0.7)" />
                 </Group>
-              )}
+              ))}
             </Group>
           </Group>
         ))}
