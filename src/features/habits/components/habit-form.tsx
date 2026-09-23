@@ -6,12 +6,14 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Button } from '@/components/button';
 import { Stepper } from '@/components/stepper';
 import { TextField } from '@/components/text-field';
+import { TimePicker } from '@/components/time-picker';
 import { ThemedText } from '@/components/themed-text';
 import { HabitColors, MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
 import { identityEmoji, useIdentities } from '@/features/identities/api';
 import { REMINDERS_SUPPORTED } from '@/features/reminders/notifications';
 import { useTheme } from '@/hooks/use-theme';
 import { parseRRule, toRRule, WEEKDAYS, type Frequency, type Weekday } from '@/lib/recurrence';
+import { formatTimeLabel } from '@/lib/time/format';
 
 import { useHabits, type Habit, type HabitInput } from '../api';
 import { wouldCreateCycle } from '../stacking';
@@ -28,7 +30,6 @@ const FREQUENCY_KINDS: FrequencyKind[] = ['daily', 'interval_days', 'weekdays', 
 const REMINDER_OPTIONS: (number | null)[] = [null, 0, 5, 15, 30];
 type CueType = Habit['cue_type'];
 const CUE_TYPES: CueType[] = ['time', 'after_habit', 'context'];
-const TIME_PATTERN = /^([01]?\d|2[0-3]):[0-5]\d$/;
 
 type Props = {
   habit?: Habit;
@@ -48,7 +49,7 @@ function toDbTime(value: string) {
 }
 
 export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const theme = useTheme();
   const initial = habit ? parseRRule(habit.rrule) : ({ kind: 'daily' } as Frequency);
 
@@ -87,8 +88,6 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
     const next: Record<string, string> = {};
     if (!name.trim()) next.name = t('habit.nameRequired');
     if (kind === 'weekdays' && days.length === 0) next.days = t('habit.daysRequired');
-    if (time && !TIME_PATTERN.test(time)) next.time = t('habit.invalidTime');
-    if (hourly && windowEnd && !TIME_PATTERN.test(windowEnd)) next.windowEnd = t('habit.invalidTime');
     if (stacked && !anchorId) next.anchor = t('habit.anchorRequired');
     if (cueType === 'context' && !contextLabel.trim()) next.context = t('habit.contextRequired');
     setErrors(next);
@@ -127,7 +126,9 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
     ? t('habit.cueType.after_habit')
     : cueType === 'context' && contextLabel
       ? `📍 ${contextLabel}`
-      : time || t('bands.anytime');
+      : time
+        ? formatTimeLabel(time, i18n.language)
+        : t('bands.anytime');
 
   return (
     <View style={styles.flex}>
@@ -308,27 +309,11 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
         <Section title={hourly ? t('habit.window') : t('habit.time')}>
         <View style={styles.row}>
           <View style={styles.flex}>
-            <TextField
-              label={hourly ? t('habit.windowStart') : undefined}
-              placeholder="07:30"
-              value={time}
-              onChangeText={setTime}
-              error={errors.time}
-              keyboardType="numbers-and-punctuation"
-              maxLength={5}
-            />
+            <TimePicker label={hourly ? t('habit.windowStart') : undefined} value={time} onChange={setTime} />
           </View>
           {hourly && (
             <View style={styles.flex}>
-              <TextField
-                label={t('habit.windowEnd')}
-                placeholder="21:00"
-                value={windowEnd}
-                onChangeText={setWindowEnd}
-                error={errors.windowEnd}
-                keyboardType="numbers-and-punctuation"
-                maxLength={5}
-              />
+              <TimePicker label={t('habit.windowEnd')} value={windowEnd} onChange={setWindowEnd} clearable={false} />
             </View>
           )}
         </View>

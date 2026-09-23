@@ -92,7 +92,7 @@
     "everyNDays": "Cada {{count}} días",
     "everyNHours": "Cada {{count}} horas",
     "time": "Hora",
-    "timeHint": "HH:MM. Déjalo vacío para hacerlo en cualquier momento del día.",
+    "timeHint": "Tócalo para elegir la hora, o déjalo en «en cualquier momento».",
     "windowStart": "Desde",
     "windowEnd": "Hasta",
     "twoMinute": "Versión de 2 minutos",
@@ -407,5 +407,15 @@
     "body_other": "Cumpliste tus {{count}} hábitos de hoy. Así se construye.",
     "votes_one": "+{{count}} voto por quien quieres ser",
     "votes_other": "+{{count}} votos por quien quieres ser"
+  },
+  "time": {
+    "anyTime": "En cualquier momento",
+    "hour": "Hora",
+    "minutes": "Minutos"
+  },
+  "language": {
+    "title": "Idioma",
+    "es": "Español",
+    "en": "Inglés"
   }
 }

@@ -1,4 +1,5 @@
-import { createContext, use, type PropsWithChildren } from 'react';
+import { createContext, use, useEffect, type PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useProfile, useUpdateProfile } from '@/features/profile/api';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -27,6 +28,13 @@ export function AppearanceProvider({ children }: PropsWithChildren) {
   const { data: profile } = useProfile();
   const update = useUpdateProfile();
   const systemScheme = useColorScheme();
+  const { i18n } = useTranslation();
+
+  // Saving the locale on the profile is not enough: i18next has to switch too.
+  const locale = profile?.locale;
+  useEffect(() => {
+    if (locale && i18n.language !== locale) i18n.changeLanguage(locale);
+  }, [locale, i18n]);
 
   const preference = (profile?.theme_preference as ThemePreference | undefined) ?? 'light';
   const mode: ColorMode = preference === 'system' ? (systemScheme === 'dark' ? 'dark' : 'light') : preference;

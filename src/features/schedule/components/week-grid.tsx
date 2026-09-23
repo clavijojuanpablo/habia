@@ -4,7 +4,9 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { BandEmoji, FontFamily, Spacing, type BandKey } from '@/constants/theme';
 import { useBandColors, useTheme } from '@/hooks/use-theme';
+import { Brote } from '@/features/mascot/brote';
 import { addDays, daysBetween, WEEKDAYS } from '@/lib/recurrence';
+import { formatHour, formatHourRange } from '@/lib/time/format';
 import { visibleHourSegments, type DayBandConfig } from '@/lib/time/day-bands';
 
 import { isDone, type ScheduledItem } from '../build-schedule';
@@ -12,7 +14,7 @@ import { isDone, type ScheduledItem } from '../build-schedule';
 const ROW_MIN_HEIGHT = 46;
 /** Hours without habits collapse: order and band matter more than an exact time scale. */
 const EMPTY_ROW_HEIGHT = 24;
-const GUTTER = 36;
+const GUTTER = 46;
 
 type Props = {
   weekStart: Date;
@@ -22,10 +24,8 @@ type Props = {
   onToggle: (item: ScheduledItem) => void;
 };
 
-const hh = (hour: number) => String(hour % 24).padStart(2, '0');
-
 export function WeekGrid({ weekStart, items, bands, now, onToggle }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const days = WEEKDAYS.map((_, i) => addDays(weekStart, i));
   const todayIndex = daysBetween(weekStart, now);
 
@@ -58,11 +58,11 @@ export function WeekGrid({ weekStart, items, bands, now, onToggle }: Props) {
             key={`${segment.band}-${segment.hours[0]}`}
             band={segment.band}
             title={t(`bands.${segment.band}`)}
-            range={t('week.range', { from: hh(segment.hours[0]), to: hh(segment.hours[segment.hours.length - 1] + 1) })}>
+            range={formatHourRange(segment.hours[0], segment.hours[segment.hours.length - 1] + 1, i18n.language)}>
             {segment.hours.map((hour, index) => (
               <HourRow
                 key={hour}
-                label={hh(hour)}
+                label={formatHour(hour, i18n.language)}
                 cells={cellsFor(hour)}
                 todayIndex={todayIndex}
                 separator={index > 0}
@@ -90,7 +90,9 @@ function DayHeader({
   const theme = useTheme();
   return (
     <View style={styles.header}>
-      <View style={{ width: GUTTER }} />
+      <View style={[styles.mascotCorner, { width: GUTTER }]}>
+        <Brote mood="happy" size={34} animated={false} />
+      </View>
       {days.map((day, i) => {
         const isToday = i === todayIndex;
         const future = i > todayIndex;
@@ -258,6 +260,7 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', paddingHorizontal: Spacing.two, paddingBottom: Spacing.two, gap: 2 },
   dayPill: { flex: 1, alignItems: 'center', paddingVertical: Spacing.one, borderRadius: 12, gap: 1 },
   dayLetter: { fontSize: 11, lineHeight: 14 },
+  mascotCorner: { alignItems: 'center', justifyContent: 'flex-end' },
   future: { opacity: 0.5 },
   dayTrack: { height: 3, borderRadius: 2, alignSelf: 'stretch', marginHorizontal: 6, marginTop: 2, overflow: 'hidden' },
   dayFill: { height: '100%', borderRadius: 2 },

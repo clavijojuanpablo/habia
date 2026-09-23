@@ -5,6 +5,8 @@ import { ThemedText } from '@/components/themed-text';
 import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
+import { useProfile, useUpdateProfile } from '@/features/profile/api';
+
 import { useAppearance, type ThemePreference } from '../appearance-provider';
 
 const OPTIONS: { value: ThemePreference; emoji: string }[] = [
@@ -56,3 +58,41 @@ const styles = StyleSheet.create({
   },
   emoji: { fontSize: 22, lineHeight: 28 },
 });
+
+const LANGUAGES = [
+  { value: 'es', emoji: '🇪🇸' },
+  { value: 'en', emoji: '🇬🇧' },
+] as const;
+
+/** Language lives on the profile, so it follows the user across devices. */
+export function LanguagePicker() {
+  const { t, i18n } = useTranslation();
+  const theme = useTheme();
+  const { data: profile } = useProfile();
+  const update = useUpdateProfile();
+  const current = profile?.locale ?? i18n.language.split('-')[0];
+
+  return (
+    <View style={styles.container}>
+      <ThemedText type="heading">{t('language.title')}</ThemedText>
+      <View style={[styles.segmented, { backgroundColor: theme.backgroundSelected }]}>
+        {LANGUAGES.map((option) => {
+          const selected = current === option.value;
+          return (
+            <Pressable
+              key={option.value}
+              onPress={() => update.mutate({ locale: option.value })}
+              accessibilityRole="radio"
+              accessibilityState={{ selected }}
+              style={[styles.option, selected && { backgroundColor: theme.backgroundElement }]}>
+              <ThemedText style={styles.emoji}>{option.emoji}</ThemedText>
+              <ThemedText type="smallBold" style={{ color: selected ? theme.text : theme.textSecondary }}>
+                {t(`language.${option.value}`)}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
+  );
+}

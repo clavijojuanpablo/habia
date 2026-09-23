@@ -50,6 +50,11 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - ✅ Redesigned habit form (live preview, sections as cards, collapsed extras, sticky save), sign-in, Garden (stage progress + Brote) and Progress (colorful stat tiles)
 - 🚧 Brand assets: ✅ name **habia**, ✅ app icon / Android adaptive + monochrome / splash (light + dark) / favicon, all generated from the Brote SVG with `npm run icons` · ⏳ privacy policy + terms
 
+## UX polish ✅
+- ✅ Time picker (tap, never type) with locale-aware 12h/24h labels
+- ✅ Week grid hours formatted per locale; Brote peeking from the header corner
+- ✅ Language picker in Profile (`profiles.locale`, applied live via i18next)
+
 ## Block 2: Beta testers ⏳
 - EAS project + development build, TestFlight + Play Internal Testing
 - Sentry + PostHog (north star, D1/D7/D30 retention)

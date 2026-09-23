@@ -6,7 +6,7 @@ import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { FontFamily, MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
-import { AppearancePicker } from '@/features/appearance/components/appearance-picker';
+import { AppearancePicker, LanguagePicker } from '@/features/appearance/components/appearance-picker';
 import { DangerZone } from '@/features/auth/components/danger-zone';
 import { useSession } from '@/features/auth/session-provider';
 import { IdentitiesSection } from '@/features/identities/components/identities-section';
@@ -42,6 +42,9 @@ export default function ProfileScreen() {
 
           <Card>
             <AppearancePicker />
+          </Card>
+          <Card>
+            <LanguagePicker />
           </Card>
           <Card>
             <IdentitiesSection />

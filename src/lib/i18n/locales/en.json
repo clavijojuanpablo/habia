@@ -92,7 +92,7 @@
     "everyNDays": "Every {{count}} days",
     "everyNHours": "Every {{count}} hours",
     "time": "Time",
-    "timeHint": "HH:MM. Leave empty to do it any time of the day.",
+    "timeHint": "Tap to choose a time, or leave it as \"any time\".",
     "windowStart": "From",
     "windowEnd": "Until",
     "twoMinute": "2-minute version",
@@ -407,5 +407,15 @@
     "body_other": "You did all {{count}} habits for today. This is how it is built.",
     "votes_one": "+{{count}} vote for who you want to be",
     "votes_other": "+{{count}} votes for who you want to be"
+  },
+  "time": {
+    "anyTime": "Any time",
+    "hour": "Hour",
+    "minutes": "Minutes"
+  },
+  "language": {
+    "title": "Language",
+    "es": "Spanish",
+    "en": "English"
   }
 }
