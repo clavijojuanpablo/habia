@@ -12,6 +12,9 @@ Warm, encouraging, never guilt-tripping. Short sentences. Talks about identity (
 ## Mascot
 **Brote** 🌱 - a sprout character drawn as SVG (`src/features/mascot/brote.tsx`), 4 moods: happy, cheer, celebrate, sleepy. Voices the onboarding, the empty state and (next) celebrations. Main marketing asset.
 
+## App images
+All generated from one SVG source with `npm run icons` (`scripts/generate-icons.mjs`): cream Brote on a green gradient for the app icon and favicon, transparent foreground + white silhouette for Android adaptive/monochrome icons, and a green Brote on cream (dark: plum) for the splash. Re-run after changing brand colors.
+
 ## Visual direction (implemented)
 - **Mood:** friendly, playful and motivating (references: Duolingo's navigation and streaks, pastel education/health apps).
 - **Light mode by default:** warm cream canvas (#FFF8F1) with white rounded cards and soft shadows. Dark mode: deep plum-gray (#16141D) with lifted cards.
