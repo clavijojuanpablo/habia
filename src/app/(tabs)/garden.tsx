@@ -5,10 +5,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
+import { MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
 import { GardenScene } from '@/features/garden/components/garden-scene';
 import { HabitGrowthRow } from '@/features/garden/components/habit-growth-row';
 import { useGarden } from '@/features/garden/use-garden';
+import { Brote } from '@/features/mascot/brote';
 import { identityEmoji, useIdentities } from '@/features/identities/api';
 import { isDone } from '@/features/schedule/build-schedule';
 import { useSchedule } from '@/features/schedule/use-schedule';
@@ -45,6 +46,15 @@ export default function GardenScreen() {
     },
   ].filter((section) => section.habits.length > 0);
 
+  // Votes needed for each stage (mirrors stageFor in compute-garden).
+  const STAGE_VOTES = [0, 5, 25, 75, 200] as const;
+  const nextStage =
+    summary.stage < 4 ? { stage: summary.stage + 1, votes: STAGE_VOTES[summary.stage + 1] } : null;
+  const previousVotes = STAGE_VOTES[summary.stage];
+  const stageProgress = nextStage
+    ? Math.min(1, (summary.votes - previousVotes) / (nextStage.votes - previousVotes))
+    : 1;
+
   const pendingRatio = items.length === 0 ? 0 : items.filter((i) => !isDone(i)).length / items.length;
   const band = getDayBand(now.getHours(), bands);
   const progress = useMemo(() => skyProgress(now, bands), [now, bands]);
@@ -70,9 +80,34 @@ export default function GardenScreen() {
             )}
           </View>
 
-          <View style={styles.header}>
-            <ThemedText type="subtitle">{t(`garden.stage.${summary.stage}`)}</ThemedText>
-            <ThemedText themeColor="textSecondary">{t('garden.votes', { count: summary.votes })}</ThemedText>
+          {/* Stage + progress toward the next one, with Brote reacting to the tree's health */}
+          <View style={[styles.header, { backgroundColor: theme.backgroundElement }]}>
+            <View style={styles.headerRow}>
+              <View style={styles.flex}>
+                <ThemedText type="subtitle">{t(`garden.stage.${summary.stage}`)}</ThemedText>
+                <ThemedText type="small" themeColor="textSecondary">
+                  {t('garden.votes', { count: summary.votes })}
+                </ThemedText>
+              </View>
+              <Brote mood={summary.health < 100 ? 'happy' : 'cheer'} size={72} />
+            </View>
+
+            {nextStage && (
+              <>
+                <View style={[styles.track, { backgroundColor: theme.backgroundSelected }]}>
+                  <View
+                    style={[styles.fill, { width: `${stageProgress * 100}%`, backgroundColor: theme.primary }]}
+                  />
+                </View>
+                <ThemedText type="caption" themeColor="textSecondary">
+                  {t('garden.toNextStage', {
+                    count: nextStage.votes - summary.votes,
+                    stage: t(`garden.stageShort.${nextStage.stage}`),
+                  })}
+                </ThemedText>
+              </>
+            )}
+
             <ThemedText type="small" themeColor="textSecondary">
               {t(summary.health < 100 ? 'garden.healthLow' : 'garden.healthGood')}
             </ThemedText>
@@ -87,7 +122,7 @@ export default function GardenScreen() {
 
           {sections.map((section) => (
             <View key={section.key} style={styles.section}>
-              {section.title && <ThemedText type="smallBold">{section.title}</ThemedText>}
+              {section.title && <ThemedText type="heading">{section.title}</ThemedText>}
               {section.habits.map((growth) => (
                 <HabitGrowthRow key={growth.habit.id} growth={growth} />
               ))}
@@ -110,6 +145,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   scene: { height: SCENE_HEIGHT, borderRadius: Radius.xl, overflow: 'hidden' },
-  header: { gap: Spacing.one },
+  header: { gap: Spacing.two, padding: Spacing.three, borderRadius: Radius.lg, boxShadow: Shadow.card },
+  headerRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
+  track: { height: 10, borderRadius: 5, overflow: 'hidden' },
+  fill: { height: '100%', borderRadius: 5 },
   section: { gap: Spacing.two },
 });

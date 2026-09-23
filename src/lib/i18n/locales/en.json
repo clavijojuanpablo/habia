@@ -125,7 +125,11 @@
     "contextRequired": "Describe the moment",
     "temptation": "Temptation bundle",
     "temptationHint": "Pair it with something you enjoy: you only get one while doing the other.",
-    "temptationPlaceholder": "I only listen to my podcast while walking"
+    "temptationPlaceholder": "I only listen to my podcast while walking",
+    "namePreview": "Your new habit",
+    "moreOptions": "✨ More options",
+    "extrasTitle": "To make it easier",
+    "window": "Time window"
   },
   "weekdays": {
     "MO": "M",
@@ -174,7 +178,9 @@
       "2": "Sapling",
       "3": "Tree",
       "4": "Fruits"
-    }
+    },
+    "toNextStage_one": "{{count}} vote away from becoming a {{stage}}",
+    "toNextStage_other": "{{count}} votes away from becoming a {{stage}}"
   },
   "progress": {
     "title": "Your progress",

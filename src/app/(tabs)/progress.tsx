@@ -46,14 +46,26 @@ export default function ProgressScreen() {
           )}
 
           <View style={styles.tiles}>
-            <StatTile label={t('progress.today')} value={`${stats.today.done}/${stats.today.due}`} />
-            <StatTile label={t('progress.thisWeek')} value={percent(stats.thisWeek.ratio)} />
+            <StatTile
+              label={t('progress.today')}
+              value={`${stats.today.done}/${stats.today.due}`}
+              emoji="☀️"
+              tint="streakSoft"
+            />
+            <StatTile
+              label={t('progress.thisWeek')}
+              value={percent(stats.thisWeek.ratio)}
+              emoji="📅"
+              tint="lavenderSoft"
+            />
             <StatTile
               label={t('progress.bestStreak')}
               value={String(bestStreak.streak)}
+              emoji="🔥"
+              tint="streakSoft"
               caption={bestStreak.habit ? `${bestStreak.habit.icon} ${bestStreak.habit.name}` : undefined}
             />
-            <StatTile label={t('progress.votes')} value={String(summary.votes)} />
+            <StatTile label={t('progress.votes')} value={String(summary.votes)} emoji="🌱" tint="primarySoft" />
           </View>
 
           <MonthHeatmap days={stats.days} today={today} />

@@ -125,7 +125,11 @@
     "contextRequired": "Describe el momento",
     "temptation": "Tentación asociada",
     "temptationHint": "Júntalo con algo que disfrutes: solo lo harás mientras lo haces.",
-    "temptationPlaceholder": "Solo escucho mi podcast mientras camino"
+    "temptationPlaceholder": "Solo escucho mi podcast mientras camino",
+    "namePreview": "Tu nuevo hábito",
+    "moreOptions": "✨ Más opciones",
+    "extrasTitle": "Para que se te haga más fácil",
+    "window": "Ventana horaria"
   },
   "weekdays": {
     "MO": "L",
@@ -174,7 +178,9 @@
       "2": "Arbolito",
       "3": "Árbol",
       "4": "Frutos"
-    }
+    },
+    "toNextStage_one": "A {{count}} voto de convertirse en {{stage}}",
+    "toNextStage_other": "A {{count}} votos de convertirse en {{stage}}"
   },
   "progress": {
     "title": "Tu progreso",

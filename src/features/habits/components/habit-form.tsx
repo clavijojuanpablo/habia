@@ -7,7 +7,7 @@ import { Button } from '@/components/button';
 import { Stepper } from '@/components/stepper';
 import { TextField } from '@/components/text-field';
 import { ThemedText } from '@/components/themed-text';
-import { HabitColors, Spacing } from '@/constants/theme';
+import { HabitColors, MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
 import { identityEmoji, useIdentities } from '@/features/identities/api';
 import { REMINDERS_SUPPORTED } from '@/features/reminders/notifications';
 import { useTheme } from '@/hooks/use-theme';
@@ -69,6 +69,9 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
   const [contextLabel, setContextLabel] = useState(habit?.context_label ?? '');
   const [identityId, setIdentityId] = useState<string | null>(habit?.identity_id ?? null);
   const [temptation, setTemptation] = useState(habit?.temptation_bundle ?? '');
+  const [showExtras, setShowExtras] = useState(
+    !!habit?.two_minute_version || !!habit?.implementation_intention || !!habit?.temptation_bundle,
+  );
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const { data: allHabits = [] } = useHabits();
@@ -120,17 +123,27 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
     });
   };
 
+  const previewSubtitle = stacked
+    ? t('habit.cueType.after_habit')
+    : cueType === 'context' && contextLabel
+      ? `📍 ${contextLabel}`
+      : time || t('bands.anytime');
+
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-      <TextField
-        label={t('habit.name')}
-        placeholder={t('habit.namePlaceholder')}
-        value={name}
-        onChangeText={setName}
-        error={errors.name}
-        autoFocus={!habit}
-        maxLength={80}
-      />
+    <View style={styles.flex}>
+      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <Preview icon={icon} color={color} name={name.trim() || t('habit.namePreview')} subtitle={previewSubtitle} />
+
+      <Section title={t('habit.name')}>
+        <TextField
+          placeholder={t('habit.namePlaceholder')}
+          value={name}
+          onChangeText={setName}
+          error={errors.name}
+          autoFocus={!habit}
+          maxLength={80}
+        />
+      </Section>
 
       <Section title={t('habit.icon')}>
         <View style={styles.wrap}>
@@ -292,10 +305,11 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
       </Section>
 
       {!stacked && (
+        <Section title={hourly ? t('habit.window') : t('habit.time')}>
         <View style={styles.row}>
           <View style={styles.flex}>
             <TextField
-              label={hourly ? t('habit.windowStart') : t('habit.time')}
+              label={hourly ? t('habit.windowStart') : undefined}
               placeholder="07:30"
               value={time}
               onChangeText={setTime}
@@ -318,11 +332,12 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
             </View>
           )}
         </View>
-      )}
-      {!hourly && !stacked && (
-        <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
-          {t('habit.timeHint')}
-        </ThemedText>
+        {!hourly && (
+          <ThemedText type="small" themeColor="textSecondary">
+            {t('habit.timeHint')}
+          </ThemedText>
+        )}
+        </Section>
       )}
 
       {hasTime && (
@@ -352,42 +367,86 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
         </Section>
       )}
 
-      <TextField
-        label={`${t('habit.twoMinute')} (${t('common.optional')})`}
-        hint={t('habit.twoMinuteHint')}
-        placeholder={t('habit.twoMinutePlaceholder')}
-        value={twoMinute}
-        onChangeText={setTwoMinute}
-      />
+      {/* Optional science extras, hidden by default so the form is not overwhelming */}
+      <Pressable
+        onPress={() => setShowExtras(!showExtras)}
+        accessibilityRole="button"
+        accessibilityState={{ expanded: showExtras }}
+        style={[styles.disclosure, { backgroundColor: theme.backgroundElement }]}>
+        <ThemedText type="heading" style={styles.flex}>
+          {t('habit.moreOptions')}
+        </ThemedText>
+        <ThemedText type="heading" themeColor="textSecondary">
+          {showExtras ? '▾' : '▸'}
+        </ThemedText>
+      </Pressable>
 
-      <TextField
-        label={`${t('habit.intention')} (${t('common.optional')})`}
-        hint={t('habit.intentionHint')}
-        placeholder={t('habit.intentionPlaceholder')}
-        value={intention}
-        onChangeText={setIntention}
-        multiline
-      />
+      {showExtras && (
+        <Section title={t('habit.extrasTitle')}>
+          <TextField
+            label={t('habit.twoMinute')}
+            hint={t('habit.twoMinuteHint')}
+            placeholder={t('habit.twoMinutePlaceholder')}
+            value={twoMinute}
+            onChangeText={setTwoMinute}
+          />
+          <TextField
+            label={t('habit.intention')}
+            hint={t('habit.intentionHint')}
+            placeholder={t('habit.intentionPlaceholder')}
+            value={intention}
+            onChangeText={setIntention}
+            multiline
+          />
+          <TextField
+            label={t('habit.temptation')}
+            hint={t('habit.temptationHint')}
+            placeholder={t('habit.temptationPlaceholder')}
+            value={temptation}
+            onChangeText={setTemptation}
+          />
+        </Section>
+      )}
 
-      <TextField
-        label={`${t('habit.temptation')} (${t('common.optional')})`}
-        hint={t('habit.temptationHint')}
-        placeholder={t('habit.temptationPlaceholder')}
-        value={temptation}
-        onChangeText={setTemptation}
-      />
-
-      <Button label={t('common.save')} onPress={submit} loading={submitting} />
       {onArchive && <Button label={t('common.delete')} variant="danger" onPress={onArchive} />}
-    </ScrollView>
+        </ScrollView>
+
+        {/* Save always reachable, without scrolling to the bottom */}
+        <View style={[styles.footer, { backgroundColor: theme.background, borderTopColor: theme.border }]}>
+          <Button label={t('common.save')} onPress={submit} loading={submitting} />
+        </View>
+      </View>
   );
 }
 
+/** Every group of fields is a white card, so the long form reads as steps. */
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  const theme = useTheme();
   return (
-    <View style={styles.section}>
-      <ThemedText type="smallBold">{title}</ThemedText>
+    <View style={[styles.section, { backgroundColor: theme.backgroundElement }]}>
+      <ThemedText type="heading">{title}</ThemedText>
       {children}
+    </View>
+  );
+}
+
+/** Live preview: the habit exactly as it will look in Today. */
+function Preview({ icon, color, name, subtitle }: { icon: string; color: string; name: string; subtitle: string }) {
+  const theme = useTheme();
+  return (
+    <View style={[styles.preview, { backgroundColor: theme.backgroundElement }]}>
+      <View style={[styles.previewIcon, { backgroundColor: color + '26' }]}>
+        <ThemedText style={styles.previewEmoji}>{icon}</ThemedText>
+      </View>
+      <View style={styles.flex}>
+        <ThemedText type="heading" numberOfLines={1}>
+          {name}
+        </ThemedText>
+        <ThemedText type="caption" themeColor="textSecondary" numberOfLines={1}>
+          {subtitle}
+        </ThemedText>
+      </View>
+      <View style={[styles.previewCheck, { borderColor: color + '66', backgroundColor: color + '12' }]} />
     </View>
   );
 }
@@ -424,12 +483,44 @@ function Chip({
 
 
 const styles = StyleSheet.create({
-  container: { padding: Spacing.four, gap: Spacing.four, paddingBottom: Spacing.six },
-  section: { gap: Spacing.two },
+  flex: { flex: 1 },
+  container: {
+    padding: Spacing.three,
+    gap: Spacing.three,
+    paddingBottom: Spacing.five,
+    width: '100%',
+    maxWidth: MaxContentWidth,
+    alignSelf: 'center',
+  },
+  section: { gap: Spacing.two, padding: Spacing.three, borderRadius: Radius.lg, boxShadow: Shadow.card },
+  preview: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.three,
+    padding: Spacing.three,
+    borderRadius: Radius.lg,
+    boxShadow: Shadow.card,
+  },
+  previewIcon: { width: 52, height: 52, borderRadius: Radius.md, alignItems: 'center', justifyContent: 'center' },
+  previewEmoji: { fontSize: 26, lineHeight: 32 },
+  previewCheck: { width: 40, height: 40, borderRadius: 20, borderWidth: 2.5 },
+  disclosure: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: Spacing.three,
+    borderRadius: Radius.lg,
+    boxShadow: Shadow.card,
+  },
+  footer: {
+    padding: Spacing.three,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    width: '100%',
+    maxWidth: MaxContentWidth,
+    alignSelf: 'center',
+  },
   wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
   weekdays: { flexDirection: 'row', justifyContent: 'space-between' },
   row: { flexDirection: 'row', gap: Spacing.three },
-  flex: { flex: 1 },
   hint: { marginTop: -Spacing.three },
   emoji: {
     width: 44,
