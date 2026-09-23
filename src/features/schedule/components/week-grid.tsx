@@ -32,7 +32,10 @@ export function WeekGrid({ weekStart, items, bands, now, onToggle }: Props) {
   const byDay = days.map((_, i) => items.filter((item) => daysBetween(weekStart, item.at) === i));
   const anytime = byDay.map((list) => list.filter((item) => !item.displayHasTime));
   // Share of each day already done, shown as a thin bar under the date.
-  const dayRatios = byDay.map((list) => (list.length === 0 ? null : list.filter(isDone).length / list.length));
+  // A day that has not arrived gets no bar: an empty track would read as a miss.
+  const dayRatios = byDay.map((list, i) =>
+    list.length === 0 || i > todayIndex ? null : list.filter(isDone).length / list.length,
+  );
   const timedHours = items.filter((i) => i.displayHasTime).map((i) => i.displayAt.getHours());
   // Only the hours of your day (morning start → end of night), stretched if a habit falls outside.
   const segments = visibleHourSegments(bands, timedHours);

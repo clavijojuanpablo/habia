@@ -10,15 +10,20 @@ import { computeGarden, GARDEN_WINDOW_DAYS } from './compute-garden';
 
 export const votesKey = ['votes'] as const;
 
-/** All-time completions: every one is a vote for the person you want to become. */
-function useVotes() {
+/**
+ * All-time completions: every one is a vote for the person you want to become.
+ * Bounded by `until` (tomorrow's local midnight) so a log for a day that has not
+ * arrived can never inflate the tree.
+ */
+function useVotes(until: Date) {
   return useQuery({
     queryKey: votesKey,
     queryFn: async () => {
       const { count, error } = await supabase
         .from('habit_logs')
         .select('id', { count: 'exact', head: true })
-        .in('status', ['done', 'done_minimum']);
+        .in('status', ['done', 'done_minimum'])
+        .lt('occurrence_at', until.toISOString());
       if (error) throw error;
       return count ?? 0;
     },
@@ -31,7 +36,7 @@ export function useGarden(today: Date, now: Date) {
 
   const habits = useHabits();
   const logs = useLogs(from, to);
-  const votes = useVotes();
+  const votes = useVotes(to);
 
   const summary = useMemo(
     () => computeGarden(habits.data ?? [], logs.data ?? [], votes.data ?? 0, now),

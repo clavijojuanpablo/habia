@@ -7,7 +7,7 @@ import { Icon } from '@/components/icon';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
-import { isBeforeStart } from '@/features/checkins/rules';
+import { hasCome, isBeforeStart } from '@/features/checkins/rules';
 import { useProfile } from '@/features/profile/api';
 import { isDone } from '@/features/schedule/build-schedule';
 import { WeekGrid } from '@/features/schedule/components/week-grid';
@@ -34,8 +34,11 @@ export default function WeekScreen() {
   // Nothing existed before the user joined: do not let them browse into the void.
   const joinedOn = profile ? new Date(profile.created_at) : null;
   const canGoBack = !joinedOn || !isBeforeStart(addDays(weekStart, -1), joinedOn);
-  const done = items.filter(isDone).length;
-  const progress = items.length === 0 ? 0 : done / items.length;
+  // Only days that have arrived count: on Tuesday "8 of 14" is honest, while
+  // measuring against the whole week would read as failure for a week going well.
+  const due = items.filter((item) => hasCome(item.at, now));
+  const done = due.filter(isDone).length;
+  const progress = due.length === 0 ? 0 : done / due.length;
 
   const format = (d: Date) => d.toLocaleDateString(i18n.language, { day: 'numeric', month: 'short' });
   const range = `${format(weekStart)} – ${format(addDays(weekEnd, -1))}`;
@@ -63,13 +66,13 @@ export default function WeekScreen() {
             <RoundButton icon="forward" label={t('week.next')} onPress={() => setOffset(offset + 1)} />
           </View>
 
-          {items.length > 0 && (
+          {due.length > 0 && (
             <View style={styles.progress}>
               <View style={[styles.track, { backgroundColor: theme.backgroundElement }]}>
                 <View style={[styles.fill, { width: `${progress * 100}%`, backgroundColor: theme.primary }]} />
               </View>
               <ThemedText type="small" themeColor="textSecondary">
-                {t('week.progress', { done, total: items.length })}
+                {t('week.progress', { done, total: due.length })}
               </ThemedText>
             </View>
           )}
