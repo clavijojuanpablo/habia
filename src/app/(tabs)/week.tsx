@@ -7,6 +7,8 @@ import { Icon } from '@/components/icon';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { isBeforeStart } from '@/features/checkins/rules';
+import { useProfile } from '@/features/profile/api';
 import { isDone } from '@/features/schedule/build-schedule';
 import { WeekGrid } from '@/features/schedule/components/week-grid';
 import { useSchedule } from '@/features/schedule/use-schedule';
@@ -28,6 +30,10 @@ export default function WeekScreen() {
   }, [currentWeekKey, offset]);
 
   const { items, bands, toggleItem } = useSchedule(weekStart, weekEnd);
+  const { data: profile } = useProfile();
+  // Nothing existed before the user joined: do not let them browse into the void.
+  const joinedOn = profile ? new Date(profile.created_at) : null;
+  const canGoBack = !joinedOn || !isBeforeStart(addDays(weekStart, -1), joinedOn);
   const done = items.filter(isDone).length;
   const progress = items.length === 0 ? 0 : done / items.length;
 
@@ -40,7 +46,12 @@ export default function WeekScreen() {
         <View style={styles.inner}>
           <TopBar />
           <View style={styles.header}>
-            <RoundButton icon="back" label={t('week.previous')} onPress={() => setOffset(offset - 1)} />
+            <RoundButton
+              icon="back"
+              label={t('week.previous')}
+              disabled={!canGoBack}
+              onPress={() => setOffset(offset - 1)}
+            />
             <Pressable onPress={() => setOffset(0)} style={styles.titleBlock}>
               <ThemedText type="smallBold">{offset === 0 ? t('week.thisWeek') : range}</ThemedText>
               {offset === 0 && (
@@ -70,15 +81,30 @@ export default function WeekScreen() {
   );
 }
 
-function RoundButton({ icon, label, onPress }: { icon: 'back' | 'forward'; label: string; onPress: () => void }) {
+function RoundButton({
+  icon,
+  label,
+  disabled,
+  onPress,
+}: {
+  icon: 'back' | 'forward';
+  label: string;
+  disabled?: boolean;
+  onPress: () => void;
+}) {
   const theme = useTheme();
   return (
     <Pressable
       onPress={onPress}
+      disabled={disabled}
       accessibilityLabel={label}
+      accessibilityState={{ disabled: !!disabled }}
       hitSlop={8}
-      style={({ pressed }) => [styles.round, { backgroundColor: theme.backgroundElement, opacity: pressed ? 0.7 : 1 }]}>
-      <Icon name={icon} color={theme.text} size={18} />
+      style={({ pressed }) => [
+        styles.round,
+        { backgroundColor: theme.backgroundElement, opacity: disabled ? 0.35 : pressed ? 0.7 : 1 },
+      ]}>
+      <Icon name={icon} color={disabled ? theme.textSecondary : theme.text} size={18} />
     </Pressable>
   );
 }

@@ -31,6 +31,8 @@ export function WeekGrid({ weekStart, items, bands, now, onToggle }: Props) {
 
   const byDay = days.map((_, i) => items.filter((item) => daysBetween(weekStart, item.at) === i));
   const anytime = byDay.map((list) => list.filter((item) => !item.displayHasTime));
+  // Share of each day already done, shown as a thin bar under the date.
+  const dayRatios = byDay.map((list) => (list.length === 0 ? null : list.filter(isDone).length / list.length));
   const timedHours = items.filter((i) => i.displayHasTime).map((i) => i.displayAt.getHours());
   // Only the hours of your day (morning start → end of night), stretched if a habit falls outside.
   const segments = visibleHourSegments(bands, timedHours);
@@ -42,7 +44,7 @@ export function WeekGrid({ weekStart, items, bands, now, onToggle }: Props) {
 
   return (
     <View style={styles.container}>
-      <DayHeader days={days} todayIndex={todayIndex} />
+      <DayHeader days={days} todayIndex={todayIndex} ratios={dayRatios} />
 
       <ScrollView contentContainerStyle={styles.scroll}>
         {anytime.some((list) => list.length > 0) && (
@@ -75,7 +77,15 @@ export function WeekGrid({ weekStart, items, bands, now, onToggle }: Props) {
   );
 }
 
-function DayHeader({ days, todayIndex }: { days: Date[]; todayIndex: number }) {
+function DayHeader({
+  days,
+  todayIndex,
+  ratios,
+}: {
+  days: Date[];
+  todayIndex: number;
+  ratios: (number | null)[];
+}) {
   const { t } = useTranslation();
   const theme = useTheme();
   return (
@@ -83,11 +93,13 @@ function DayHeader({ days, todayIndex }: { days: Date[]; todayIndex: number }) {
       <View style={{ width: GUTTER }} />
       {days.map((day, i) => {
         const isToday = i === todayIndex;
+        const future = i > todayIndex;
         const weekend = i >= 5;
+        const ratio = ratios[i];
         return (
           <View
             key={i}
-            style={[styles.dayPill, isToday && { backgroundColor: theme.primary }]}
+            style={[styles.dayPill, isToday && { backgroundColor: theme.primary }, future && styles.future]}
             accessibilityLabel={day.toDateString()}>
             <ThemedText
               type="small"
@@ -97,6 +109,19 @@ function DayHeader({ days, todayIndex }: { days: Date[]; todayIndex: number }) {
             <ThemedText type="smallBold" style={{ color: isToday ? theme.onPrimary : theme.text }}>
               {day.getDate()}
             </ThemedText>
+            <View style={[styles.dayTrack, { backgroundColor: isToday ? theme.onPrimary + '55' : theme.border }]}>
+              {ratio !== null && (
+                <View
+                  style={[
+                    styles.dayFill,
+                    {
+                      width: `${ratio * 100}%`,
+                      backgroundColor: isToday ? theme.onPrimary : ratio === 1 ? theme.primary : theme.textSecondary,
+                    },
+                  ]}
+                />
+              )}
+            </View>
           </View>
         );
       })}
@@ -161,6 +186,7 @@ function HourRow({
       </View>
       {cells.map((list, i) => {
         const isToday = i === todayIndex;
+        const isFutureDay = i > todayIndex;
         return (
           <View
             key={i}
@@ -170,7 +196,7 @@ function HourRow({
               separator && { borderTopColor: theme.text + '0F', borderTopWidth: StyleSheet.hairlineWidth },
             ]}>
             {list.map((item) => (
-              <HabitChip key={item.key} item={item} onPress={onToggle} />
+              <HabitChip key={item.key} item={item} locked={isFutureDay} onPress={onToggle} />
             ))}
             {isToday && nowMinutes !== null && (
               <View pointerEvents="none" style={[styles.nowLine, { top: (nowMinutes / 60) * rowHeight }]}>
@@ -185,7 +211,17 @@ function HourRow({
   );
 }
 
-function HabitChip({ item, onPress }: { item: ScheduledItem; onPress: (item: ScheduledItem) => void }) {
+function HabitChip({
+  item,
+  locked = false,
+  onPress,
+}: {
+  item: ScheduledItem;
+  /** A day that has not arrived cannot be checked: shown, but not pressable. */
+  locked?: boolean;
+  onPress: (item: ScheduledItem) => void;
+}) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const done = isDone(item);
   const color = item.habit.color ?? theme.primary;
@@ -193,10 +229,11 @@ function HabitChip({ item, onPress }: { item: ScheduledItem; onPress: (item: Sch
   return (
     <Pressable
       onPress={() => onPress(item)}
+      disabled={locked}
       hitSlop={4}
       accessibilityRole="checkbox"
-      accessibilityState={{ checked: done }}
-      accessibilityLabel={item.habit.name}
+      accessibilityState={{ checked: done, disabled: locked }}
+      accessibilityLabel={locked ? t('week.notYet', { habit: item.habit.name }) : item.habit.name}
       style={({ pressed }) => [
         styles.chip,
         {
@@ -204,6 +241,7 @@ function HabitChip({ item, onPress }: { item: ScheduledItem; onPress: (item: Sch
           borderColor: done ? color : color + '55',
           transform: [{ scale: pressed ? 0.9 : 1 }],
         },
+        locked && { backgroundColor: 'transparent', borderStyle: 'dashed', opacity: 0.6 },
       ]}>
       <ThemedText style={styles.chipEmoji}>{item.habit.icon}</ThemedText>
       {done && (
@@ -220,6 +258,9 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', paddingHorizontal: Spacing.two, paddingBottom: Spacing.two, gap: 2 },
   dayPill: { flex: 1, alignItems: 'center', paddingVertical: Spacing.one, borderRadius: 12, gap: 1 },
   dayLetter: { fontSize: 11, lineHeight: 14 },
+  future: { opacity: 0.5 },
+  dayTrack: { height: 3, borderRadius: 2, alignSelf: 'stretch', marginHorizontal: 6, marginTop: 2, overflow: 'hidden' },
+  dayFill: { height: '100%', borderRadius: 2 },
   scroll: { paddingHorizontal: Spacing.two, paddingBottom: Spacing.six, gap: Spacing.two },
   card: { borderRadius: 20, paddingBottom: Spacing.one, overflow: 'hidden' },
   cardHeader: {

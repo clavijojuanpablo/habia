@@ -72,7 +72,8 @@
     "progress": "{{done}} of {{total}} this week",
     "range": "{{from}}–{{to}}",
     "previous": "Previous week",
-    "next": "Next week"
+    "next": "Next week",
+    "notYet": "{{habit}}: that day has not arrived yet"
   },
   "habit": {
     "new": "New habit",

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { useLogs, useToggleLog } from '@/features/checkins/api';
+import { canLog } from '@/features/checkins/rules';
 import { useHabits } from '@/features/habits/api';
 import { useDayBands } from '@/features/profile/api';
 import { hapticLight, hapticSuccess } from '@/lib/haptics';
@@ -20,6 +21,8 @@ export function useSchedule(from: Date, to: Date) {
   );
 
   const toggleItem = (item: ScheduledItem, status: 'done' | 'done_minimum' = 'done') => {
+    // A day that has not arrived cannot be completed.
+    if (!canLog(item.at, new Date())) return;
     const done = isDone(item);
     if (done) hapticLight();
     else hapticSuccess();

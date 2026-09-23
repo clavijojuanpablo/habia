@@ -30,6 +30,7 @@ Planned:
 - `coach_messages` (Phase 3)
 
 ## Key decisions
+- **Check-in rules (`src/features/checkins/rules.ts`):** today and past days can be logged (catching up), tomorrow and beyond cannot; the week view stops at the week the user joined (`profiles.created_at`). Enforced in `useSchedule` so no screen can bypass it, and reflected in the UI (locked chips, disabled arrow).
 - **Occurrences are computed, not stored.** Habits store an RRULE; the client expands it for the visible range. Only answers (logs) are persisted.
 - **Offline-first (basic):** the TanStack Query cache is persisted to disk (`src/lib/storage.ts`, 7-day max age) and `onlineManager` is fed by `src/lib/network.ts` (expo-network on native, `navigator.onLine` on web). Check-ins are optimistic; offline they pause and resume automatically, surviving restarts because their `mutationFn` is registered by mutation key (`TOGGLE_LOG_KEY`). Migrate to PowerSync if multi-device conflicts become a problem.
 - **Reminders:** time-based reminders are scheduled locally (they work offline). `useReminderSync` replaces all pending notifications with the next 3 days of timed, not-yet-done occurrences (max 60, under the iOS limit of 64). Context, coach and partner notifications are sent as push from Edge Functions.
