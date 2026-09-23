@@ -41,14 +41,14 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 
 ## Block 1: Ready for real users 🚧 (next)
 - ✅ Merged into `main`, pushed to GitHub, CI (typecheck, lint, tests) on push and PRs
-- 🚧 Auth: ✅ password reset, ✅ PKCE deep links for email links (`habits://auth-callback`), ✅ in-app account deletion (Edge Function `delete-account`), ✅ redesigned sign-in · ⏳ Sign in with Apple/Google
+- 🚧 Auth: ✅ password reset, ✅ PKCE deep links for email links (`habia://auth-callback`), ✅ in-app account deletion (Edge Function `delete-account`), ✅ redesigned sign-in · ⏳ Sign in with Apple/Google
 - ✅ Offline: persisted query cache (7 days), online state from expo-network / browser events, check-ins queued and replayed after a restart, calm offline banner
 - 🚧 Log past days: ✅ yesterday catch-up card in Hoy + any past day from Semana · ⏳ skip a day
 - ⏳ Use `profiles.timezone`; notification tap opens the habit
 - ✅ Personalized onboarding: 5 steps (welcome → identity → first habit from 20 suggestions → obstacle → ready), creates identity + habit, asks for notifications only when the user chose "I forget"; gated by `profiles.onboarded_at`
-- 🚧 Mascot "Brote": ✅ SVG character with 4 moods (happy, cheer, celebrate, sleepy) in onboarding and the empty state · ⏳ celebrations when the day is complete
+- ✅ Mascot "Brote": SVG character with 4 moods in onboarding and the empty state; day-complete celebration (confetti + Brote + votes), fired only by the check-in that closes the day
 - ⏳ Redesign habit form, sign-in, Garden and Progress with the new style
-- ⏳ App name, icon and splash; privacy policy + terms
+- 🚧 App name: ✅ **habia** (app.json, package.json, deep-link scheme `habia://`, Supabase redirect URLs) · ⏳ icon and splash; privacy policy + terms
 
 ## Block 2: Beta testers ⏳
 - EAS project + development build, TestFlight + Play Internal Testing

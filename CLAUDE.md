@@ -1,6 +1,6 @@
 @AGENTS.md
 
-# Habits app (working name — brand TBD, see docs/BRAND.md)
+# habia (see docs/BRAND.md)
 
 A visual, gamified habit tracker grounded in *Atomic Habits* (James Clear) and habit-formation research. Built first for personal use, designed from day one to become a subscription SaaS on the App Store, Play Store and web.
 
@@ -36,7 +36,7 @@ npx supabase db push         # apply migrations to the linked cloud project
 npx supabase gen types typescript --linked --schema public > src/lib/supabase/database.types.ts
 ```
 
-The project is linked to the Supabase cloud project "Habits Project" (no local Docker stack). Auth is email + password with PKCE deep links (`habits://auth-callback`); auth settings live in `supabase/config.toml` and ship with `npx supabase config push`. Edge Functions are Deno and excluded from the app's tsconfig/eslint; deploy with `npx supabase functions deploy <name>`.
+The project is linked to the Supabase cloud project "Habits Project" (no local Docker stack). Auth is email + password with PKCE deep links (`habia://auth-callback`); auth settings live in `supabase/config.toml` and ship with `npx supabase config push`. Edge Functions are Deno and excluded from the app's tsconfig/eslint; deploy with `npx supabase functions deploy <name>`.
 
 ## Project structure
 ```

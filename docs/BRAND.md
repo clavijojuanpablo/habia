@@ -1,13 +1,10 @@
-# Brand (TBD, Phase 6)
+# Brand
 
-## Name candidates (Spanish-first)
-- **Brote**: the sprout; growth from something small.
-- **Raíz**: roots, habit stacking, stability.
-- **Voto**: "every action is a vote for who you want to become".
-- **Semilla**: seed, beginnings.
-- **Hábitat**: habits + the place where you grow.
+## Name: **habia** (decided 2026-09-23)
+App name, slug and deep-link scheme (`habia://`), repo `clavijojuanpablo/habia`. Reads as "había" (Spanish past tense, "there was") and contains *habi*t - a short, ownable, Spanish-first name.
+Pending: domain (.app / .com), App Store / Play Store availability, trademark.
 
-Check: domain (.app / .com), App Store / Play Store name availability, trademark.
+Earlier candidates (not used): Brote, Raíz, Voto, Semilla, Hábitat. "Brote" lives on as the mascot.
 
 ## Voice
 Warm, encouraging, never guilt-tripping. Short sentences. Talks about identity ("eres alguien que…"), not about obligations.

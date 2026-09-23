@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "habits",
-    "slug": "habits",
+    "name": "habia",
+    "slug": "habia",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "habits",
+    "scheme": "habia",
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon"

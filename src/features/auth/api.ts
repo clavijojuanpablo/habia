@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase/client';
 
 /**
  * Where email links should send the user back to. In development this is an
- * `exp://…` URL, in the built app `habits://auth-callback`, and on web a localhost
+ * `exp://…` URL, in the built app `habia://auth-callback`, and on web a localhost
  * or site URL. All of these are allow-listed in `supabase/config.toml`.
  */
 export function authCallbackUrl(next?: 'reset') {

@@ -393,5 +393,12 @@
         "min": "log one expense"
       }
     }
+  },
+  "celebration": {
+    "title": "Day complete!",
+    "body_one": "You did your habit for today. This is how it is built.",
+    "body_other": "You did all {{count}} habits for today. This is how it is built.",
+    "votes_one": "+{{count}} vote for who you want to be",
+    "votes_other": "+{{count}} votes for who you want to be"
   }
 }

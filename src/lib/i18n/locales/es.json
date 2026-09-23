@@ -393,5 +393,12 @@
         "min": "anotar un gasto"
       }
     }
+  },
+  "celebration": {
+    "title": "¡Día completo!",
+    "body_one": "Cumpliste tu hábito de hoy. Así se construye.",
+    "body_other": "Cumpliste tus {{count}} hábitos de hoy. Así se construye.",
+    "votes_one": "+{{count}} voto por quien quieres ser",
+    "votes_other": "+{{count}} votos por quien quieres ser"
   }
 }

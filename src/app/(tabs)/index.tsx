@@ -12,6 +12,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BandEmoji, MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
 import { isDone, nextInChain, type ScheduleBand, type ScheduledItem } from '@/features/schedule/build-schedule';
+import { DayCompleteOverlay } from '@/features/celebration/day-complete';
 import { Brote } from '@/features/mascot/brote';
 import { ChainPrompt } from '@/features/schedule/components/chain-prompt';
 import { HabitCheckRow } from '@/features/schedule/components/habit-check-row';
@@ -20,6 +21,7 @@ import { useSchedule } from '@/features/schedule/use-schedule';
 import { TopBar } from '@/features/streak/components/top-bar';
 import { useNow, useTodayRange } from '@/hooks/use-now';
 import { useBandColors, useTheme } from '@/hooks/use-theme';
+import { hapticSuccess } from '@/lib/haptics';
 import { getDayBand } from '@/lib/time/day-bands';
 
 const SECTION_ORDER: ScheduleBand[] = ['morning', 'afternoon', 'night', 'anytime'];
@@ -34,6 +36,7 @@ export default function TodayScreen() {
 
   // Keep only the key: the item itself is read fresh from `items` on every render.
   const [chainNextKey, setChainNextKey] = useState<string | null>(null);
+  const [celebrating, setCelebrating] = useState(false);
   const chainNext = items.find((item) => item.key === chainNextKey && !isDone(item));
   const habitsById = new Map(items.map((item) => [item.habit.id, item.habit]));
 
@@ -42,6 +45,14 @@ export default function TodayScreen() {
     const completing = !isDone(item);
     toggleItem(item, status);
     setChainNextKey(completing ? (nextInChain(item, items)?.key ?? null) : null);
+
+    // Celebrate only when *this* check-in is the one that finishes the day,
+    // never when simply opening an already-complete day.
+    const pendingAfter = items.filter((other) => !isDone(other) && other.key !== item.key).length;
+    if (completing && pendingAfter === 0) {
+      hapticSuccess();
+      setCelebrating(true);
+    }
   };
 
   const currentBand = getDayBand(now.getHours(), bands);
@@ -131,6 +142,8 @@ export default function TodayScreen() {
             );
           })}
         </ScrollView>
+
+        {celebrating && <DayCompleteOverlay votes={items.length} onDismiss={() => setCelebrating(false)} />}
 
         {chainNext && (
           <ChainPrompt item={chainNext} onDone={() => onToggle(chainNext)} onDismiss={() => setChainNextKey(null)} />
