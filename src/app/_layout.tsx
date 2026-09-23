@@ -106,8 +106,10 @@ function RootNavigator() {
         <Stack.Screen name="sign-in" />
         <Stack.Screen name="forgot-password" />
       </Stack.Protected>
-      {/* Reachable in both states: email links land here, before and after sign-in. */}
+      {/* Reachable in both states: email links and the legal documents. */}
       <Stack.Screen name="auth-callback" />
+      <Stack.Screen name="legal/privacy" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="legal/terms" options={{ presentation: 'modal' }} />
       <Stack.Screen name="reset-password" />
     </Stack>
   );

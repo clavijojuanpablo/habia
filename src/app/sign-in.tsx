@@ -78,6 +78,20 @@ export default function SignInScreen() {
         </Pressable>
       )}
 
+      {mode === 'signUp' && (
+        <ThemedText type="caption" themeColor="textSecondary" style={styles.center}>
+          {t('legal.consentPrefix')}{' '}
+          <ThemedText type="caption" style={{ color: theme.primary }} onPress={() => router.push('/legal/terms')}>
+            {t('legal.terms')}
+          </ThemedText>{' '}
+          {t('legal.and')}{' '}
+          <ThemedText type="caption" style={{ color: theme.primary }} onPress={() => router.push('/legal/privacy')}>
+            {t('legal.privacy')}
+          </ThemedText>
+          .
+        </ThemedText>
+      )}
+
       <Pressable onPress={() => setMode(mode === 'signIn' ? 'signUp' : 'signIn')} hitSlop={8}>
         <ThemedText type="small" themeColor="textSecondary" style={styles.center}>
           {mode === 'signIn' ? t('auth.switchToSignUp') : t('auth.switchToSignIn')}

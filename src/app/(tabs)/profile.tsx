@@ -2,6 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { router } from 'expo-router';
+
 import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -55,6 +57,16 @@ export default function ProfileScreen() {
             </Card>
           )}
 
+          <Card>
+            <ThemedText type="heading">{t('legal.title')}</ThemedText>
+            <Button
+              label={t('legal.privacy')}
+              variant="secondary"
+              onPress={() => router.push('/legal/privacy')}
+            />
+            <Button label={t('legal.terms')} variant="secondary" onPress={() => router.push('/legal/terms')} />
+          </Card>
+
           <Button label={t('auth.signOut')} variant="secondary" onPress={() => supabase.auth.signOut()} />
 
           <DangerZone />
@@ -88,5 +100,5 @@ const styles = StyleSheet.create({
   },
   avatar: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center' },
   avatarText: { fontSize: 28, lineHeight: 34, fontFamily: FontFamily.black },
-  card: { borderRadius: Radius.lg, padding: Spacing.three, boxShadow: Shadow.card },
+  card: { borderRadius: Radius.lg, padding: Spacing.three, gap: Spacing.two, boxShadow: Shadow.card },
 });

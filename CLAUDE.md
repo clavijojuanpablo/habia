@@ -61,6 +61,8 @@ docs/                    # product, science, architecture, gamification, brand, 
 - **Design system:** always use tokens from `src/constants/theme.ts` (`useTheme()`, `useBandColors()`, `Radius`, `Shadow`, `FontFamily`) - never hardcode colors. Light mode is the default; dark mode must look right too (appearance is stored in `profiles.theme_preference`). Style: pastel, rounded (cards `Radius.lg`, white on cream with `Shadow.card`), Nunito via `ThemedText` types (set weight with the font family, never `fontWeight`), playful emoji icons, chunky 3D buttons.
 - Keep components small and feature-scoped; shared code only moves to `src/components/` or `src/lib/` once two features need it.
 
+Legal texts live in `src/features/legal/content.ts` (es/en) and must stay true to what the app actually does; update them whenever data handling changes.
+
 ## Docs
 - `docs/PRD.md` — features and scope per phase
 - `docs/SCIENCE.md` — research → feature mapping

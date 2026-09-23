@@ -417,5 +417,13 @@
     "title": "Idioma",
     "es": "Español",
     "en": "Inglés"
+  },
+  "legal": {
+    "title": "Legal",
+    "privacy": "Política de privacidad",
+    "terms": "Términos y condiciones",
+    "updated": "Actualizada el {{date}}",
+    "consentPrefix": "Al crear tu cuenta aceptas los",
+    "and": "y la"
   }
 }

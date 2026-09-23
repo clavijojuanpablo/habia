@@ -48,7 +48,8 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - ✅ Personalized onboarding: 5 steps (welcome → identity → first habit from 20 suggestions → obstacle → ready), creates identity + habit, asks for notifications only when the user chose "I forget"; gated by `profiles.onboarded_at`
 - ✅ Mascot "Brote": SVG character with 4 moods in onboarding and the empty state; day-complete celebration (confetti + Brote + votes), fired only by the check-in that closes the day
 - ✅ Redesigned habit form (live preview, sections as cards, collapsed extras, sticky save), sign-in, Garden (stage progress + Brote) and Progress (colorful stat tiles)
-- 🚧 Brand assets: ✅ name **habia**, ✅ app icon / Android adaptive + monochrome / splash (light + dark) / favicon, all generated from the Brote SVG with `npm run icons` · ⏳ privacy policy + terms
+- ✅ Brand assets: name **habia**, app icon / Android adaptive + monochrome / splash (light + dark) / favicon, generated from the Brote SVG with `npm run icons`
+- ✅ Privacy policy + terms (es/en) in `src/features/legal/content.ts`, readable from Profile and before sign-up. TODO before launch: real contact email, jurisdiction, lawyer review, and publish them at public URLs on the landing page
 
 ## UX polish ✅
 - ✅ Time picker (tap, never type) with locale-aware 12h/24h labels
