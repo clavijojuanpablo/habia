@@ -45,8 +45,8 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - ✅ Offline: persisted query cache (7 days), online state from expo-network / browser events, check-ins queued and replayed after a restart, calm offline banner
 - 🚧 Log past days: ✅ yesterday catch-up card in Hoy + any past day from Semana · ⏳ skip a day
 - ⏳ Use `profiles.timezone`; notification tap opens the habit
-- ⏳ Personalized onboarding (identity quiz → first habit → notification permission)
-- ⏳ Mascot "Brote" v1 + celebrations
+- ✅ Personalized onboarding: 5 steps (welcome → identity → first habit from 20 suggestions → obstacle → ready), creates identity + habit, asks for notifications only when the user chose "I forget"; gated by `profiles.onboarded_at`
+- 🚧 Mascot "Brote": ✅ SVG character with 4 moods (happy, cheer, celebrate, sleepy) in onboarding and the empty state · ⏳ celebrations when the day is complete
 - ⏳ Redesign habit form, sign-in, Garden and Progress with the new style
 - ⏳ App name, icon and splash; privacy policy + terms
 

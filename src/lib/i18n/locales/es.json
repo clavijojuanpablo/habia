@@ -270,5 +270,128 @@
     "title_one": "Ayer quedó {{count}} sin marcar",
     "title_other": "Ayer quedaron {{count}} sin marcar",
     "hint": "¿Lo hiciste y olvidaste registrarlo? Tócalo para marcarlo."
+  },
+  "onboarding": {
+    "next": "Continuar",
+    "back": "Atrás",
+    "skip": "Ya uso la app, saltar",
+    "start": "Empezar 🌱",
+    "welcomeTitle": "¡Hola! Soy Brote",
+    "welcomeBody": "Voy a crecer contigo. Cada hábito que cumplas es un voto por la persona que quieres ser, y este jardín lo hace visible.",
+    "identityTitle": "¿Quién quieres ser?",
+    "identityBody": "Los hábitos duran cuando forman parte de tu identidad. No elijas una meta: elige una persona.",
+    "identitySuggestion": {
+      "health": "Soy una persona que cuida su cuerpo",
+      "mind": "Soy una persona que cuida su mente",
+      "relationships": "Soy una persona presente con los suyos",
+      "work": "Soy una persona que hace trabajo que importa",
+      "growth": "Soy una persona que aprende cada día"
+    },
+    "habitTitle": "Empecemos con un solo hábito",
+    "habitBody": "Uno pequeño que puedas cumplir hoy. Después agregas más.",
+    "startWith": "Empieza con: {{min}}",
+    "customHabit": "O escribe el tuyo",
+    "customMin": "La versión más pequeña posible",
+    "obstacleTitle": "¿Qué te cuesta más?",
+    "obstacleBody": "Según tu respuesta activo una herramienta distinta.",
+    "obstacles": {
+      "forget": {
+        "label": "🙈 Se me olvida",
+        "tip": "Te pondré un recordatorio a la hora del hábito. Hacerlo obvio es la primera ley."
+      },
+      "noTime": {
+        "label": "⏳ No tengo tiempo",
+        "tip": "Usaremos la regla de los 2 minutos: la versión mínima también cuenta."
+      },
+      "motivation": {
+        "label": "😮‍💨 Me desanimo",
+        "tip": "Tu identidad estará visible y un fallo nunca borra tu progreso. Solo no falles dos veces seguidas."
+      }
+    },
+    "readyTitle": "¡Todo listo!",
+    "readyBody": "Tu semilla está sembrada. Cumple tu hábito hoy y verás crecer tu árbol.",
+    "permissionHint": "Te pediremos permiso para enviarte el recordatorio.",
+    "habits": {
+      "water": {
+        "name": "Tomar agua",
+        "min": "un vaso"
+      },
+      "walk": {
+        "name": "Caminar",
+        "min": "5 minutos"
+      },
+      "move": {
+        "name": "Moverme",
+        "min": "10 sentadillas"
+      },
+      "sleep": {
+        "name": "Acostarme temprano",
+        "min": "dejar el teléfono fuera"
+      },
+      "read": {
+        "name": "Leer",
+        "min": "una página"
+      },
+      "meditate": {
+        "name": "Meditar",
+        "min": "tres respiraciones"
+      },
+      "journal": {
+        "name": "Escribir mi día",
+        "min": "una línea"
+      },
+      "noPhone": {
+        "name": "Apagar pantallas",
+        "min": "modo avión 5 minutos"
+      },
+      "call": {
+        "name": "Llamar a alguien querido",
+        "min": "un mensaje de voz"
+      },
+      "gratitude": {
+        "name": "Agradecer",
+        "min": "una cosa buena del día"
+      },
+      "present": {
+        "name": "Tiempo sin teléfono con los míos",
+        "min": "10 minutos"
+      },
+      "message": {
+        "name": "Escribir a un amigo",
+        "min": "un mensaje"
+      },
+      "deepWork": {
+        "name": "Trabajo profundo",
+        "min": "10 minutos sin interrupciones"
+      },
+      "planDay": {
+        "name": "Planear mi día",
+        "min": "las 3 tareas clave"
+      },
+      "inbox": {
+        "name": "Vaciar el correo",
+        "min": "archivar 5 correos"
+      },
+      "tidy": {
+        "name": "Ordenar mi espacio",
+        "min": "dos minutos"
+      },
+      "study": {
+        "name": "Estudiar",
+        "min": "10 minutos"
+      },
+      "language": {
+        "name": "Practicar un idioma",
+        "min": "una lección corta"
+      },
+      "practice": {
+        "name": "Practicar mi instrumento",
+        "min": "5 minutos"
+      },
+      "save": {
+        "name": "Revisar mis finanzas",
+        "min": "anotar un gasto"
+      }
+    }
   }
 }

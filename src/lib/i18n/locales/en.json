@@ -270,5 +270,128 @@
     "title_one": "{{count}} habit unlogged yesterday",
     "title_other": "{{count}} habits unlogged yesterday",
     "hint": "Did you do it and forget to log it? Tap to check it."
+  },
+  "onboarding": {
+    "next": "Continue",
+    "back": "Back",
+    "skip": "I already use the app, skip",
+    "start": "Start 🌱",
+    "welcomeTitle": "Hi! I am Brote",
+    "welcomeBody": "I will grow with you. Every habit you complete is a vote for the person you want to become, and this garden makes it visible.",
+    "identityTitle": "Who do you want to become?",
+    "identityBody": "Habits last when they are part of your identity. Do not pick a goal: pick a person.",
+    "identitySuggestion": {
+      "health": "I am a person who takes care of their body",
+      "mind": "I am a person who takes care of their mind",
+      "relationships": "I am a person who is present for their people",
+      "work": "I am a person who does work that matters",
+      "growth": "I am a person who learns every day"
+    },
+    "habitTitle": "Let us start with one habit",
+    "habitBody": "A small one you can do today. You can add more later.",
+    "startWith": "Start with: {{min}}",
+    "customHabit": "Or write your own",
+    "customMin": "The smallest possible version",
+    "obstacleTitle": "What makes it hardest?",
+    "obstacleBody": "Your answer turns on a different tool.",
+    "obstacles": {
+      "forget": {
+        "label": "🙈 I forget",
+        "tip": "I will remind you at the habit time. Making it obvious is the first law."
+      },
+      "noTime": {
+        "label": "⏳ I have no time",
+        "tip": "We will use the 2-minute rule: the minimum version counts too."
+      },
+      "motivation": {
+        "label": "😮‍💨 I lose motivation",
+        "tip": "Your identity stays visible and one miss never erases progress. Just never miss twice."
+      }
+    },
+    "readyTitle": "All set!",
+    "readyBody": "Your seed is planted. Complete your habit today and watch your tree grow.",
+    "permissionHint": "We will ask permission to send you the reminder.",
+    "habits": {
+      "water": {
+        "name": "Drink water",
+        "min": "one glass"
+      },
+      "walk": {
+        "name": "Walk",
+        "min": "5 minutes"
+      },
+      "move": {
+        "name": "Move my body",
+        "min": "10 squats"
+      },
+      "sleep": {
+        "name": "Go to bed earlier",
+        "min": "leave the phone outside"
+      },
+      "read": {
+        "name": "Read",
+        "min": "one page"
+      },
+      "meditate": {
+        "name": "Meditate",
+        "min": "three breaths"
+      },
+      "journal": {
+        "name": "Journal my day",
+        "min": "one line"
+      },
+      "noPhone": {
+        "name": "Screens off",
+        "min": "airplane mode for 5 minutes"
+      },
+      "call": {
+        "name": "Call someone I love",
+        "min": "a voice message"
+      },
+      "gratitude": {
+        "name": "Practice gratitude",
+        "min": "one good thing today"
+      },
+      "present": {
+        "name": "Phone-free time with my people",
+        "min": "10 minutes"
+      },
+      "message": {
+        "name": "Message a friend",
+        "min": "one message"
+      },
+      "deepWork": {
+        "name": "Deep work",
+        "min": "10 uninterrupted minutes"
+      },
+      "planDay": {
+        "name": "Plan my day",
+        "min": "the 3 key tasks"
+      },
+      "inbox": {
+        "name": "Clear my inbox",
+        "min": "archive 5 emails"
+      },
+      "tidy": {
+        "name": "Tidy my space",
+        "min": "two minutes"
+      },
+      "study": {
+        "name": "Study",
+        "min": "10 minutes"
+      },
+      "language": {
+        "name": "Practice a language",
+        "min": "a short lesson"
+      },
+      "practice": {
+        "name": "Practice my instrument",
+        "min": "5 minutes"
+      },
+      "save": {
+        "name": "Check my finances",
+        "min": "log one expense"
+      }
+    }
   }
 }

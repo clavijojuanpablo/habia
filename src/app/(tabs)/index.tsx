@@ -12,6 +12,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BandEmoji, MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
 import { isDone, nextInChain, type ScheduleBand, type ScheduledItem } from '@/features/schedule/build-schedule';
+import { Brote } from '@/features/mascot/brote';
 import { ChainPrompt } from '@/features/schedule/components/chain-prompt';
 import { HabitCheckRow } from '@/features/schedule/components/habit-check-row';
 import { YesterdayCatchUp } from '@/features/schedule/components/yesterday-catch-up';
@@ -88,7 +89,7 @@ export default function TodayScreen() {
 
           {!isLoading && !hasHabits && (
             <View style={[styles.empty, { backgroundColor: theme.backgroundElement }]}>
-              <ThemedText style={styles.emptyEmoji}>🌱</ThemedText>
+              <Brote mood="cheer" size={120} />
               <ThemedText type="heading" style={styles.center}>
                 {t('today.emptyTitle')}
               </ThemedText>

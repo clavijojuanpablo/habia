@@ -206,6 +206,7 @@ export type Database = {
           morning_starts_at: number
           night_ends_at: number
           night_starts_at: number
+          onboarded_at: string | null
           theme_preference: string
           timezone: string
           updated_at: string
@@ -220,6 +221,7 @@ export type Database = {
           morning_starts_at?: number
           night_ends_at?: number
           night_starts_at?: number
+          onboarded_at?: string | null
           theme_preference?: string
           timezone?: string
           updated_at?: string
@@ -234,6 +236,7 @@ export type Database = {
           morning_starts_at?: number
           night_ends_at?: number
           night_starts_at?: number
+          onboarded_at?: string | null
           theme_preference?: string
           timezone?: string
           updated_at?: string

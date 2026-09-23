@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { Colors } from '@/constants/theme';
 import { AppearanceProvider, useAppearance } from '@/features/appearance/appearance-provider';
 import { SessionProvider, useSession } from '@/features/auth/session-provider';
+import { useProfile } from '@/features/profile/api';
 import { startNetworkWatcher } from '@/lib/network';
 import { persister, queryClient } from '@/lib/query/client';
 
@@ -68,6 +69,9 @@ function ThemedNavigation() {
 function RootNavigator() {
   const { t } = useTranslation();
   const { session, isLoading } = useSession();
+  const { data: profile, isLoading: profileLoading } = useProfile();
+  // First run: no habits yet, so we welcome the user before showing the app.
+  const needsOnboarding = !!session && !!profile && !profile.onboarded_at;
   const [fontsLoaded, fontError] = useFonts({
     Nunito_600SemiBold,
     Nunito_700Bold,
@@ -75,7 +79,7 @@ function RootNavigator() {
     Nunito_900Black,
   });
   // Never block the app on a font failure: fall back to the system font.
-  const ready = !isLoading && (fontsLoaded || !!fontError);
+  const ready = !isLoading && (fontsLoaded || !!fontError) && (!session || !profileLoading);
 
   useEffect(() => {
     if (ready) SplashScreen.hideAsync();
@@ -87,7 +91,10 @@ function RootNavigator() {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={!!session}>
+      <Stack.Protected guard={needsOnboarding}>
+        <Stack.Screen name="onboarding" />
+      </Stack.Protected>
+      <Stack.Protected guard={!!session && !needsOnboarding}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="habit/new" options={modal(t('habit.new'))} />
         <Stack.Screen name="habit/[id]" options={modal(t('habit.edit'))} />
