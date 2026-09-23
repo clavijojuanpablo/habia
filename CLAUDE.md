@@ -64,9 +64,21 @@ docs/                    # product, science, architecture, gamification, brand, 
 Legal texts live in `src/features/legal/content.ts` (es/en) and must stay true to what the app actually does; update them whenever data handling changes.
 
 ## Docs
+- **`docs/STATUS.md` — start here.** Where the project stands today, what works, what is next,
+  known debts. A SessionStart hook injects it automatically; keep it true (skill `/cerrar-sesion`).
+- `docs/ROADMAP.md` — phases and the full backlog (STATUS summarizes "today", ROADMAP remembers the road)
 - `docs/PRD.md` — features and scope per phase
 - `docs/SCIENCE.md` — research → feature mapping
 - `docs/ARCHITECTURE.md` — system diagram and data model
 - `docs/GAMIFICATION.md` — the Identity Tree
-- `docs/BRAND.md` — name, voice, visual identity (TBD)
-- `docs/ROADMAP.md` — phases and current status
+- `docs/BRAND.md` — name, voice, visual identity
+
+## Working setup (`.claude/`)
+- **Skills** (invoke with `/name`): `verificar` (typecheck → tests → lint), `migracion` (Supabase
+  schema change + regenerated types), `vista-previa` (visual check for screens behind the login),
+  `cerrar-sesion` (verify → review → update STATUS/ROADMAP → commit).
+- **Agent `revisor`**: read-only review of `git diff HEAD` against the conventions above and
+  against unnecessary abstraction. Run it before committing a non-trivial change.
+- **Hooks**: inject `docs/STATUS.md` at session start; guard `.env` and already-applied migrations
+  before a write; at the end of a turn, flag code that moved while STATUS.md did not. Lint is
+  deliberately *not* a per-edit hook — it costs ~25 s per run on Windows and belongs in `/verificar`.

@@ -1,5 +1,8 @@
 # Roadmap
 
+> For where the project stands **today** — what works, what is next, known debts — read
+> [`STATUS.md`](./STATUS.md) first. This file is the long backlog behind it.
+
 Status: ✅ done · 🚧 in progress · ⏳ pending
 
 ## Phase 0: Setup ✅

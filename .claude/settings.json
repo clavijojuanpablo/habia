@@ -18,5 +18,53 @@
       "Read(./.env)",
       "Read(./.env.local)"
     ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              ".claude/hooks/session-context.mjs"
+            ],
+            "timeout": 20,
+            "statusMessage": "Leyendo el estado del proyecto..."
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              ".claude/hooks/guard-paths.mjs"
+            ],
+            "timeout": 20,
+            "statusMessage": "Revisando la ruta..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              ".claude/hooks/pending-work.mjs"
+            ],
+            "timeout": 20,
+            "statusMessage": "Revisando trabajo pendiente..."
+          }
+        ]
+      }
+    ]
   }
 }
