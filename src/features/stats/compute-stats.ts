@@ -1,6 +1,6 @@
 import type { HabitLog } from '@/features/checkins/api';
 import type { Habit } from '@/features/habits/api';
-import { buildSchedule, isDone, type ScheduleBand, type ScheduledItem } from '@/features/schedule/build-schedule';
+import { buildSchedule, isDone, isSkipped, type ScheduleBand, type ScheduledItem } from '@/features/schedule/build-schedule';
 import { addDays, daysBetween, formatLocalDate, startOfWeek } from '@/lib/recurrence';
 import type { DayBandConfig } from '@/lib/time/day-bands';
 
@@ -44,7 +44,8 @@ export function computeStats(
   today: Date,
   bands: DayBandConfig,
 ): Stats {
-  const items = buildSchedule(habits, logs, from, addDays(today, 1), bands);
+  // A habit skipped on purpose is a rest day, not a miss: it never enters the ratios below.
+  const items = buildSchedule(habits, logs, from, addDays(today, 1), bands).filter((item) => !isSkipped(item));
   const settled = items.filter((item) => item.at < today || isDone(item));
 
   const byDay = new Map<string, ScheduledItem[]>();

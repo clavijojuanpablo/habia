@@ -1,6 +1,6 @@
 # STATUS — where the project stands
 
-**Last updated: 2026-09-23.** This is the session entry point: a `SessionStart` hook injects it
+**Last updated: 2026-09-29.** This is the session entry point: a `SessionStart` hook injects it
 into every new Claude Code session. Keep it short and true. `ROADMAP.md` is the full backlog;
 this file is only "today".
 
@@ -13,12 +13,17 @@ with any supported recurrence, check them in (online or offline), watch the Iden
 read your stats, and get local reminders — in Spanish or English, light or dark, on iOS, Android
 and web. It runs on the linked Supabase cloud project; nothing ships to a store yet.
 
-The last block finished the "ready for real users" polish: check-ins on future days are locked,
-the week view cannot browse before your join date, times are picked (never typed) and shown in
-the user's locale, and privacy policy + terms exist in both languages.
+The last block started distribution and closed three debts: EAS is set up (`eas.json` with
+development / preview / production) and an Android development build (APK) succeeded; tapping a
+reminder opens its habit; a habit can be marked as a rest day on purpose (long-press the check
+circle, never counted as a miss); and `profiles.timezone` now follows the device.
 
-**What is missing is not features — it is distribution and feedback:** no development build, no
-testers, no error tracking, no analytics, no monetization.
+**The test device is an iPhone (no Android phone, no Mac).** An Apple Developer account
+(individual) was paid on 2026-09-28 and is waiting for Apple's approval. Until then, test in
+Expo Go with `npx expo start --go` (the flag is needed because `expo-dev-client` is installed).
+
+**What is missing is not features — it is distribution and feedback:** no iOS build, no testers,
+no error tracking, no analytics, no monetization.
 
 ## How to resume
 
@@ -51,7 +56,7 @@ testers, no error tracking, no analytics, no monetization.
 - Supabase cloud project "Habits Project" (no local Docker). 6 migrations applied; RLS on every table.
 - Skia 2.6.2 + Reanimated 4.5.1 for the tree; `react-native-svg` for charts and the mascot.
 - TanStack Query 5 (persisted 7 days) + Zustand.
-- Verification baseline: **86 tests / 12 suites green**, typecheck clean, lint clean.
+- Verification baseline: **88 tests / 12 suites green**, typecheck clean, lint clean.
   Typecheck ~8 s, tests ~7 s, lint ~25 s on this machine.
 - CI (typecheck + lint + tests) runs on push and PRs to `main`. Repo: `clavijojuanpablo/habia`.
 
@@ -59,21 +64,27 @@ testers, no error tracking, no analytics, no monetization.
 
 **Start here — Block 2, "beta testers".** The app cannot improve further without real usage data.
 
-1. **EAS project + development build.** `npx eas-cli@latest build --profile development` for Android
-   first (no Mac needed, faster loop). Needed to test notifications, haptics and offline on a real
-   phone — Expo Go cannot do all of it.
-2. **TestFlight + Play Internal Testing.** Get 5–10 testers using it daily.
-3. **Sentry + PostHog.** Without them, a crash on a tester's phone is invisible. Instrument the
-   north-star metric (users reporting real improvement) and D1/D7/D30 retention.
+1. **iOS development build, once Apple approves the account.** `npx eas-cli@latest device:create`
+   (registers the iPhone's UDID) → `npx eas-cli@latest build --profile development --platform ios`
+   → install from the link and enable Settings → Privacy & Security → Developer Mode. Then test on
+   the iPhone: notification tap (app killed and in background), rest day, offline, icon/splash,
+   password-reset deep link. Until approval: the same checks in Expo Go (`npx expo start --go`).
+2. **Sentry + PostHog before testers.** A crash on a tester's phone is invisible without them.
+   Instrument the north-star metric (users reporting real improvement) and D1/D7/D30 retention.
+3. **TestFlight** (and later Play Internal Testing). Get 5–10 testers using it daily.
 4. Then: Phase 4 monetization (RevenueCat + Stripe paywall), Phase 3B Pro value (guided programs +
    AI coach), Phase 5 couples. See `docs/ROADMAP.md`.
 
 ## Known debts
 
-- `profiles.timezone` exists but the client still computes "today" from the device clock.
-- Tapping a notification does not open the habit it refers to.
+- `profiles.timezone` is synced (`src/features/profile/use-timezone-sync.ts`, once per app
+  session) and shown in Profile, but nothing reads it yet: "today" still comes from the device
+  clock. It becomes necessary when the server sends pushes (push-dispatcher, coach).
+- Notification tap and rest day are untested on a real phone (only unit tests + typecheck).
+- Two long-presses on one row: the row marks the 2-minute version, the check circle marks a rest
+  day. Watch whether testers discover and tell them apart.
 - Sign in with Apple / Google not implemented (required-ish for App Store review polish).
-- "Skip a day" (rest day marked on purpose) is designed but not built.
+- Web billing: Stripe may not accept a Colombian individual — check before Phase 4 (ROADMAP).
 - Garden aggregates are computed on the client over 120 days; move to a Postgres RPC when log
   volume grows. `garden_state` table is unused.
 - Legal: `CONTACT_EMAIL = 'hola@habia.app'` is a placeholder, jurisdiction (Colombia) unconfirmed,
@@ -84,7 +95,8 @@ testers, no error tracking, no analytics, no monetization.
 - Run the app on a real phone: notifications, haptics, offline flow, app icon and splash after restart.
 - Check the password-reset email link end to end.
 - Delete a test account from Profile and confirm the data is gone.
-- Apple Developer (US$99/year) and Google Play (US$25 one-off) accounts before any store release.
+- Apple Developer: paid 2026-09-28 (individual), waiting for approval. Google Play (US$25 one-off)
+  can wait until there are Android testers.
 
 ---
 

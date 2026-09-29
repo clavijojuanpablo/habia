@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { useLogs, useToggleLog } from '@/features/checkins/api';
+import { useLogs, useToggleLog, type LogStatus } from '@/features/checkins/api';
 import { canLog } from '@/features/checkins/rules';
 import { useHabits } from '@/features/habits/api';
 import { useDayBands } from '@/features/profile/api';
@@ -20,13 +20,14 @@ export function useSchedule(from: Date, to: Date) {
     [habits.data, logs.data, from, to, bands],
   );
 
-  const toggleItem = (item: ScheduledItem, status: 'done' | 'done_minimum' = 'done') => {
+  const toggleItem = (item: ScheduledItem, status: LogStatus = 'done') => {
     // A day that has not arrived cannot be completed.
     if (!canLog(item.at, new Date())) return;
-    const done = isDone(item);
-    if (done) hapticLight();
+    // Skipping toggles independently of done/done_minimum: re-picking it undoes it.
+    const undo = status === 'skipped' ? item.log?.status === 'skipped' : isDone(item);
+    if (undo) hapticLight();
     else hapticSuccess();
-    toggle.mutate({ habitId: item.habit.id, at: item.at.toISOString(), existing: done ? item.log : undefined, status });
+    toggle.mutate({ habitId: item.habit.id, at: item.at.toISOString(), existing: undo ? item.log : undefined, status });
   };
 
   return {

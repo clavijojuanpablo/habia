@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
+import { Icon } from '@/components/icon';
 import { ThemedText } from '@/components/themed-text';
 import { BandEmoji, FontFamily, Spacing, type BandKey } from '@/constants/theme';
 import { useBandColors, useTheme } from '@/hooks/use-theme';
@@ -9,7 +10,7 @@ import { addDays, daysBetween, WEEKDAYS } from '@/lib/recurrence';
 import { formatHour, formatHourRange } from '@/lib/time/format';
 import { visibleHourSegments, type DayBandConfig } from '@/lib/time/day-bands';
 
-import { isDone, type ScheduledItem } from '../build-schedule';
+import { isDone, isSkipped, type ScheduledItem } from '../build-schedule';
 
 const ROW_MIN_HEIGHT = 46;
 /** Hours without habits collapse: order and band matter more than an exact time scale. */
@@ -33,9 +34,11 @@ export function WeekGrid({ weekStart, items, bands, now, onToggle }: Props) {
   const anytime = byDay.map((list) => list.filter((item) => !item.displayHasTime));
   // Share of each day already done, shown as a thin bar under the date.
   // A day that has not arrived gets no bar: an empty track would read as a miss.
-  const dayRatios = byDay.map((list, i) =>
-    list.length === 0 || i > todayIndex ? null : list.filter(isDone).length / list.length,
-  );
+  const dayRatios = byDay.map((list, i) => {
+    if (i > todayIndex) return null;
+    const countable = list.filter((item) => !isSkipped(item));
+    return countable.length === 0 ? null : countable.filter(isDone).length / countable.length;
+  });
   const timedHours = items.filter((i) => i.displayHasTime).map((i) => i.displayAt.getHours());
   // Only the hours of your day (morning start → end of night), stretched if a habit falls outside.
   const segments = visibleHourSegments(bands, timedHours);
@@ -229,6 +232,7 @@ function HabitChip({
   const { t } = useTranslation();
   const theme = useTheme();
   const done = isDone(item);
+  const skipped = isSkipped(item);
   const color = item.habit.color ?? theme.primary;
 
   return (
@@ -241,17 +245,21 @@ function HabitChip({
       accessibilityLabel={locked ? t('week.notYet', { habit: item.habit.name }) : item.habit.name}
       style={({ pressed }) => [
         styles.chip,
-        {
-          backgroundColor: done ? color : color + '1F',
-          borderColor: done ? color : color + '55',
-          transform: [{ scale: pressed ? 0.9 : 1 }],
-        },
+        skipped
+          ? { backgroundColor: theme.textSecondary + '1F', borderColor: theme.textSecondary + '55' }
+          : { backgroundColor: done ? color : color + '1F', borderColor: done ? color : color + '55' },
+        { transform: [{ scale: pressed ? 0.9 : 1 }] },
         locked && { backgroundColor: 'transparent', borderStyle: 'dashed', opacity: 0.6 },
       ]}>
       <ThemedText style={styles.chipEmoji}>{item.habit.icon}</ThemedText>
       {done && (
         <View style={[styles.checkBadge, { backgroundColor: theme.background, borderColor: color }]}>
           <ThemedText style={[styles.checkText, { color }]}>✓</ThemedText>
+        </View>
+      )}
+      {skipped && (
+        <View style={[styles.checkBadge, { backgroundColor: theme.background, borderColor: theme.textSecondary }]}>
+          <Icon name="rest" size={9} color={theme.textSecondary} />
         </View>
       )}
     </Pressable>

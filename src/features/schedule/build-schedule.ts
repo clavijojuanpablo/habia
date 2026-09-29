@@ -79,6 +79,11 @@ export function isDone(item: ScheduledItem): boolean {
   return item.log?.status === 'done' || item.log?.status === 'done_minimum';
 }
 
+/** A day marked as a rest day on purpose: neither a vote nor a miss. */
+export function isSkipped(item: ScheduledItem): boolean {
+  return item.log?.status === 'skipped';
+}
+
 /** The pending habit that follows `item` in its chain on the same day, if any. */
 export function nextInChain(item: ScheduledItem, items: ScheduledItem[]): ScheduledItem | undefined {
   const day = formatLocalDate(item.at);

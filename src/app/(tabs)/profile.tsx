@@ -39,6 +39,11 @@ export default function ProfileScreen() {
               <ThemedText type="small" themeColor="textSecondary" numberOfLines={1}>
                 {session?.user.email}
               </ThemedText>
+              {profile?.timezone && (
+                <ThemedText type="small" themeColor="textSecondary" numberOfLines={1}>
+                  {t('profile.timezone', { zone: profile.timezone })}
+                </ThemedText>
+              )}
             </View>
           </View>
 

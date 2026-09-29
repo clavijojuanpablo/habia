@@ -13,6 +13,7 @@ const ICONS = {
   profile: { ios: 'person.crop.circle', android: 'account_circle', web: 'account_circle' },
   add: { ios: 'plus', android: 'add', web: 'add' },
   check: { ios: 'checkmark', android: 'check', web: 'check' },
+  rest: { ios: 'moon.fill', android: 'bedtime', web: 'bedtime' },
   back: { ios: 'chevron.left', android: 'chevron_left', web: 'chevron_left' },
   forward: { ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' },
 } satisfies Record<string, SymbolName>;

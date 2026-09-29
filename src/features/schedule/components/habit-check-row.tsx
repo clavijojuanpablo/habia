@@ -6,15 +6,17 @@ import Animated, { useAnimatedStyle, useSharedValue, withSequence, withSpring } 
 import { Icon } from '@/components/icon';
 import { ThemedText } from '@/components/themed-text';
 import { Radius, Shadow, Spacing } from '@/constants/theme';
+import type { LogStatus } from '@/features/checkins/api';
 import { useTheme } from '@/hooks/use-theme';
+import { confirmAction } from '@/lib/confirm';
 
-import { isDone, type ScheduledItem } from '../build-schedule';
+import { isDone, isSkipped, type ScheduledItem } from '../build-schedule';
 
 type Props = {
   item: ScheduledItem;
   /** The habit this one is stacked after, when it applies today. */
   anchor?: { icon: string; name: string };
-  onToggle: (item: ScheduledItem, status?: 'done' | 'done_minimum') => void;
+  onToggle: (item: ScheduledItem, status?: LogStatus) => void;
 };
 
 export function formatTime(date: Date) {
@@ -26,14 +28,28 @@ export function HabitCheckRow({ item, anchor, onToggle }: Props) {
   const theme = useTheme();
   const scale = useSharedValue(1);
   const done = isDone(item);
+  const skipped = isSkipped(item);
   const minimum = item.log?.status === 'done_minimum';
   const color = item.habit.color ?? theme.primary;
 
   const checkStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.get() }] }));
 
-  const toggle = (status: 'done' | 'done_minimum' = 'done') => {
-    if (!done) scale.set(withSequence(withSpring(1.3, { duration: 150 }), withSpring(1)));
+  const toggle = (status: LogStatus = 'done') => {
+    if (!done && status !== 'skipped') scale.set(withSequence(withSpring(1.3, { duration: 150 }), withSpring(1)));
     onToggle(item, status);
+  };
+
+  // Marking a rest day needs a confirmation; undoing one does not.
+  const toggleSkip = () => {
+    if (done) return;
+    if (skipped) toggle('skipped');
+    else {
+      confirmAction(
+        t('today.skipConfirm', { habit: item.habit.name }),
+        () => toggle('skipped'),
+        { ok: t('today.skipConfirmOk'), cancel: t('common.cancel') },
+      );
+    }
   };
 
   const cue = anchor
@@ -43,7 +59,7 @@ export function HabitCheckRow({ item, anchor, onToggle }: Props) {
       : null;
   const subtitle = [
     cue ?? (item.hasTime ? formatTime(item.at) : null),
-    minimum ? t('today.minimumDone') : item.habit.two_minute_version,
+    skipped ? t('today.restDay') : minimum ? t('today.minimumDone') : item.habit.two_minute_version,
   ]
     .filter(Boolean)
     .join(' · ');
@@ -55,7 +71,7 @@ export function HabitCheckRow({ item, anchor, onToggle }: Props) {
         {
           backgroundColor: theme.backgroundElement,
           boxShadow: Shadow.card,
-          opacity: done ? 0.7 : 1,
+          opacity: done || skipped ? 0.7 : 1,
           marginLeft: item.anchorHabitId ? Math.min(item.depth, 3) * Spacing.three : 0,
         },
       ]}>
@@ -84,17 +100,22 @@ export function HabitCheckRow({ item, anchor, onToggle }: Props) {
 
       <Pressable
         onPress={() => toggle()}
+        onLongPress={toggleSkip}
         hitSlop={8}
         accessibilityRole="checkbox"
         accessibilityState={{ checked: done }}
-        accessibilityLabel={item.habit.name}>
+        accessibilityLabel={item.habit.name}
+        accessibilityHint={done ? undefined : skipped ? t('today.unskipHint') : t('today.skipHint')}>
         <Animated.View
           style={[
             styles.check,
-            { borderColor: done ? color : color + '66', backgroundColor: done ? color : color + '12' },
+            skipped
+              ? { borderColor: theme.textSecondary, backgroundColor: theme.textSecondary + '1F' }
+              : { borderColor: done ? color : color + '66', backgroundColor: done ? color : color + '12' },
             checkStyle,
           ]}>
           {done && <Icon name="check" size={20} color="#fff" />}
+          {skipped && <Icon name="rest" size={18} color={theme.textSecondary} />}
         </Animated.View>
       </Pressable>
     </View>

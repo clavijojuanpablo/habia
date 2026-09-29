@@ -11,3 +11,5 @@ export async function ensureNotificationPermission(): Promise<boolean> {
 }
 
 export async function replaceScheduledReminders(_reminders: ReminderNotification[]) {}
+
+export function useNotificationTap(_onTap: (habitId: string) => void) {}

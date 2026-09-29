@@ -18,10 +18,10 @@ const morningHabit = {
 } as Habit;
 const nightHabit = { ...morningHabit, id: 'n', window_start: '21:00:00' } as Habit;
 
-function log(habitId: string, dayOffset: number, hour: number): HabitLog {
+function log(habitId: string, dayOffset: number, hour: number, status: HabitLog['status'] = 'done'): HabitLog {
   const at = addDays(TODAY, dayOffset);
   at.setHours(hour);
-  return { habit_id: habitId, occurrence_at: at.toISOString(), status: 'done' } as HabitLog;
+  return { habit_id: habitId, occurrence_at: at.toISOString(), status } as HabitLog;
 }
 
 describe('computeStats', () => {
@@ -30,6 +30,12 @@ describe('computeStats', () => {
     expect(stats.today).toEqual({ due: 2, done: 1, ratio: 0.5 });
     const yesterday = stats.days[stats.days.length - 2];
     expect(yesterday).toMatchObject({ due: 2, done: 1, ratio: 0.5 });
+  });
+
+  it('excludes a day skipped on purpose from the ratio, like a rest day', () => {
+    const stats = computeStats([morningHabit], [log('m', -1, 7, 'skipped')], FROM, TODAY, DEFAULT_DAY_BANDS);
+    const yesterday = stats.days[stats.days.length - 2];
+    expect(yesterday).toMatchObject({ due: 0, done: 0, ratio: null });
   });
 
   it('marks days before the habits existed as having nothing due', () => {

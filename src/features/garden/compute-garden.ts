@@ -47,7 +47,9 @@ const isDoneLog = (log?: HabitLog) => log?.status === 'done' || log?.status === 
 function dueOccurrences(habit: Habit, logsByKey: Map<string, HabitLog>, today: Date): Due[] {
   const from = addDays(today, -GARDEN_WINDOW_DAYS);
   return getOccurrences(habit, from, addDays(today, 1))
-    .map(({ at }) => ({ at, done: isDoneLog(logsByKey.get(occurrenceKey(habit.id, at))) }))
+    .map(({ at }) => ({ at, log: logsByKey.get(occurrenceKey(habit.id, at)) }))
+    .filter(({ log }) => log?.status !== 'skipped') // a rest day on purpose never wilts the tree
+    .map(({ at, log }) => ({ at, done: isDoneLog(log) }))
     .filter(({ at, done }) => at < today || done);
 }
 

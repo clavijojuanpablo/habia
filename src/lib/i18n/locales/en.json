@@ -58,6 +58,11 @@
     "addHabit": "New habit",
     "minimumDone": "2-min version",
     "longPressHint": "Long press to log the 2-minute version",
+    "skipHint": "Long press to mark today as a rest day",
+    "unskipHint": "Long press to undo the rest day",
+    "skipConfirm": "Mark \"{{habit}}\" as a rest day today? It will not count as a miss.",
+    "skipConfirmOk": "Rest today",
+    "restDay": "Rest day",
     "afterHabit": "↳ After {{habit}}",
     "nextInChain": "Next in your chain",
     "markDone": "Done",
@@ -148,7 +153,8 @@
     "afternoonStartsAt": "Afternoon starts at {{time}}",
     "nightStartsAt": "Night starts at {{time}}",
     "dayBandsHint": "Sets how your day is painted and grouped. Hours after your day ends are hidden from the week.",
-    "nightEndsAt": "Your day ends at {{time}}"
+    "nightEndsAt": "Your day ends at {{time}}",
+    "timezone": "🌍 {{zone}}"
   },
   "reminders": {
     "channel": "Habit reminders",

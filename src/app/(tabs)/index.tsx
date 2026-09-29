@@ -11,9 +11,10 @@ import { ProgressRing } from '@/components/progress-ring';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BandEmoji, MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
-import { isDone, nextInChain, type ScheduleBand, type ScheduledItem } from '@/features/schedule/build-schedule';
 import { DayCompleteOverlay } from '@/features/celebration/day-complete';
+import type { LogStatus } from '@/features/checkins/api';
 import { Brote } from '@/features/mascot/brote';
+import { isDone, isSkipped, nextInChain, type ScheduleBand, type ScheduledItem } from '@/features/schedule/build-schedule';
 import { ChainPrompt } from '@/features/schedule/components/chain-prompt';
 import { HabitCheckRow } from '@/features/schedule/components/habit-check-row';
 import { YesterdayCatchUp } from '@/features/schedule/components/yesterday-catch-up';
@@ -41,14 +42,15 @@ export default function TodayScreen() {
   const habitsById = new Map(items.map((item) => [item.habit.id, item.habit]));
 
   // Checking an anchor surfaces the next habit of its chain (habit stacking).
-  const onToggle = (item: ScheduledItem, status?: 'done' | 'done_minimum') => {
-    const completing = !isDone(item);
+  // Skipping is not a completion: it neither reveals the next chained habit nor celebrates the day.
+  const onToggle = (item: ScheduledItem, status?: LogStatus) => {
+    const completing = status !== 'skipped' && !isDone(item);
     toggleItem(item, status);
     setChainNextKey(completing ? (nextInChain(item, items)?.key ?? null) : null);
 
     // Celebrate only when *this* check-in is the one that finishes the day,
     // never when simply opening an already-complete day.
-    const pendingAfter = items.filter((other) => !isDone(other) && other.key !== item.key).length;
+    const pendingAfter = items.filter((other) => !isDone(other) && !isSkipped(other) && other.key !== item.key).length;
     if (completing && pendingAfter === 0) {
       hapticSuccess();
       setCelebrating(true);
@@ -57,8 +59,10 @@ export default function TodayScreen() {
 
   const currentBand = getDayBand(now.getHours(), bands);
   const sky = bandColors[currentBand];
-  const done = items.filter(isDone).length;
-  const progress = items.length > 0 ? done / items.length : 0;
+  // Rest days on purpose do not count against today's ring, same as in the stats.
+  const countable = items.filter((item) => !isSkipped(item));
+  const done = countable.filter(isDone).length;
+  const progress = countable.length > 0 ? done / countable.length : 0;
 
   return (
     <ThemedView style={styles.flex}>
@@ -117,7 +121,8 @@ export default function TodayScreen() {
             const sectionItems = items.filter((item) => item.band === band);
             if (sectionItems.length === 0) return null;
             const colors = bandColors[band];
-            const sectionDone = sectionItems.filter(isDone).length;
+            const sectionCountable = sectionItems.filter((item) => !isSkipped(item));
+            const sectionDone = sectionCountable.filter(isDone).length;
             return (
               <View key={band} style={styles.section}>
                 <View style={styles.sectionHeader}>
@@ -126,7 +131,7 @@ export default function TodayScreen() {
                   </ThemedText>
                   <View style={[styles.countPill, { backgroundColor: colors.background }]}>
                     <ThemedText type="caption" style={{ color: colors.accent }}>
-                      {sectionDone}/{sectionItems.length}
+                      {sectionDone}/{sectionCountable.length}
                     </ThemedText>
                   </View>
                 </View>

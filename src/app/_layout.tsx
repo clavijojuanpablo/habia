@@ -18,6 +18,7 @@ import { Colors } from '@/constants/theme';
 import { AppearanceProvider, useAppearance } from '@/features/appearance/appearance-provider';
 import { SessionProvider, useSession } from '@/features/auth/session-provider';
 import { useProfile } from '@/features/profile/api';
+import { useTimezoneSync } from '@/features/profile/use-timezone-sync';
 import { startNetworkWatcher } from '@/lib/network';
 import { persister, queryClient } from '@/lib/query/client';
 
@@ -70,6 +71,7 @@ function RootNavigator() {
   const { t } = useTranslation();
   const { session, isLoading } = useSession();
   const { data: profile, isLoading: profileLoading } = useProfile();
+  useTimezoneSync();
   // First run: no habits yet, so we welcome the user before showing the app.
   const needsOnboarding = !!session && !!profile && !profile.onboarded_at;
   const [fontsLoaded, fontError] = useFonts({

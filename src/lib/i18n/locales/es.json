@@ -58,6 +58,11 @@
     "addHabit": "Nuevo hábito",
     "minimumDone": "Versión de 2 min",
     "longPressHint": "Mantén presionado para marcar la versión de 2 minutos",
+    "skipHint": "Mantén presionado para marcar hoy como descanso",
+    "unskipHint": "Mantén presionado para deshacer el descanso",
+    "skipConfirm": "¿Marcar \"{{habit}}\" como descanso hoy? No cuenta como fallo.",
+    "skipConfirmOk": "Descansar hoy",
+    "restDay": "Descanso",
     "afterHabit": "↳ Después de {{habit}}",
     "nextInChain": "Siguiente en tu cadena",
     "markDone": "Hecho",
@@ -148,7 +153,8 @@
     "afternoonStartsAt": "La tarde empieza a las {{time}}",
     "nightStartsAt": "La noche empieza a las {{time}}",
     "dayBandsHint": "Define cómo se pinta y agrupa tu día. Las horas después de que termina tu día no aparecen en la semana.",
-    "nightEndsAt": "Tu día termina a las {{time}}"
+    "nightEndsAt": "Tu día termina a las {{time}}",
+    "timezone": "🌍 {{zone}}"
   },
   "reminders": {
     "channel": "Recordatorios de hábitos",

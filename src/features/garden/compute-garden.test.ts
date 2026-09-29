@@ -17,11 +17,11 @@ const habit = {
 } as Habit;
 
 /** Logs for the given day offsets relative to today (e.g. -1 = yesterday). */
-function logsFor(offsets: number[]) {
+function logsFor(offsets: number[], status: HabitLog['status'] = 'done') {
   const map = new Map<string, HabitLog>();
   for (const offset of offsets) {
     const at = addDays(TODAY, offset);
-    map.set(occurrenceKey('h1', at), { habit_id: 'h1', occurrence_at: at.toISOString(), status: 'done' } as HabitLog);
+    map.set(occurrenceKey('h1', at), { habit_id: 'h1', occurrence_at: at.toISOString(), status } as HabitLog);
   }
   return map;
 }
@@ -53,6 +53,15 @@ describe('computeHabitGrowth', () => {
     // done -3, -2, MISS yesterday
     const growth = computeHabitGrowth(habit, logsFor([-3, -2]), TODAY);
     expect(growth.atRisk).toBe(true);
+    expect(growth.streak).toBe(2);
+  });
+
+  it('treats a day skipped on purpose as a rest day: no miss, streak intact', () => {
+    // done -3, -2, SKIPPED -1 (on purpose, not a miss)
+    const map = logsFor([-3, -2]);
+    for (const [key, entry] of logsFor([-1], 'skipped')) map.set(key, entry);
+    const growth = computeHabitGrowth(habit, map, TODAY);
+    expect(growth.atRisk).toBe(false);
     expect(growth.streak).toBe(2);
   });
 

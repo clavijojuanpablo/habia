@@ -46,8 +46,8 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - ✅ Merged into `main`, pushed to GitHub, CI (typecheck, lint, tests) on push and PRs
 - 🚧 Auth: ✅ password reset, ✅ PKCE deep links for email links (`habia://auth-callback`), ✅ in-app account deletion (Edge Function `delete-account`), ✅ redesigned sign-in · ⏳ Sign in with Apple/Google
 - ✅ Offline: persisted query cache (7 days), online state from expo-network / browser events, check-ins queued and replayed after a restart, calm offline banner
-- 🚧 Log past days: ✅ yesterday catch-up card in Hoy + any past day from Semana; future days locked (`canLog`) and the week view cannot go back before the join date · ⏳ skip a day
-- ⏳ Use `profiles.timezone`; notification tap opens the habit
+- 🚧 Log past days: ✅ yesterday catch-up card in Hoy + any past day from Semana; future days locked (`canLog`) and the week view cannot go back before the join date · ✅ skip a day (rest day on purpose: long-press the check circle; not a miss for progress, tree or streak)
+- 🚧 ✅ `profiles.timezone` synced from the device every session · ✅ notification tap opens the habit · ⏳ compute "today" from `profiles.timezone` (needed once the server sends pushes)
 - ✅ Personalized onboarding: 5 steps (welcome → identity → first habit from 20 suggestions → obstacle → ready), creates identity + habit, asks for notifications only when the user chose "I forget"; gated by `profiles.onboarded_at`
 - ✅ Mascot "Brote": SVG character with 4 moods in onboarding and the empty state; day-complete celebration (confetti + Brote + votes), fired only by the check-in that closes the day
 - ✅ Redesigned habit form (live preview, sections as cards, collapsed extras, sticky save), sign-in, Garden (stage progress + Brote) and Progress (colorful stat tiles)
@@ -59,13 +59,17 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - ✅ Week grid hours formatted per locale; Brote peeking from the header corner
 - ✅ Language picker in Profile (`profiles.locale`, applied live via i18next)
 
-## Block 2: Beta testers ⏳
-- EAS project + development build, TestFlight + Play Internal Testing
+## Block 2: Beta testers 🚧
+- ✅ EAS project (`eas.json`: development / preview / production) + Android development build (APK)
+- ⏳ iOS development build + TestFlight (Apple Developer account, individual, enrollment pending)
+- ⏳ Play Internal Testing (no Android device yet; new personal accounts need a closed-testing period before production)
 - Sentry + PostHog (north star, D1/D7/D30 retention)
 - Ask testers about one-off reminders / calendar
 
 ## Phase 4: Monetization ⏳
 - RevenueCat (in-app) + Stripe (web), paywall, entitlements, Free vs Pro limits
+  - ⚠️ Confirm Stripe accepts a Colombian individual before building web billing; fallbacks: a Merchant of Record (Paddle / Lemon Squeezy) or a US LLC
+  - Apple: apply to the Small Business Program (15%). An individual seller shows a personal name and, as an EU DSA trader, a public address
 
 ## Phase 3B / Pro value ⏳
 - Guided programs ("Caminos", 3 initial) + micro-lessons

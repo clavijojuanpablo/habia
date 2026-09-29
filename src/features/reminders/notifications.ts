@@ -1,4 +1,5 @@
 import * as Notifications from 'expo-notifications';
+import { useEffect } from 'react';
 import { Platform } from 'react-native';
 
 export const REMINDERS_SUPPORTED = true;
@@ -38,6 +39,22 @@ export async function ensureNotificationPermission(): Promise<boolean> {
     ios: { allowAlert: true, allowSound: true, allowBadge: false },
   });
   return requested.granted;
+}
+
+/**
+ * Opens the habit a reminder was for. `useLastNotificationResponse` covers both
+ * the tap that launched the app and taps while it runs; clearing it afterwards
+ * keeps a remount from opening the same habit again.
+ */
+export function useNotificationTap(onTap: (habitId: string) => void) {
+  const lastResponse = Notifications.useLastNotificationResponse();
+
+  useEffect(() => {
+    const habitId = lastResponse?.notification.request.content.data?.habitId;
+    if (typeof habitId !== 'string') return;
+    onTap(habitId);
+    Notifications.clearLastNotificationResponseAsync();
+  }, [lastResponse, onTap]);
 }
 
 /** Replaces every pending reminder with the given set. */
