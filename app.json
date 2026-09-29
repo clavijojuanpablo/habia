@@ -8,9 +8,11 @@
     "scheme": "habia",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "app.habia.mobile"
     },
     "android": {
+      "package": "app.habia.mobile",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png",
@@ -48,6 +50,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "5bb60abd-e049-4a7c-8f5c-e0ed52333a91"
+      }
+    },
+    "owner": "clavijojuanpablo"
   }
 }
