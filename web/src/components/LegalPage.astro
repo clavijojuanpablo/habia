@@ -1,0 +1,119 @@
+---
+// The same texts the app shows (src/features/legal/content.ts): one source, never out of sync.
+import { LEGAL, LEGAL_UPDATED } from '../../../src/features/legal/content';
+import Layout from '../layouts/Layout.astro';
+import { copy, ROUTES, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  kind: 'privacy' | 'terms';
+}
+
+const { lang, kind } = Astro.props;
+const doc = LEGAL[lang][kind];
+const t = copy[lang];
+const updated = new Date(`${LEGAL_UPDATED}T12:00:00`).toLocaleDateString(lang === 'es' ? 'es-CO' : 'en-US', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+
+/** Paragraphs starting with "• " in the source become list items. */
+const BULLET = '• ';
+function blocks(body: readonly string[]) {
+  const out: ({ type: 'p'; text: string } | { type: 'ul'; items: string[] })[] = [];
+  for (const line of body) {
+    if (line.startsWith(BULLET)) {
+      const last = out.at(-1);
+      const text = line.slice(BULLET.length);
+      if (last?.type === 'ul') last.items.push(text);
+      else out.push({ type: 'ul', items: [text] });
+    } else out.push({ type: 'p', text: line });
+  }
+  return out;
+}
+---
+
+<Layout lang={lang} route={kind} title={doc.title} description={doc.intro}>
+  <article class="container legal">
+    <a class="back" href={ROUTES.home[lang]}>← {t.legal.back}</a>
+    <h1>{doc.title}</h1>
+    <p class="updated">{t.legal.updated}: {updated}</p>
+    <p class="intro">{doc.intro}</p>
+    {
+      doc.sections.map((section) => (
+        <section>
+          <h2>{section.heading}</h2>
+          {blocks(section.body).map((block) =>
+            block.type === 'p' ? (
+              <p>{block.text}</p>
+            ) : (
+              <ul>
+                {block.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            ),
+          )}
+        </section>
+      ))
+    }
+  </article>
+</Layout>
+
+<style>
+  .legal {
+    max-width: 760px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 16px;
+  }
+
+  .back {
+    font-size: 15px;
+    text-decoration: none;
+  }
+
+  h1 {
+    font-size: clamp(32px, 5vw, 44px);
+  }
+
+  .updated {
+    color: var(--text-secondary);
+    font-size: 15px;
+  }
+
+  .intro {
+    font-size: 18px;
+    padding: 20px 24px;
+    border-radius: var(--radius-lg);
+    background: var(--primary-soft);
+  }
+
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  li::marker {
+    color: var(--primary);
+  }
+</style>

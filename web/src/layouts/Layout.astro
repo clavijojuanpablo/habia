@@ -1,0 +1,117 @@
+---
+import '@fontsource-variable/nunito';
+import '../styles/global.css';
+
+import Brote from '../components/Brote.astro';
+import { CONTACT_EMAIL, copy, ROUTES, type Lang, type RouteKey } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  route: RouteKey;
+  title?: string;
+  description?: string;
+}
+
+const { lang, route, title, description } = Astro.props;
+const t = copy[lang];
+const other: Lang = lang === 'es' ? 'en' : 'es';
+const pageTitle = title ? `${title} · habia` : t.meta.title;
+const pageDescription = description ?? t.meta.description;
+const canonical = new URL(ROUTES[route][lang], Astro.site);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="es" href={new URL(ROUTES[route].es, Astro.site)} />
+    <link rel="alternate" hreflang="en" href={new URL(ROUTES[route].en, Astro.site)} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#FFF8F1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#16141D" media="(prefers-color-scheme: dark)" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL('/apple-touch-icon.png', Astro.site)} />
+  </head>
+  <body>
+    <header class="container header">
+      <a class="logo" href={ROUTES.home[lang]} aria-label="habia">
+        <Brote size={40} animated={false} />
+        <span>habia</span>
+      </a>
+      <a class="lang" href={ROUTES[route][other]} hreflang={other} lang={other} aria-label={t.nav.switchLangLabel}>
+        {t.nav.switchLang}
+      </a>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="container footer">
+      <nav class="footer-links">
+        <a href={ROUTES.privacy[lang]}>{t.footer.privacy}</a>
+        <a href={ROUTES.terms[lang]}>{t.footer.terms}</a>
+        <a href={`mailto:${CONTACT_EMAIL}`}>{t.footer.contact}</a>
+      </nav>
+      <p>© {new Date().getFullYear()} habia · {t.footer.rights}</p>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text);
+    font-size: 26px;
+    font-weight: 900;
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+
+  .lang {
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+    color: var(--text);
+    font-size: 15px;
+    text-decoration: none;
+  }
+
+  .footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding-top: 48px;
+    padding-bottom: 40px;
+    color: var(--text-secondary);
+    font-size: 15px;
+    text-align: center;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 24px;
+  }
+</style>

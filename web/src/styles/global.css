@@ -1,0 +1,150 @@
+/*
+ * Design tokens mirrored from src/constants/theme.ts (the app's source of truth,
+ * which imports react-native and cannot be loaded here). Change both together.
+ */
+:root {
+  --background: #fff8f1;
+  --surface: #ffffff;
+  --surface-selected: #f3ece3;
+  --text: #2e2a3b;
+  --text-secondary: #8c8699;
+  --primary: #3dbe7a;
+  --primary-dark: #2c9a60;
+  --on-primary: #ffffff;
+  --primary-soft: #ddf6e8;
+  --border: #efe6db;
+  /* Day bands (BandColors): background + accent. */
+  --morning-bg: #ffe7d6;
+  --morning-accent: #e9793a;
+  --afternoon-bg: #fff3c4;
+  --afternoon-accent: #c98f0b;
+  --night-bg: #e6e1ff;
+  --night-accent: #6453d6;
+  --anytime-bg: #d9f5e6;
+  --anytime-accent: #23965c;
+
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --shadow-card: 0 4px 14px rgba(46, 42, 59, 0.07);
+  --shadow-raised: 0 8px 24px rgba(46, 42, 59, 0.12);
+  --max-width: 1040px;
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #16141d;
+    --surface: #221f2c;
+    --surface-selected: #2d2a39;
+    --text: #f5f2fa;
+    --text-secondary: #a6a1b5;
+    --primary: #52d18f;
+    --primary-dark: #35a06a;
+    --on-primary: #0e2a1b;
+    --primary-soft: #1f3a2c;
+    --border: #2f2b3b;
+    --morning-bg: #3a2a22;
+    --morning-accent: #ffb085;
+    --afternoon-bg: #3a3420;
+    --afternoon-accent: #f2c94c;
+    --night-bg: #2a2644;
+    --night-accent: #b3a8ff;
+    --anytime-bg: #1f3a2c;
+    --anytime-accent: #6ee0a5;
+    --shadow-card: 0 4px 14px rgba(0, 0, 0, 0.3);
+    --shadow-raised: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text);
+  font-family: 'Nunito Variable', 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-weight: 600;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 900;
+  line-height: 1.15;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--primary-dark);
+  font-weight: 800;
+}
+
+@media (prefers-color-scheme: dark) {
+  a {
+    color: var(--primary);
+  }
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Chunky 3D button, same as the app's <Button>. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 24px;
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: var(--on-primary);
+  border-bottom: 5px solid var(--primary-dark);
+  font-size: 17px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 80ms ease, border-bottom-width 80ms ease;
+}
+
+.button:active {
+  transform: translateY(3px);
+  border-bottom-width: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

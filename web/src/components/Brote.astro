@@ -1,0 +1,97 @@
+---
+/**
+ * Brote, the mascot. Same drawing as src/features/mascot/brote.tsx (the source
+ * of truth), as plain SVG. The bounce is CSS and stops for reduced motion.
+ */
+interface Props {
+  mood?: 'happy' | 'cheer' | 'celebrate';
+  size?: number;
+  animated?: boolean;
+  class?: string;
+}
+
+const { mood = 'happy', size = 120, animated = true, class: className } = Astro.props;
+const celebrate = mood === 'celebrate';
+const BODY = '#5FD69A';
+const BODY_DARK = '#2FA56A';
+const LEAF = '#3DBE7A';
+const INK = '#2E2A3B';
+const CHEEK = '#FF9FB0';
+---
+
+<svg
+  class:list={['brote', { 'brote--animated': animated, 'brote--celebrate': celebrate }, className]}
+  width={size}
+  height={size}
+  viewBox="0 0 120 120"
+  role="img"
+  aria-label="Brote"
+>
+  <path
+    d={celebrate ? 'M60 46 C40 44 28 30 30 16 C46 14 58 26 60 46 Z' : 'M60 48 C42 50 30 40 30 26 C46 22 58 32 60 48 Z'}
+    fill={LEAF}
+  />
+  <path
+    d={celebrate ? 'M60 46 C80 44 92 30 90 16 C74 14 62 26 60 46 Z' : 'M60 48 C78 50 90 40 90 26 C74 22 62 32 60 48 Z'}
+    fill={BODY}
+  />
+  <path d="M59 62 L59 42 Q60 38 61 42 L61 62 Z" fill={BODY_DARK} />
+  <ellipse cx="60" cy="82" rx="30" ry="28" fill={BODY} />
+  <ellipse cx="60" cy="86" rx="24" ry="21" fill="#7BE3AE" opacity="0.6" />
+  <circle cx="51" cy="78" r="4" fill={INK} />
+  <circle cx="69" cy="78" r="4" fill={INK} />
+  <circle cx="52.5" cy="76.5" r="1.4" fill="#FFFFFF" />
+  <circle cx="70.5" cy="76.5" r="1.4" fill="#FFFFFF" />
+  <circle cx="42" cy="86" r="5" fill={CHEEK} opacity="0.65" />
+  <circle cx="78" cy="86" r="5" fill={CHEEK} opacity="0.65" />
+  {
+    celebrate ? (
+      <ellipse cx="60" cy="90" rx="7" ry="6" fill={INK} />
+    ) : mood === 'cheer' ? (
+      <path d="M50 88 q10 10 20 0" stroke={INK} stroke-width="3.5" stroke-linecap="round" fill="none" />
+    ) : (
+      <path d="M53 88 q7 7 14 0" stroke={INK} stroke-width="3" stroke-linecap="round" fill="none" />
+    )
+  }
+  {
+    celebrate && (
+      <g fill="#F5B92E">
+        <circle cx="22" cy="40" r="3" />
+        <circle cx="100" cy="48" r="3.5" />
+        <circle cx="30" cy="96" r="2.5" />
+        <circle cx="96" cy="90" r="2.5" />
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .brote {
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .brote--animated {
+    animation: bounce 2.2s ease-in-out infinite;
+  }
+
+  .brote--animated.brote--celebrate {
+    animation-duration: 0.84s;
+  }
+
+  @keyframes bounce {
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-4px) scale(1.015);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .brote--animated {
+      animation: none;
+    }
+  }
+</style>

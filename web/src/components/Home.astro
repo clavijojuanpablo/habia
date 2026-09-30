@@ -1,0 +1,284 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { CONTACT_EMAIL, copy, type Lang } from '../i18n';
+import Brote from './Brote.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = copy[lang];
+const mailto = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(t.hero.ctaSubject)}`;
+---
+
+<Layout lang={lang} route="home">
+  <section class="container hero">
+    <div class="hero-text">
+      <span class="badge">📱 {t.hero.badge}</span>
+      <h1>{t.hero.title}</h1>
+      <p class="lead">{t.hero.body}</p>
+      <a class="button" href={mailto}>🌱 {t.hero.cta}</a>
+    </div>
+
+    <figure class="preview" aria-label={t.preview.label}>
+      <div class="preview-head">
+        <Brote mood="cheer" size={72} />
+        <div>
+          <p class="preview-today">{t.preview.today}</p>
+          <p class="preview-count">2/3</p>
+        </div>
+      </div>
+      <ul class="preview-list">
+        {
+          t.preview.bands.map((item) => (
+            <li class={`row row--${item.band}`}>
+              <span class="row-band">
+                {item.emoji} {item.name}
+              </span>
+              <span class="row-habit">{item.habit}</span>
+              <span class:list={['check', { 'check--done': item.done }]} aria-hidden="true">
+                {item.done ? '✓' : ''}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </figure>
+  </section>
+
+  <section class="container features">
+    <h2>{t.features.title}</h2>
+    <div class="grid">
+      {
+        t.features.items.map((item) => (
+          <article class="card">
+            <span class="card-emoji" aria-hidden="true">
+              {item.emoji}
+            </span>
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="science">
+      <Brote mood="celebrate" size={96} />
+      <div>
+        <h2>{t.science.title}</h2>
+        <p>{t.science.body}</p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    gap: 48px;
+    padding-top: 32px;
+    padding-bottom: 64px;
+  }
+
+  .hero-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .badge {
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--primary-soft);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  h1 {
+    font-size: clamp(34px, 5.2vw, 56px);
+    letter-spacing: -0.02em;
+  }
+
+  .lead {
+    font-size: 19px;
+    color: var(--text-secondary);
+    max-width: 34em;
+  }
+
+  .preview {
+    margin: 0;
+    padding: 24px;
+    border-radius: var(--radius-xl);
+    background: var(--surface);
+    box-shadow: var(--shadow-raised);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transform: rotate(1.5deg);
+  }
+
+  .preview-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: var(--radius-lg);
+    background: var(--morning-bg);
+  }
+
+  .preview-today {
+    font-size: 15px;
+    color: var(--morning-accent);
+    font-weight: 800;
+  }
+
+  .preview-count {
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .preview-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: 'band check' 'habit check';
+    align-items: center;
+    column-gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    background: var(--surface-selected);
+  }
+
+  .row-band {
+    grid-area: band;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .row-habit {
+    grid-area: habit;
+    font-weight: 800;
+  }
+
+  .row--morning .row-band {
+    color: var(--morning-accent);
+  }
+  .row--afternoon .row-band {
+    color: var(--afternoon-accent);
+  }
+  .row--night .row-band {
+    color: var(--night-accent);
+  }
+
+  .check {
+    grid-area: check;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2.5px solid var(--primary);
+    display: grid;
+    place-items: center;
+    color: var(--on-primary);
+    font-weight: 900;
+  }
+
+  .check--done {
+    background: var(--primary);
+  }
+
+  .features {
+    padding-bottom: 64px;
+  }
+
+  .features h2,
+  .science h2 {
+    font-size: clamp(26px, 3.4vw, 36px);
+  }
+
+  .features h2 {
+    margin-bottom: 24px;
+  }
+
+  .grid {
+    display: grid;
+    /* 2×2 on wide screens: four cards never leave an orphan. */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .card {
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .card-emoji {
+    font-size: 36px;
+    line-height: 1.2;
+  }
+
+  .card h3 {
+    font-size: 20px;
+  }
+
+  .card p {
+    color: var(--text-secondary);
+  }
+
+  .science {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 32px;
+    border-radius: var(--radius-xl);
+    background: var(--anytime-bg);
+  }
+
+  .science div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      grid-template-columns: 1fr;
+      gap: 40px;
+      padding-top: 8px;
+    }
+
+    .preview {
+      transform: none;
+    }
+
+    .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .science {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 24px;
+    }
+  }
+</style>
