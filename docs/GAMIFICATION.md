@@ -43,6 +43,8 @@ Leaning: **B with Brote as the default seed** (keeps the brand, adds real choice
 - Growth stages if the character grows (seed → sprout → young → grown), same layers per stage.
 - Final animation in **Rive** (`.riv`): one state machine with a `mood` number input and a `cheer` trigger; skins and accessories as swappable artboards or nested components. Rive needs a development build (`rive-react-native`).
 
+**Tools.** Raster generators such as Ludo.ai (spritesheet PNG / GIF / MP4) are great for concept exploration, one-off non-customizable animations (day-complete celebration, confetti, onboarding moments), check-in sound effects and store/marketing video — but **not** for the customizable character: pre-rendered frames multiply by every combination of parts, while vector layers + Rive animate any combination once. Spritesheets can be played with Skia. Confirm commercial-use licensing before shipping any generated asset.
+
 ## Cosmetics (Pro)
 Skins, accessories, pots and garden themes. **Cosmetic only, never pay-to-win**; no loot boxes, no fake scarcity ("only today!"). Some cosmetics are earned by milestones, so free users also customize.
 
