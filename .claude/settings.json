@@ -27,7 +27,7 @@
             "type": "command",
             "command": "node",
             "args": [
-              ".claude/hooks/session-context.mjs"
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/session-context.mjs"
             ],
             "timeout": 20,
             "statusMessage": "Leyendo el estado del proyecto..."
@@ -43,7 +43,7 @@
             "type": "command",
             "command": "node",
             "args": [
-              ".claude/hooks/guard-paths.mjs"
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/guard-paths.mjs"
             ],
             "timeout": 20,
             "statusMessage": "Revisando la ruta..."
@@ -58,7 +58,7 @@
             "type": "command",
             "command": "node",
             "args": [
-              ".claude/hooks/pending-work.mjs"
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/pending-work.mjs"
             ],
             "timeout": 20,
             "statusMessage": "Revisando trabajo pendiente..."
