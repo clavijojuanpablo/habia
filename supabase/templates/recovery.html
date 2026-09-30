@@ -1,0 +1,35 @@
+<!-- Password recovery. Colors mirror src/constants/theme.ts (emails cannot import tokens). -->
+<!-- `.Data.language` is set at sign-up (src/features/auth/api.ts); Spanish is the default. -->
+{{ $en := eq (printf "%v" .Data.language) "en" }}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFF8F1;padding:32px 16px;font-family:Nunito,'Helvetica Neue',Arial,sans-serif;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#FFFFFF;border-radius:24px;padding:32px;">
+        <tr><td align="center" style="font-size:48px;line-height:56px;">🌱</td></tr>
+        <tr>
+          <td align="center" style="color:#2E2A3B;font-size:24px;font-weight:800;padding-top:8px;">
+            {{ if $en }}Reset your password{{ else }}Crea una nueva contraseña{{ end }}
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="color:#8C8699;font-size:16px;line-height:24px;padding-top:12px;">
+            {{ if $en }}Someone (hopefully you) asked to reset the password of your habia account. Open this link on your phone to choose a new one.{{ else }}Alguien (ojalá tú) pidió cambiar la contraseña de tu cuenta de habia. Abre este enlace en tu teléfono para elegir una nueva.{{ end }}
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding-top:24px;">
+            <a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#3DBE7A;color:#FFFFFF;text-decoration:none;font-size:17px;font-weight:800;padding:14px 28px;border-radius:16px;border-bottom:4px solid #2C9A60;">
+              {{ if $en }}Choose a new password{{ else }}Elegir nueva contraseña{{ end }}
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="color:#8C8699;font-size:13px;line-height:20px;padding-top:24px;">
+            {{ if $en }}The link works once and expires in 1 hour. If you did not ask for this, ignore this email: your password stays the same.{{ else }}El enlace funciona una sola vez y caduca en 1 hora. Si no lo pediste, ignora este correo: tu contraseña sigue igual.{{ end }}
+          </td>
+        </tr>
+      </table>
+      <p style="color:#8C8699;font-size:12px;padding-top:16px;margin:0;">habia · hola@habia.app</p>
+    </td>
+  </tr>
+</table>

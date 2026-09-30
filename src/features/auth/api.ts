@@ -1,5 +1,6 @@
 import * as Linking from 'expo-linking';
 
+import i18n from '@/lib/i18n';
 import { supabase } from '@/lib/supabase/client';
 
 /**
@@ -22,7 +23,8 @@ export async function signUpWithEmail(email: string, password: string) {
   const { data, error } = await supabase.auth.signUp({
     email: email.trim(),
     password,
-    options: { emailRedirectTo: authCallbackUrl() },
+    // `language` lets the auth email templates (supabase/templates/) speak the user's language.
+    options: { emailRedirectTo: authCallbackUrl(), data: { language: i18n.language } },
   });
   if (error) throw error;
   return data;
