@@ -8,6 +8,9 @@ export default defineConfig({
   trailingSlash: 'never',
   build: { format: 'file' },
   vite: {
+    // Pin this tsconfig: otherwise Vite walks up to the app's, which extends Expo's
+    // config — and Vercel installs only web/'s dependencies, so the build breaks.
+    tsconfig: './tsconfig.json',
     server: { fs: { allow: ['..'] } },
   },
 });
