@@ -10,6 +10,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.habia.mobile",
+      "associatedDomains": ["applinks:habia.app"],
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -49,7 +50,13 @@
           "color": "#2F9E6B"
         }
       ],
-      "@sentry/react-native"
+      [
+        "@sentry/react-native",
+        {
+          "organization": "clavolab",
+          "project": "habia"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

@@ -1,0 +1,10 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["TU49YY72V6.app.habia.mobile"],
+        "components": [{ "/": "/auth-callback", "comment": "Auth email links (sign-up confirmation, password reset)" }]
+      }
+    ]
+  }
+}

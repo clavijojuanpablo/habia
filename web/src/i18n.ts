@@ -70,6 +70,12 @@ export const copy = {
     },
     footer: { privacy: 'Privacidad', terms: 'Términos', contact: 'Contacto', rights: 'Hecho con cariño en Colombia.' },
     legal: { updated: 'Última actualización', back: 'Volver al inicio' },
+    authCallback: {
+      title: 'Abre este enlace en tu teléfono',
+      body: 'Este enlace confirma tu cuenta o te deja elegir una contraseña nueva, y funciona dentro de la app habia. Ábrelo desde el correo, en el teléfono donde tienes habia.',
+      open: 'Abrir habia',
+      hint: '¿Ya estás en el teléfono? Toca el botón.',
+    },
   },
   en: {
     meta: {
@@ -125,5 +131,11 @@ export const copy = {
     },
     footer: { privacy: 'Privacy', terms: 'Terms', contact: 'Contact', rights: 'Made with care in Colombia.' },
     legal: { updated: 'Last updated', back: 'Back to home' },
+    authCallback: {
+      title: 'Open this link on your phone',
+      body: 'This link confirms your account or lets you choose a new password, and it works inside the habia app. Open it from the email, on the phone where you have habia.',
+      open: 'Open habia',
+      hint: 'Already on your phone? Tap the button.',
+    },
   },
 } as const;

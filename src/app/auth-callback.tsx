@@ -9,33 +9,31 @@ import { useTheme } from '@/hooks/use-theme';
 import { supabase } from '@/lib/supabase/client';
 
 /**
- * Landing screen for the links Supabase sends by email (sign-up confirmation and
- * password recovery). The link carries a one-time `code` that we exchange for a
- * session (PKCE); `next=reset` continues to the new-password screen.
+ * Landing screen for the links in our auth emails (sign-up confirmation and
+ * password recovery), usually opened as the Universal Link
+ * https://habia.app/auth-callback. The templates (supabase/templates/) put a
+ * one-time `token_hash` and its `type` in the link; verifying it signs the user in
+ * on whichever device opens it, and `type=recovery` continues to the new-password screen.
  */
 export default function AuthCallbackScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { code, next, error_description: errorDescription } = useLocalSearchParams<{
-    code?: string;
-    next?: string;
-    error_description?: string;
-  }>();
-  const [exchangeError, setExchangeError] = useState<string | null>(null);
-  // Derived, never stored: a link without a code is simply invalid.
-  const error = errorDescription ?? exchangeError ?? (code ? null : t('auth.linkInvalid'));
+  const { token_hash: tokenHash, type } = useLocalSearchParams<{ token_hash?: string; type?: string }>();
+  const [verifyError, setVerifyError] = useState<string | null>(null);
+  // Derived, never stored: a link without a token is simply invalid.
+  const error = verifyError ?? (tokenHash && type ? null : t('auth.linkInvalid'));
 
   useEffect(() => {
-    if (!code) return;
+    if (!tokenHash || !type) return;
     supabase.auth
-      .exchangeCodeForSession(code)
+      .verifyOtp({ token_hash: tokenHash, type: type === 'recovery' ? 'recovery' : 'email' })
       .then(({ error: failure }) => {
-        if (failure) return setExchangeError(failure.message);
+        if (failure) return setVerifyError(failure.message);
         // Signed in now: either continue to set a new password, or land in the app.
-        router.replace(next === 'reset' ? '/reset-password' : '/');
+        router.replace(type === 'recovery' ? '/reset-password' : '/');
       })
-      .catch(() => setExchangeError(t('common.error')));
-  }, [code, next, t]);
+      .catch(() => setVerifyError(t('common.error')));
+  }, [tokenHash, type, t]);
 
   if (error) {
     return (

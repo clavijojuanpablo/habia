@@ -7,17 +7,19 @@ import { CONTACT_EMAIL, copy, ROUTES, type Lang, type RouteKey } from '../i18n';
 
 interface Props {
   lang: Lang;
-  route: RouteKey;
+  /** Omitted on pages with no translation (no canonical, hreflang or language switch). */
+  route?: RouteKey;
+  noindex?: boolean;
   title?: string;
   description?: string;
 }
 
-const { lang, route, title, description } = Astro.props;
+const { lang, route, title, description, noindex = false } = Astro.props;
 const t = copy[lang];
 const other: Lang = lang === 'es' ? 'en' : 'es';
 const pageTitle = title ? `${title} · habia` : t.meta.title;
 const pageDescription = description ?? t.meta.description;
-const canonical = new URL(ROUTES[route][lang], Astro.site);
+const canonical = route && new URL(ROUTES[route][lang], Astro.site);
 ---
 
 <!doctype html>
@@ -27,9 +29,16 @@ const canonical = new URL(ROUTES[route][lang], Astro.site);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
-    <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang="es" href={new URL(ROUTES[route].es, Astro.site)} />
-    <link rel="alternate" hreflang="en" href={new URL(ROUTES[route].en, Astro.site)} />
+    {
+      route && (
+        <>
+          <link rel="canonical" href={canonical} />
+          <link rel="alternate" hreflang="es" href={new URL(ROUTES[route].es, Astro.site)} />
+          <link rel="alternate" hreflang="en" href={new URL(ROUTES[route].en, Astro.site)} />
+        </>
+      )
+    }
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#FFF8F1" media="(prefers-color-scheme: light)" />
@@ -37,7 +46,7 @@ const canonical = new URL(ROUTES[route][lang], Astro.site);
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonical} />
+    {canonical && <meta property="og:url" content={canonical} />}
     <meta property="og:image" content={new URL('/apple-touch-icon.png', Astro.site)} />
   </head>
   <body>
@@ -46,9 +55,13 @@ const canonical = new URL(ROUTES[route][lang], Astro.site);
         <Brote size={40} animated={false} />
         <span>habia</span>
       </a>
-      <a class="lang" href={ROUTES[route][other]} hreflang={other} lang={other} aria-label={t.nav.switchLangLabel}>
-        {t.nav.switchLang}
-      </a>
+      {
+        route && (
+          <a class="lang" href={ROUTES[route][other]} hreflang={other} lang={other} aria-label={t.nav.switchLangLabel}>
+            {t.nav.switchLang}
+          </a>
+        )
+      }
     </header>
 
     <main>

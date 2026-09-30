@@ -1,5 +1,6 @@
 <!-- Password recovery. Colors mirror src/constants/theme.ts (emails cannot import tokens). -->
 <!-- `.Data.language` is set at sign-up (src/features/auth/api.ts); Spanish is the default. -->
+<!-- The link goes straight to https://habia.app/auth-callback (a Universal Link), not through Supabase: the app verifies `token_hash` itself (src/app/auth-callback.tsx). -->
 {{ $en := eq (printf "%v" .Data.language) "en" }}
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFF8F1;padding:32px 16px;font-family:Nunito,'Helvetica Neue',Arial,sans-serif;">
   <tr>
@@ -18,7 +19,7 @@
         </tr>
         <tr>
           <td align="center" style="padding-top:24px;">
-            <a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#3DBE7A;color:#FFFFFF;text-decoration:none;font-size:17px;font-weight:800;padding:14px 28px;border-radius:16px;border-bottom:4px solid #2C9A60;">
+            <a href="{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=recovery" style="display:inline-block;background:#3DBE7A;color:#FFFFFF;text-decoration:none;font-size:17px;font-weight:800;padding:14px 28px;border-radius:16px;border-bottom:4px solid #2C9A60;">
               {{ if $en }}Choose a new password{{ else }}Elegir nueva contraseña{{ end }}
             </a>
           </td>
