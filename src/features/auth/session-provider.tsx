@@ -1,6 +1,8 @@
 import type { Session } from '@supabase/supabase-js';
 import { createContext, use, useEffect, useState, type PropsWithChildren } from 'react';
 
+import { identifyUser } from '@/lib/analytics';
+import { setCrashUser } from '@/lib/crash-reporting';
 import { queryClient } from '@/lib/query/client';
 import { supabase } from '@/lib/supabase/client';
 
@@ -18,6 +20,11 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') queryClient.clear();
+      // Crash reports and analytics know the user by anonymous id only, never by email.
+      const userId = session?.user.id ?? null;
+      setCrashUser(userId);
+      if (event === 'SIGNED_OUT') identifyUser(null);
+      else if (userId && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) identifyUser(userId);
       setState({ session, isLoading: false });
     });
     return () => data.subscription.unsubscribe();

@@ -57,18 +57,24 @@
     "allDone": "¡Día completo! Cada voto cuenta.",
     "addHabit": "Nuevo hábito",
     "minimumDone": "Versión de 2 min",
-    "longPressHint": "Mantén presionado para marcar la versión de 2 minutos",
-    "skipHint": "Mantén presionado para marcar hoy como descanso",
-    "unskipHint": "Mantén presionado para deshacer el descanso",
-    "skipConfirm": "¿Marcar \"{{habit}}\" como descanso hoy? No cuenta como fallo.",
-    "skipConfirmOk": "Descansar hoy",
     "restDay": "Descanso",
     "afterHabit": "↳ Después de {{habit}}",
     "nextInChain": "Siguiente en tu cadena",
     "markDone": "Hecho",
     "heroEmpty": "Crea tu primer hábito para empezar a sumar votos.",
     "emptyTitle": "Tu jardín empieza con una semilla",
-    "createFirst": "Crear mi primer hábito"
+    "createFirst": "Crear mi primer hábito",
+    "actions": {
+      "hint": "Abre las opciones del hábito",
+      "done": "Marcar como hecho",
+      "undo": "Desmarcar",
+      "minimum": "Solo la versión de 2 minutos",
+      "rest": "Día de descanso",
+      "restHint": "Un descanso a propósito no cuenta como fallo.",
+      "unrest": "Quitar el descanso",
+      "edit": "Editar hábito",
+      "tip": "Toca un hábito para ver más opciones: hacer solo la versión de 2 minutos o tomarte un día de descanso."
+    }
   },
   "week": {
     "title": "Semana",
@@ -154,7 +160,9 @@
     "nightStartsAt": "La noche empieza a las {{time}}",
     "dayBandsHint": "Define cómo se pinta y agrupa tu día. Las horas después de que termina tu día no aparecen en la semana.",
     "nightEndsAt": "Tu día termina a las {{time}}",
-    "timezone": "🌍 {{zone}}"
+    "timezone": "🌍 {{zone}}",
+    "analytics": "Ayudar a mejorar habia",
+    "analyticsHint": "Comparte datos de uso (qué pantallas usas, cuántos hábitos marcas) ligados a un código interno de tu cuenta. Nunca los nombres de tus hábitos ni tu correo."
   },
   "reminders": {
     "channel": "Recordatorios de hábitos",

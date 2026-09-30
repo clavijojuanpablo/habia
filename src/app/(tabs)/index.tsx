@@ -15,13 +15,16 @@ import { DayCompleteOverlay } from '@/features/celebration/day-complete';
 import type { LogStatus } from '@/features/checkins/api';
 import { Brote } from '@/features/mascot/brote';
 import { isDone, isSkipped, nextInChain, type ScheduleBand, type ScheduledItem } from '@/features/schedule/build-schedule';
+import { ActionsTip, hasSeenActionsTip, markActionsTipSeen } from '@/features/schedule/components/actions-tip';
 import { ChainPrompt } from '@/features/schedule/components/chain-prompt';
+import { HabitActionsSheet } from '@/features/schedule/components/habit-actions-sheet';
 import { HabitCheckRow } from '@/features/schedule/components/habit-check-row';
 import { YesterdayCatchUp } from '@/features/schedule/components/yesterday-catch-up';
 import { useSchedule } from '@/features/schedule/use-schedule';
 import { TopBar } from '@/features/streak/components/top-bar';
 import { useNow, useTodayRange } from '@/hooks/use-now';
 import { useBandColors, useTheme } from '@/hooks/use-theme';
+import { track } from '@/lib/analytics';
 import { hapticSuccess } from '@/lib/haptics';
 import { getDayBand } from '@/lib/time/day-bands';
 
@@ -40,6 +43,23 @@ export default function TodayScreen() {
   const [chainNextKey, setChainNextKey] = useState<string | null>(null);
   const [celebrating, setCelebrating] = useState(false);
   const chainNext = items.find((item) => item.key === chainNextKey && !isDone(item));
+  const [actionsKey, setActionsKey] = useState<string | null>(null);
+  const [tipSeen, setTipSeen] = useState(hasSeenActionsTip);
+  const actionsItem = items.find((item) => item.key === actionsKey) ?? null;
+
+  const hideTip = () => {
+    markActionsTipSeen();
+    setTipSeen(true);
+  };
+  // Finding the menu on your own is exactly what the tip teaches: no need to show it again.
+  const onActionsOpened = () => {
+    track('habit_actions_opened');
+    hideTip();
+  };
+  const openActions = (item: ScheduledItem) => {
+    setActionsKey(item.key);
+    onActionsOpened();
+  };
   const habitsById = new Map(items.map((item) => [item.habit.id, item.habit]));
 
   // `focus` arrives from a tapped reminder: scroll to that habit and highlight it briefly.
@@ -91,6 +111,7 @@ export default function TodayScreen() {
     if (completing && pendingAfter === 0) {
       hapticSuccess();
       setCelebrating(true);
+      track('day_completed', { habits: items.length });
     }
   };
 
@@ -152,7 +173,9 @@ export default function TodayScreen() {
             </View>
           )}
 
-          <YesterdayCatchUp />
+          <YesterdayCatchUp onActionsOpened={onActionsOpened} />
+
+          {!tipSeen && items.length > 0 && <ActionsTip onDismiss={hideTip} />}
 
           {SECTION_ORDER.map((band) => {
             const sectionItems = items.filter((item) => item.band === band);
@@ -184,6 +207,7 @@ export default function TodayScreen() {
                     item={item}
                     anchor={item.anchorHabitId ? habitsById.get(item.anchorHabitId) : undefined}
                     onToggle={onToggle}
+                    onOpenActions={openActions}
                     highlighted={item.habit.id === focus}
                     onLayout={(event) => {
                       rowY.current.set(item.key, { band, y: event.nativeEvent.layout.y });
@@ -195,6 +219,8 @@ export default function TodayScreen() {
             );
           })}
         </ScrollView>
+
+        <HabitActionsSheet item={actionsItem} onToggle={onToggle} onClose={() => setActionsKey(null)} />
 
         {celebrating && <DayCompleteOverlay votes={items.length} onDismiss={() => setCelebrating(false)} />}
 

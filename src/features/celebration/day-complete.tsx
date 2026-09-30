@@ -25,7 +25,7 @@ export function DayCompleteOverlay({ votes, onDismiss }: Props) {
   }, [onDismiss]);
 
   return (
-    <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.overlay}>
+    <Animated.View entering={FadeIn} exiting={FadeOut} style={[styles.overlay, { backgroundColor: theme.scrim }]}>
       <Pressable style={StyleSheet.absoluteFill} onPress={onDismiss} accessibilityLabel={t('common.close')} />
       <Confetti />
       <View style={[styles.card, { backgroundColor: theme.backgroundElement }]} pointerEvents="none">
@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(20,16,28,0.45)',
     padding: Spacing.four,
   },
   card: {

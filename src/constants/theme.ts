@@ -23,6 +23,8 @@ export const Colors = {
     primarySoft: '#DDF6E8',
     border: '#EFE6DB',
     danger: '#F2667A',
+    /** Dimmed backdrop behind sheets and overlays. */
+    scrim: 'rgba(20,16,28,0.4)',
     todayColumn: 'rgba(255,255,255,0.65)',
     streak: '#FF9F43',
     streakSoft: '#FFE9D2',
@@ -44,6 +46,7 @@ export const Colors = {
     primarySoft: '#1F3A2C',
     border: '#2F2B3B',
     danger: '#FF8093',
+    scrim: 'rgba(0,0,0,0.6)',
     todayColumn: 'rgba(255,255,255,0.06)',
     streak: '#FFB066',
     streakSoft: '#3A2A1A',

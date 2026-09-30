@@ -8,7 +8,7 @@ import {
   useFonts,
 } from '@expo-google-fonts/nunito';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -19,12 +19,16 @@ import { AppearanceProvider, useAppearance } from '@/features/appearance/appeara
 import { SessionProvider, useSession } from '@/features/auth/session-provider';
 import { useProfile } from '@/features/profile/api';
 import { useTimezoneSync } from '@/features/profile/use-timezone-sync';
+import { trackScreen } from '@/lib/analytics';
+import { wrapRoot } from '@/lib/crash-reporting';
 import { startNetworkWatcher } from '@/lib/network';
 import { persister, queryClient } from '@/lib/query/client';
 
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+export default wrapRoot(RootLayout);
+
+function RootLayout() {
   useEffect(startNetworkWatcher, []);
 
   return (
@@ -72,6 +76,8 @@ function RootNavigator() {
   const { session, isLoading } = useSession();
   const { data: profile, isLoading: profileLoading } = useProfile();
   useTimezoneSync();
+  const pathname = usePathname();
+  useEffect(() => trackScreen(pathname), [pathname]);
   // First run: no habits yet, so we welcome the user before showing the app.
   const needsOnboarding = !!session && !!profile && !profile.onboarded_at;
   const [fontsLoaded, fontError] = useFonts({

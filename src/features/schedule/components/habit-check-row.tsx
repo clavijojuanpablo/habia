@@ -1,4 +1,3 @@
-import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type LayoutChangeEvent, Pressable, StyleSheet, View } from 'react-native';
@@ -16,7 +15,6 @@ import { ThemedText } from '@/components/themed-text';
 import { Radius, Shadow, Spacing } from '@/constants/theme';
 import type { LogStatus } from '@/features/checkins/api';
 import { useTheme } from '@/hooks/use-theme';
-import { confirmAction } from '@/lib/confirm';
 
 import { isDone, isSkipped, type ScheduledItem } from '../build-schedule';
 
@@ -25,6 +23,8 @@ type Props = {
   /** The habit this one is stacked after, when it applies today. */
   anchor?: { icon: string; name: string };
   onToggle: (item: ScheduledItem, status?: LogStatus) => void;
+  /** Tapping the row opens its actions (2-minute version, rest day, edit). */
+  onOpenActions: (item: ScheduledItem) => void;
   /** Draws attention to the row, e.g. after tapping its reminder. */
   highlighted?: boolean;
   onLayout?: (event: LayoutChangeEvent) => void;
@@ -34,7 +34,7 @@ export function formatTime(date: Date) {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-export function HabitCheckRow({ item, anchor, onToggle, highlighted = false, onLayout }: Props) {
+export function HabitCheckRow({ item, anchor, onToggle, onOpenActions, highlighted = false, onLayout }: Props) {
   const { t } = useTranslation();
   const theme = useTheme();
   const scale = useSharedValue(1);
@@ -57,18 +57,7 @@ export function HabitCheckRow({ item, anchor, onToggle, highlighted = false, onL
     onToggle(item, status);
   };
 
-  // Marking a rest day needs a confirmation; undoing one does not.
-  const toggleSkip = () => {
-    if (done) return;
-    if (skipped) toggle('skipped');
-    else {
-      confirmAction(
-        t('today.skipConfirm', { habit: item.habit.name }),
-        () => toggle('skipped'),
-        { ok: t('today.skipConfirmOk'), cancel: t('common.cancel') },
-      );
-    }
-  };
+  const openActions = () => onOpenActions(item);
 
   const cue = anchor
     ? t('today.afterHabit', { habit: `${anchor.icon} ${anchor.name}` })
@@ -100,9 +89,10 @@ export function HabitCheckRow({ item, anchor, onToggle, highlighted = false, onL
       ]}>
       <Pressable
         style={styles.body}
-        onPress={() => router.push({ pathname: '/habit/[id]', params: { id: item.habit.id } })}
-        onLongPress={() => item.habit.two_minute_version && !done && toggle('done_minimum')}
-        accessibilityHint={item.habit.two_minute_version ? t('today.longPressHint') : undefined}>
+        onPress={openActions}
+        onLongPress={openActions}
+        accessibilityRole="button"
+        accessibilityHint={t('today.actions.hint')}>
         <View style={[styles.emoji, { backgroundColor: color + '26' }]}>
           <ThemedText style={styles.emojiText}>{item.habit.icon}</ThemedText>
         </View>
@@ -123,12 +113,11 @@ export function HabitCheckRow({ item, anchor, onToggle, highlighted = false, onL
 
       <Pressable
         onPress={() => toggle()}
-        onLongPress={toggleSkip}
+        onLongPress={openActions}
         hitSlop={8}
         accessibilityRole="checkbox"
         accessibilityState={{ checked: done }}
-        accessibilityLabel={item.habit.name}
-        accessibilityHint={done ? undefined : skipped ? t('today.unskipHint') : t('today.skipHint')}>
+        accessibilityLabel={item.habit.name}>
         <Animated.View
           style={[
             styles.check,

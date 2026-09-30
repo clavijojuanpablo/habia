@@ -57,18 +57,24 @@
     "allDone": "Day complete! Every vote counts.",
     "addHabit": "New habit",
     "minimumDone": "2-min version",
-    "longPressHint": "Long press to log the 2-minute version",
-    "skipHint": "Long press to mark today as a rest day",
-    "unskipHint": "Long press to undo the rest day",
-    "skipConfirm": "Mark \"{{habit}}\" as a rest day today? It will not count as a miss.",
-    "skipConfirmOk": "Rest today",
     "restDay": "Rest day",
     "afterHabit": "↳ After {{habit}}",
     "nextInChain": "Next in your chain",
     "markDone": "Done",
     "heroEmpty": "Create your first habit to start casting votes.",
     "emptyTitle": "Your garden starts with a seed",
-    "createFirst": "Create my first habit"
+    "createFirst": "Create my first habit",
+    "actions": {
+      "hint": "Opens the habit options",
+      "done": "Mark as done",
+      "undo": "Unmark",
+      "minimum": "Just the 2-minute version",
+      "rest": "Rest day",
+      "restHint": "A rest day on purpose never counts as a miss.",
+      "unrest": "Remove the rest day",
+      "edit": "Edit habit",
+      "tip": "Tap a habit for more options: do just the 2-minute version or take a rest day."
+    }
   },
   "week": {
     "title": "Week",
@@ -154,7 +160,9 @@
     "nightStartsAt": "Night starts at {{time}}",
     "dayBandsHint": "Sets how your day is painted and grouped. Hours after your day ends are hidden from the week.",
     "nightEndsAt": "Your day ends at {{time}}",
-    "timezone": "🌍 {{zone}}"
+    "timezone": "🌍 {{zone}}",
+    "analytics": "Help improve habia",
+    "analyticsHint": "Share usage data (which screens you use, how many habits you check) tied to an internal code for your account. Never your habit names or email."
   },
   "reminders": {
     "channel": "Habit reminders",

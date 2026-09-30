@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { requireUserId } from '@/features/auth/session-provider';
 import type { IdentityArea } from '@/features/identities/api';
 import { formatLocalDate } from '@/lib/recurrence';
+import { track } from '@/lib/analytics';
 import { supabase } from '@/lib/supabase/client';
 
 import type { Obstacle } from './data';
@@ -52,6 +53,7 @@ export function useCompleteOnboarding() {
         .update({ onboarded_at: new Date().toISOString() })
         .eq('id', user_id);
       if (profileError) throw profileError;
+      track('onboarding_completed', { obstacle });
     },
     onSettled: () =>
       Promise.all([

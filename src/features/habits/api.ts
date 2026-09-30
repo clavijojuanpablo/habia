@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { requireUserId } from '@/features/auth/session-provider';
+import { track } from '@/lib/analytics';
 import { formatLocalDate } from '@/lib/recurrence';
 import { supabase, type Tables, type TablesInsert } from '@/lib/supabase/client';
 
@@ -64,6 +65,11 @@ export function useSaveHabit() {
         starts_on: formatLocalDate(new Date()),
       });
       if (error) throw error;
+      track('habit_created', {
+        cue_type: input.cue_type ?? null,
+        two_minute: !!input.two_minute_version,
+        reminder: input.reminder_minutes_before != null,
+      });
     },
     onSettled: () => queryClient.invalidateQueries({ queryKey: habitsKey }),
   });

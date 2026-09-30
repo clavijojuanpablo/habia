@@ -8,8 +8,9 @@ import { useNow, useTodayRange } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
 import { addDays } from '@/lib/recurrence';
 
-import { isDone } from '../build-schedule';
+import { isDone, isSkipped } from '../build-schedule';
 import { useSchedule } from '../use-schedule';
+import { HabitActionsSheet } from './habit-actions-sheet';
 import { HabitCheckRow } from './habit-check-row';
 
 const MAX_ROWS = 4;
@@ -19,7 +20,7 @@ const MAX_ROWS = 4;
  * habit, and with the never-miss-twice rule an unlogged day is costly. Only
  * yesterday is offered: older days stay in the Week view.
  */
-export function YesterdayCatchUp() {
+export function YesterdayCatchUp({ onActionsOpened }: { onActionsOpened: () => void }) {
   const { t } = useTranslation();
   const theme = useTheme();
   const now = useNow();
@@ -27,8 +28,10 @@ export function YesterdayCatchUp() {
   const yesterday = addDays(today, -1);
   const { items, toggleItem } = useSchedule(yesterday, today);
   const [open, setOpen] = useState(false);
+  const [actionsKey, setActionsKey] = useState<string | null>(null);
 
-  const pending = items.filter((item) => !isDone(item));
+  // A rest day on purpose is settled, not pending.
+  const pending = items.filter((item) => !isDone(item) && !isSkipped(item));
   if (items.length === 0 || pending.length === 0) return null;
 
   return (
@@ -53,7 +56,23 @@ export function YesterdayCatchUp() {
       {open &&
         pending
           .slice(0, MAX_ROWS)
-          .map((item) => <HabitCheckRow key={item.key} item={item} onToggle={toggleItem} />)}
+          .map((item) => (
+            <HabitCheckRow
+              key={item.key}
+              item={item}
+              onToggle={toggleItem}
+              onOpenActions={(picked) => {
+                setActionsKey(picked.key);
+                onActionsOpened();
+              }}
+            />
+          ))}
+
+      <HabitActionsSheet
+        item={items.find((item) => item.key === actionsKey) ?? null}
+        onToggle={toggleItem}
+        onClose={() => setActionsKey(null)}
+      />
     </View>
   );
 }

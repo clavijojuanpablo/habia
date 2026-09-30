@@ -12,6 +12,7 @@ import { AppearancePicker, LanguagePicker } from '@/features/appearance/componen
 import { DangerZone } from '@/features/auth/components/danger-zone';
 import { useSession } from '@/features/auth/session-provider';
 import { IdentitiesSection } from '@/features/identities/components/identities-section';
+import { AnalyticsToggle } from '@/features/profile/components/analytics-toggle';
 import { useProfile } from '@/features/profile/api';
 import { DayBandsEditor } from '@/features/profile/components/day-bands-editor';
 import { useTheme } from '@/hooks/use-theme';
@@ -61,6 +62,10 @@ export default function ProfileScreen() {
               <DayBandsEditor profile={profile} />
             </Card>
           )}
+
+          <Card>
+            <AnalyticsToggle />
+          </Card>
 
           <Card>
             <ThemedText type="heading">{t('legal.title')}</ThemedText>

@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { AppTabBar } from '@/components/app-tab-bar';
 import { useNotificationTap } from '@/features/reminders/notifications';
 import { useReminderSync } from '@/features/reminders/use-reminder-sync';
+import { track } from '@/lib/analytics';
 
 export default function TabsLayout() {
   const { t } = useTranslation();
@@ -13,6 +14,7 @@ export default function TabsLayout() {
   // Tapping a reminder brings its habit into focus on Today, one tap away from the check-in,
   // whether it launched the app or not. A reminder asks for action, not for editing.
   const openHabit = useCallback((habitId: string) => {
+    track('reminder_opened');
     router.navigate({ pathname: '/', params: { focus: habitId } });
   }, []);
   useNotificationTap(openHabit);

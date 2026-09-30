@@ -59,7 +59,7 @@ export function TimePicker({ label, value, onChange, clearable = true }: Props) 
       </Pressable>
 
       <Modal visible={open} transparent animationType="slide" onRequestClose={() => setOpen(false)}>
-        <Pressable style={styles.backdrop} onPress={() => setOpen(false)} accessibilityLabel={t('common.close')} />
+        <Pressable style={[styles.backdrop, { backgroundColor: theme.scrim }]} onPress={() => setOpen(false)} accessibilityLabel={t('common.close')} />
         <View style={[styles.sheet, { backgroundColor: theme.background }]}>
           <ThemedText type="heading" style={styles.center}>
             {label ?? t('habit.time')}
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  backdrop: { flex: 1, backgroundColor: 'rgba(20,16,28,0.4)' },
+  backdrop: { flex: 1 },
   sheet: {
     borderTopLeftRadius: Radius.xl,
     borderTopRightRadius: Radius.xl,

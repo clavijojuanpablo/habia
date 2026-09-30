@@ -3,10 +3,10 @@
  * that they describe. The same text must also be published on the landing page:
  * the stores require a public URL, not only an in-app screen.
  *
- * TODO before launch: replace CONTACT_EMAIL and JURISDICTION, and have a lawyer review.
+ * TODO before launch: confirm JURISDICTION and have a lawyer review.
  */
 
-export const LEGAL_UPDATED = '2026-09-23';
+export const LEGAL_UPDATED = '2026-09-29';
 export const CONTACT_EMAIL = 'hola@habia.app';
 const JURISDICTION_ES = 'Colombia';
 const JURISDICTION_EN = 'Colombia';
@@ -27,12 +27,14 @@ const privacyEs: LegalDocument = {
         '• Tu actividad: qué hábitos completas y cuándo, para calcular rachas, estadísticas y tu árbol.',
         '• Preferencias: idioma, tema (claro u oscuro), franjas del día y zona horaria.',
         '• Datos técnicos mínimos que genera la conexión con nuestro proveedor (por ejemplo, la dirección IP en los registros del servidor).',
+        '• Informes de errores: si la app falla, un informe técnico (qué falló, modelo de teléfono, versión del sistema) asociado al identificador interno de tu cuenta (un código, no tu nombre ni tu correo).',
+        '• Datos de uso, si no los desactivas: qué pantallas abres y acciones como crear un hábito o marcarlo, asociados al mismo identificador interno, junto con el modelo de tu teléfono, su idioma y su zona horaria. Nunca los nombres de tus hábitos ni tu correo. Nos dicen qué funciona y qué no.',
       ],
     },
     {
       heading: 'Qué NO recogemos',
       body: [
-        'No pedimos tu nombre real, teléfono, ubicación, contactos, fotos ni datos de salud de otras apps. No usamos publicidad ni rastreadores de terceros. No vendemos ni alquilamos tus datos a nadie.',
+        'No pedimos tu nombre real, teléfono, ubicación, contactos, fotos ni datos de salud de otras apps. No usamos publicidad ni seguimos tu actividad en otras apps o sitios web. No vendemos ni alquilamos tus datos a nadie.',
       ],
     },
     {
@@ -45,6 +47,8 @@ const privacyEs: LegalDocument = {
       heading: 'Con quién los compartimos',
       body: [
         '• Supabase, que aloja la base de datos y gestiona el inicio de sesión.',
+        '• Sentry, que recibe los informes de errores para que podamos arreglarlos.',
+        '• PostHog, que recibe los datos de uso. Puedes desactivarlos en Perfil → Ayudar a mejorar habia.',
         '• Cuando actives el coach con inteligencia artificial (función opcional y futura), enviaremos a Anthropic un resumen de tus hábitos, sin tu correo ni tu identidad, para generar los consejos. Te avisaremos antes de activarlo.',
         'Nadie más recibe tus datos, salvo obligación legal.',
       ],
@@ -58,7 +62,7 @@ const privacyEs: LegalDocument = {
     {
       heading: 'Cuánto tiempo los guardamos',
       body: [
-        'Mientras tu cuenta exista. Si la eliminas, borramos tus hábitos, registros, identidades y preferencias. El borrado es inmediato y no se puede deshacer; pueden quedar copias temporales en las copias de seguridad del proveedor durante un periodo corto.',
+        'Mientras tu cuenta exista. Si la eliminas, borramos tus hábitos, registros, identidades y preferencias. El borrado es inmediato y no se puede deshacer; pueden quedar copias temporales en las copias de seguridad del proveedor durante un periodo corto. Los informes de errores y los datos de uso ya enviados a Sentry y PostHog se conservan según sus plazos de retención; al eliminar tu cuenta, su identificador deja de corresponder a ninguna persona.',
       ],
     },
     {
@@ -170,12 +174,14 @@ const privacyEn: LegalDocument = {
         '• Your activity: which habits you complete and when, to compute streaks, stats and your tree.',
         '• Preferences: language, theme, day bands and time zone.',
         '• Minimal technical data produced by the connection to our provider (for example, the IP address in server logs).',
+        '• Error reports: if the app crashes, a technical report (what failed, phone model, OS version) tied to your account’s internal id (a code, not your name or email).',
+        '• Usage data, unless you turn it off: which screens you open and actions such as creating or checking a habit, tied to the same internal id, along with your phone model, language and time zone. Never your habit names or email. It tells us what works and what does not.',
       ],
     },
     {
       heading: 'What we do NOT collect',
       body: [
-        'We never ask for your real name, phone number, location, contacts, photos or health data from other apps. No ads, no third-party trackers. We do not sell or rent your data.',
+        'We never ask for your real name, phone number, location, contacts, photos or health data from other apps. No ads, and we do not follow your activity across other apps or websites. We do not sell or rent your data.',
       ],
     },
     {
@@ -188,6 +194,8 @@ const privacyEn: LegalDocument = {
       heading: 'Who we share it with',
       body: [
         '• Supabase, which hosts the database and handles sign-in.',
+        '• Sentry, which receives error reports so we can fix them.',
+        '• PostHog, which receives the usage data. You can turn it off in Profile → Help improve habia.',
         '• When you enable the AI coach (an optional, upcoming feature), we send Anthropic a summary of your habits, without your email or identity, to generate the advice. We will tell you before enabling it.',
         'Nobody else receives your data, unless legally required.',
       ],
@@ -201,7 +209,7 @@ const privacyEn: LegalDocument = {
     {
       heading: 'How long we keep it',
       body: [
-        'As long as your account exists. If you delete it, we delete your habits, logs, identities and preferences. Deletion is immediate and cannot be undone; short-lived copies may remain in the provider backups for a brief period.',
+        'As long as your account exists. If you delete it, we delete your habits, logs, identities and preferences. Deletion is immediate and cannot be undone; short-lived copies may remain in the provider backups for a brief period. Error reports and usage data already sent to Sentry and PostHog are kept for their retention periods; once your account is deleted, their id no longer maps to anyone.',
       ],
     },
     {
