@@ -68,6 +68,12 @@
         "projectId": "5bb60abd-e049-4a7c-8f5c-e0ed52333a91"
       }
     },
-    "owner": "clavijojuanpablo"
+    "owner": "clavijojuanpablo",
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/5bb60abd-e049-4a7c-8f5c-e0ed52333a91"
+    }
   }
 }
