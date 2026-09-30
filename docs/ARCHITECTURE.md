@@ -6,12 +6,20 @@ Expo app (iOS / Android / Web)
  ├─ TanStack Query ⇄ supabase-js (Auth + Postgres through RLS)
  ├─ Recurrence engine (rrule) → occurrences for today / this week
  ├─ Local notification scheduler (expo-notifications)
- └─ Skia (tree, sky, charts)
+ ├─ Skia (tree, sky); charts are Views + react-native-svg
+ ├─ Sentry: crashes and errors only, user = internal id (src/lib/crash-reporting.ts)
+ └─ PostHog: closed event list, user = internal id, opt-out in Profile (src/lib/analytics.ts)
 
 Supabase
  ├─ Postgres + RLS (owner-based; couple-based in Phase 5)
- ├─ Edge Functions: coach (Claude API), push-dispatcher, weekly-review (cron), revenuecat-webhook
+ ├─ Auth emails: templates in supabase/templates/ → Resend SMTP → from hola@habia.app
+ ├─ Edge Functions: delete-account; planned: coach (Claude API), push-dispatcher, weekly-review (cron), revenuecat-webhook
  └─ Realtime: couple channel
+
+habia.app (DNS at Hostinger)
+ ├─ @ / www → Vercel: web/ (Astro static site; legal pages import src/features/legal/content.ts)
+ ├─ send.* + resend._domainkey → Resend (sending)
+ └─ MX / SPF / DKIM → Hostinger mailbox (hola@habia.app, receiving)
 
 RevenueCat ⇄ App Store / Play Store / Stripe → webhook → entitlements table
 ```

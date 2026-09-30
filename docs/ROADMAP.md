@@ -15,7 +15,7 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - ✅ i18n (es/en), band colors, day-band utilities
 - ✅ Recurrence engine (`src/lib/recurrence`) + unit tests
 - ✅ Habit CRUD with emoji picker and a friendly frequency builder
-- ✅ Hoy view (grouped by day band) + check-in animation/haptics, 2-min version on long press
+- ✅ Hoy view (grouped by day band) + check-in animation/haptics; tapping a habit opens its actions sheet (done, 2-min version, rest day, edit), taught once by a Brote tip
 - ✅ Semana view (Mon–Sun × hours, day bands, now-line)
 - ✅ Local reminders (expo-notifications): per-habit offset, next 3 days, auto-cancel when done. Not available on web
 - ✅ Edit day bands from Perfil
@@ -47,23 +47,26 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - 🚧 Auth: ✅ password reset, ✅ PKCE deep links for email links (`habia://auth-callback`), ✅ in-app account deletion (Edge Function `delete-account`), ✅ redesigned sign-in · ⏳ Sign in with Apple/Google
 - ✅ Offline: persisted query cache (7 days), online state from expo-network / browser events, check-ins queued and replayed after a restart, calm offline banner
 - 🚧 Log past days: ✅ yesterday catch-up card in Hoy + any past day from Semana; future days locked (`canLog`) and the week view cannot go back before the join date · ✅ skip a day (rest day on purpose: long-press the check circle; not a miss for progress, tree or streak)
-- 🚧 ✅ `profiles.timezone` synced from the device every session · ✅ notification tap opens the habit · ⏳ compute "today" from `profiles.timezone` (needed once the server sends pushes)
+- 🚧 ✅ `profiles.timezone` synced from the device every session · ✅ notification tap focuses the habit on Hoy (tested on iPhone, background and killed) · ⏳ compute "today" from `profiles.timezone` (needed once the server sends pushes)
 - ✅ Personalized onboarding: 5 steps (welcome → identity → first habit from 20 suggestions → obstacle → ready), creates identity + habit, asks for notifications only when the user chose "I forget"; gated by `profiles.onboarded_at`
 - ✅ Mascot "Brote": SVG character with 4 moods in onboarding and the empty state; day-complete celebration (confetti + Brote + votes), fired only by the check-in that closes the day
 - ✅ Redesigned habit form (live preview, sections as cards, collapsed extras, sticky save), sign-in, Garden (stage progress + Brote) and Progress (colorful stat tiles)
 - ✅ Brand assets: name **habia**, app icon / Android adaptive + monochrome / splash (light + dark) / favicon, generated from the Brote SVG with `npm run icons`
-- ✅ Privacy policy + terms (es/en) in `src/features/legal/content.ts`, readable from Profile and before sign-up. TODO before launch: real contact email, jurisdiction, lawyer review, and publish them at public URLs on the landing page
+- ✅ Privacy policy + terms (es/en) in `src/features/legal/content.ts`, readable from Profile and before sign-up, and published at habia.app/privacidad and /terminos (the site imports the same file). Contact `hola@habia.app` is real. TODO before launch: jurisdiction, lawyer review, analytics opt-in vs opt-out
 
 ## UX polish ✅
-- ✅ Time picker (tap, never type) with locale-aware 12h/24h labels
+- ✅ Time picker (tap, never type), any minute, 12h/24h following the device setting
 - ✅ Week grid hours formatted per locale; Brote peeking from the header corner
 - ✅ Language picker in Profile (`profiles.locale`, applied live via i18next)
 
 ## Block 2: Beta testers 🚧
 - ✅ EAS project (`eas.json`: development / preview / production) + Android development build (APK)
-- ⏳ iOS development build + TestFlight (Apple Developer account, individual, enrollment pending)
+- ✅ Apple Developer account (approved 2026-09-29) + iOS development build installed on the iPhone (EAS credentials, APNs key)
+- ⏳ TestFlight: production build + env vars in EAS + Sentry source maps + Universal Links in the same build
 - ⏳ Play Internal Testing (no Android device yet; new personal accounts need a closed-testing period before production)
-- Sentry + PostHog (north star, D1/D7/D30 retention)
+- ✅ Sentry (crashes, off in development) + PostHog (closed event list, internal user id, opt-out in Profile) · ⏳ north-star self-report question (PostHog survey)
+- ✅ Branded auth emails (es/en) sent from hola@habia.app through Resend SMTP
+- ⏳ Universal Links (`https://habia.app/auth-callback`): open the app without Chrome, web fallback page on desktop
 - Ask testers about one-off reminders / calendar
 
 ## Phase 4: Monetization ⏳
@@ -80,7 +83,7 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - Share cards, referrals, friends, group challenges, weekly leagues by consistency
 
 ## Phase 6: Launch ⏳
-- Branding (Claude Design), landing page + waitlist, ASO, content
+- 🚧 Landing: ✅ habia.app (Astro in `web/`, Vercel) with home + legal pages in es/en · ⏳ waitlist, real screenshots, ASO, content
 
 ## Post-launch ⏳
 - Widgets, Apple Health / Health Connect, Apple Watch, Siri shortcuts (native, dev build)
