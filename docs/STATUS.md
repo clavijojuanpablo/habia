@@ -86,7 +86,10 @@ on Ethernet). Rebuild (`eas build --profile development --platform ios`) only af
 3. **`expo-updates`** (runtime versions) so JS fixes reach testers without a store build.
 4. `eas build --profile production --platform ios` → `eas submit` → TestFlight internal, then
    external testers (App Store Connect needs the privacy URL: `https://habia.app/privacidad`).
-5. Then: north-star self-report (PostHog survey), Phase 4 monetization, Phase 3B, Phase 5.
+5. Then, in this order (ROADMAP → "Order after Block 2"): **AI coach** → **your character**
+   (design open; the owner will design layered SVG assets outside — spec in GAMIFICATION.md) →
+   **friends & circles** with shared streaks → opt-in **leagues** → **monetization** (Pro + cosmetics),
+   all before the public launch. Plus the north-star self-report (PostHog survey).
 
 ## Known debts
 

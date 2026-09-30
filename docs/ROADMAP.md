@@ -69,18 +69,34 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - ⏳ Universal Links (`https://habia.app/auth-callback`): open the app without Chrome, web fallback page on desktop
 - Ask testers about one-off reminders / calendar
 
-## Phase 4: Monetization ⏳
+## Order after Block 2 (decided 2026-09-29)
+Testers first (TestFlight with the core), then every Pro feature **before the public App Store launch**, shipped to testers as it lands (`expo-updates`). See GAMIFICATION.md for the design of 2–5.
+
+1. **AI coach** — moved up: the most direct lever on the north star; testers generate history while it is built
+2. **Your character** — customizable, very visual (design open: Brote / plant species / creatures; assets designed outside, animated in Rive)
+3. **Friends & circles** — replaces couples-only; shared streaks, cheers, privacy by default, block/report
+4. **Leagues** — opt-in weekly leagues scored by consistency %, when there are enough users
+5. **Monetization** — Pro + cosmetics, before launch
+
+## Phase 3B / Pro value ⏳ (next after TestFlight)
+- AI coach (hybrid: rules free, Claude weekly review via Batch, capped Pro chat)
+- Guided programs ("Caminos", 3 initial) + micro-lessons
+
+## Character ⏳
+- Visual concepts for the three options → decision → layered SVG assets (spec in GAMIFICATION.md) → Rive state machine → `rive-react-native` (development build)
+- Replaces the static Brote in onboarding, Hoy, celebrations, Garden
+
+## Phase 5: Social ⏳
+- Friends & circles: schema + RLS for shared visibility, requests, Realtime feed, cheers/nudges, shared streaks ("never miss twice"), intertwined trees for circles of two
+- Usernames, block/report/moderation (App Store 1.2), account deletion cascade
+- Opt-in weekly leagues by consistency %
+- Share cards, referrals, group challenges
+
+## Phase 4: Monetization ⏳ (before public launch)
 - RevenueCat (in-app) + Stripe (web), paywall, entitlements, Free vs Pro limits
+- Cosmetics (skins, accessories, garden themes): cosmetic only, some earnable
   - ⚠️ Confirm Stripe accepts a Colombian individual before building web billing; fallbacks: a Merchant of Record (Paddle / Lemon Squeezy) or a US LLC
   - Apple: apply to the Small Business Program (15%). An individual seller shows a personal name and, as an EU DSA trader, a public address
-
-## Phase 3B / Pro value ⏳
-- Guided programs ("Caminos", 3 initial) + micro-lessons
-- AI coach (hybrid: rules free, Claude weekly review via Batch, capped Pro chat)
-
-## Phase 5: Social & couples ⏳
-- Pro Parejas: couples schema + RLS, Realtime feed, cheers/nudges, intertwined trees
-- Share cards, referrals, friends, group challenges, weekly leagues by consistency
 
 ## Phase 6: Launch ⏳
 - 🚧 Landing: ✅ habia.app (Astro in `web/`, Vercel) with home + legal pages in es/en · ⏳ waitlist, real screenshots, ASO, content
