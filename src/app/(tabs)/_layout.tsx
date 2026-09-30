@@ -10,9 +10,10 @@ import { useReminderSync } from '@/features/reminders/use-reminder-sync';
 export default function TabsLayout() {
   const { t } = useTranslation();
   useReminderSync();
-  // Tapping a reminder opens the habit it was for, whether it launched the app or not.
+  // Tapping a reminder brings its habit into focus on Today, one tap away from the check-in,
+  // whether it launched the app or not. A reminder asks for action, not for editing.
   const openHabit = useCallback((habitId: string) => {
-    router.push({ pathname: '/habit/[id]', params: { id: habitId } });
+    router.navigate({ pathname: '/', params: { focus: habitId } });
   }, []);
   useNotificationTap(openHabit);
 

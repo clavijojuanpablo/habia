@@ -1,7 +1,15 @@
 import { router } from 'expo-router';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSequence, withSpring } from 'react-native-reanimated';
+import { type LayoutChangeEvent, Pressable, StyleSheet, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { Icon } from '@/components/icon';
 import { ThemedText } from '@/components/themed-text';
@@ -17,22 +25,32 @@ type Props = {
   /** The habit this one is stacked after, when it applies today. */
   anchor?: { icon: string; name: string };
   onToggle: (item: ScheduledItem, status?: LogStatus) => void;
+  /** Draws attention to the row, e.g. after tapping its reminder. */
+  highlighted?: boolean;
+  onLayout?: (event: LayoutChangeEvent) => void;
 };
 
 export function formatTime(date: Date) {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-export function HabitCheckRow({ item, anchor, onToggle }: Props) {
+export function HabitCheckRow({ item, anchor, onToggle, highlighted = false, onLayout }: Props) {
   const { t } = useTranslation();
   const theme = useTheme();
   const scale = useSharedValue(1);
+  const pulse = useSharedValue(1);
   const done = isDone(item);
   const skipped = isSkipped(item);
   const minimum = item.log?.status === 'done_minimum';
   const color = item.habit.color ?? theme.primary;
 
   const checkStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.get() }] }));
+  const rowStyle = useAnimatedStyle(() => ({ transform: [{ scale: pulse.get() }] }));
+
+  // Two gentle beats, then still: enough to find the row without nagging.
+  useEffect(() => {
+    if (highlighted) pulse.set(withRepeat(withSequence(withTiming(1.03, { duration: 220 }), withTiming(1, { duration: 220 })), 2));
+  }, [highlighted, pulse]);
 
   const toggle = (status: LogStatus = 'done') => {
     if (!done && status !== 'skipped') scale.set(withSequence(withSpring(1.3, { duration: 150 }), withSpring(1)));
@@ -65,7 +83,8 @@ export function HabitCheckRow({ item, anchor, onToggle }: Props) {
     .join(' · ');
 
   return (
-    <View
+    <Animated.View
+      onLayout={onLayout}
       style={[
         styles.row,
         {
@@ -73,7 +92,11 @@ export function HabitCheckRow({ item, anchor, onToggle }: Props) {
           boxShadow: Shadow.card,
           opacity: done || skipped ? 0.7 : 1,
           marginLeft: item.anchorHabitId ? Math.min(item.depth, 3) * Spacing.three : 0,
+          // An outline, not a border, so the highlight never shifts the layout.
+          outlineWidth: highlighted ? 2.5 : 0,
+          outlineColor: color,
         },
+        rowStyle,
       ]}>
       <Pressable
         style={styles.body}
@@ -118,7 +141,7 @@ export function HabitCheckRow({ item, anchor, onToggle }: Props) {
           {skipped && <Icon name="rest" size={18} color={theme.textSecondary} />}
         </Animated.View>
       </Pressable>
-    </View>
+    </Animated.View>
   );
 }
 

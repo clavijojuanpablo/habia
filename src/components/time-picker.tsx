@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
@@ -9,7 +9,10 @@ import { useTheme } from '@/hooks/use-theme';
 import { formatHour, formatTimeLabel } from '@/lib/time/format';
 
 const HOURS = Array.from({ length: 24 }, (_, h) => h);
-const MINUTES = [0, 15, 30, 45];
+const MINUTES = Array.from({ length: 60 }, (_, m) => m);
+// Fixed row height so a column can scroll straight to the selected value.
+const ROW_HEIGHT = 40;
+const ROW_STEP = ROW_HEIGHT + Spacing.one;
 
 type Props = {
   /** Optional: omit it when the surrounding card already has a title. */
@@ -63,7 +66,7 @@ export function TimePicker({ label, value, onChange, clearable = true }: Props) 
           </ThemedText>
 
           <View style={styles.columns}>
-            <Column title={t('time.hour')}>
+            <Column title={t('time.hour')} selectedIndex={hour}>
               {HOURS.map((h) => (
                 <Option
                   key={h}
@@ -73,7 +76,7 @@ export function TimePicker({ label, value, onChange, clearable = true }: Props) 
                 />
               ))}
             </Column>
-            <Column title={t('time.minutes')}>
+            <Column title={t('time.minutes')} selectedIndex={minute}>
               {MINUTES.map((m) => (
                 <Option
                   key={m}
@@ -104,13 +107,29 @@ export function TimePicker({ label, value, onChange, clearable = true }: Props) 
   );
 }
 
-function Column({ title, children }: { title: string; children: React.ReactNode }) {
+function Column({
+  title,
+  selectedIndex,
+  children,
+}: {
+  title: string;
+  selectedIndex: number | null;
+  children: React.ReactNode;
+}) {
+  const scrollRef = useRef<ScrollView>(null);
+  // On open, bring the current value into view (two rows from the top) instead of starting at 00.
+  const scrollToSelected = () => {
+    if (selectedIndex === null) return;
+    scrollRef.current?.scrollTo({ y: Math.max(0, (selectedIndex - 2) * ROW_STEP), animated: false });
+  };
   return (
     <View style={styles.column}>
       <ThemedText type="caption" themeColor="textSecondary" style={styles.center}>
         {title}
       </ThemedText>
-      <ScrollView contentContainerStyle={styles.list}>{children}</ScrollView>
+      <ScrollView ref={scrollRef} onLayout={scrollToSelected} contentContainerStyle={styles.list}>
+        {children}
+      </ScrollView>
     </View>
   );
 }
@@ -156,6 +175,6 @@ const styles = StyleSheet.create({
   columns: { flexDirection: 'row', gap: Spacing.three, height: 260 },
   column: { flex: 1, gap: Spacing.one },
   list: { gap: Spacing.one, paddingBottom: Spacing.two },
-  option: { paddingVertical: Spacing.two, borderRadius: Radius.sm, alignItems: 'center' },
+  option: { height: ROW_HEIGHT, borderRadius: Radius.sm, alignItems: 'center', justifyContent: 'center' },
   actions: { gap: Spacing.two, paddingBottom: Spacing.three },
 });

@@ -1,10 +1,18 @@
+import { getCalendars } from 'expo-localization';
+
 /**
- * Hour formatting that follows the user's language: "6 a. m." where the 12-hour
- * clock is used, "06:00" where the 24-hour clock is. Never hardcode one of them.
+ * Hour formatting that follows the user's clock: "6 a. m." on a 12-hour clock,
+ * "06:00" on a 24-hour one. Never hardcode one of them.
  */
 
-/** True when the locale writes hours with am/pm. */
+/**
+ * True when hours are written with am/pm. The device setting wins (a phone set
+ * to 12 hours in Colombia must not get "19:00" just because the app is in "es");
+ * the locale's convention is the fallback when the platform does not report it.
+ */
 export function usesTwelveHour(locale: string): boolean {
+  const deviceUses24h = getCalendars()[0]?.uses24hourClock;
+  if (typeof deviceUses24h === 'boolean') return !deviceUses24h;
   try {
     const parts = new Intl.DateTimeFormat(locale, { hour: 'numeric' }).formatToParts(new Date(2020, 0, 1, 13));
     return parts.some((part) => part.type === 'dayPeriod');

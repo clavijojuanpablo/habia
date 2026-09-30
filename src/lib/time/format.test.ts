@@ -1,6 +1,17 @@
+import { getCalendars } from 'expo-localization';
+
 import { formatHour, formatHourRange, formatTimeLabel, usesTwelveHour } from './format';
 
+jest.mock('expo-localization', () => ({ getCalendars: jest.fn(() => [{ uses24hourClock: null }]) }));
+
 describe('hour formatting', () => {
+  it("prefers the device's clock setting over the locale", () => {
+    jest.mocked(getCalendars).mockReturnValueOnce([{ uses24hourClock: false } as never]);
+    expect(usesTwelveHour('es-ES')).toBe(true);
+    jest.mocked(getCalendars).mockReturnValueOnce([{ uses24hourClock: true } as never]);
+    expect(usesTwelveHour('en-US')).toBe(false);
+  });
+
   it('detects the clock the locale uses', () => {
     expect(usesTwelveHour('en-US')).toBe(true);
     expect(usesTwelveHour('es-ES')).toBe(false);

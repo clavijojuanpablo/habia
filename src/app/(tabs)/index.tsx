@@ -1,5 +1,5 @@
-import { router } from 'expo-router';
-import { useState } from 'react';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -26,6 +26,7 @@ import { hapticSuccess } from '@/lib/haptics';
 import { getDayBand } from '@/lib/time/day-bands';
 
 const SECTION_ORDER: ScheduleBand[] = ['morning', 'afternoon', 'night', 'anytime'];
+const FOCUS_HIGHLIGHT_MS = 3000;
 
 export default function TodayScreen() {
   const { t, i18n } = useTranslation();
@@ -40,6 +41,42 @@ export default function TodayScreen() {
   const [celebrating, setCelebrating] = useState(false);
   const chainNext = items.find((item) => item.key === chainNextKey && !isDone(item));
   const habitsById = new Map(items.map((item) => [item.habit.id, item.habit]));
+
+  // `focus` arrives from a tapped reminder: scroll to that habit and highlight it briefly.
+  // Row offsets are relative to their section, so both are recorded as they lay out. The
+  // screen may already be laid out when the tap arrives (app in background), hence the effect.
+  const { focus } = useLocalSearchParams<{ focus?: string }>();
+  const scrollRef = useRef<ScrollView>(null);
+  const sectionY = useRef<Partial<Record<ScheduleBand, number>>>({});
+  const rowY = useRef(new Map<string, { band: ScheduleBand; y: number }>());
+  const scrolledTo = useRef<string | null>(null);
+
+  const scrollToFocus = () => {
+    if (!focus || scrolledTo.current === focus) return;
+    // An hourly habit has several rows today: aim for the topmost one.
+    const tops = items
+      .filter((item) => item.habit.id === focus)
+      .flatMap((item) => {
+        const row = rowY.current.get(item.key);
+        const section = row && sectionY.current[row.band];
+        return row && section !== undefined ? [section + row.y] : [];
+      });
+    if (tops.length === 0) return;
+    scrolledTo.current = focus;
+    scrollRef.current?.scrollTo({ y: Math.max(0, Math.min(...tops) - Spacing.four), animated: true });
+  };
+
+  useEffect(() => {
+    if (!focus || isLoading) return;
+    scrollToFocus();
+    const timer = setTimeout(() => {
+      router.setParams({ focus: undefined });
+      scrolledTo.current = null;
+    }, FOCUS_HIGHLIGHT_MS);
+    return () => clearTimeout(timer);
+    // Runs per incoming focus; later layouts call scrollToFocus themselves.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focus, isLoading]);
 
   // Checking an anchor surfaces the next habit of its chain (habit stacking).
   // Skipping is not a completion: it neither reveals the next chained habit nor celebrates the day.
@@ -69,7 +106,7 @@ export default function TodayScreen() {
       <SafeAreaView style={styles.flex} edges={['top']}>
         <TopBar />
         <OfflineBanner />
-        <ScrollView contentContainerStyle={styles.content}>
+        <ScrollView ref={scrollRef} contentContainerStyle={styles.content}>
           {/* Hero: greeting + today's ring, painted with the current band's pastel */}
           <View style={[styles.hero, { backgroundColor: sky.background }]}>
             <View style={styles.heroText}>
@@ -124,7 +161,13 @@ export default function TodayScreen() {
             const sectionCountable = sectionItems.filter((item) => !isSkipped(item));
             const sectionDone = sectionCountable.filter(isDone).length;
             return (
-              <View key={band} style={styles.section}>
+              <View
+                key={band}
+                style={styles.section}
+                onLayout={(event) => {
+                  sectionY.current[band] = event.nativeEvent.layout.y;
+                  scrollToFocus();
+                }}>
                 <View style={styles.sectionHeader}>
                   <ThemedText type="heading">
                     {BandEmoji[band]} {t(`bands.${band}`)}
@@ -141,6 +184,11 @@ export default function TodayScreen() {
                     item={item}
                     anchor={item.anchorHabitId ? habitsById.get(item.anchorHabitId) : undefined}
                     onToggle={onToggle}
+                    highlighted={item.habit.id === focus}
+                    onLayout={(event) => {
+                      rowY.current.set(item.key, { band, y: event.nativeEvent.layout.y });
+                      scrollToFocus();
+                    }}
                   />
                 ))}
               </View>
