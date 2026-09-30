@@ -44,7 +44,7 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 
 ## Block 1: Ready for real users 🚧 (next)
 - ✅ Merged into `main`, pushed to GitHub, CI (typecheck, lint, tests) on push and PRs
-- 🚧 Auth: ✅ password reset, ✅ PKCE deep links for email links (`habia://auth-callback`), ✅ in-app account deletion (Edge Function `delete-account`), ✅ redesigned sign-in · ⏳ Sign in with Apple/Google
+- 🚧 Auth: ✅ password reset, ✅ email links as the Universal Link `https://habia.app/auth-callback` (`token_hash` + `verifyOtp`, works on any device), ✅ in-app account deletion (Edge Function `delete-account`), ✅ redesigned sign-in · ⏳ Sign in with Apple/Google
 - ✅ Offline: persisted query cache (7 days), online state from expo-network / browser events, check-ins queued and replayed after a restart, calm offline banner
 - 🚧 Log past days: ✅ yesterday catch-up card in Hoy + any past day from Semana; future days locked (`canLog`) and the week view cannot go back before the join date · ✅ skip a day (rest day on purpose: long-press the check circle; not a miss for progress, tree or streak)
 - 🚧 ✅ `profiles.timezone` synced from the device every session · ✅ notification tap focuses the habit on Hoy (tested on iPhone, background and killed) · ⏳ compute "today" from `profiles.timezone` (needed once the server sends pushes)
@@ -62,11 +62,12 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 ## Block 2: Beta testers 🚧
 - ✅ EAS project (`eas.json`: development / preview / production) + Android development build (APK)
 - ✅ Apple Developer account (approved 2026-09-29) + iOS development build installed on the iPhone (EAS credentials, APNs key)
-- ⏳ TestFlight: production build + env vars in EAS + Sentry source maps + Universal Links in the same build
+- ✅ TestFlight (2026-09-30): production build 1.0.0 (3) with EAS env vars (`production`), Sentry source maps + dSYMs, Universal Links; submitted (ASC app 6817880518), installed through internal testing and tested on the iPhone
+- ✅ EAS Update: `expo-updates`, `runtimeVersion` policy `fingerprint`, one channel per build profile · ⏳ first OTA update to `production` · ⏳ external testers (public TestFlight link)
 - ⏳ Play Internal Testing (no Android device yet; new personal accounts need a closed-testing period before production)
 - ✅ Sentry (crashes, off in development) + PostHog (closed event list, internal user id, opt-out in Profile) · ⏳ north-star self-report question (PostHog survey)
 - ✅ Branded auth emails (es/en) sent from hola@habia.app through Resend SMTP
-- ⏳ Universal Links (`https://habia.app/auth-callback`): open the app without Chrome, web fallback page on desktop
+- ✅ Universal Links (`https://habia.app/auth-callback`): opens the app directly (tested from TestFlight), bilingual web fallback page with an "Open habia" button (`habia://`) for desktop or no app
 - Ask testers about one-off reminders / calendar
 
 ## Order after Block 2 (decided 2026-09-29)

@@ -1,6 +1,6 @@
 # STATUS — where the project stands
 
-**Last updated: 2026-09-29.** This is the session entry point: a `SessionStart` hook injects it
+**Last updated: 2026-09-30.** This is the session entry point: a `SessionStart` hook injects it
 into every new Claude Code session. Keep it short and true. `ROADMAP.md` is the full backlog;
 this file is only "today".
 
@@ -10,23 +10,28 @@ this file is only "today".
 
 **habia** is a feature-complete personal habit tracker (sign up, onboarding, habits with any
 supported recurrence, online/offline check-ins, Identity Tree, stats, local reminders; es/en,
-light/dark; iOS, Android, web) running on the linked Supabase cloud project. Nothing ships to a
-store yet, but the groundwork for testers is done:
+light/dark; iOS, Android, web) running on the linked Supabase cloud project, and it is **on
+TestFlight** (Block 2 closed 2026-09-30):
 
-- **iOS development build on the owner's iPhone** (Apple Developer approved 2026-09-29; EAS holds
-  the distribution certificate, provisioning profile and APNs key). Every pending phone test
-  passed: reminder tap (background and killed) focuses the habit on Hoy, rest day, offline replay,
-  haptics, icon/splash, password-reset deep link.
-- **Hoy:** tapping a habit opens an actions sheet (done · 2-minute version · rest day · edit),
-  taught once by a Brote tip. The time picker allows any minute and follows the device's 12/24 h.
-- **Observability:** Sentry (crashes only, off in `__DEV__`) and PostHog (closed event list in
-  `src/lib/analytics.ts`, internal user id, opt-out in Profile). PostHog events verified live.
-- **Domain `habia.app`** (Hostinger DNS): site on Vercel (`web/`, Astro) with home + legal pages
-  es/en that import `src/features/legal/content.ts`; auth emails branded es/en, sent from
-  `hola@habia.app` through Resend SMTP (the Hostinger mailbox keeps its own MX records).
+- **Production build 1.0.0 (3)** submitted to App Store Connect (app id `6817880518`), installed
+  by the owner through internal testing. Tested on the iPhone: password-reset Universal Link opens
+  the app directly, cold start without the PC, reminder tap, offline check-in replay.
+- **Universal Links:** auth emails link to `https://habia.app/auth-callback?token_hash=…&type=…`
+  (templates in `supabase/templates/`); the app verifies with `verifyOtp`
+  (`src/app/auth-callback.tsx`), so it works on any device, not only the one that asked.
+  AASA in `web/public/.well-known/`; without the app, `web/src/pages/auth-callback.astro`
+  explains and offers an "Open habia" button (`habia://`, since same-site taps never fire
+  Universal Links).
+- **EAS Update:** `expo-updates`, `runtimeVersion` policy `fingerprint` (an update never reaches
+  an incompatible binary), channels `development` / `preview` / `production` per build profile.
+- **EAS env `production`:** the five `EXPO_PUBLIC_*` plus `SENTRY_AUTH_TOKEN` (secret). Production
+  builds upload JS source maps and dSYMs to Sentry `clavolab/habia`.
+- Still here from before: Sentry + PostHog, habia.app (Astro on Vercel) with legal pages, branded
+  auth emails via Resend.
 
-Use the dev build, not Expo Go: `npx expo start --tunnel` (the owner's phone is on Wi-Fi, the PC
-on Ethernet). Rebuild (`eas build --profile development --platform ios`) only after native changes.
+For development, reinstall the iOS **development build** from EAS (TestFlight replaced it: same
+bundle id) and run `npx expo start --tunnel`. It predates the associated domain, so auth links
+open the web fallback there; its "Open habia" button still works.
 
 ## How to resume
 
@@ -41,7 +46,7 @@ on Ethernet). Rebuild (`eas build --profile development --platform ios`) only af
 
 | Area | State | Lives in |
 | --- | --- | --- |
-| Auth (email + password, reset, PKCE deep links, account deletion, branded emails) | ✅ | `src/features/auth/`, `supabase/templates/`, `supabase/functions/delete-account/` |
+| Auth (email + password, reset, Universal Link email links, account deletion, branded emails) | ✅ | `src/features/auth/`, `src/app/auth-callback.tsx`, `supabase/templates/`, `supabase/functions/delete-account/` |
 | Onboarding (5 steps, creates identity + first habit) | ✅ | `src/features/onboarding/` |
 | Habits CRUD, RRULE builder, 2-minute version, stacking, context cues | ✅ | `src/features/habits/`, `src/lib/recurrence/` |
 | Today + Week views, day bands, check-in rules, actions sheet | ✅ | `src/app/(tabs)/`, `src/features/schedule/`, `src/features/checkins/` |
@@ -49,47 +54,50 @@ on Ethernet). Rebuild (`eas build --profile development --platform ios`) only af
 | Streaks ("never miss twice") + Progress tab | ✅ | `src/features/streak/`, `src/features/stats/` |
 | Local reminders (native only), tap focuses the habit | ✅ | `src/features/reminders/` |
 | Offline: persisted cache, queued check-ins replayed after restart | ✅ | `src/lib/query/`, `src/lib/network*.ts` |
-| Crash reporting (Sentry) + analytics (PostHog, opt-out) | ✅ | `src/lib/crash-reporting.ts`, `src/lib/analytics.ts` |
+| Crash reporting (Sentry, source maps + dSYMs) + analytics (PostHog, opt-out) | ✅ | `src/lib/crash-reporting.ts`, `src/lib/analytics.ts` |
 | Design system, dark mode, language picker, Brote mascot, app icons | ✅ | `src/constants/theme.ts`, `src/features/appearance/`, `src/features/mascot/` |
 | Legal texts (es/en), also at habia.app/privacidad and /terminos | ✅ | `src/features/legal/content.ts`, `web/` |
-| Marketing site habia.app (Astro, Vercel, root dir `web`) | ✅ | `web/` |
-| AI coach, couples, paywall | ⏳ not started | — |
+| Marketing site habia.app + auth fallback page + AASA (Astro, Vercel, root dir `web`) | ✅ | `web/` |
+| iOS distribution: TestFlight internal + EAS Update | ✅ | `app.json`, `eas.json` |
+| AI coach, character, friends, leagues, paywall | ⏳ not started | — |
 
 ## Technical state
 
-- Expo SDK 57 (`expo ~57.0.24`, React Native 0.86.3), Expo Router, TypeScript strict.
+- Expo SDK 57 (`expo ~57.0.26`, React Native 0.86.3), Expo Router, TypeScript strict. All SDK
+  patch versions current (`npx expo install --check`), `expo-doctor` 21/21.
 - Supabase cloud project "Habits Project" (no local Docker). 6 migrations applied; RLS on every
-  table. Auth email templates ship with `npx supabase config push`; SMTP and the email rate limit
-  (30/h) live only in the dashboard.
+  table. Auth `site_url`, redirect allow-list and email templates ship with
+  `npx supabase config push`; SMTP and the email rate limit (30/h) live only in the dashboard.
 - Skia 2.6.2 + Reanimated 4.5.1 for the tree; `react-native-svg` for charts and the mascot.
 - TanStack Query 5 (persisted 7 days) + Zustand. Sentry `@sentry/react-native` 7, PostHog RN 4.
 - `web/`: Astro 7 static site, excluded from the app's tsconfig, ESLint and Metro; pins its own
-  tsconfig in `astro.config.mjs` (Vercel installs only `web/` dependencies).
+  tsconfig in `astro.config.mjs` (Vercel installs only `web/` dependencies). `vercel.json` serves
+  the AASA as JSON. Apex `habia.app` is primary (`www` redirects to it).
 - Verification baseline: **89 tests / 12 suites green**, typecheck clean, lint clean, site builds
-  6 pages. Typecheck ~8 s, tests ~7 s, lint ~25 s on this machine.
+  7 pages. Typecheck ~8 s, tests ~8 s, lint ~25 s on this machine.
 - CI (typecheck + lint + tests) runs on push and PRs to `main`. Repo: `clavijojuanpablo/habia`.
-- Project hooks run from `${CLAUDE_PROJECT_DIR}` (they used to break in subfolders).
+- Shipping: JS-only change → `eas update --channel production --environment production`;
+  native change (fingerprint moves) → `eas build --profile production --platform ios` →
+  `eas submit --platform ios --latest`. Estimate for the five post-TestFlight blocks
+  (2026-09-30): ~145–245 h of code plus character art and admin; re-estimate after the AI coach.
 
 ## Next steps
 
-**Start here — TestFlight (Block 2).** One production build that carries everything native:
+**Start here — finish Block 2, then the AI coach.**
 
-1. **Universal Links**, in the same build: `web/public/.well-known/apple-app-site-association`
-   (needs the Apple **Team ID** from developer.apple.com → Membership), `associatedDomains:
-   ["applinks:habia.app"]` in `app.json`, email links to `https://habia.app/auth-callback` with a
-   web fallback page ("open this on your phone"). Fixes the Chrome detour on iPhone and the blank
-   page when the email is opened on a computer.
-2. **Production env in EAS:** every `EXPO_PUBLIC_*` (Supabase, Sentry DSN, PostHog) via
-   `eas env:create`, plus `SENTRY_AUTH_TOKEN` as a secret (the owner has it; never paste it in
-   chat). Add Sentry `organization`/`project` slugs to the plugin in `app.json` (ask the owner).
-   `SENTRY_DISABLE_AUTO_UPLOAD` stays only in the development/preview profiles.
-3. **`expo-updates`** (runtime versions) so JS fixes reach testers without a store build.
-4. `eas build --profile production --platform ios` → `eas submit` → TestFlight internal, then
-   external testers (App Store Connect needs the privacy URL: `https://habia.app/privacidad`).
-5. Then, in this order (ROADMAP → "Order after Block 2"): **AI coach** → **your character**
-   (design open; the owner will design layered SVG assets outside — spec in GAMIFICATION.md) →
-   **friends & circles** with shared streaks → opt-in **leagues** → **monetization** (Pro + cosmetics),
-   all before the public launch. Plus the north-star self-report (PostHog survey).
+1. **Rotate the Sentry token** (owner): it was pasted in the chat on 2026-09-30. New
+   Organization Token → delete the old one → check it with
+   `npx @sentry/cli@latest info --auth-token (Get-Clipboard)` → store it with
+   `eas env:set --name SENTRY_AUTH_TOKEN --environment production --visibility secret --value (Get-Clipboard) --non-interactive`.
+   Also delete the test bundle (`test.js`) in Sentry → Projects → habia → Source Maps.
+2. **First OTA update:** a tiny JS change → `eas update --channel production` → reopen the
+   TestFlight app twice and confirm it arrived. Proves the pipeline before an urgent fix needs it.
+3. **External testers:** public TestFlight link (Apple beta review), App Store Connect privacy
+   questionnaire (privacy URL `https://habia.app/privacidad`).
+4. Then, in this order (ROADMAP → "Order after Block 2"): **AI coach** → **your character** →
+   **friends & circles** → opt-in **leagues** → **monetization**, all before the public launch.
+   Plus the north-star self-report (PostHog survey). Start the "can a Colombian individual use
+   Stripe?" question early: it takes calendar weeks, not code.
 
 ## Known debts
 
@@ -97,8 +105,11 @@ on Ethernet). Rebuild (`eas build --profile development --platform ios`) only af
   `@shopify/react-native-skia` only through end of 2026, then its creator forks it. Re-check the
   fork's health at the next Expo SDK upgrade; plan B is redrawing the tree with
   `react-native-svg` + Reanimated (`src/features/garden/`).
-- Vercel redirects `habia.app` → `www.habia.app`, but the site's canonical URLs are the apex.
-  Flip it in Vercel (apex primary, `www` → apex) — the owner may have done it already.
+- **Secrets in EAS:** never type them into the masked prompt of `eas env:create`/`env:set` — on
+  2026-09-30 it stored a wrong value and the build failed with a Sentry `400`. Use
+  `--value (Get-Clipboard)` after checking the token with sentry-cli.
+- The iOS development build lacks the associated domain; rebuild it (`--profile development`)
+  when native work resumes, so auth links open it directly.
 - Email language is stored at sign-up only (`src/features/auth/api.ts`); changing the app
   language later does not update `user_metadata.language`.
 - The actions sheet's scrim slides up with the sheet (`animationType="slide"`); cosmetic.
@@ -113,13 +124,14 @@ on Ethernet). Rebuild (`eas build --profile development --platform ios`) only af
 - Legal: jurisdiction (Colombia) unconfirmed, no lawyer review; analytics is opt-out (EU users
   would need opt-in).
 - `assets/dns.png` and `.claude/screenshots/android.jfif` were committed by mistake
-  (`git rm --cached` them); the owner's git email has a typo (`gmal.com`).
+  (`git rm --cached` them); the owner's git email has a typo (`gmal.com`). Commit `255ded7`
+  has a Spanish message (convention: English).
 
 ## Only the user can do these
 
-- Apple Team ID (for Universal Links) and Sentry org/project slugs (for source maps).
-- Register EAS env vars and the Sentry token as secrets.
+- Rotate the Sentry token; register any EAS secret.
 - Invite TestFlight testers; answer App Store Connect questionnaires (privacy "nutrition labels").
+- Design the character's layered SVG parts (spec in GAMIFICATION.md).
 - Apple Developer renews yearly (US$99, next 2027-09-28). Google Play (US$25 one-off) can wait
   until there are Android testers.
 
