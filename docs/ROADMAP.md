@@ -73,7 +73,7 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 Testers first (TestFlight with the core), then every Pro feature **before the public App Store launch**, shipped to testers as it lands (`expo-updates`). See GAMIFICATION.md for the design of 2–5.
 
 1. **AI coach** — moved up: the most direct lever on the north star; testers generate history while it is built
-2. **Your character** — customizable, very visual (design open: Brote / plant species / creatures; assets designed outside, animated in Rive)
+2. **Your character** — a plant avatar (plant · pot · eyes · mouth · accessory) that is also the profile picture; parts free, earned with seeds or bought; assets designed outside, animated in Rive
 3. **Friends & circles** — replaces couples-only; shared streaks, cheers, privacy by default, block/report
 4. **Leagues** — opt-in weekly leagues scored by consistency %, when there are enough users
 5. **Monetization** — Pro + cosmetics, before launch
@@ -83,7 +83,8 @@ Testers first (TestFlight with the core), then every Pro feature **before the pu
 - Guided programs ("Caminos", 3 initial) + micro-lessons
 
 ## Character ⏳
-- Visual concepts for the three options → decision → layered SVG assets (spec in GAMIFICATION.md) → Rive state machine → `rive-react-native` (development build)
+- Concepts → layered SVG parts with anchor points (spec in GAMIFICATION.md) → Rive → `rive-react-native` (development build)
+- Avatar builder screen; equipped combination on `profiles`; inventory + server-side seed ledger (migration); avatar as profile picture
 - Replaces the static Brote in onboarding, Hoy, celebrations, Garden
 
 ## Phase 5: Social ⏳

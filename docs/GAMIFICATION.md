@@ -27,14 +27,24 @@ Every completed habit is a **vote** for the person you want to become. Votes fee
 ## Your character (decided 2026-09-29, design open)
 Each user has a **customizable character** that is *them* growing: the identity principle made visible. It is the main delight feature, works solo from day 1, and is what friends see. It must be very visual and alive (Duolingo-level).
 
-**Open decision — which character?** To explore with visual concepts before building:
-| Option | Idea | For | Against |
-|---|---|---|---|
-| A. Brote, customizable | One sprout; color, eyes, accessories, pot | Brand already built around Brote; cheapest | Less personal variety |
-| B. Plant species | Choose a seed (sprout, cactus, mushroom, flower, bonsai…); it grows with you | Ties to the tree and to growth; strong identity choice | More assets (each species × stages) |
-| C. Creature companions | Brote-like creatures, one per identity or chosen | Most expressive, most "character" | Farther from the plant metaphor; most art |
+**Decided (2026-09-29): a plant avatar built from five swappable parts.** Brote is the default plant.
+| Part | Examples |
+|---|---|
+| Plant | brote, cactus, sunflower, tulip, tree, mushroom, palm, … (many over time) |
+| Pot | terracotta, wood, Japanese, rainbow, space, gaming, … |
+| Eyes | several styles, each with the moods below |
+| Mouth | several styles, each with the moods below |
+| Accessory | cap, glasses, crown, bow, … |
 
-Leaning: **B with Brote as the default seed** (keeps the brand, adds real choice), decided after seeing concepts.
+- **It is the user's profile picture**: what friends see in shared streaks, circles and leagues. Every part must read at ~40 px.
+- **Anchor points, not fixed positions:** each plant declares a `face` anchor (position + scale) and a `head` anchor; pots share one `base` line. Eyes, mouths and accessories are drawn once, centered on their anchor, so any part fits any plant and a new plant never forces redrawing the others.
+- **Launch small, grow in seasons:** ~6 plants, 4 pots, 5 eyes, 5 mouths, 6 accessories at launch (thousands of combinations); new parts in themed drops. Rive files can be fetched remotely, so new parts need no app update.
+- Open: whether the avatar plant also grows in stages with consistency (lovely, but multiplies plant art — later).
+
+**Unlocks: free, earned with seeds, or bought.**
+- **Seeds (🌱)** are earned by **consistency, never by raw check-ins**: streak milestones, consistent weeks, the ~66-day automaticity mark; daily cap. Adding trivial habits must not earn more.
+- **Seeds are never sold for money.** Paid items are bought directly; otherwise completing habits becomes "the slow way to pay" (overjustification risk, see SCIENCE.md ethics).
+- **Computed on the server:** an append-only seed ledger written by Postgres from real logs (function/trigger), never granted by the client. Inventory table records each owned part and its source (free / earned / purchased); `profiles` stores the equipped combination.
 
 **Asset spec (for designing with other AIs / Claude Cowork):**
 - SVG, `viewBox="0 0 120 120"`, flat shapes (no filters, no raster), palette from `src/constants/theme.ts` + the Brote colors in `src/features/mascot/brote.tsx`.
