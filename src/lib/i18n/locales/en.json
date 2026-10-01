@@ -109,9 +109,6 @@
     "twoMinute": "2-minute version",
     "twoMinuteHint": "The minimum version for hard days. It still counts.",
     "twoMinutePlaceholder": "Read one page",
-    "intention": "Implementation intention",
-    "intentionHint": "\"I will [habit] at [time] in [place]\". It doubles your odds of doing it.",
-    "intentionPlaceholder": "I will read at 9 pm in bed",
     "nameRequired": "Give the habit a name",
     "daysRequired": "Pick at least one day",
     "invalidTime": "Use the HH:MM format",
@@ -135,13 +132,13 @@
     "contextPlaceholder": "When I get home, after dinner…",
     "contextHint": "The moment or place that will cue it.",
     "contextRequired": "Describe the moment",
-    "temptation": "Temptation bundle",
-    "temptationHint": "Pair it with something you enjoy: you only get one while doing the other.",
-    "temptationPlaceholder": "I only listen to my podcast while walking",
     "namePreview": "Your new habit",
     "moreOptions": "✨ More options",
     "extrasTitle": "To make it easier",
-    "window": "Time window"
+    "window": "Time window",
+    "where": "Where?",
+    "whereHint": "The exact place. Together with the time, deciding where makes you much more likely to do it.",
+    "wherePlaceholder": "In bed, at my desk…"
   },
   "weekdays": {
     "MO": "M",
@@ -170,7 +167,8 @@
   "reminders": {
     "channel": "Habit reminders",
     "body": "It is time. A small vote for who you want to be.",
-    "bodyMinimum": "Even the minimum version counts: {{minimum}}"
+    "bodyMinimum": "Even the minimum version counts: {{minimum}}",
+    "bodyWhere": "📍 {{where}}"
   },
   "garden": {
     "stage": {
@@ -502,8 +500,8 @@
       "v1": "“{{name}}” is at {{percent}}% this month. What if it had a version so small you couldn’t skip it?"
     },
     "addIntention": {
-      "v0": "“{{name}}” is putting up a fight ({{percent}}% this month). Deciding when and where (“I will do this at … in …”) is among the things research finds helps most.",
-      "v1": "“{{name}}” is at {{percent}}% this month. Give it a fixed appointment: “at … in …”. A concrete plan beats motivation."
+      "v0": "“{{name}}” is putting up a fight ({{percent}}% this month). Give it a fixed place: deciding where you’ll do it is among the things research finds helps most.",
+      "v1": "“{{name}}” is at {{percent}}% this month. Where will you do it? A concrete place beats motivation."
     },
     "weekUp": {
       "v0": "This week you’re at {{thisWeek}}%, up from {{lastWeek}}% last week. Small gains that add up: that’s the 1% rule.",
@@ -552,14 +550,14 @@
     },
     "taken": {
       "minimum": "Done! “{{name}}” now has its 2-minute version: on hard days, that counts too.",
-      "intention": "Done! “{{name}}” now has its when and where: now the plan reminds you."
+      "intention": "Done! “{{name}}” now has its place: now the plan reminds you."
     },
     "actions": {
       "doMinimum": "Do the minimum version",
       "markDone": "Mark as done",
       "seeGarden": "See my garden",
       "addMinimum": "Add a 2-minute version",
-      "addIntention": "Add when and where"
+      "addIntention": "Add where"
     }
   }
 }

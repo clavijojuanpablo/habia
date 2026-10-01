@@ -6,10 +6,10 @@ Every feature must map to a mechanism here. If a feature doesn't, question it.
 
 | Law | Mechanism | Feature |
 |---|---|---|
-| 1. Make it obvious | Implementation intentions: "I will [X] at [time] in [place]" (Gollwitzer, 1999; meta-analysis Gollwitzer & Sheeran, 2006, d≈0.65) | `habits.implementation_intention` field in the creation flow |
+| 1. Make it obvious | Implementation intentions: "I will [X] at [time] in [place]" (Gollwitzer, 1999; meta-analysis Gollwitzer & Sheeran, 2006, d≈0.65) | Built from two short answers: the cue ("¿Cuándo lo harás?") + "¿Dónde?" (stored in `habits.implementation_intention`); the reminder reads "📍 place" |
 | | Habit stacking: "After [current habit], I will [new habit]" | `cue_type = after_habit` + `anchor_habit_id`; completing the anchor surfaces/notifies the next habit |
 | | Context cues ("When I get home → gym") | `cue_type = context` + `context_label`; optional geofence later |
-| 2. Make it attractive | Temptation bundling (Milkman et al., 2014) | `habits.temptation_bundle` ("Only listen to my podcast while walking") |
+| 2. Make it attractive | Temptation bundling (Milkman et al., 2014) | Removed from the form in 1.0.3 (friction, nothing used it); the column `habits.temptation_bundle` is kept for a future coach tip |
 | | Identity + social norms | Identity statements (tree branches); Couples mode |
 | 3. Make it easy | 2-minute rule; reduce friction | `habits.two_minute_version`; `done_minimum` log status counts toward the streak |
 | 4. Make it satisfying | Immediate reward; habit tracking | Check-in animation + haptics, the tree grows immediately, visual tracker |

@@ -63,15 +63,15 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
   const [time, setTime] = useState(toTimeInput(habit?.window_start));
   const [windowEnd, setWindowEnd] = useState(toTimeInput(habit?.window_end));
   const [twoMinute, setTwoMinute] = useState(habit?.two_minute_version ?? '');
-  const [intention, setIntention] = useState(habit?.implementation_intention ?? '');
+  // Stored as `implementation_intention`: the "when" comes from the cue above, so only the place is asked.
+  const [where, setWhere] = useState(habit?.implementation_intention ?? '');
   const [reminder, setReminder] = useState<number | null>(habit ? habit.reminder_minutes_before : 0);
   const [cueType, setCueType] = useState<CueType>(habit?.cue_type ?? 'time');
   const [anchorId, setAnchorId] = useState<string | null>(habit?.anchor_habit_id ?? null);
   const [contextLabel, setContextLabel] = useState(habit?.context_label ?? '');
   const [identityId, setIdentityId] = useState<string | null>(habit?.identity_id ?? null);
-  const [temptation, setTemptation] = useState(habit?.temptation_bundle ?? '');
   const [showExtras, setShowExtras] = useState(
-    !!habit?.two_minute_version || !!habit?.implementation_intention || !!habit?.temptation_bundle,
+    !!habit?.two_minute_version || !!habit?.implementation_intention,
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -111,14 +111,13 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
       window_start: stacked ? null : toDbTime(time),
       window_end: hourly && !stacked ? toDbTime(windowEnd) : null,
       two_minute_version: twoMinute.trim() || null,
-      implementation_intention: intention.trim() || null,
+      implementation_intention: where.trim() || null,
       // Reminders only apply to timed occurrences.
       reminder_minutes_before: hasTime ? reminder : null,
       cue_type: cueType,
       anchor_habit_id: stacked ? anchorId : null,
       context_label: cueType === 'context' ? contextLabel.trim() : null,
       identity_id: identityId,
-      temptation_bundle: temptation.trim() || null,
     });
   };
 
@@ -376,19 +375,11 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
             onChangeText={setTwoMinute}
           />
           <TextField
-            label={t('habit.intention')}
-            hint={t('habit.intentionHint')}
-            placeholder={t('habit.intentionPlaceholder')}
-            value={intention}
-            onChangeText={setIntention}
-            multiline
-          />
-          <TextField
-            label={t('habit.temptation')}
-            hint={t('habit.temptationHint')}
-            placeholder={t('habit.temptationPlaceholder')}
-            value={temptation}
-            onChangeText={setTemptation}
+            label={t('habit.where')}
+            hint={t('habit.whereHint')}
+            placeholder={t('habit.wherePlaceholder')}
+            value={where}
+            onChangeText={setWhere}
           />
         </Section>
       )}

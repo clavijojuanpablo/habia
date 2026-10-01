@@ -22,7 +22,6 @@ export type HabitInput = Pick<
   | 'anchor_habit_id'
   | 'context_label'
   | 'identity_id'
-  | 'temptation_bundle'
 >;
 
 const habitsKey = ['habits'] as const;

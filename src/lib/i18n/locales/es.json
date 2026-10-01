@@ -109,9 +109,6 @@
     "twoMinute": "Versión de 2 minutos",
     "twoMinuteHint": "La versión mínima para los días difíciles. También cuenta.",
     "twoMinutePlaceholder": "Leer una página",
-    "intention": "Intención de implementación",
-    "intentionHint": "\"Haré [hábito] a las [hora] en [lugar]\". Duplica la probabilidad de hacerlo.",
-    "intentionPlaceholder": "Leeré a las 9 p. m. en mi cama",
     "nameRequired": "Ponle un nombre al hábito",
     "daysRequired": "Elige al menos un día",
     "invalidTime": "Usa el formato HH:MM",
@@ -135,13 +132,13 @@
     "contextPlaceholder": "Al llegar a casa, después de cenar…",
     "contextHint": "El momento o lugar que te lo recordará.",
     "contextRequired": "Describe el momento",
-    "temptation": "Tentación asociada",
-    "temptationHint": "Júntalo con algo que disfrutes: solo lo harás mientras lo haces.",
-    "temptationPlaceholder": "Solo escucho mi podcast mientras camino",
     "namePreview": "Tu nuevo hábito",
     "moreOptions": "✨ Más opciones",
     "extrasTitle": "Para que se te haga más fácil",
-    "window": "Ventana horaria"
+    "window": "Ventana horaria",
+    "where": "¿Dónde?",
+    "whereHint": "El lugar concreto. Junto con la hora, decidir dónde hace mucho más probable que lo hagas.",
+    "wherePlaceholder": "En mi cama, en el escritorio…"
   },
   "weekdays": {
     "MO": "L",
@@ -170,7 +167,8 @@
   "reminders": {
     "channel": "Recordatorios de hábitos",
     "body": "Es tu momento. Un pequeño voto por quien quieres ser.",
-    "bodyMinimum": "Aunque sea la versión mínima: {{minimum}}"
+    "bodyMinimum": "Aunque sea la versión mínima: {{minimum}}",
+    "bodyWhere": "📍 {{where}}"
   },
   "garden": {
     "stage": {
@@ -502,8 +500,8 @@
       "v1": "«{{name}}» va en {{percent}} % este mes. ¿Y si tuviera una versión tan pequeña que no pudieras saltártela?"
     },
     "addIntention": {
-      "v0": "«{{name}}» se está resistiendo ({{percent}} % este mes). Decidir cuándo y dónde («Haré esto a las … en …») es de lo que más ayuda según la investigación.",
-      "v1": "«{{name}}» va en {{percent}} % este mes. Dale una cita fija: «a las … en …». Un plan concreto pesa más que la motivación."
+      "v0": "«{{name}}» se está resistiendo ({{percent}} % este mes). Dale un lugar fijo: decidir dónde lo harás es de lo que más ayuda según la investigación.",
+      "v1": "«{{name}}» va en {{percent}} % este mes. ¿Dónde lo harás? Un lugar concreto pesa más que la motivación."
     },
     "weekUp": {
       "v0": "Esta semana vas en {{thisWeek}} %, frente a {{lastWeek}} % la anterior. Pequeñas mejoras que se suman: así funciona el 1 %.",
@@ -552,14 +550,14 @@
     },
     "taken": {
       "minimum": "¡Hecho! «{{name}}» ya tiene su versión de 2 minutos: los días difíciles, esa también cuenta.",
-      "intention": "¡Hecho! «{{name}}» ya tiene su cuándo y dónde: ahora el plan te recuerda a ti."
+      "intention": "¡Hecho! «{{name}}» ya tiene su lugar: ahora el plan te recuerda a ti."
     },
     "actions": {
       "doMinimum": "Hacer versión mínima",
       "markDone": "Marcar como hecho",
       "seeGarden": "Ver mi jardín",
       "addMinimum": "Añadir versión de 2 minutos",
-      "addIntention": "Añadir cuándo y dónde"
+      "addIntention": "Añadir dónde"
     }
   }
 }

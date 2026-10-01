@@ -35,11 +35,11 @@ export function useReminderSync() {
       fireAt,
       habitId: item.habit.id,
       title: `${item.habit.icon} ${item.habit.name}`,
-      body:
-        item.habit.implementation_intention ??
-        (item.habit.two_minute_version
+      body: item.habit.implementation_intention
+        ? t('reminders.bodyWhere', { where: item.habit.implementation_intention })
+        : item.habit.two_minute_version
           ? t('reminders.bodyMinimum', { minimum: item.habit.two_minute_version })
-          : t('reminders.body')),
+          : t('reminders.body'),
     }));
 
     const signature = reminders.map((r) => `${r.habitId}|${r.fireAt.getTime()}|${r.title}|${r.body}`).join(';');

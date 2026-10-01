@@ -23,7 +23,7 @@ const privacyEs: LegalDocument = {
       heading: 'Qué datos recogemos',
       body: [
         '• Cuenta: tu correo electrónico y una contraseña cifrada.',
-        '• Tus hábitos: nombre, icono, color, frecuencia, horarios, recordatorios, tu versión de 2 minutos, tus intenciones e identidades.',
+        '• Tus hábitos: nombre, icono, color, frecuencia, horarios, recordatorios, tu versión de 2 minutos, dónde los haces e identidades.',
         '• Tu actividad: qué hábitos completas y cuándo, para calcular rachas, estadísticas y tu árbol.',
         '• Preferencias: idioma, tema (claro u oscuro), franjas del día y zona horaria.',
         '• Datos técnicos mínimos que genera la conexión con nuestro proveedor (por ejemplo, la dirección IP en los registros del servidor).',
@@ -170,7 +170,7 @@ const privacyEn: LegalDocument = {
       heading: 'What we collect',
       body: [
         '• Account: your email address and an encrypted password.',
-        '• Your habits: name, icon, color, frequency, times, reminders, your 2-minute version, intentions and identities.',
+        '• Your habits: name, icon, color, frequency, times, reminders, your 2-minute version, where you do them and identities.',
         '• Your activity: which habits you complete and when, to compute streaks, stats and your tree.',
         '• Preferences: language, theme, day bands and time zone.',
         '• Minimal technical data produced by the connection to our provider (for example, the IP address in server logs).',
