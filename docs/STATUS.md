@@ -120,7 +120,10 @@ open the web fallback there; its "Open habia" button still works.
    "offline", queued check-ins wait for the real connection at startup, reminders never fire for a
    rest day, are never wiped while the cache restores, are rescheduled after allowing notifications
    in Settings and no longer mix overlapping runs; the week view stops counting rest days; a chained
-   habit on a rest day is not offered as next. Since
+   habit on a rest day is not offered as next; the navigation no longer resets when a session
+   arrives from an email link before its profile loads (fresh-device password reset), an email link
+   is verified once; onboarding cannot create duplicates on double tap or retry, shows its errors,
+   and only promises a reminder for a habit that has a time. Since
    1.0.1: coach 1.0.2 (scored detectors, "¿Por qué?"); 1.0.3 simpler habit form ("Tentación
    asociada" removed, column kept; "Intención de implementación" became "¿Dónde?"; reminders read
    "📍 place"); 1.0.4 calmer Today (**one prompt above the list**: yesterday's catch-up, closable
@@ -155,6 +158,9 @@ read it in PostHog as the product's success metric (trend per user and cohort). 
 stored per account but per device (`habia.northStar.<userId>`): a user on iPhone and web is asked on both.
 
 ## Known debts
+
+- Three near-identical Chip components (habit form, identity form, onboarding): move one to
+  `src/components/` when a fourth appears. White-on-pastel chip text can be low contrast.
 
 - Web previews: Metro caches inlined `EXPO_PUBLIC_*` values; after changing env vars, export with
   `--clear`. (The PostHog web crash is fixed: `customStorage` on web, `src/lib/analytics.ts`.)

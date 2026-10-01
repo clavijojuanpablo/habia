@@ -53,7 +53,7 @@ export function IdentityForm({ identity, submitting, onSubmit, onDelete }: Props
               onPress={() => setArea(a)}
               accessibilityState={{ selected: area === a }}
               style={[styles.chip, { backgroundColor: area === a ? color : theme.backgroundElement }]}>
-              <ThemedText type="smallBold" style={{ color: area === a ? '#fff' : theme.text }}>
+              <ThemedText type="smallBold" style={{ color: area === a ? theme.onPrimary : theme.text }}>
                 {IDENTITY_AREAS[a]} {t(`identity.areas.${a}`)}
               </ThemedText>
             </Pressable>

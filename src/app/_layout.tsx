@@ -11,13 +11,15 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { Colors } from '@/constants/theme';
 import { AppearanceProvider, useAppearance } from '@/features/appearance/appearance-provider';
 import { SessionProvider, useSession } from '@/features/auth/session-provider';
 import { useProfile } from '@/features/profile/api';
+import { useTheme } from '@/hooks/use-theme';
 import { useTimezoneSync } from '@/features/profile/use-timezone-sync';
 import { trackScreen } from '@/lib/analytics';
 import { wrapRoot } from '@/lib/crash-reporting';
@@ -74,6 +76,7 @@ function ThemedNavigation() {
 
 function RootNavigator() {
   const { t } = useTranslation();
+  const theme = useTheme();
   const { session, isLoading } = useSession();
   const { data: profile, isLoading: profileLoading } = useProfile();
   useTimezoneSync();
@@ -89,16 +92,21 @@ function RootNavigator() {
   });
   // Never block the app on a font failure: fall back to the system font.
   const ready = !isLoading && (fontsLoaded || !!fontError) && (!session || !profileLoading);
+  // Once mounted, the Stack must stay mounted: unmounting it (e.g. a session arriving from an email
+  // link before its profile loads) throws away the navigation state, like the reset-password screen
+  // the link was heading to. Later waits are covered by an overlay instead.
+  const [mounted, setMounted] = useState(false);
+  if (ready && !mounted) setMounted(true);
 
   useEffect(() => {
     if (ready) SplashScreen.hideAsync();
   }, [ready]);
 
-  if (!ready) return null;
+  if (!mounted) return null;
 
   const modal = (title: string) => ({ presentation: 'modal' as const, headerShown: true, title });
 
-  return (
+  const stack = (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={needsOnboarding}>
         <Stack.Screen name="onboarding" />
@@ -122,4 +130,20 @@ function RootNavigator() {
       <Stack.Screen name="reset-password" />
     </Stack>
   );
+
+  return (
+    <>
+      {stack}
+      {/* A new session's profile is still loading: hide the tabs that would flash before onboarding. */}
+      {!ready && (
+        <View style={[StyleSheet.absoluteFill, styles.overlay, { backgroundColor: theme.background }]}>
+          <ActivityIndicator color={theme.primary} />
+        </View>
+      )}
+    </>
+  );
 }
+
+const styles = StyleSheet.create({
+  overlay: { alignItems: 'center', justifyContent: 'center' },
+});

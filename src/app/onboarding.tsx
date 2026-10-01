@@ -8,7 +8,7 @@ import { Button } from '@/components/button';
 import { TextField } from '@/components/text-field';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
+import { HabitColors, MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
 import { IDENTITY_AREAS, type IdentityArea } from '@/features/identities/api';
 import { Brote } from '@/features/mascot/brote';
 import { useCompleteOnboarding, useSkipOnboarding } from '@/features/onboarding/api';
@@ -26,19 +26,28 @@ export default function OnboardingScreen() {
 
   const [step, setStep] = useState(0);
   const [area, setArea] = useState<IdentityArea>('health');
-  const [statement, setStatement] = useState('');
+  // null = untouched, so the suggestion shows; an emptied field stays empty while typing.
+  const [statement, setStatement] = useState<string | null>(null);
+  const [finishing, setFinishing] = useState(false);
   const [habit, setHabit] = useState<SuggestedHabit | null>(null);
   const [customName, setCustomName] = useState('');
   const [obstacle, setObstacle] = useState<Obstacle>('forget');
 
   const suggestions = AREA_HABITS[area];
-  const statementValue = statement || t(`onboarding.identitySuggestion.${area}`);
+  const suggestion = t(`onboarding.identitySuggestion.${area}`);
+  const statementValue = (statement ?? suggestion).trim() || suggestion;
   const habitName = habit ? t(`onboarding.habits.${habit.id}.name`) : customName.trim();
   const canContinue = step !== 2 || habitName.length > 0;
 
+  // A reminder needs a time: suggested habits have one, a custom habit does not (yet).
+  const remindable = obstacle === 'forget' && !!habit?.time && REMINDERS_SUPPORTED;
+
   const finish = async () => {
-    if (obstacle === 'forget' && REMINDERS_SUPPORTED) await ensureNotificationPermission();
-    const chosen = habit ?? { id: 'custom', icon: '🌱', color: '#3DBE7A' };
+    // The permission prompt takes a moment: a second tap must not create everything twice.
+    if (finishing) return;
+    setFinishing(true);
+    if (remindable) await ensureNotificationPermission();
+    const chosen = habit ?? { id: 'custom', icon: '🌱', color: HabitColors[0] };
     complete.mutate(
       {
         area,
@@ -52,7 +61,7 @@ export default function OnboardingScreen() {
         },
         obstacle,
       },
-      { onSuccess: () => router.replace('/') },
+      { onSuccess: () => router.replace('/'), onError: () => setFinishing(false) },
     );
   };
 
@@ -87,7 +96,7 @@ export default function OnboardingScreen() {
                     selected={area === a}
                     onPress={() => {
                       setArea(a);
-                      setStatement('');
+                      setStatement(null);
                       setHabit(null);
                     }}
                   />
@@ -95,7 +104,7 @@ export default function OnboardingScreen() {
               </View>
               <TextField
                 label={t('identity.statement')}
-                value={statementValue}
+                value={statement ?? suggestion}
                 onChangeText={setStatement}
                 maxLength={80}
               />
@@ -179,7 +188,7 @@ export default function OnboardingScreen() {
                   {habit?.time ? ` · ${habit.time}` : ''}
                 </ThemedText>
               </View>
-              {obstacle === 'forget' && REMINDERS_SUPPORTED && (
+              {remindable && (
                 <ThemedText type="caption" themeColor="textSecondary" style={styles.center}>
                   {t('onboarding.permissionHint')}
                 </ThemedText>
@@ -191,11 +200,21 @@ export default function OnboardingScreen() {
         <View style={styles.footer}>
           <Button
             label={step === STEPS - 1 ? t('onboarding.start') : t('onboarding.next')}
-            loading={complete.isPending}
+            loading={finishing || complete.isPending}
             disabled={!canContinue}
             onPress={() => (step === STEPS - 1 ? finish() : setStep(step + 1))}
           />
-          <Pressable onPress={() => (step === 0 ? skip.mutate() : setStep(step - 1))} hitSlop={8}>
+          {(complete.isError || skip.isError) && (
+            <ThemedText type="small" themeColor="danger" style={styles.center}>
+              {t('common.error')}
+            </ThemedText>
+          )}
+          <Pressable
+            onPress={() => {
+              if (step > 0) setStep(step - 1);
+              else if (!skip.isPending) skip.mutate();
+            }}
+            hitSlop={8}>
             <ThemedText type="small" themeColor="textSecondary" style={styles.center}>
               {step === 0 ? t('onboarding.skip') : t('onboarding.back')}
             </ThemedText>

@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator } from 'react-native';
 
@@ -23,8 +23,11 @@ export default function AuthCallbackScreen() {
   // Derived, never stored: a link without a token is simply invalid.
   const error = verifyError ?? (tokenHash && type ? null : t('auth.linkInvalid'));
 
+  const verified = useRef<string | null>(null);
+
   useEffect(() => {
-    if (!tokenHash || !type) return;
+    if (!tokenHash || !type || verified.current === tokenHash) return;
+    verified.current = tokenHash;
     supabase.auth
       .verifyOtp({ token_hash: tokenHash, type: type === 'recovery' ? 'recovery' : 'email' })
       .then(({ error: failure }) => {

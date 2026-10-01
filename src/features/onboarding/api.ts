@@ -27,25 +27,46 @@ export function useCompleteOnboarding() {
     mutationFn: async ({ area, statement, habit, obstacle }: OnboardingResult) => {
       const user_id = await requireUserId();
 
-      const { data: identity, error: identityError } = await supabase
+      // Three writes without a transaction: a retry after a partial failure reuses what the
+      // previous attempt already created instead of adding a second identity or habit.
+      const { data: previous } = await supabase
         .from('identities')
-        .insert({ user_id, statement, area, color: habit.color })
         .select('id')
-        .single();
-      if (identityError) throw identityError;
+        .eq('statement', statement)
+        .eq('area', area)
+        .limit(1)
+        .maybeSingle();
+      let identityId = previous?.id;
+      if (!identityId) {
+        const { data, error } = await supabase
+          .from('identities')
+          .insert({ user_id, statement, area, color: habit.color })
+          .select('id')
+          .single();
+        if (error) throw error;
+        identityId = data.id;
+      }
 
-      const { error: habitError } = await supabase.from('habits').insert({
-        user_id,
-        identity_id: identity.id,
-        name: habit.name,
-        icon: habit.icon,
-        color: habit.color,
-        rrule: 'FREQ=DAILY',
-        starts_on: formatLocalDate(new Date()),
-        window_start: habit.time ? `${habit.time}:00` : null,
-        two_minute_version: habit.twoMinute,
-        reminder_minutes_before: habit.time && obstacle === 'forget' ? 0 : null,
-      });
+      const { count: existingHabits } = await supabase
+        .from('habits')
+        .select('id', { count: 'exact', head: true })
+        .eq('identity_id', identityId)
+        .eq('name', habit.name);
+
+      const { error: habitError } = existingHabits
+        ? { error: null }
+        : await supabase.from('habits').insert({
+            user_id,
+            identity_id: identityId,
+            name: habit.name,
+            icon: habit.icon,
+            color: habit.color,
+            rrule: 'FREQ=DAILY',
+            starts_on: formatLocalDate(new Date()),
+            window_start: habit.time ? `${habit.time}:00` : null,
+            two_minute_version: habit.twoMinute,
+            reminder_minutes_before: habit.time && obstacle === 'forget' ? 0 : null,
+          });
       if (habitError) throw habitError;
 
       const { error: profileError } = await supabase

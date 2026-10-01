@@ -12,7 +12,8 @@ import { deleteAccount } from '../api';
 
 /**
  * Account deletion, required by the App Store for any app with sign-up.
- * Two guards: the user must type the confirmation word and then confirm again.
+ * Two guards: the user opens this section, then types the confirmation word (a typed keyword is a
+ * stronger guard than another "are you sure?" tap).
  */
 export function DangerZone() {
   const { t } = useTranslation();

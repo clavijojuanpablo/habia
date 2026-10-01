@@ -88,7 +88,8 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
     const next: Record<string, string> = {};
     if (!name.trim()) next.name = t('habit.nameRequired');
     if (kind === 'weekdays' && days.length === 0) next.days = t('habit.daysRequired');
-    if (stacked && !anchorId) next.anchor = t('habit.anchorRequired');
+    // The anchor must still be selectable: an archived anchor leaves a stale id behind.
+    if (stacked && !anchorOptions.some((h) => h.id === anchorId)) next.anchor = t('habit.anchorRequired');
     if (cueType === 'context' && !contextLabel.trim()) next.context = t('habit.contextRequired');
     setErrors(next);
     if (Object.keys(next).length > 0) return;
@@ -450,7 +451,7 @@ function Chip({
         round && styles.chipRound,
         { backgroundColor: selected ? color : theme.backgroundElement },
       ]}>
-      <ThemedText type="smallBold" style={{ color: selected ? '#fff' : theme.text }}>
+      <ThemedText type="smallBold" style={{ color: selected ? theme.onPrimary : theme.text }}>
         {label}
       </ThemedText>
     </Pressable>
