@@ -9,7 +9,7 @@ export const GARDEN_WINDOW_DAYS = 120;
 
 export type HabitGrowth = {
   habit: Habit;
-  /** Completions in the window. */
+  /** All-time completions when known (server count), else those in the window. */
   completions: number;
   /** Completions in the last 14 days → leaves on the branch. */
   recentCompletions: number;
@@ -61,7 +61,13 @@ function ratio(items: Due[]) {
   return items.length === 0 ? 0 : items.filter((d) => d.done).length / items.length;
 }
 
-export function computeHabitGrowth(habit: Habit, logsByKey: Map<string, HabitLog>, today: Date): HabitGrowth {
+export function computeHabitGrowth(
+  habit: Habit,
+  logsByKey: Map<string, HabitLog>,
+  today: Date,
+  /** Every completion ever made: fruit must not fade as the window slides. */
+  allTimeCompletions?: number,
+): HabitGrowth {
   const due = dueOccurrences(habit, logsByKey, today);
 
   // Walk backwards: a single miss is forgiven, two consecutive misses end the streak.
@@ -79,7 +85,7 @@ export function computeHabitGrowth(habit: Habit, logsByKey: Map<string, HabitLog
   const lastDone = due.findLastIndex((d) => d.done);
   const trailingMisses = due.length - 1 - lastDone;
 
-  const completions = due.filter((d) => d.done).length;
+  const completions = Math.max(allTimeCompletions ?? 0, due.filter((d) => d.done).length);
   const since = (days: number) => due.filter((d) => d.at >= addDays(today, -days));
 
   let flowers = 0;
@@ -111,10 +117,16 @@ export function stageFor(votes: number, fruits: number): GardenStage {
   return 0;
 }
 
-export function computeGarden(habits: Habit[], logs: HabitLog[], votes: number, now: Date): GardenSummary {
+export function computeGarden(
+  habits: Habit[],
+  logs: HabitLog[],
+  votes: number,
+  now: Date,
+  completionsByHabit: Map<string, number> = new Map(),
+): GardenSummary {
   const today = startOfDay(now);
   const logsByKey = new Map(logs.map((log) => [occurrenceKey(log.habit_id, new Date(log.occurrence_at)), log]));
-  const growth = habits.map((habit) => computeHabitGrowth(habit, logsByKey, today));
+  const growth = habits.map((habit) => computeHabitGrowth(habit, logsByKey, today, completionsByHabit.get(habit.id)));
   const fruits = growth.filter((g) => g.automaticity >= 1).length;
   const wilted = growth.filter((g) => g.atRisk).length;
 

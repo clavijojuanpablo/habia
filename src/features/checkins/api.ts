@@ -77,6 +77,7 @@ export function useToggleLog() {
       Promise.all([
         queryClient.invalidateQueries({ queryKey: ['logs'] }),
         queryClient.invalidateQueries({ queryKey: ['votes'] }),
+        queryClient.invalidateQueries({ queryKey: ['completions'] }),
       ]),
   });
 }

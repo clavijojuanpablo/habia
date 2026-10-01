@@ -31,6 +31,7 @@ RevenueCat ⇄ App Store / Play Store / Stripe → webhook → entitlements tabl
 - `habits`: name, icon, color, identity, `rrule`, time window, `two_minute_version`, `cue_type` (time | after_habit | context), `anchor_habit_id`, `context_label`, `implementation_intention`, `temptation_bundle`, `reminder_minutes_before` (NULL = no reminder).
 - `habit_logs`: one row per answered occurrence (`done`, `done_minimum`, `skipped`, `missed`), unique on (habit_id, occurrence_at).
 - `garden_state`: votes, stage, health. Client read-only; written server-side.
+- `habit_completion_counts` (view, `security_invoker`, so RLS applies): all-time completions per habit, for fruit. `profiles.best_streak`: the stored streak record.
 - `coach_messages`: server-written coach messages (`weekly_review` today), one per user, kind and `period_start`; owners read and set `seen_at` only. `profiles.ai_coach_enabled` is the opt-in.
 
 Planned:

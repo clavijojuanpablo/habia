@@ -29,6 +29,7 @@ queryClient.setMutationDefaults(TOGGLE_LOG_KEY, {
     Promise.all([
       queryClient.invalidateQueries({ queryKey: ['logs'] }),
       queryClient.invalidateQueries({ queryKey: ['votes'] }),
+        queryClient.invalidateQueries({ queryKey: ['completions'] }),
     ]),
 });
 

@@ -233,6 +233,7 @@ export type Database = {
         Row: {
           afternoon_starts_at: number
           ai_coach_enabled: boolean
+          best_streak: number
           created_at: string
           display_name: string | null
           id: string
@@ -249,6 +250,7 @@ export type Database = {
         Insert: {
           afternoon_starts_at?: number
           ai_coach_enabled?: boolean
+          best_streak?: number
           created_at?: string
           display_name?: string | null
           id: string
@@ -265,6 +267,7 @@ export type Database = {
         Update: {
           afternoon_starts_at?: number
           ai_coach_enabled?: boolean
+          best_streak?: number
           created_at?: string
           display_name?: string | null
           id?: string
@@ -282,7 +285,21 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      habit_completion_counts: {
+        Row: {
+          completions: number | null
+          habit_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "habit_logs_habit_id_fkey"
+            columns: ["habit_id"]
+            isOneToOne: false
+            referencedRelation: "habits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       local_today: { Args: { p_timezone: string }; Returns: string }

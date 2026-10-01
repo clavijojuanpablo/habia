@@ -531,7 +531,7 @@
       "comeback": "Tus dos últimos días con hábitos quedaron sin marcar. Pensar «ya lo arruiné» es lo que más hace abandonar; volver con algo pequeño lo corta.",
       "usualTime": "Hora mediana de tus últimos {{sample}} registros de «{{name}}». Los hábitos a una hora estable se automatizan antes.",
       "weakWeekday": "Tus últimos {{sample}} días como hoy ({{weekday}}): {{weekdayPercent}} % frente a {{averagePercent}} % en general. Bajar la barra el día difícil protege la constancia (regla de los 2 minutos).",
-      "automaticity": "{{completions}} repeticiones en los últimos 120 días. Lally et al. (2010): mediana de ~66 días hasta el automatismo, con un rango de 18 a 254.",
+      "automaticity": "{{completions}} repeticiones en total. Lally et al. (2010): mediana de ~66 días hasta el automatismo, con un rango de 18 a 254.",
       "addMinimum": "{{percent}} % de {{sample}} veces en los últimos 30 días. Regla de los 2 minutos (Clear): primero presentarse, luego mejorar.",
       "addIntention": "{{percent}} % de {{sample}} veces en los últimos 30 días. Intenciones de implementación: decidir cuándo y dónde tiene un efecto medio-grande (Gollwitzer y Sheeran, 2006).",
       "weekUp": "Porcentaje de hábitos cumplidos esta semana frente a la anterior. Regla del 1 %: pequeñas mejoras que se acumulan.",

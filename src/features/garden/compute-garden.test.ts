@@ -41,6 +41,14 @@ describe('computeHabitGrowth', () => {
     expect(computeHabitGrowth(habit, logsFor([-3]), TODAY).trailingMisses).toBe(2);
   });
 
+  it('bears fruit from all-time completions, not only those in the window', () => {
+    // A 3×/week habit has ~51 occurrences in 120 days: only the all-time count can reach 66.
+    const growth = computeHabitGrowth(habit, logsFor([-2, -1]), TODAY, 70);
+    expect(growth.completions).toBe(70);
+    expect(growth.automaticity).toBe(1);
+    expect(computeHabitGrowth(habit, logsFor([-2, -1]), TODAY).completions).toBe(2);
+  });
+
   it('does not count today as missed while it is still pending', () => {
     expect(computeHabitGrowth(habit, logsFor([-2, -1]), TODAY).streak).toBe(2);
   });

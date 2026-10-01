@@ -531,7 +531,7 @@
       "comeback": "Your last two days with habits went unchecked. Thinking “I already ruined it” is what makes people quit most; coming back with something small breaks it.",
       "usualTime": "Median time of your last {{sample}} check-ins of “{{name}}”. Habits at a stable time become automatic sooner.",
       "weakWeekday": "Your last {{sample}} days like today ({{weekday}}): {{weekdayPercent}}% vs {{averagePercent}}% overall. Lowering the bar on hard days protects consistency (2-minute rule).",
-      "automaticity": "{{completions}} repetitions in the last 120 days. Lally et al. (2010): a median of ~66 days to automaticity, ranging from 18 to 254.",
+      "automaticity": "{{completions}} repetitions in total. Lally et al. (2010): a median of ~66 days to automaticity, ranging from 18 to 254.",
       "addMinimum": "{{percent}}% of {{sample}} times in the last 30 days. The 2-minute rule (Clear): show up first, improve later.",
       "addIntention": "{{percent}}% of {{sample}} times in the last 30 days. Implementation intentions: deciding when and where has a medium-to-large effect (Gollwitzer & Sheeran, 2006).",
       "weekUp": "Share of habits done this week vs last. The 1% rule: small gains that compound.",
