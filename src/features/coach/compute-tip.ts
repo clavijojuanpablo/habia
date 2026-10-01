@@ -1,14 +1,7 @@
-import {
-  AUTOMATICITY_REPETITIONS,
-  type HabitGrowth,
-} from "@/features/garden/compute-garden";
-import type { ScheduleBand } from "@/features/schedule/build-schedule";
-import type {
-  BandStat,
-  DayStat,
-  WeekStat,
-} from "@/features/stats/compute-stats";
-import { daysBetween } from "@/lib/recurrence";
+import { AUTOMATICITY_REPETITIONS, type HabitGrowth } from '@/features/garden/compute-garden';
+import type { ScheduleBand } from '@/features/schedule/build-schedule';
+import type { BandStat, DayStat, WeekStat } from '@/features/stats/compute-stats';
+import { daysBetween } from '@/lib/recurrence';
 
 /**
  * The coach's daily tip: one rule-based nudge, each rule grounded in docs/SCIENCE.md.
@@ -16,34 +9,34 @@ import { daysBetween } from "@/lib/recurrence";
  */
 export type CoachTip =
   | {
-      rule: "never_miss_twice";
+      rule: 'never_miss_twice';
       habitId: string;
       name: string;
       minimum: string | null;
     }
-  | { rule: "comeback" }
+  | { rule: 'comeback' }
   | {
-      rule: "automaticity";
+      rule: 'automaticity';
       habitId: string;
       name: string;
       completions: number;
-      stage: "half" | "close" | "fruit";
+      stage: 'half' | 'close' | 'fruit';
     }
   | {
-      rule: "add_minimum" | "add_intention";
+      rule: 'add_minimum' | 'add_intention';
       habitId: string;
       name: string;
       percent: number;
     }
   | {
-      rule: "best_band";
+      rule: 'best_band';
       best: ScheduleBand;
       worst: ScheduleBand;
       bestPercent: number;
       worstPercent: number;
     }
-  | { rule: "week_up"; thisWeek: number; lastWeek: number }
-  | { rule: "fact"; index: number };
+  | { rule: 'week_up'; thisWeek: number; lastWeek: number }
+  | { rule: 'fact'; index: number };
 
 export type CoachInput = {
   growth: HabitGrowth[];
@@ -87,17 +80,15 @@ export function computeTip(input: CoachInput): CoachTip | null {
 /** Fallback: a science fact, the same all day, a different one each day. */
 function fact(today: Date): CoachTip {
   const dayOfYear = daysBetween(new Date(today.getFullYear(), 0, 1), today);
-  return { rule: "fact", index: dayOfYear % FACT_COUNT };
+  return { rule: 'fact', index: dayOfYear % FACT_COUNT };
 }
 
 /** Exactly one miss and today's occurrence still open: one miss is an accident, two a pattern. */
 function neverMissTwice({ growth, pendingToday }: CoachInput): CoachTip | null {
-  const g = growth.find(
-    (g) => g.trailingMisses === 1 && pendingToday.includes(g.habit.id),
-  );
+  const g = growth.find((g) => g.trailingMisses === 1 && pendingToday.includes(g.habit.id));
   return g
     ? {
-        rule: "never_miss_twice",
+        rule: 'never_miss_twice',
         habitId: g.habit.id,
         name: g.habit.name,
         minimum: g.habit.two_minute_version,
@@ -111,16 +102,8 @@ function comeback({ days }: CoachInput): CoachTip | null {
   const today = days[days.length - 1];
   const [before, last] = past.slice(-2);
   const hadMomentum = past.slice(0, -2).some((d) => d.done > 0);
-  if (
-    !before ||
-    !last ||
-    before.done > 0 ||
-    last.done > 0 ||
-    !hadMomentum ||
-    (today?.done ?? 0) > 0
-  )
-    return null;
-  return { rule: "comeback" };
+  if (!before || !last || before.done > 0 || last.done > 0 || !hadMomentum || (today?.done ?? 0) > 0) return null;
+  return { rule: 'comeback' };
 }
 
 /** Honest journey to ~66 repetitions (Lally et al., 2010): halfway, close, and the fruit. */
@@ -130,15 +113,15 @@ function automaticity({ growth }: CoachInput): CoachTip | null {
     const n = g.completions;
     const stage =
       n >= AUTOMATICITY_REPETITIONS && n < AUTOMATICITY_REPETITIONS + 3
-        ? "fruit"
+        ? 'fruit'
         : n >= AUTOMATICITY_REPETITIONS - 5 && n < AUTOMATICITY_REPETITIONS
-          ? "close"
+          ? 'close'
           : n >= half && n < half + 3
-            ? "half"
+            ? 'half'
             : null;
     if (stage)
       return {
-        rule: "automaticity",
+        rule: 'automaticity',
         habitId: g.habit.id,
         name: g.habit.name,
         completions: n,
@@ -151,10 +134,7 @@ function automaticity({ growth }: CoachInput): CoachTip | null {
 /** A habit that keeps slipping gets less friction (2-minute rule) or a clearer cue (implementation intention). */
 function struggling({ growth }: CoachInput): CoachTip | null {
   const candidates = growth
-    .filter(
-      (g) =>
-        g.recentDue >= MIN_RECENT_DUE && g.consistency < STRUGGLING_CONSISTENCY,
-    )
+    .filter((g) => g.recentDue >= MIN_RECENT_DUE && g.consistency < STRUGGLING_CONSISTENCY)
     .sort((a, b) => a.consistency - b.consistency);
   for (const g of candidates) {
     const base = {
@@ -162,25 +142,22 @@ function struggling({ growth }: CoachInput): CoachTip | null {
       name: g.habit.name,
       percent: percent(g.consistency),
     };
-    if (!g.habit.two_minute_version) return { rule: "add_minimum", ...base };
-    if (!g.habit.implementation_intention)
-      return { rule: "add_intention", ...base };
+    if (!g.habit.two_minute_version) return { rule: 'add_minimum', ...base };
+    if (!g.habit.implementation_intention) return { rule: 'add_intention', ...base };
   }
   return null;
 }
 
 /** Shows *when* the user succeeds, so they can place habits where their energy is. */
 function bestBand({ bands }: CoachInput): CoachTip | null {
-  const measured = bands.filter(
-    (b) => b.due >= MIN_BAND_DUE && b.ratio !== null,
-  );
+  const measured = bands.filter((b) => b.due >= MIN_BAND_DUE && b.ratio !== null);
   if (measured.length < 2) return null;
   const sorted = [...measured].sort((a, b) => (b.ratio ?? 0) - (a.ratio ?? 0));
   const best = sorted[0];
   const worst = sorted[sorted.length - 1];
   if ((best.ratio ?? 0) - (worst.ratio ?? 0) < BAND_GAP) return null;
   return {
-    rule: "best_band",
+    rule: 'best_band',
     best: best.band,
     worst: worst.band,
     bestPercent: percent(best.ratio ?? 0),
@@ -192,17 +169,9 @@ function bestBand({ bands }: CoachInput): CoachTip | null {
 function weekUp({ weeks }: CoachInput): CoachTip | null {
   const current = weeks[weeks.length - 1];
   const previous = weeks[weeks.length - 2];
-  if (
-    !current ||
-    !previous ||
-    current.ratio === null ||
-    previous.ratio === null
-  )
-    return null;
+  if (!current || !previous || current.ratio === null || previous.ratio === null) return null;
   if (current.due < MIN_WEEK_DUE || previous.due < MIN_WEEK_DUE) return null;
   const thisWeek = percent(current.ratio);
   const lastWeek = percent(previous.ratio);
-  return thisWeek - lastWeek >= WEEK_GAIN_POINTS
-    ? { rule: "week_up", thisWeek, lastWeek }
-    : null;
+  return thisWeek - lastWeek >= WEEK_GAIN_POINTS ? { rule: 'week_up', thisWeek, lastWeek } : null;
 }
