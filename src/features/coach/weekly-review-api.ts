@@ -43,6 +43,25 @@ export function useWeeklyReviewAvailable(enabled = true) {
   });
 }
 
+/** Every stored review, newest first (Progress keeps them readable after Today's card is closed). */
+export function useWeeklyReviews() {
+  const { session } = useSession();
+  return useQuery({
+    queryKey: ['weekly-review', session?.user.id, 'all'],
+    enabled: !!session,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('coach_messages')
+        .select('id, period_start, content, seen_at')
+        .eq('kind', 'weekly_review')
+        .order('period_start', { ascending: false })
+        .limit(12);
+      if (error) throw error;
+      return data as unknown as WeeklyReview[];
+    },
+  });
+}
+
 /** Last finished week's review, if it was already written. */
 export function useWeeklyReview(today: Date, enabled: boolean) {
   const { session } = useSession();
@@ -75,7 +94,10 @@ export function useGenerateWeeklyReview(today: Date) {
       const result = data as { status: 'ready'; review: WeeklyReview } | { status: 'no_data' };
       return result;
     },
-    onSuccess: (state) => queryClient.setQueryData(reviewKey(session?.user.id, periodStart), state),
+    onSuccess: (state) => {
+      queryClient.setQueryData(reviewKey(session?.user.id, periodStart), state);
+      return queryClient.invalidateQueries({ queryKey: ['weekly-review', session?.user.id, 'all'] });
+    },
   });
 }
 

@@ -24,7 +24,7 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - ✅ Skia Identity Tree (procedural, growth + sway animations) with dynamic sky (sun/moon arc, stars, clouds = pending habits)
 - ✅ Streaks with "never miss twice", 30-day consistency, automaticity progress toward ~66, weekly flowers, fruits
 - ✅ Garden tab (Jardín) with per-habit growth cards
-- ✅ Progress tab: stat tiles, month heatmap, weekly consistency columns, per-band rates with insight, 1% curve (one axis, index vs ideal)
+- ✅ Progress tab (redesigned 1.0.8): streak / week / seeds tiles, Brote review history, standout habits, month-by-month calendar, weekly consistency, weekday strengths, per-band rates (the 1% curve was dropped: hard to read)
 - ⏳ Move garden aggregates to a Postgres RPC when log volume grows (today computed on the client over 120 days; `garden_state` table unused)
 
 ## Design pass ✅

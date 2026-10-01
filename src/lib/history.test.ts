@@ -3,7 +3,9 @@ import type { Habit } from '@/features/habits/api';
 import { addDays } from '@/lib/recurrence';
 
 import { buildHistory } from './history';
-import { TODAY } from './test-fixtures';
+
+// Wednesday 2026-09-30.
+const TODAY = new Date(2026, 8, 30);
 
 const habit = { id: 'h1', rrule: 'FREQ=DAILY', starts_on: '2026-09-25', window_start: null, window_end: null } as Habit;
 
@@ -22,6 +24,7 @@ describe('buildHistory', () => {
       [habit],
       [log(-3, 'skipped'), log(-2, 'done', tapped), log(-1, 'done_minimum')],
       TODAY,
+      120,
     );
     // 25th → 29th: five past days; today is pending, so it is not there yet.
     expect(occurrences).toHaveLength(5);
@@ -32,7 +35,7 @@ describe('buildHistory', () => {
   });
 
   it('includes today once it is done', () => {
-    const [{ occurrences }] = buildHistory([habit], [log(0, 'done')], TODAY);
+    const [{ occurrences }] = buildHistory([habit], [log(0, 'done')], TODAY, 120);
     expect(occurrences).toHaveLength(6);
     expect(occurrences[5].done).toBe(true);
   });

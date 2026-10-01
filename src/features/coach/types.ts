@@ -3,7 +3,7 @@ import type { ScheduleBand } from '@/features/schedule/build-schedule';
 import type { BandStat, DayStat, WeekStat } from '@/features/stats/compute-stats';
 import type { DayBand, DayBandConfig } from '@/lib/time/day-bands';
 
-import type { HabitHistory } from './history';
+import type { HabitHistory } from '@/lib/history';
 
 /**
  * What a detector found, with the numbers behind it. The words live in i18n

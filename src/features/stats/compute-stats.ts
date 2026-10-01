@@ -1,7 +1,7 @@
 import type { HabitLog } from '@/features/checkins/api';
 import type { Habit } from '@/features/habits/api';
 import { buildSchedule, isDone, isSkipped, type ScheduleBand, type ScheduledItem } from '@/features/schedule/build-schedule';
-import { addDays, daysBetween, formatLocalDate, startOfWeek } from '@/lib/recurrence';
+import { addDays, daysBetween, formatLocalDate, startOfWeek, weekdayIndex } from '@/lib/recurrence';
 import type { DayBandConfig } from '@/lib/time/day-bands';
 
 export type Ratio = { due: number; done: number; ratio: number | null };
@@ -20,17 +20,46 @@ export type Stats = {
   weeks: WeekStat[];
   /** Completion rate per day band over the last 30 days. */
   bands: BandStat[];
-  /** 1% rule over the last 30 days: your index vs. improving 1% every day. */
-  onePercent: { actual: number[]; ideal: number[] };
+  /** Completion rate per weekday (0 = Monday) over the last 8 weeks: which days are strong. */
+  weekdays: Ratio[];
 };
 
 const WEEKS = 8;
-const ONE_PERCENT_DAYS = 30;
+const BAND_DAYS = 30;
 const BAND_ORDER: ScheduleBand[] = ['morning', 'afternoon', 'night', 'anytime'];
 
 function ratioOf(items: ScheduledItem[]): Ratio {
   const done = items.filter(isDone).length;
   return { due: items.length, done, ratio: items.length === 0 ? null : done / items.length };
+}
+
+/** One DayStat per day in [from, last], from items that already exclude rest days. */
+function tallyDays(items: ScheduledItem[], from: Date, last: Date): DayStat[] {
+  const byDay = new Map<string, ScheduledItem[]>();
+  for (const item of items) {
+    const key = formatLocalDate(item.at);
+    const list = byDay.get(key);
+    if (list) list.push(item);
+    else byDay.set(key, [item]);
+  }
+  const days: DayStat[] = [];
+  for (let d = from; d <= last; d = addDays(d, 1)) {
+    days.push({ date: d, ...ratioOf(byDay.get(formatLocalDate(d)) ?? []) });
+  }
+  return days;
+}
+
+/**
+ * Day-by-day completion for any calendar month (the heatmap), with the same rules as the
+ * stats: rest days are neither due nor missed. Days after `today` are left out.
+ */
+export function monthDays(habits: Habit[], logs: HabitLog[], month: Date, today: Date, bands: DayBandConfig): DayStat[] {
+  const first = new Date(month.getFullYear(), month.getMonth(), 1);
+  const lastOfMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0);
+  const last = lastOfMonth < today ? lastOfMonth : today;
+  if (last < first) return [];
+  const items = buildSchedule(habits, logs, first, addDays(last, 1), bands).filter((item) => !isSkipped(item));
+  return tallyDays(items, first, last);
 }
 
 /**
@@ -48,17 +77,7 @@ export function computeStats(
   const items = buildSchedule(habits, logs, from, addDays(today, 1), bands).filter((item) => !isSkipped(item));
   const settled = items.filter((item) => item.at < today || isDone(item));
 
-  const byDay = new Map<string, ScheduledItem[]>();
-  for (const item of items) {
-    const key = formatLocalDate(item.at);
-    const list = byDay.get(key);
-    if (list) list.push(item);
-    else byDay.set(key, [item]);
-  }
-  const days: DayStat[] = [];
-  for (let d = from; d <= today; d = addDays(d, 1)) {
-    days.push({ date: d, ...ratioOf(byDay.get(formatLocalDate(d)) ?? []) });
-  }
+  const days = tallyDays(items, from, today);
 
   const currentWeek = startOfWeek(today);
   const weeks: WeekStat[] = Array.from({ length: WEEKS }, (_, i) => {
@@ -67,20 +86,16 @@ export function computeStats(
     return { weekStart, ...ratioOf(settled.filter((it) => it.at >= weekStart && it.at < weekEnd)) };
   });
 
-  const recent = settled.filter((it) => daysBetween(it.at, today) <= ONE_PERCENT_DAYS);
+  const recent = settled.filter((it) => daysBetween(it.at, today) <= BAND_DAYS);
   const bandStats = BAND_ORDER.map((band) => ({ band, ...ratioOf(recent.filter((it) => it.band === band)) })).filter(
     (b) => b.due > 0,
   );
 
-  // Each settled day nudges the index by up to ±1%: all done → ×1.01, nothing done → ×0.99.
-  const actual = [1];
-  const ideal = [1];
-  for (let n = ONE_PERCENT_DAYS; n >= 1; n--) {
-    const day = days.find((d) => daysBetween(d.date, today) === n);
-    const last = actual[actual.length - 1];
-    actual.push(day?.ratio == null ? last : last * (1 + 0.01 * (2 * day.ratio - 1)));
-    ideal.push(ideal[ideal.length - 1] * 1.01);
-  }
+  const sinceWeeks = addDays(currentWeek, -7 * (WEEKS - 1));
+  const lastWeeks = settled.filter((it) => it.at >= sinceWeeks);
+  const weekdays = Array.from({ length: 7 }, (_, weekday) =>
+    ratioOf(lastWeeks.filter((it) => weekdayIndex(it.at) === weekday)),
+  );
 
   return {
     days,
@@ -88,6 +103,6 @@ export function computeStats(
     thisWeek: weeks[weeks.length - 1],
     weeks,
     bands: bandStats,
-    onePercent: { actual, ideal },
+    weekdays,
   };
 }

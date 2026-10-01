@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -5,19 +6,26 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { WeeklyReviewHistory } from '@/features/coach/components/weekly-review-history';
 import { useGarden } from '@/features/garden/use-garden';
+import { useProfile } from '@/features/profile/api';
 import { BandBars } from '@/features/stats/components/band-bars';
+import { HighlightCards } from '@/features/stats/components/highlight-cards';
 import { MonthHeatmap } from '@/features/stats/components/month-heatmap';
-import { OnePercentChart } from '@/features/stats/components/one-percent-chart';
 import { StatTile } from '@/features/stats/components/stat-tile';
+import { WeekdayBars } from '@/features/stats/components/weekday-bars';
 import { WeeklyColumns } from '@/features/stats/components/weekly-columns';
+import { useHighlights } from '@/features/stats/use-highlights';
 import { useStats } from '@/features/stats/use-stats';
 import { TopBar } from '@/features/streak/components/top-bar';
+import { useStreak } from '@/features/streak/use-streak';
 import { useNow, useTodayRange } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
 
-const percent = (ratio: number | null) => (ratio === null ? '–' : `${Math.round(ratio * 100)}%`);
-
+/**
+ * Progress answers three questions: how am I doing (summary, highlights), when do I do best
+ * (calendar, weeks, weekdays, moments of the day) and what did Brote say (weekly reviews).
+ */
 export default function ProgressScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -25,11 +33,9 @@ export default function ProgressScreen() {
   const { today } = useTodayRange(now);
   const { stats, isLoading, error } = useStats(today);
   const { summary } = useGarden(today);
-
-  const bestStreak = summary.habits.reduce((best, g) => (g.streak > best.streak ? g : best), {
-    streak: 0,
-    habit: null as null | { icon: string; name: string },
-  });
+  const { streak } = useStreak(today);
+  const highlights = useHighlights(today, summary.habits);
+  const { data: profile } = useProfile();
 
   return (
     <ThemedView style={styles.flex}>
@@ -47,31 +53,35 @@ export default function ProgressScreen() {
 
           <View style={styles.tiles}>
             <StatTile
-              label={t('progress.today')}
-              value={`${stats.today.done}/${stats.today.due}`}
-              emoji="☀️"
+              label={t('progress.streak')}
+              value={String(streak.current)}
+              caption={t('progress.streakCaption', { count: streak.current, record: streak.record })}
+              emoji="🔥"
               tint="streakSoft"
+              onPress={() => router.push('/streak')}
             />
             <StatTile
               label={t('progress.thisWeek')}
-              value={percent(stats.thisWeek.ratio)}
+              value={stats.thisWeek.due === 0 ? '–' : `${stats.thisWeek.done}/${stats.thisWeek.due}`}
+              caption={t('progress.thisWeekCaption')}
               emoji="📅"
               tint="lavenderSoft"
             />
             <StatTile
-              label={t('progress.bestStreak')}
-              value={String(bestStreak.streak)}
-              emoji="🔥"
-              tint="streakSoft"
-              caption={bestStreak.habit ? `${bestStreak.habit.icon} ${bestStreak.habit.name}` : undefined}
+              label={t('progress.seeds')}
+              value={String(summary.votes)}
+              caption={t('progress.seedsCaption')}
+              emoji="🌱"
+              tint="primarySoft"
             />
-            <StatTile label={t('progress.votes')} value={String(summary.votes)} emoji="🌱" tint="primarySoft" />
           </View>
 
-          <MonthHeatmap days={stats.days} today={today} />
+          <WeeklyReviewHistory />
+          <HighlightCards highlights={highlights} />
+          <MonthHeatmap today={today} joinedOn={profile ? new Date(profile.created_at) : null} />
           <WeeklyColumns weeks={stats.weeks} />
+          <WeekdayBars weekdays={stats.weekdays} />
           {stats.bands.length > 0 && <BandBars bands={stats.bands} />}
-          <OnePercentChart actual={stats.onePercent.actual} ideal={stats.onePercent.ideal} />
         </ScrollView>
       </SafeAreaView>
     </ThemedView>

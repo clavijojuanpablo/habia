@@ -2,7 +2,7 @@ import { AUTOMATICITY_REPETITIONS } from '@/features/garden/compute-garden';
 import { addDays, daysBetween, formatLocalDate } from '@/lib/recurrence';
 import { DAY_BANDS, getDayBand, type DayBand } from '@/lib/time/day-bands';
 
-import type { PastOccurrence } from './history';
+import type { PastOccurrence } from '@/lib/history';
 import type { Candidate, CoachInput, TipBody } from './types';
 
 /**

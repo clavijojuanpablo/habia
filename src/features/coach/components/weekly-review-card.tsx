@@ -19,7 +19,7 @@ function Card({ children }: { children: React.ReactNode }) {
 }
 
 /** Brote's review of last week: what was planted, what it noticed, one small step for this week. */
-export function WeeklyReviewCard({ review, onDone }: { review: WeeklyReview; onDone: () => void }) {
+export function WeeklyReviewCard({ review, onDone }: { review: WeeklyReview; onDone?: () => void }) {
   const { t, i18n } = useTranslation();
   const { title, win, pattern, suggestion, summary } = review.content;
   // The reviewed week by name: opened on a Thursday, "your week" alone reads like the current one.
@@ -38,7 +38,7 @@ export function WeeklyReviewCard({ review, onDone }: { review: WeeklyReview; onD
       <Section emoji="🌱" label={t('weeklyReview.win')} text={win} />
       <Section emoji="🔍" label={t('weeklyReview.pattern')} text={pattern} />
       <Section emoji="💧" label={t('weeklyReview.suggestion')} text={suggestion} />
-      <Button label={t('weeklyReview.done')} variant="secondary" onPress={onDone} />
+      {onDone && <Button label={t('weeklyReview.done')} variant="secondary" onPress={onDone} />}
     </Card>
   );
 }

@@ -17,7 +17,6 @@ export function WeeklyColumns({ weeks }: { weeks: WeekStat[] }) {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
   const [selected, setSelected] = useState<number | null>(null);
-  const current = weeks[weeks.length - 1];
 
   const label = (w: WeekStat) => w.weekStart.toLocaleDateString(i18n.language, { day: 'numeric', month: 'numeric' });
   const describe = (w: WeekStat) => t('progress.weekDetail', { week: label(w), done: w.done, due: w.due, percent: percent(w.ratio) });
@@ -25,7 +24,7 @@ export function WeeklyColumns({ weeks }: { weeks: WeekStat[] }) {
   return (
     <ChartCard
       title={t('progress.weeklyTitle')}
-      subtitle={t('progress.weeklySubtitle', { percent: percent(current.ratio) })}
+      subtitle={t('progress.weeklySubtitle')}
       detail={selected !== null ? describe(weeks[selected]) : null}>
       <View style={styles.plot}>
         {/* Recessive baseline and 50% guide */}

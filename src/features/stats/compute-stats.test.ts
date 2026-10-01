@@ -3,7 +3,7 @@ import type { Habit } from '@/features/habits/api';
 import { addDays } from '@/lib/recurrence';
 import { DEFAULT_DAY_BANDS } from '@/lib/time/day-bands';
 
-import { computeStats } from './compute-stats';
+import { computeStats, monthDays } from './compute-stats';
 
 // Today is Monday 2026-09-21; habits started 2026-09-01.
 const TODAY = new Date(2026, 8, 21);
@@ -58,14 +58,31 @@ describe('computeStats', () => {
     expect(byBand.night).toBe(0);
   });
 
-  it('compounds the 1% index: full days go up, empty days go down', () => {
-    const allDone = Array.from({ length: 20 }, (_, i) => log('m', -(i + 1), 7));
-    const up = computeStats([morningHabit], allDone, FROM, TODAY, DEFAULT_DAY_BANDS).onePercent;
-    const down = computeStats([morningHabit], [], FROM, TODAY, DEFAULT_DAY_BANDS).onePercent;
+  it('rates each weekday over the last 8 weeks, Monday first, rest days left out', () => {
+    // Today is a Monday. The past 3 weeks: done every day but Sundays, and the last Saturday (-2) was a rest day.
+    const isSunday = (offset: number) => (((offset % 7) + 7) % 7) === 6;
+    const done = Array.from({ length: 21 }, (_, i) => -(i + 1)).filter((d) => !isSunday(d) && d !== -2);
+    const logs = [...done.map((d) => log('m', d, 7)), log('m', -2, 7, 'skipped')];
+    const { weekdays } = computeStats([morningHabit], logs, FROM, TODAY, DEFAULT_DAY_BANDS);
+    expect(weekdays).toHaveLength(7);
+    expect(weekdays[6].done).toBe(0); // Sundays: never done
+    expect(weekdays[1].ratio).toBe(1); // Tuesdays: always done
+    expect(weekdays[5].due).toBe(weekdays[1].due - 1); // the rested Saturday is not due
+  });
+});
 
-    expect(up.actual).toHaveLength(31);
-    expect(up.actual[30]).toBeCloseTo(1.01 ** 20);
-    expect(down.actual[30]).toBeCloseTo(0.99 ** 20);
-    expect(up.ideal[30]).toBeCloseTo(1.01 ** 30);
+describe('monthDays', () => {
+  it('covers a past month whole and the current one up to today', () => {
+    const august = monthDays([morningHabit], [], new Date(2026, 7, 10), TODAY, DEFAULT_DAY_BANDS);
+    expect(august).toHaveLength(31);
+    expect(august[0].ratio).toBeNull(); // the habit only started on September 1
+
+    const september = monthDays([morningHabit], [log('m', -1, 7)], TODAY, TODAY, DEFAULT_DAY_BANDS);
+    expect(september).toHaveLength(21); // Sep 1 → today (the 21st)
+    expect(september[19]).toMatchObject({ due: 1, done: 1 }); // yesterday
+  });
+
+  it('is empty for a month that has not started', () => {
+    expect(monthDays([morningHabit], [], new Date(2026, 9, 1), TODAY, DEFAULT_DAY_BANDS)).toEqual([]);
   });
 });

@@ -5,7 +5,7 @@ import type { BandStat, DayStat, WeekStat } from '@/features/stats/compute-stats
 import { addDays } from '@/lib/recurrence';
 import { DEFAULT_DAY_BANDS } from '@/lib/time/day-bands';
 
-import type { PastOccurrence } from './history';
+import type { PastOccurrence } from '@/lib/history';
 import type { CoachInput } from './types';
 
 /** Wednesday 2026-09-30, 10:00 (morning band with the default bands). */

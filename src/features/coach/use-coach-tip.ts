@@ -8,11 +8,11 @@ import { isDone, isSkipped, type ScheduledItem } from '@/features/schedule/build
 import { useStats } from '@/features/stats/use-stats';
 import { track } from '@/lib/analytics';
 import { addDays, formatLocalDate } from '@/lib/recurrence';
+import { buildHistory } from '@/lib/history';
 import { storage } from '@/lib/storage';
 import { getDayBand, type DayBand, type DayBandConfig } from '@/lib/time/day-bands';
 
 import { computeTip } from './compute-tip';
-import { buildHistory } from './history';
 import type { CoachTip, ShownTip } from './types';
 
 const PIN_KEY = 'habia.coach.pin';
@@ -55,7 +55,7 @@ export function useCoachTip({ today, now, bandConfig, items, itemsLoading, enabl
   const to = useMemo(() => addDays(today, 1), [today]);
   const logs = useLogs(from, to);
   const history = useMemo(
-    () => buildHistory(habits.data ?? [], logs.data ?? [], today),
+    () => buildHistory(habits.data ?? [], logs.data ?? [], today, GARDEN_WINDOW_DAYS),
     [habits.data, logs.data, today],
   );
 

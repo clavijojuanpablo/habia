@@ -112,27 +112,13 @@ open the web fallback there; its "Open habia" button still works.
    Check it: `curl -X POST <SUPABASE_URL>/functions/v1/weekly-review -H "apikey: <publishable>" -H "Authorization: Bearer <publishable>" -d '{"check":true}'`
    must answer `{"available":true}`.
 
-1. **Ship 1.0.6 by OTA** (if not done): `npx eas-cli@latest update …` (recipe in Technical
-   state), reopen the TestFlight app twice; Profile shows `habia 1.0.6 · build 3 · …`. 1.0.6 =
-   the AI weekly review (below) + the server-side "today" + reliability fixes: check-ins queue in
-   order (offline check → uncheck can no longer land reversed), unknown reachability is not
-   "offline", queued check-ins wait for the real connection at startup, reminders never fire for a
-   rest day, are never wiped while the cache restores, are rescheduled after allowing notifications
-   in Settings and no longer mix overlapping runs; the week view stops counting rest days; a chained
-   habit on a rest day is not offered as next; the navigation no longer resets when a session
-   arrives from an email link before its profile loads (fresh-device password reset), an email link
-   is verified once; onboarding cannot create duplicates on double tap or retry, shows its errors,
-   and only promises a reminder for a habit that has a time; the heatmap shows today as pending (not
-   missed) and its detail follows refetches; quick profile edits (day-band steppers) no longer jump;
-   the garden and stats stop recomputing 121 days every minute; clouds drift back and forth; fruit
-   counts all-time completions (a 3×/week habit can reach 66) and the streak record is stored, so
-   neither fades with the 120-day window. Since
-   1.0.1: coach 1.0.2 (scored detectors, "¿Por qué?"); 1.0.3 simpler habit form ("Tentación
-   asociada" removed, column kept; "Intención de implementación" became "¿Dónde?"; reminders read
-   "📍 place"); 1.0.4 calmer Today (**one prompt above the list**: yesterday's catch-up, closable
-   with "Así está bien", otherwise the coach collapsed to two lines); 1.0.5 the **north-star
-   question** (below), the **sowing metaphor** (seeds instead of votes), Today hero fixes, and the
-   Expo web PostHog crash fixed.
+1. **Ship 1.0.8 by OTA** (if not done): `npx eas-cli@latest update …`; first check
+   `npx expo-updates fingerprint:generate --platform ios` prints `f15932ef…`. 1.0.8 = **Progress
+   redesign**: tiles (day streak + stored record, this week done/due so far, seeds), Brote's review
+   history (always readable after closing it on Today), **standout habits** (steadiest, rising most,
+   next fruit with ETA, the one that wants care), a month-by-month calendar (back to joining; months
+   in the 120-day window reuse the cache), weekly consistency, **weekdays** (strong and hard day over
+   8 weeks) and moments of the day; the 1% chart is gone. 1.0.7 = shorter AI opt-in + dated review.
 2. **External testers:** waiting for Beta App Review of the "Beta pública" group (demo account in
    App Store Connect; never delete it). When approved: enable the public link with a tester limit.
    The App Privacy questionnaire is only needed for the App Store, not TestFlight.

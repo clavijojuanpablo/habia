@@ -1,7 +1,8 @@
-import type { HabitLog } from '@/features/checkins/api';
-import { GARDEN_WINDOW_DAYS } from '@/features/garden/compute-garden';
-import type { Habit } from '@/features/habits/api';
 import { addDays, getOccurrences, occurrenceKey } from '@/lib/recurrence';
+import type { Tables } from '@/lib/supabase/client';
+
+type Habit = Tables<'habits'>;
+type HabitLog = Tables<'habit_logs'>;
 
 export type PastOccurrence = {
   at: Date;
@@ -17,13 +18,13 @@ export type PastOccurrence = {
 export type HabitHistory = { habit: Habit; occurrences: PastOccurrence[] };
 
 /**
- * Each habit's settled occurrences over the garden window, oldest first: every past
+ * Each habit's settled occurrences over the last `windowDays`, oldest first: every past
  * occurrence, plus today's only once done (a pending habit today is not a miss yet).
- * Same window as the garden, so it reads the same cached logs.
+ * Shared by the coach and the Progress highlights; pass the garden window to reuse its cached logs.
  */
-export function buildHistory(habits: Habit[], logs: HabitLog[], today: Date): HabitHistory[] {
+export function buildHistory(habits: Habit[], logs: HabitLog[], today: Date, windowDays: number): HabitHistory[] {
   const logsByKey = new Map(logs.map((log) => [occurrenceKey(log.habit_id, new Date(log.occurrence_at)), log]));
-  const from = addDays(today, -GARDEN_WINDOW_DAYS);
+  const from = addDays(today, -windowDays);
 
   return habits.map((habit) => ({
     habit,
