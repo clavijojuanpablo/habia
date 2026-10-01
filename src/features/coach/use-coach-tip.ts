@@ -48,8 +48,7 @@ type Options = {
 export function useCoachTip({ today, now, bandConfig, items, itemsLoading, enabled }: Options) {
   const date = formatLocalDate(today);
   const band = getDayBand(now.getHours(), bandConfig);
-  // `today`, not `now`: the garden only needs the day; no need to recompute it every minute.
-  const garden = useGarden(today, today);
+  const garden = useGarden(today);
   const { stats, isLoading } = useStats(today);
   const habits = useHabits();
   const from = useMemo(() => addDays(today, -GARDEN_WINDOW_DAYS), [today]);

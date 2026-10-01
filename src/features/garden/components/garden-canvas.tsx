@@ -86,7 +86,8 @@ export default function GardenCanvas({
         true,
       ),
     );
-    drift.set(withRepeat(withTiming(1, { duration: 40_000, easing: Easing.linear }), -1, false));
+    // Back and forth: a one-way loop snapped the clouds across the sky every cycle.
+    drift.set(withRepeat(withTiming(1, { duration: 40_000, easing: Easing.inOut(Easing.sin) }), -1, true));
   }, [growth, sway, drift]);
 
   // Trunk grows first, then branches, then leaves appear.

@@ -30,7 +30,7 @@ function useVotes(until: Date) {
   });
 }
 
-export function useGarden(today: Date, now: Date) {
+export function useGarden(today: Date) {
   const from = useMemo(() => addDays(today, -GARDEN_WINDOW_DAYS), [today]);
   const to = useMemo(() => addDays(today, 1), [today]);
 
@@ -39,8 +39,8 @@ export function useGarden(today: Date, now: Date) {
   const votes = useVotes(to);
 
   const summary = useMemo(
-    () => computeGarden(habits.data ?? [], logs.data ?? [], votes.data ?? 0, now),
-    [habits.data, logs.data, votes.data, now],
+    () => computeGarden(habits.data ?? [], logs.data ?? [], votes.data ?? 0, today),
+    [habits.data, logs.data, votes.data, today],
   );
 
   return {

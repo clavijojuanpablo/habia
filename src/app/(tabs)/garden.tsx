@@ -26,7 +26,7 @@ export default function GardenScreen() {
   const theme = useTheme();
   const now = useNow();
   const { today, tomorrow } = useTodayRange(now);
-  const { summary, isLoading, error } = useGarden(today, now);
+  const { summary, isLoading, error } = useGarden(today);
   const { items, bands } = useSchedule(today, tomorrow);
   const [width, setWidth] = useState(0);
   const { data: identities = [] } = useIdentities();

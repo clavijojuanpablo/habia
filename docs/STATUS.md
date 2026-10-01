@@ -123,7 +123,9 @@ open the web fallback there; its "Open habia" button still works.
    habit on a rest day is not offered as next; the navigation no longer resets when a session
    arrives from an email link before its profile loads (fresh-device password reset), an email link
    is verified once; onboarding cannot create duplicates on double tap or retry, shows its errors,
-   and only promises a reminder for a habit that has a time. Since
+   and only promises a reminder for a habit that has a time; the heatmap shows today as pending (not
+   missed) and its detail follows refetches; quick profile edits (day-band steppers) no longer jump;
+   the garden and stats stop recomputing 121 days every minute; clouds drift back and forth. Since
    1.0.1: coach 1.0.2 (scored detectors, "¿Por qué?"); 1.0.3 simpler habit form ("Tentación
    asociada" removed, column kept; "Intención de implementación" became "¿Dónde?"; reminders read
    "📍 place"); 1.0.4 calmer Today (**one prompt above the list**: yesterday's catch-up, closable
@@ -158,6 +160,12 @@ read it in PostHog as the product's success metric (trend per user and cohort). 
 stored per account but per device (`habia.northStar.<userId>`): a user on iPhone and web is asked on both.
 
 ## Known debts
+
+- **Window limits (120 days):** the app-wide streak and its record are computed from the last 121
+  days, so they cap at 121 and an old record fades; fruit (automaticity) counts completions in the
+  same window, so a habit scheduled 3×/week (~51 in 120 days) never reaches 66 and an old fruit can
+  drop. Fix before anyone gets there: all-time counts per habit (like `useVotes`) and a stored
+  record. Also: the 1% chart tap position is off on web when the tap lands on a line.
 
 - Three near-identical Chip components (habit form, identity form, onboarding): move one to
   `src/components/` when a fourth appears. White-on-pastel chip text can be low contrast.

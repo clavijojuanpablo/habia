@@ -30,9 +30,12 @@ export function MonthHeatmap({ days, today }: Props) {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
   const ramp = useHeatmapRamp();
-  const [selected, setSelected] = useState<DayStat | null>(null);
+  // The date, not the DayStat: a refetch replaces the stat and the detail must follow.
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
   const byDate = new Map(days.map((d) => [formatLocalDate(d.date), d]));
+  const selected = selectedKey ? (byDate.get(selectedKey) ?? null) : null;
+  const todayKey = formatLocalDate(today);
   const first = new Date(today.getFullYear(), today.getMonth(), 1);
   const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
   const cells: (Date | null)[] = [
@@ -62,28 +65,33 @@ export function MonthHeatmap({ days, today }: Props) {
       <View style={styles.grid}>
         {cells.map((date, i) => {
           if (!date) return <View key={`empty-${i}`} style={styles.cell} />;
-          const stat = byDate.get(formatLocalDate(date));
+          const key = formatLocalDate(date);
+          const stat = byDate.get(key);
           const future = date > today;
           const hasDue = !!stat && stat.ratio !== null;
-          const background = future || !hasDue
-            ? 'transparent'
-            : stat.ratio === 0
-              ? theme.backgroundSelected
-              : ramp[step(stat.ratio!)];
-          const isSelected = selected && formatLocalDate(selected.date) === formatLocalDate(date);
+          // Today with nothing done yet is pending, not missed: never paint it as a failed day.
+          const pendingToday = key === todayKey && hasDue && stat.done === 0;
+          const background =
+            future || !hasDue || pendingToday
+              ? 'transparent'
+              : stat.ratio === 0
+                ? theme.backgroundSelected
+                : ramp[step(stat.ratio!)];
+          const isSelected = selectedKey === key;
 
           return (
             <Pressable
               key={date.getDate()}
               style={styles.cell}
               disabled={!hasDue || future}
-              onPress={() => stat && setSelected(isSelected ? null : stat)}
+              onPress={() => setSelectedKey(isSelected ? null : key)}
               accessibilityLabel={stat && hasDue ? describe(stat) : undefined}>
               <View
                 style={[
                   styles.square,
                   { backgroundColor: background, borderColor: isSelected ? theme.text : 'transparent' },
                   (future || !hasDue) && { borderColor: theme.border, borderStyle: 'dashed' },
+                  pendingToday && !isSelected && { borderColor: theme.primary, borderStyle: 'dashed' },
                 ]}>
                 <ThemedText
                   type="small"

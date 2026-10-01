@@ -24,7 +24,7 @@ export default function ProgressScreen() {
   const now = useNow();
   const { today } = useTodayRange(now);
   const { stats, isLoading, error } = useStats(today);
-  const { summary } = useGarden(today, now);
+  const { summary } = useGarden(today);
 
   const bestStreak = summary.habits.reduce((best, g) => (g.streak > best.streak ? g : best), {
     streak: 0,

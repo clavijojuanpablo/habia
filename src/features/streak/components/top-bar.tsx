@@ -21,7 +21,7 @@ export function TopBar() {
   const now = useNow();
   const { today } = useTodayRange(now);
   const { streak } = useStreak(today);
-  const { summary } = useGarden(today, now);
+  const { summary } = useGarden(today);
 
   return (
     <View style={styles.bar}>

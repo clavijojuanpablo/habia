@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import Svg, { Circle, Line, Path, Text as SvgText } from 'react-native-svg';
 
+import { FontFamily } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 import { ChartCard } from './chart-card';
@@ -73,10 +74,10 @@ export function OnePercentChart({ actual, ideal }: Props) {
 
               {/* Direct labels at the line ends, in text ink */}
               <Circle cx={x(last)} cy={y(actual[last])} r={4} fill={theme.primary} stroke={theme.backgroundElement} strokeWidth={2} />
-              <SvgText x={x(last) + 8} y={youY} fill={theme.text} fontSize={12} fontWeight="700">
+              <SvgText x={x(last) + 8} y={youY} fill={theme.text} fontSize={12} fontFamily={FontFamily.bold}>
                 {`${t('progress.you')} ${fmt(actual[last])}`}
               </SvgText>
-              <SvgText x={x(last) + 8} y={idealY} fill={theme.textSecondary} fontSize={11}>
+              <SvgText x={x(last) + 8} y={idealY} fill={theme.textSecondary} fontSize={11} fontFamily={FontFamily.regular}>
                 {`1% ${fmt(ideal[last])}`}
               </SvgText>
 
