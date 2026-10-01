@@ -84,10 +84,11 @@ export function isSkipped(item: ScheduledItem): boolean {
   return item.log?.status === 'skipped';
 }
 
-/** The pending habit that follows `item` in its chain on the same day, if any. */
+/** The pending habit that follows `item` in its chain on the same day, if any (a rest day is not pending). */
 export function nextInChain(item: ScheduledItem, items: ScheduledItem[]): ScheduledItem | undefined {
   const day = formatLocalDate(item.at);
   return items.find(
-    (other) => other.anchorHabitId === item.habit.id && formatLocalDate(other.at) === day && !isDone(other),
+    (other) =>
+      other.anchorHabitId === item.habit.id && formatLocalDate(other.at) === day && !isDone(other) && !isSkipped(other),
   );
 }

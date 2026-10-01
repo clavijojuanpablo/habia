@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { AppState } from 'react-native';
 
 import { useSchedule } from '@/features/schedule/use-schedule';
 import { useNow, useTodayRange } from '@/hooks/use-now';
@@ -25,11 +26,24 @@ export function useReminderSync() {
   const now = useNow();
   const { today } = useTodayRange(now);
   const horizon = useMemo(() => addDays(today, HORIZON_DAYS), [today]);
-  const { items, isLoading } = useSchedule(today, horizon);
+  const { items, isReady } = useSchedule(today, horizon);
   const lastSignature = useRef<string | null>(null);
+  // Denied permission: coming back to the app may follow a change in Settings, so try again then.
+  const blocked = useRef(false);
+  const [resumes, setResumes] = useState(0);
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state !== 'active' || !blocked.current) return;
+      blocked.current = false;
+      lastSignature.current = null;
+      setResumes((n) => n + 1);
+    });
+    return () => subscription.remove();
+  }, []);
 
   useEffect(() => {
-    if (!REMINDERS_SUPPORTED || isLoading) return;
+    // Without real data (cache still restoring, failed fetch) an empty plan would cancel everything.
+    if (!REMINDERS_SUPPORTED || !isReady) return;
 
     const reminders = planReminders(items, new Date()).map(({ item, fireAt }) => ({
       fireAt,
@@ -48,11 +62,16 @@ export function useReminderSync() {
 
     (async () => {
       await configureNotifications(t('reminders.channel'));
-      if (reminders.length > 0 && !(await ensureNotificationPermission())) return;
+      if (reminders.length > 0 && !(await ensureNotificationPermission())) {
+        // Not scheduled: let the next resume or change try again.
+        blocked.current = true;
+        lastSignature.current = null;
+        return;
+      }
       await replaceScheduledReminders(reminders);
     })().catch(() => {
       // Allow a retry on the next change.
       lastSignature.current = null;
     });
-  }, [items, isLoading, t]);
+  }, [items, isReady, t, resumes]);
 }

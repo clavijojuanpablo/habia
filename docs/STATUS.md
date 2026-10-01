@@ -115,7 +115,12 @@ open the web fallback there; its "Open habia" button still works.
 
 1. **Ship 1.0.6 by OTA** (if not done): `npx eas-cli@latest update …` (recipe in Technical
    state), reopen the TestFlight app twice; Profile shows `habia 1.0.6 · build 3 · …`. 1.0.6 =
-   the AI weekly review (below) + the server-side "today". Since
+   the AI weekly review (below) + the server-side "today" + reliability fixes: check-ins queue in
+   order (offline check → uncheck can no longer land reversed), unknown reachability is not
+   "offline", queued check-ins wait for the real connection at startup, reminders never fire for a
+   rest day, are never wiped while the cache restores, are rescheduled after allowing notifications
+   in Settings and no longer mix overlapping runs; the week view stops counting rest days; a chained
+   habit on a rest day is not offered as next. Since
    1.0.1: coach 1.0.2 (scored detectors, "¿Por qué?"); 1.0.3 simpler habit form ("Tentación
    asociada" removed, column kept; "Intención de implementación" became "¿Dónde?"; reminders read
    "📍 place"); 1.0.4 calmer Today (**one prompt above the list**: yesterday's catch-up, closable

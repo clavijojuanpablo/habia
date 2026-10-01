@@ -34,13 +34,14 @@ describe('planReminders', () => {
     expect(planned.fireAt).toEqual(new Date(2026, 8, 21, 11, 45));
   });
 
-  it('skips past, all-day, disabled and done occurrences', () => {
+  it('skips past, all-day, disabled, done and rest-day occurrences', () => {
     const planned = planReminders(
       [
         item({ at: new Date(2026, 8, 21, 9, 0) }),
         item({ at: new Date(2026, 8, 21, 0, 0), hasTime: false }),
         item({ at: new Date(2026, 8, 21, 12, 0), minutes: null }),
         item({ at: new Date(2026, 8, 21, 13, 0), log: { status: 'done' } }),
+        item({ at: new Date(2026, 8, 21, 14, 0), log: { status: 'skipped' } }),
       ],
       NOW,
     );

@@ -9,7 +9,7 @@ import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { hasCome, isBeforeStart } from '@/features/checkins/rules';
 import { useProfile } from '@/features/profile/api';
-import { isDone } from '@/features/schedule/build-schedule';
+import { isDone, isSkipped } from '@/features/schedule/build-schedule';
 import { WeekGrid } from '@/features/schedule/components/week-grid';
 import { useSchedule } from '@/features/schedule/use-schedule';
 import { TopBar } from '@/features/streak/components/top-bar';
@@ -36,7 +36,8 @@ export default function WeekScreen() {
   const canGoBack = !joinedOn || !isBeforeStart(addDays(weekStart, -1), joinedOn);
   // Only days that have arrived count: on Tuesday "8 of 14" is honest, while
   // measuring against the whole week would read as failure for a week going well.
-  const due = items.filter((item) => hasCome(item.at, now));
+  // A rest day on purpose is neither due nor missed, same as on Today and in the stats.
+  const due = items.filter((item) => hasCome(item.at, now) && !isSkipped(item));
   const done = due.filter(isDone).length;
   const progress = due.length === 0 ? 0 : done / due.length;
 

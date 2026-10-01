@@ -21,7 +21,7 @@ import { useProfile } from '@/features/profile/api';
 import { useTimezoneSync } from '@/features/profile/use-timezone-sync';
 import { trackScreen } from '@/lib/analytics';
 import { wrapRoot } from '@/lib/crash-reporting';
-import { startNetworkWatcher } from '@/lib/network';
+import { startNetworkWatcher, syncOnlineState } from '@/lib/network';
 import { persister, queryClient } from '@/lib/query/client';
 
 SplashScreen.preventAutoHideAsync();
@@ -35,8 +35,9 @@ function RootLayout() {
     <PersistQueryClientProvider
       client={queryClient}
       persistOptions={{ persister, maxAge: 7 * 24 * 60 * 60 * 1000 }}
-      // Replays check-ins that were queued while offline, even across restarts.
-      onSuccess={() => queryClient.resumePausedMutations()}>
+      // Replays check-ins that were queued while offline, even across restarts. Learn the real
+      // connection first: TanStack assumes "online" until told, and would burn the retries.
+      onSuccess={() => syncOnlineState().then(() => queryClient.resumePausedMutations())}>
       <SessionProvider>
         <AppearanceProvider>
           <ThemedNavigation />

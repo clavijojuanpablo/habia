@@ -57,8 +57,19 @@ export function useNotificationTap(onTap: (habitId: string) => void) {
   }, [lastResponse, onTap]);
 }
 
-/** Replaces every pending reminder with the given set. */
-export async function replaceScheduledReminders(reminders: ReminderNotification[]) {
+let replacing: Promise<void> = Promise.resolve();
+
+/**
+ * Replaces every pending reminder with the given set. Calls are queued: two overlapping
+ * runs would otherwise mix their reminders (B cancels, A keeps scheduling on top of B).
+ */
+export function replaceScheduledReminders(reminders: ReminderNotification[]): Promise<void> {
+  const run = replacing.then(() => scheduleAll(reminders));
+  replacing = run.catch(() => {});
+  return run;
+}
+
+async function scheduleAll(reminders: ReminderNotification[]) {
   await Notifications.cancelAllScheduledNotificationsAsync();
   for (const reminder of reminders) {
     await Notifications.scheduleNotificationAsync({

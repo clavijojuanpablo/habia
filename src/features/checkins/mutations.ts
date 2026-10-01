@@ -7,6 +7,12 @@ export type LogStatus = HabitLog['status'];
 /** Mutation key used to resume check-ins that were queued while offline. */
 export const TOGGLE_LOG_KEY = ['logs', 'toggle'] as const;
 
+/**
+ * Check-ins run one after another, in the order they were made: checking then un-checking
+ * offline must reach the server as upsert → delete, never the other way round.
+ */
+export const TOGGLE_LOG_SCOPE = { id: 'habit-logs' };
+
 export type ToggleInput = {
   habitId: string;
   /** ISO string: a queued mutation is stored on disk, where Dates do not survive. */

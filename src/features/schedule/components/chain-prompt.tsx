@@ -5,7 +5,7 @@ import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 
 import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
-import { Spacing } from '@/constants/theme';
+import { Shadow, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 import type { ScheduledItem } from '../build-schedule';
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.two,
-    boxShadow: '0 6px 16px rgba(0,0,0,0.25)',
+    boxShadow: Shadow.raised,
   },
   texts: { flex: 1 },
   button: { minHeight: 36, paddingHorizontal: Spacing.three },

@@ -57,11 +57,11 @@ export default function TodayScreen() {
   const todayKey = formatLocalDate(today);
   const catchUpPending =
     catchUpClosedOn !== todayKey && yesterday.items.some((item) => !isDone(item) && !isSkipped(item));
-  const weeklyReview = useWeeklyReviewSlot(today, !yesterday.isLoading && !catchUpPending);
-  const showWeeklyReview = !yesterday.isLoading && !catchUpPending && hasHabits && weeklyReview.slot !== null;
+  const weeklyReview = useWeeklyReviewSlot(today, yesterday.isReady && !catchUpPending);
+  const showWeeklyReview = yesterday.isReady && !catchUpPending && hasHabits && weeklyReview.slot !== null;
   const northStar = useNorthStar(today);
   const showNorthStar =
-    !yesterday.isLoading && !catchUpPending && !showWeeklyReview && hasHabits && northStar.visible;
+    yesterday.isReady && !catchUpPending && !showWeeklyReview && hasHabits && northStar.visible;
   const closeCatchUp = () => {
     storage.setItem(CATCH_UP_CLOSED_KEY, todayKey);
     setCatchUpClosedOn(todayKey);
@@ -72,13 +72,13 @@ export default function TodayScreen() {
     bandConfig: bands,
     items,
     itemsLoading: isLoading,
-    enabled: !yesterday.isLoading && !catchUpPending && !showWeeklyReview && !showNorthStar,
+    enabled: yesterday.isReady && !catchUpPending && !showWeeklyReview && !showNorthStar,
   });
 
   // Keep only the key: the item itself is read fresh from `items` on every render.
   const [chainNextKey, setChainNextKey] = useState<string | null>(null);
   const [celebrating, setCelebrating] = useState(false);
-  const chainNext = items.find((item) => item.key === chainNextKey && !isDone(item));
+  const chainNext = items.find((item) => item.key === chainNextKey && !isDone(item) && !isSkipped(item));
   const [actionsKey, setActionsKey] = useState<string | null>(null);
   const [tipSeen, setTipSeen] = useState(hasSeenActionsTip);
   const actionsItem = items.find((item) => item.key === actionsKey) ?? null;

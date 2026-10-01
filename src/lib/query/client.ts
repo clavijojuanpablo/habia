@@ -1,7 +1,7 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { QueryClient } from '@tanstack/react-query';
 
-import { toggleLogRequest, TOGGLE_LOG_KEY } from '@/features/checkins/mutations';
+import { toggleLogRequest, TOGGLE_LOG_KEY, TOGGLE_LOG_SCOPE } from '@/features/checkins/mutations';
 import { storage } from '@/lib/storage';
 
 export const queryClient = new QueryClient({
@@ -18,9 +18,19 @@ export const queryClient = new QueryClient({
 
 /**
  * Registered by mutation key so a check-in queued while offline can be replayed
- * after a restart, when the original hook (and its closure) no longer exists.
+ * after a restart, when the original hook (and its closure) no longer exists. Without the
+ * hook there is no optimistic snapshot to roll back, so success or failure both refetch:
+ * the cache then shows what the server really has.
  */
-queryClient.setMutationDefaults(TOGGLE_LOG_KEY, { mutationFn: toggleLogRequest });
+queryClient.setMutationDefaults(TOGGLE_LOG_KEY, {
+  mutationFn: toggleLogRequest,
+  scope: TOGGLE_LOG_SCOPE,
+  onSettled: () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['logs'] }),
+      queryClient.invalidateQueries({ queryKey: ['votes'] }),
+    ]),
+});
 
 /** Writes the cache to disk so the app opens with data even without a connection. */
 export const persister = createAsyncStoragePersister({

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -32,7 +32,7 @@ export function YesterdayCatchUp({
   const theme = useTheme();
   const now = useNow();
   const { today } = useTodayRange(now);
-  const yesterday = addDays(today, -1);
+  const yesterday = useMemo(() => addDays(today, -1), [today]);
   const { items, toggleItem } = useSchedule(yesterday, today);
   const [open, setOpen] = useState(false);
   const [actionsKey, setActionsKey] = useState<string | null>(null);

@@ -2,7 +2,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { supabase } from '@/lib/supabase/client';
 
-import { toggleLogRequest, TOGGLE_LOG_KEY, type HabitLog, type LogStatus, type ToggleInput } from './mutations';
+import {
+  toggleLogRequest,
+  TOGGLE_LOG_KEY,
+  TOGGLE_LOG_SCOPE,
+  type HabitLog,
+  type LogStatus,
+  type ToggleInput,
+} from './mutations';
 
 export type { HabitLog, LogStatus };
 
@@ -35,6 +42,7 @@ export function useToggleLog() {
   return useMutation({
     mutationKey: TOGGLE_LOG_KEY,
     mutationFn: toggleLogRequest,
+    scope: TOGGLE_LOG_SCOPE,
     onMutate: async ({ habitId, at, existing, status = 'done' }: ToggleInput) => {
       await queryClient.cancelQueries({ queryKey: ['logs'] });
       const snapshot = queryClient.getQueriesData<HabitLog[]>({ queryKey: ['logs'] });

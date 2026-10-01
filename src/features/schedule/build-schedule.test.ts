@@ -62,5 +62,10 @@ describe('buildSchedule with stacks', () => {
     const doneStudy = { habit_id: 'study', occurrence_at: TODAY.toISOString(), status: 'done' } as HabitLog;
     const withDone = buildSchedule([coffee, study], [doneStudy], TODAY, TOMORROW, DEFAULT_DAY_BANDS);
     expect(nextInChain(withDone[0], withDone)).toBeUndefined();
+
+    // A rest day on purpose is not offered as the next step either.
+    const restStudy = { ...doneStudy, status: 'skipped' } as HabitLog;
+    const withRest = buildSchedule([coffee, study], [restStudy], TODAY, TOMORROW, DEFAULT_DAY_BANDS);
+    expect(nextInChain(withRest[0], withRest)).toBeUndefined();
   });
 });

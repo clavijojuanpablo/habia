@@ -37,6 +37,11 @@ export function useSchedule(from: Date, to: Date) {
     bands,
     hasHabits: (habits.data?.length ?? 0) > 0,
     isLoading: habits.isLoading || logs.isLoading,
+    /**
+     * Both habits and logs are actually here. Not the same as `!isLoading`: while the persisted
+     * cache restores, or after a failed fetch, nothing is loading and there is still no data.
+     */
+    isReady: !!habits.data && !!logs.data,
     error: habits.error ?? logs.error,
     toggleItem,
   };
