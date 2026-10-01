@@ -44,10 +44,14 @@ const I18N_KEY: Record<CoachRule, string> = {
   fact: 'fact',
 };
 
-/** The coach's tip, voiced by Brote: one action a tap away and a "¿Por qué?" with the data behind it. */
+/**
+ * The coach's tip, voiced by Brote. Collapsed to two lines so the habit list stays in view;
+ * a tap opens the full text, the "¿Por qué?" with the data behind it, and the one action.
+ */
 export function CoachCard({ tip, items, onToggle, onDismiss }: Props) {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
+  const [expanded, setExpanded] = useState(false);
   const [whyOpen, setWhyOpen] = useState(false);
   const { data: habit } = useHabit('habitId' in tip ? tip.habitId : undefined);
   const { text, mood, action } = describe(tip, items, habit, onToggle, t, i18n.language);
@@ -55,34 +59,48 @@ export function CoachCard({ tip, items, onToggle, onDismiss }: Props) {
   return (
     <View style={[styles.card, { backgroundColor: theme.backgroundElement, boxShadow: Shadow.card }]}>
       <View style={styles.row}>
-        <Brote mood={mood} size={56} />
-        <View style={styles.body}>
-          <ThemedText type="small">{text}</ThemedText>
-          {whyOpen ? (
-            <ThemedText type="caption" themeColor="textSecondary">
-              {t(`coach.why.${I18N_KEY[tip.rule]}`, whyParams(tip, t, i18n.language))}
-            </ThemedText>
-          ) : (
-            <Pressable
-              onPress={() => {
-                setWhyOpen(true);
-                track('coach_why_opened', { rule: tip.rule });
-              }}
-              hitSlop={8}
-              accessibilityRole="button">
-              <ThemedText type="caption" style={{ color: theme.primary }}>
-                {t('coach.whyLink')}
-              </ThemedText>
-            </Pressable>
-          )}
-        </View>
+        <Pressable
+          onPress={() => {
+            if (!expanded) track('coach_tip_expanded', { rule: tip.rule });
+            setExpanded(!expanded);
+          }}
+          accessibilityRole="button"
+          accessibilityState={{ expanded }}
+          style={styles.toggle}>
+          <Brote mood={mood} size={expanded ? 56 : 40} />
+          <ThemedText type="small" numberOfLines={expanded ? undefined : 2} style={styles.body}>
+            {text}
+          </ThemedText>
+          <ThemedText type="heading" themeColor="textSecondary">
+            {expanded ? '▾' : '▸'}
+          </ThemedText>
+        </Pressable>
         <Pressable onPress={onDismiss} hitSlop={12} accessibilityRole="button" accessibilityLabel={t('common.close')}>
           <ThemedText type="heading" themeColor="textSecondary">
             ×
           </ThemedText>
         </Pressable>
       </View>
-      {action && (
+      {expanded &&
+        (whyOpen ? (
+          <ThemedText type="caption" themeColor="textSecondary" style={styles.indent}>
+            {t(`coach.why.${I18N_KEY[tip.rule]}`, whyParams(tip, t, i18n.language))}
+          </ThemedText>
+        ) : (
+          <Pressable
+            onPress={() => {
+              setWhyOpen(true);
+              track('coach_why_opened', { rule: tip.rule });
+            }}
+            hitSlop={8}
+            style={styles.indent}
+            accessibilityRole="button">
+            <ThemedText type="caption" style={{ color: theme.primary }}>
+              {t('coach.whyLink')}
+            </ThemedText>
+          </Pressable>
+        ))}
+      {expanded && action && (
         <Button
           label={action.label}
           variant="secondary"
@@ -222,5 +240,8 @@ function describe(
 const styles = StyleSheet.create({
   card: { padding: Spacing.three, borderRadius: Radius.lg, gap: Spacing.two },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
-  body: { flex: 1, gap: Spacing.one },
+  toggle: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
+  body: { flex: 1 },
+  // Lines up with the text, past the 56 px Brote of the expanded card.
+  indent: { marginLeft: 56 + Spacing.three },
 });

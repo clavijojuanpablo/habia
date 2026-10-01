@@ -291,7 +291,8 @@
   "yesterday": {
     "title_one": "Ayer quedó {{count}} sin marcar",
     "title_other": "Ayer quedaron {{count}} sin marcar",
-    "hint": "¿Lo hiciste y olvidaste registrarlo? Tócalo para marcarlo."
+    "hint": "¿Lo hiciste y olvidaste registrarlo? Tócalo para marcarlo.",
+    "asIs": "Así está bien"
   },
   "onboarding": {
     "next": "Continuar",

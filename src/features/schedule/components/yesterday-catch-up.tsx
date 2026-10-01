@@ -18,9 +18,16 @@ const MAX_ROWS = 4;
 /**
  * "Did you do it yesterday?" - forgetting to log is not the same as missing a
  * habit, and with the never-miss-twice rule an unlogged day is costly. Only
- * yesterday is offered: older days stay in the Week view.
+ * yesterday is offered: older days stay in the Week view. "Así está bien" closes it
+ * for today without touching the logs: a real miss stays a miss (and the coach can speak).
  */
-export function YesterdayCatchUp({ onActionsOpened }: { onActionsOpened: () => void }) {
+export function YesterdayCatchUp({
+  onActionsOpened,
+  onDismiss,
+}: {
+  onActionsOpened: () => void;
+  onDismiss: () => void;
+}) {
   const { t } = useTranslation();
   const theme = useTheme();
   const now = useNow();
@@ -68,6 +75,12 @@ export function YesterdayCatchUp({ onActionsOpened }: { onActionsOpened: () => v
             />
           ))}
 
+      <Pressable onPress={onDismiss} hitSlop={8} accessibilityRole="button" style={styles.dismiss}>
+        <ThemedText type="caption" style={{ color: theme.primary }}>
+          {t('yesterday.asIs')}
+        </ThemedText>
+      </Pressable>
+
       <HabitActionsSheet
         item={items.find((item) => item.key === actionsKey) ?? null}
         onToggle={toggleItem}
@@ -82,4 +95,5 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three, padding: Spacing.two },
   emoji: { fontSize: 24, lineHeight: 30 },
   flex: { flex: 1 },
+  dismiss: { alignSelf: 'flex-end', paddingHorizontal: Spacing.two },
 });

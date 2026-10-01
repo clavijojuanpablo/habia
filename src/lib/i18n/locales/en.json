@@ -291,7 +291,8 @@
   "yesterday": {
     "title_one": "{{count}} habit unlogged yesterday",
     "title_other": "{{count}} habits unlogged yesterday",
-    "hint": "Did you do it and forget to log it? Tap to check it."
+    "hint": "Did you do it and forget to log it? Tap to check it.",
+    "asIs": "That’s right as is"
   },
   "onboarding": {
     "next": "Continue",

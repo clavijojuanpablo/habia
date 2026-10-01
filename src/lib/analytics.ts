@@ -21,7 +21,8 @@ export type AnalyticsEvent =
   | 'coach_tip_shown'
   | 'coach_tip_action'
   | 'coach_tip_dismissed'
-  | 'coach_why_opened';
+  | 'coach_why_opened'
+  | 'coach_tip_expanded';
 
 const OPT_OUT_KEY = 'habia.analytics.optOut';
 const apiKey = process.env.EXPO_PUBLIC_POSTHOG_KEY;

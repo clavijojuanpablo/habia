@@ -37,13 +37,15 @@ type Options = {
   /** Today's schedule and whether it is still loading. */
   items: ScheduledItem[];
   itemsLoading: boolean;
+  /** False while another prompt owns the slot above the list: nothing is pinned or shown. */
+  enabled: boolean;
 };
 
 /**
  * The coach's tip for the current day band (up to three a day, so time-aware tips make
  * sense). Reuses the garden, stats and logs already cached for other screens.
  */
-export function useCoachTip({ today, now, bandConfig, items, itemsLoading }: Options) {
+export function useCoachTip({ today, now, bandConfig, items, itemsLoading, enabled }: Options) {
   const date = formatLocalDate(today);
   const band = getDayBand(now.getHours(), bandConfig);
   // `today`, not `now`: the garden only needs the day; no need to recompute it every minute.
@@ -60,7 +62,8 @@ export function useCoachTip({ today, now, bandConfig, items, itemsLoading }: Opt
 
   const [pin, setPin] = useState(() => read<Pin>(PIN_KEY));
   // Picking before today's schedule arrives would miss "never miss twice" for the whole band.
-  const ready = !garden.isLoading && !isLoading && !itemsLoading && !habits.isLoading && !logs.isLoading;
+  const ready =
+    enabled && !garden.isLoading && !isLoading && !itemsLoading && !habits.isLoading && !logs.isLoading;
 
   const pinned = pin?.date === date && pin.band === band ? pin : null;
   // "Never miss twice" loses its premise when the miss was only a forgotten log, caught up later
@@ -71,7 +74,7 @@ export function useCoachTip({ today, now, bandConfig, items, itemsLoading }: Opt
     tip?.rule === 'never_miss_twice' &&
     garden.summary.habits.find((g) => g.habit.id === tip.habitId)?.trailingMisses === 0 &&
     !items.some((item) => item.habit.id === tip.habitId && isDone(item));
-  const current = stale ? null : pinned;
+  const current = stale || !enabled ? null : pinned;
 
   // Pin a new tip when the band starts (adjusting state while rendering, not in an effect).
   if (!current && ready) {

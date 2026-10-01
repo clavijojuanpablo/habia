@@ -101,13 +101,15 @@ open the web fallback there; its "Open habia" button still works.
 
 ## Next steps
 
-**Start here — ship 1.0.3, then coach 1.0.4, then the Claude part of the coach.**
+**Start here — ship 1.0.4, then coach 1.0.5, then the Claude part of the coach.**
 
-1. **Ship 1.0.3 by OTA** (if not done): `npx eas-cli@latest update …` (recipe in Technical
-   state), reopen the TestFlight app twice; Profile shows `habia 1.0.3 · build 3 · …`. 1.0.3 =
-   coach 1.0.2 + a simpler habit form: "Tentación asociada" removed (column kept), "Intención de
-   implementación" became "¿Dónde?" (the cue already asks when); reminders read "📍 place".
-2. **Coach 1.0.4** (agreed scope, needs its own plan): habits that pull each other (co-occurrence,
+1. **Ship 1.0.4 by OTA** (if not done): `npx eas-cli@latest update …` (recipe in Technical
+   state), reopen the TestFlight app twice; Profile shows `habia 1.0.4 · build 3 · …`. Since
+   1.0.1: coach 1.0.2; 1.0.3 simpler habit form ("Tentación asociada" removed, column kept;
+   "Intención de implementación" became "¿Dónde?"; reminders read "📍 place"); 1.0.4 calmer Today:
+   **one prompt above the list** — "yesterday" catch-up first (now closable with "Así está bien",
+   logs untouched), otherwise the coach, collapsed to two lines until tapped.
+2. **Coach 1.0.5** (agreed scope, needs its own plan): habits that pull each other (co-occurrence,
    worded as observation), votes per identity, 👍/👎 per tip (local down-weighting + analytics),
    rule-based Monday mini-review.
 3. **External testers:** waiting for Beta App Review of the "Beta pública" group (demo account in

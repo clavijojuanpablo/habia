@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -26,12 +26,16 @@ import { useSchedule } from '@/features/schedule/use-schedule';
 import { TopBar } from '@/features/streak/components/top-bar';
 import { useNow, useTodayRange } from '@/hooks/use-now';
 import { useBandColors, useTheme } from '@/hooks/use-theme';
+import { addDays, formatLocalDate } from '@/lib/recurrence';
+import { storage } from '@/lib/storage';
 import { track } from '@/lib/analytics';
 import { hapticSuccess } from '@/lib/haptics';
 import { getDayBand } from '@/lib/time/day-bands';
 
 const SECTION_ORDER: ScheduleBand[] = ['morning', 'afternoon', 'night', 'anytime'];
 const FOCUS_HIGHLIGHT_MS = 3000;
+/** The day the user closed "yesterday" as it was (YYYY-MM-DD). */
+const CATCH_UP_CLOSED_KEY = 'habia.catchUp.closedOn';
 
 export default function TodayScreen() {
   const { t, i18n } = useTranslation();
@@ -40,7 +44,26 @@ export default function TodayScreen() {
   const now = useNow();
   const { today, tomorrow } = useTodayRange(now);
   const { items, bands, hasHabits, isLoading, error, toggleItem } = useSchedule(today, tomorrow);
-  const coach = useCoachTip({ today, now, bandConfig: bands, items, itemsLoading: isLoading });
+  // One prompt above the list at a time. Catching up yesterday wins: it protects today's streak.
+  // The coach waits until yesterday is settled, so it never comments on a miss that was only unlogged.
+  const yesterdayDate = useMemo(() => addDays(today, -1), [today]);
+  const yesterday = useSchedule(yesterdayDate, today);
+  const [catchUpClosedOn, setCatchUpClosedOn] = useState(() => storage.getItem(CATCH_UP_CLOSED_KEY));
+  const todayKey = formatLocalDate(today);
+  const catchUpPending =
+    catchUpClosedOn !== todayKey && yesterday.items.some((item) => !isDone(item) && !isSkipped(item));
+  const closeCatchUp = () => {
+    storage.setItem(CATCH_UP_CLOSED_KEY, todayKey);
+    setCatchUpClosedOn(todayKey);
+  };
+  const coach = useCoachTip({
+    today,
+    now,
+    bandConfig: bands,
+    items,
+    itemsLoading: isLoading,
+    enabled: !yesterday.isLoading && !catchUpPending,
+  });
 
   // Keep only the key: the item itself is read fresh from `items` on every render.
   const [chainNextKey, setChainNextKey] = useState<string | null>(null);
@@ -180,7 +203,7 @@ export default function TodayScreen() {
             <CoachCard tip={coach.tip} items={items} onToggle={onToggle} onDismiss={coach.dismiss} />
           )}
 
-          <YesterdayCatchUp onActionsOpened={onActionsOpened} />
+          {catchUpPending && <YesterdayCatchUp onActionsOpened={onActionsOpened} onDismiss={closeCatchUp} />}
 
           {!tipSeen && items.length > 0 && <ActionsTip onDismiss={hideTip} />}
 
