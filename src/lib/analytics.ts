@@ -38,6 +38,8 @@ export type AnalyticsEvent =
   | 'cheer_sent'
   | 'circle_created'
   | 'circle_joined'
+  | 'circle_habit_created'
+  | 'circle_habit_joined'
   | 'user_blocked'
   | 'user_reported';
 

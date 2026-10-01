@@ -5,6 +5,7 @@ import { track } from '@/lib/analytics';
 import { addDays, formatLocalDate } from '@/lib/recurrence';
 import { supabase } from '@/lib/supabase/client';
 
+import type { CircleHabitDay, CircleHabitMember } from './circle-habit-streak';
 import { SHARED_WINDOW_DAYS, type DayMark } from './shared-days';
 
 /** The numbers a friend sees on your card: the same ones you see in Progress. */
@@ -63,7 +64,14 @@ export type CircleMember = { circle_id: string; user_id: string; role: 'owner' |
  * Anything else (offline, timeout) is the generic one.
  */
 export type SocialErrorCode =
-  'not_found' | 'no_username' | 'too_many_requests' | 'too_many_circles' | 'circle_full' | 'taken' | 'generic';
+  | 'not_found'
+  | 'no_username'
+  | 'too_many_requests'
+  | 'too_many_circles'
+  | 'circle_full'
+  | 'not_a_member'
+  | 'taken'
+  | 'generic';
 
 export class SocialError extends Error {
   constructor(public code: SocialErrorCode) {
@@ -71,7 +79,14 @@ export class SocialError extends Error {
   }
 }
 
-const KNOWN: SocialErrorCode[] = ['not_found', 'no_username', 'too_many_requests', 'too_many_circles', 'circle_full'];
+const KNOWN: SocialErrorCode[] = [
+  'not_found',
+  'no_username',
+  'too_many_requests',
+  'too_many_circles',
+  'circle_full',
+  'not_a_member',
+];
 
 function toSocialError(error: { code?: string; message?: string }): SocialError {
   if (error.code === '23505') return new SocialError('taken');
@@ -359,11 +374,11 @@ export function useMarkCheersSeen() {
 
 // ============ circles ============
 
-export function useCircles() {
+export function useCircles(enabled = true) {
   const { session } = useSession();
   return useQuery({
     queryKey: socialKey(session?.user.id, 'circles'),
-    enabled: !!session,
+    enabled: enabled && !!session,
     queryFn: async () => {
       const [circles, members] = await Promise.all([
         supabase.from('circles').select('id, name, emoji, invite_code').order('created_at'),
@@ -434,5 +449,101 @@ export function useRegenerateCircleCode() {
       if (error) throw toSocialError(error);
     },
     onSuccess: invalidate,
+  });
+}
+
+// ============ shared circle habits ============
+
+export type CircleHabit = {
+  id: string;
+  circle_id: string;
+  name: string;
+  icon: string;
+  rrule: string;
+  two_minute_version: string | null;
+};
+
+/** Every active shared habit in the caller's circles (RLS only returns circles they belong to). */
+export function useCircleHabits(enabled = true) {
+  const { session } = useSession();
+  return useQuery({
+    queryKey: socialKey(session?.user.id, 'circle-habits'),
+    enabled: enabled && !!session,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('circle_habits')
+        .select('id, circle_id, name, icon, rrule, two_minute_version')
+        .is('archived_at', null)
+        .order('created_at');
+      if (error) throw error;
+      return data as CircleHabit[];
+    },
+  });
+}
+
+/** Who takes part in a shared habit and their days on it (never any other habit). */
+export function useCircleHabitProgress(circleHabitId: string, today: Date) {
+  const { session } = useSession();
+  const since = formatLocalDate(addDays(today, -SHARED_WINDOW_DAYS));
+  return useQuery({
+    queryKey: socialKey(session?.user.id, 'circle-habit', circleHabitId, since),
+    enabled: !!session,
+    queryFn: async () => {
+      const [members, days] = await Promise.all([
+        supabase.rpc('circle_habit_members', { p_circle_habit: circleHabitId }),
+        supabase.rpc('circle_habit_days', { p_circle_habit: circleHabitId, p_since: since }),
+      ]);
+      if (members.error) throw members.error;
+      if (days.error) throw days.error;
+      return { members: members.data as CircleHabitMember[], days: days.data as CircleHabitDay[] };
+    },
+  });
+}
+
+export function useCreateCircleHabit() {
+  const { session } = useSession();
+  const invalidate = useSocialInvalidate();
+  return useMutation({
+    ...ONLINE_ONLY,
+    mutationFn: async (input: Omit<CircleHabit, 'id'>) => {
+      const { data, error } = await supabase
+        .from('circle_habits')
+        .insert({ ...input, created_by: session!.user.id })
+        .select('id')
+        .single();
+      if (error) throw toSocialError(error);
+      return data.id;
+    },
+    onSuccess: () => {
+      track('circle_habit_created');
+      return invalidate();
+    },
+  });
+}
+
+/** Joining adds a normal habit to your Today, linked to the shared one; time and reminder stay yours. */
+export function useJoinCircleHabit() {
+  const { session } = useSession();
+  const queryClient = useQueryClient();
+  const invalidate = useSocialInvalidate();
+  return useMutation({
+    ...ONLINE_ONLY,
+    mutationFn: async (habit: CircleHabit) => {
+      const { error } = await supabase.from('habits').insert({
+        user_id: session!.user.id,
+        name: habit.name,
+        icon: habit.icon,
+        rrule: habit.rrule,
+        two_minute_version: habit.two_minute_version,
+        circle_habit_id: habit.id,
+        // Local date: the DB default (current_date) is UTC and can be off by a day.
+        starts_on: formatLocalDate(new Date()),
+      });
+      if (error) throw toSocialError(error);
+    },
+    onSuccess: () => {
+      track('circle_habit_joined');
+      return Promise.all([invalidate(), queryClient.invalidateQueries({ queryKey: ['habits'] })]);
+    },
   });
 }

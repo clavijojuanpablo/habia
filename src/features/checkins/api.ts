@@ -78,6 +78,8 @@ export function useToggleLog() {
         queryClient.invalidateQueries({ queryKey: ['logs'] }),
         queryClient.invalidateQueries({ queryKey: ['votes'] }),
         queryClient.invalidateQueries({ queryKey: ['completions'] }),
+        // Shared circle habits: the group card must count this check-in right away.
+        queryClient.invalidateQueries({ queryKey: ['social'] }),
       ]),
   });
 }

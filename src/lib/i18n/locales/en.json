@@ -677,7 +677,8 @@
       "too_many_circles": "You are already in 10 circles, the maximum.",
       "circle_full": "That circle is already full (8 people).",
       "taken": "That username is taken. Try another one.",
-      "generic": "That didn’t work. Check your connection and try again."
+      "generic": "That didn’t work. Check your connection and try again.",
+      "not_a_member": "Only circle members can join this habit."
     },
     "add": {
       "title": "Add a friend",
@@ -796,6 +797,32 @@
       "addBody": "You’ll see each other’s streak and planted days, and cheer each other on. Never your habits.",
       "joinTitle": "Join the circle?",
       "joinBody": "You were invited to a circle to keep each other company. You’ll see which days each one plants, never their habits."
+    },
+    "circleHabit": {
+      "title": "Circle habits",
+      "add": "+ Habit",
+      "emptyOwner": "Suggest a habit for everyone, like walking 20 minutes. Each person adds it to their day, and the group streak holds while at least half do it.",
+      "emptyMember": "No circle habits yet. Whoever created the circle can suggest one.",
+      "newTitle": "Circle habit",
+      "newHint": "Pick something small everyone can do. Each person sees it in their day and picks their own time.",
+      "name": "What will you do together?",
+      "namePlaceholder": "E.g. Walk 20 minutes",
+      "minimumLabel": "2-minute version",
+      "minimumPlaceholder": "E.g. Step out the door with shoes on",
+      "minimum": "Minimum: {{text}}",
+      "create": "Create the circle habit",
+      "groupStreak": "group",
+      "todayMet": "Today counts! {{done}} of {{total}} did it 🌱",
+      "todayNeed_one": "{{done}} so far today: {{count}} more for the day to count",
+      "todayNeed_other": "{{done}} so far today: {{count}} more for the day to count",
+      "carriers": "Watered for everyone today: {{names}}",
+      "nobodyYet": "Nobody has joined yet. Go first!",
+      "consistency": "Group consistency this week: {{percent}}%",
+      "vsLastWeek": "last week {{percent}}%",
+      "join": "Join and add it to my day",
+      "rule": "🛡️ The group streak grows when at least half do it. One day that doesn’t make it is forgiven; two in a row reset it.",
+      "streakLine_one": "{{icon}} {{name}}: {{count}}-day group streak",
+      "streakLine_other": "{{icon}} {{name}}: {{count}}-day group streak"
     }
   }
 }

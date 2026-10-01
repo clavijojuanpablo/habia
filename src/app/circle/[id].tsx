@@ -9,12 +9,14 @@ import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useSession } from '@/features/auth/session-provider';
 import {
+  useCircleHabits,
   useCircles,
   useRegenerateCircleCode,
   useRemoveCircleMember,
   useSocialDays,
   useSocialProfiles,
 } from '@/features/social/api';
+import { CircleHabitCard } from '@/features/social/components/circle-habit-card';
 import { circleInviteLink, CircleWeekGrid } from '@/features/social/components/circles';
 import { SocialCard } from '@/features/social/components/social-card';
 import { computeCircleWeek } from '@/features/social/shared-days';
@@ -33,6 +35,8 @@ export default function CircleScreen() {
   const { today } = useTodayRange(now);
 
   const circles = useCircles();
+  const circleHabits = useCircleHabits();
+  const sharedHabits = circleHabits.data?.filter((h) => h.circle_id === id) ?? [];
   const circle = circles.data?.circles.find((c) => c.id === id);
   const members = useMemo(() => circles.data?.members.filter((m) => m.circle_id === id) ?? [], [circles.data, id]);
   const memberIds = useMemo(() => members.map((m) => m.user_id), [members]);
@@ -78,6 +82,27 @@ export default function CircleScreen() {
             {t('social.circle.members', { count: members.length })}
           </ThemedText>
         </View>
+
+        <View style={styles.sectionRow}>
+          <ThemedText type="heading" style={styles.flex}>
+            {t('social.circleHabit.title')}
+          </ThemedText>
+          {isOwner && (
+            <Button
+              variant="secondary"
+              label={t('social.circleHabit.add')}
+              onPress={() => router.push({ pathname: '/circle/habit-new', params: { circleId: circle.id } })}
+            />
+          )}
+        </View>
+        {sharedHabits.length === 0 && (
+          <ThemedText type="small" themeColor="textSecondary">
+            {t(isOwner ? 'social.circleHabit.emptyOwner' : 'social.circleHabit.emptyMember')}
+          </ThemedText>
+        )}
+        {sharedHabits.map((habit) => (
+          <CircleHabitCard key={habit.id} habit={habit} profiles={profileById} today={today} />
+        ))}
 
         <SocialCard>
           <ThemedText type="heading">📅 {t('social.circle.weekTitle')}</ThemedText>
@@ -192,5 +217,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderStyle: 'dashed',
   },
+  sectionRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
   memberRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
 });

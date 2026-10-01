@@ -10,7 +10,7 @@ Every feature must map to a mechanism here. If a feature doesn't, question it.
 | | Habit stacking: "After [current habit], I will [new habit]" | `cue_type = after_habit` + `anchor_habit_id`; completing the anchor surfaces/notifies the next habit |
 | | Context cues ("When I get home → gym") | `cue_type = context` + `context_label`; optional geofence later |
 | 2. Make it attractive | Temptation bundling (Milkman et al., 2014) | Removed from the form in 1.0.3 (friction, nothing used it); the column `habits.temptation_bundle` is kept for a future coach tip |
-| | Identity + social norms | Identity statements (tree branches); Couples mode |
+| | Identity + social norms | Identity statements (tree branches); shared circle habits: "join a group where the desired behavior is the normal behavior" (Clear, ch. 9) with a group streak at ≥ 50 % so the group carries whoever slips |
 | 3. Make it easy | 2-minute rule; reduce friction | `habits.two_minute_version`; `done_minimum` log status counts toward the streak |
 | 4. Make it satisfying | Immediate reward; habit tracking | Check-in animation + haptics, the tree grows immediately, visual tracker |
 

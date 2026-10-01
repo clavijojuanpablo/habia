@@ -117,6 +117,17 @@ open the web fallback there; its "Open habia" button still works.
    Check it: `curl -X POST <SUPABASE_URL>/functions/v1/weekly-review -H "apikey: <publishable>" -H "Authorization: Bearer <publishable>" -d '{"check":true}'`
    must answer `{"available":true}`.
 
+0. **1.3.0 — shared circle habits** (built 2026-10-02, JS + migration `20261001220811_circle_habits.sql`,
+   fingerprint `f15932ef…`). Owner steps: `npx supabase db push`; optional test data
+   `npx supabase db query --linked -f supabase/seed/test-circle.sql` (6 fake `@habia.test` people in a private
+   "Test · Familia" circle you own; remove with `supabase/seed/test-cleanup.sql`); `git push`; OTA 1.3.0.
+   The circle owner defines a habit (daily or fixed weekdays); joining adds a normal habit to your Today
+   linked by `habits.circle_habit_id` (shows "🤝 <circle>"). The group day counts when at least half of the
+   joined, non-resting members did it (everyone when ≤ 2), never-miss-twice streak, consistency this week vs
+   last, "regaron por todos" names only who did it (`circle-habit-streak.ts`). Only that habit's daily state
+   is shared (`circle_habit_members` / `circle_habit_days`). A server-stamped `logged_at` waits for photos (build 4). **Leagues dropped** (2026-10-02): strangers' rankings don't motivate; circles do.
+   **Phase B = build 4:** optional photo per shared habit (camera only, deleted after 7 days, reportable),
+   push for cheers / requests / "Ana already walked", RevenueCat.
 1. **1.2.0 — identity as "becoming", Profile, streaks with friends, goals timeline** (built 2026-10-01,
    JS + one data migration, fingerprint `f15932ef…`). Owner steps: `npx supabase db push` (applies
    `20261001190801_identity_becoming.sql`: "Soy una persona que X" and bare endings become "una persona

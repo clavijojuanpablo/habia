@@ -28,13 +28,23 @@ type Props = {
   /** Draws attention to the row, e.g. after tapping its reminder. */
   highlighted?: boolean;
   onLayout?: (event: LayoutChangeEvent) => void;
+  /** "🤝 Familia" for a shared circle habit: the group is part of the cue. */
+  circleLabel?: string;
 };
 
 export function formatTime(date: Date) {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-export function HabitCheckRow({ item, anchor, onToggle, onOpenActions, highlighted = false, onLayout }: Props) {
+export function HabitCheckRow({
+  item,
+  anchor,
+  onToggle,
+  onOpenActions,
+  highlighted = false,
+  onLayout,
+  circleLabel,
+}: Props) {
   const { t } = useTranslation();
   const theme = useTheme();
   const scale = useSharedValue(1);
@@ -65,6 +75,7 @@ export function HabitCheckRow({ item, anchor, onToggle, onOpenActions, highlight
       ? `📍 ${item.habit.context_label}`
       : null;
   const subtitle = [
+    circleLabel,
     cue ?? (item.hasTime ? formatTime(item.at) : null),
     skipped ? t('today.restDay') : minimum ? t('today.minimumDone') : item.habit.two_minute_version,
   ]

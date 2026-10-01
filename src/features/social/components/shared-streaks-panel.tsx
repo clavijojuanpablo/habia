@@ -10,7 +10,15 @@ import { Brote } from '@/features/mascot/brote';
 import { MilestoneTimeline } from '@/features/streak/components/milestone-timeline';
 import { useTheme } from '@/hooks/use-theme';
 
-import { useCircles, useMySocialProfile, useSocialDays } from '../api';
+import {
+  useCircleHabitProgress,
+  useCircleHabits,
+  useCircles,
+  useMySocialProfile,
+  useSocialDays,
+  type CircleHabit,
+} from '../api';
+import { computeCircleHabit } from '../circle-habit-streak';
 import { computeCircleWeek } from '../shared-days';
 import type { useSharedStreaks } from '../use-shared-streaks';
 import { CircleCard } from './circles';
@@ -37,6 +45,9 @@ export function SharedStreaksPanel({
   const circles = useCircles();
   const memberIds = useMemo(() => [...new Set(circles.data?.members.map((m) => m.user_id) ?? [])], [circles.data]);
   const days = useSocialDays(memberIds, today);
+  const circleHabits = useCircleHabits();
+  // The first shared habit is the circle's main one: its group streak stands for the circle here.
+  const mainHabit = (circleId: string) => circleHabits.data?.find((h) => h.circle_id === circleId);
 
   if (loading || me.isLoading || circles.isLoading) return <ActivityIndicator color={theme.streak} />;
   if (me.isSuccess && !me.data) {
@@ -89,15 +100,31 @@ export function SharedStreaksPanel({
         return (
           <View key={circle.id} style={styles.circle}>
             <CircleCard circle={circle} memberCount={ids.length} />
-            {week && (
-              <ThemedText type="caption" themeColor="textSecondary" style={styles.indent}>
-                {t('social.circle.allPlanted', { count: week.allPlanted })}
-              </ThemedText>
+            {mainHabit(circle.id) ? (
+              <GroupStreakLine habit={mainHabit(circle.id)!} today={today} />
+            ) : (
+              week && (
+                <ThemedText type="caption" themeColor="textSecondary" style={styles.indent}>
+                  {t('social.circle.allPlanted', { count: week.allPlanted })}
+                </ThemedText>
+              )
             )}
           </View>
         );
       })}
     </>
+  );
+}
+
+function GroupStreakLine({ habit, today }: { habit: CircleHabit; today: Date }) {
+  const { t } = useTranslation();
+  const { data } = useCircleHabitProgress(habit.id, today);
+  if (!data) return null;
+  const { streak } = computeCircleHabit(data.members, data.days, habit.rrule, today);
+  return (
+    <ThemedText type="caption" themeColor="textSecondary" style={styles.indent}>
+      {t('social.circleHabit.streakLine', { icon: habit.icon, name: habit.name, count: streak })}
+    </ThemedText>
   );
 }
 

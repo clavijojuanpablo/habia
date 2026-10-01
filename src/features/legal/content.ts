@@ -6,7 +6,7 @@
  * TODO before launch: confirm JURISDICTION and have a lawyer review.
  */
 
-export const LEGAL_UPDATED = '2026-10-01';
+export const LEGAL_UPDATED = '2026-10-02';
 export const CONTACT_EMAIL = 'hola@habia.app';
 const JURISDICTION_ES = 'Colombia';
 const JURISDICTION_EN = 'Colombia';
@@ -53,6 +53,7 @@ const privacyEs: LegalDocument = {
         '• PostHog, que recibe los datos de uso. Puedes desactivarlos en Ajustes → Ayudar a mejorar habia.',
         '• Anthropic (Claude), solo si activas la revisión semanal con IA (desactivada por defecto; Ajustes → Revisión semanal con IA). Una vez por semana le enviamos un resumen de tu semana para que escriba la revisión: los nombres de tus hábitos, sus identidades y lugares, cuántas veces los hiciste y tu nombre visible si lo pusiste; nunca tu correo. Según sus condiciones para la API, Anthropic no usa estos datos para entrenar sus modelos. Puedes desactivarla cuando quieras.',
         '• Tus amigos y las personas de tus círculos, solo si agregas amigos o círculos: ven tu usuario, nombre y color, tu racha y tu récord, tu constancia de los últimos 30 días, tus semillas, la etapa de tu árbol y qué días completaste algún hábito o descansaste a propósito. Nunca los nombres de tus hábitos, tus identidades ni tu correo. Puedes eliminar amigos, salir de un círculo o bloquear a alguien en cualquier momento.',
+        '• Las personas de un círculo, solo para los hábitos del círculo a los que te unes: ven ese hábito (que el círculo definió), desde cuándo te uniste y qué días lo cumpliste o descansaste. Si sales del círculo o archivas el hábito, deja de compartirse.',
         'Nadie más recibe tus datos, salvo obligación legal.',
       ],
     },
@@ -204,6 +205,7 @@ const privacyEn: LegalDocument = {
         '• PostHog, which receives the usage data. You can turn it off in Settings → Help improve habia.',
         '• Anthropic (Claude), only if you turn on the AI weekly review (off by default; Settings → AI weekly review). Once a week we send it a summary of your week so it can write the review: your habit names, their identities and places, how many times you did them and your display name if you set one; never your email. Under its API terms, Anthropic does not use this data to train its models. You can turn it off at any time.',
         '• Your friends and the people in your circles, only if you add friends or circles: they see your username, name and color, your streak and record, your consistency over the last 30 days, your seeds, your tree stage and which days you completed a habit or rested on purpose. Never your habit names, your identities or your email. You can remove friends, leave a circle or block someone at any time.',
+        '• The people in a circle, only for the circle habits you join: they see that habit (defined by the circle), since when you joined and which days you did it or rested. If you leave the circle or archive the habit, it is no longer shared.',
         'Nobody else receives your data, unless legally required.',
       ],
     },

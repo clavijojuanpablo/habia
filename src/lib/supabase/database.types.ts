@@ -62,6 +62,50 @@ export type Database = {
         }
         Relationships: []
       }
+      circle_habits: {
+        Row: {
+          archived_at: string | null
+          circle_id: string
+          created_at: string
+          created_by: string | null
+          icon: string
+          id: string
+          name: string
+          rrule: string
+          two_minute_version: string | null
+        }
+        Insert: {
+          archived_at?: string | null
+          circle_id: string
+          created_at?: string
+          created_by?: string | null
+          icon?: string
+          id?: string
+          name: string
+          rrule?: string
+          two_minute_version?: string | null
+        }
+        Update: {
+          archived_at?: string | null
+          circle_id?: string
+          created_at?: string
+          created_by?: string | null
+          icon?: string
+          id?: string
+          name?: string
+          rrule?: string
+          two_minute_version?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circle_habits_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "circles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       circle_members: {
         Row: {
           circle_id: string
@@ -247,6 +291,7 @@ export type Database = {
         Row: {
           anchor_habit_id: string | null
           archived_at: string | null
+          circle_habit_id: string | null
           color: string | null
           context_label: string | null
           created_at: string
@@ -270,6 +315,7 @@ export type Database = {
         Insert: {
           anchor_habit_id?: string | null
           archived_at?: string | null
+          circle_habit_id?: string | null
           color?: string | null
           context_label?: string | null
           created_at?: string
@@ -293,6 +339,7 @@ export type Database = {
         Update: {
           anchor_habit_id?: string | null
           archived_at?: string | null
+          circle_habit_id?: string | null
           color?: string | null
           context_label?: string | null
           created_at?: string
@@ -492,6 +539,22 @@ export type Database = {
     Functions: {
       accept_friend_request: { Args: { p_user: string }; Returns: boolean }
       block_user: { Args: { p_user: string }; Returns: undefined }
+      circle_habit_days: {
+        Args: { p_circle_habit: string; p_since: string }
+        Returns: {
+          day: string
+          done: boolean
+          skipped: boolean
+          user_id: string
+        }[]
+      }
+      circle_habit_members: {
+        Args: { p_circle_habit: string }
+        Returns: {
+          joined_on: string
+          user_id: string
+        }[]
+      }
       create_circle: {
         Args: { p_emoji: string; p_name: string }
         Returns: string

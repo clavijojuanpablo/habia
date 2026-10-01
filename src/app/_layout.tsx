@@ -147,6 +147,7 @@ function RootNavigator() {
         <Stack.Screen name="friend/[id]" options={modal('')} />
         <Stack.Screen name="circle/[id]" options={modal('')} />
         <Stack.Screen name="circle/new" options={modal(t('social.circle.newTitle'))} />
+        <Stack.Screen name="circle/habit-new" options={modal(t('social.circleHabit.newTitle'))} />
         <Stack.Screen name="add/[username]" options={modal('')} />
         <Stack.Screen name="join/[code]" options={modal('')} />
       </Stack.Protected>

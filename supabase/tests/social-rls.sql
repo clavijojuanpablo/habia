@@ -1,4 +1,4 @@
--- Privacy checks for the social migration (friends, circles, cheers, blocks).
+-- Privacy checks for the social migrations (friends, circles, cheers, blocks, shared circle habits).
 -- Runs against the linked project inside a transaction that is always rolled back:
 --   npx supabase db query --linked -f supabase/tests/social-rls.sql
 -- Success prints 'ALL SOCIAL RLS CHECKS PASSED'; a broken rule fails its ASSERT by name.
@@ -197,6 +197,78 @@ begin
   delete from public.circle_members where circle_id = circle;
   select count(*) into n from public.circles where id = circle;
   assert n = 0, 'empty circle disappears';
+end;
+$$;
+
+-- ============ shared circle habits ============
+do $$
+declare
+  a uuid := '00000000-0000-4000-8000-00000000000a';
+  b uuid := '00000000-0000-4000-8000-00000000000b';
+  c uuid := '00000000-0000-4000-8000-00000000000c';
+  circle uuid;
+  code text;
+  shared uuid;
+  hab_a uuid;
+  hab_b uuid;
+  n int;
+begin
+  perform set_config('role', 'authenticated', true);
+
+  -- A owns a circle with B; A creates the shared habit and both join.
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  select public.create_circle('Hábitos', '🚶') into circle;
+  select invite_code into code from public.circles where id = circle;
+  insert into public.circle_habits (circle_id, name, icon, created_by) values (circle, 'Caminar', '🚶', a)
+    returning id into shared;
+  begin
+    insert into public.circle_habits (circle_id, name, rrule, created_by) values (circle, 'Bad', 'FREQ=DAILY;INTERVAL=2', a);
+    assert false, 'every-N-days is not allowed for shared habits';
+  exception when check_violation then null;
+  end;
+  insert into public.habits (user_id, name, circle_habit_id) values (a, 'Caminar', shared) returning id into hab_a;
+  insert into public.habit_logs (user_id, habit_id, occurrence_at, status)
+    values (a, hab_a, now() - interval '1 day', 'done');
+  begin
+    insert into public.habits (user_id, name, circle_habit_id) values (a, 'Caminar otra vez', shared);
+    assert false, 'joining the same shared habit twice is impossible';
+  exception when unique_violation then null;
+  end;
+
+  perform set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
+  begin
+    insert into public.habits (user_id, name, circle_habit_id) values (b, 'Caminar', shared);
+    assert false, 'a non-member cannot link a habit';
+  exception when raise_exception then null;
+  end;
+  perform public.join_circle(code);
+  insert into public.habits (user_id, name, circle_habit_id) values (b, 'Caminar', shared) returning id into hab_b;
+  begin
+    insert into public.circle_habits (circle_id, name, created_by) values (circle, 'Member made', b);
+    assert false, 'only the owner creates shared habits';
+  exception when insufficient_privilege then null;
+  end;
+  select count(*) into n from public.circle_habit_members(shared);
+  assert n = 2, 'B sees both participants';
+  select count(*) into n from public.circle_habit_days(shared, current_date - 7) where done;
+  assert n = 1, 'B sees A''s done day on the shared habit';
+  select count(*) into n from public.habits where id = hab_a;
+  assert n = 0, 'B still cannot read A''s habit row';
+
+  -- C is not in the circle: sees nothing.
+  perform set_config('request.jwt.claims', json_build_object('sub', c, 'role', 'authenticated')::text, true);
+  select count(*) into n from public.circle_habit_members(shared);
+  assert n = 0, 'a non-member sees no participants';
+  select count(*) into n from public.circle_habit_days(shared, current_date - 7);
+  assert n = 0, 'a non-member sees no days';
+  select count(*) into n from public.circle_habits where id = shared;
+  assert n = 0, 'a non-member cannot read the shared habit';
+
+  -- B leaves: the habit stays, unlinked.
+  perform set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
+  delete from public.circle_members where circle_id = circle and user_id = b;
+  select count(*) into n from public.habits where id = hab_b and circle_habit_id is null;
+  assert n = 1, 'leaving keeps the habit, unlinked';
 end;
 $$;
 

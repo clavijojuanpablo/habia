@@ -677,7 +677,8 @@
       "too_many_circles": "Ya estás en 10 círculos, el máximo.",
       "circle_full": "Ese círculo ya está completo (8 personas).",
       "taken": "Ese usuario ya está en uso. Prueba otro.",
-      "generic": "No se pudo completar. Revisa tu conexión e intenta de nuevo."
+      "generic": "No se pudo completar. Revisa tu conexión e intenta de nuevo.",
+      "not_a_member": "Solo los miembros del círculo pueden unirse a este hábito."
     },
     "add": {
       "title": "Agregar un amigo",
@@ -796,6 +797,32 @@
       "addBody": "Podrán ver la racha y los días sembrados del otro, y animarse. Nunca sus hábitos.",
       "joinTitle": "¿Unirte al círculo?",
       "joinBody": "Te invitaron a un círculo para acompañarse. Verán qué días siembra cada uno, nunca sus hábitos."
+    },
+    "circleHabit": {
+      "title": "Hábitos del círculo",
+      "add": "+ Hábito",
+      "emptyOwner": "Propón un hábito para todos, como caminar 20 minutos. Cada quien lo suma a su día y la racha del grupo se mantiene si al menos la mitad lo cumple.",
+      "emptyMember": "Aún no hay hábitos del círculo. Quien creó el círculo puede proponer uno.",
+      "newTitle": "Hábito del círculo",
+      "newHint": "Elijan algo pequeño que todos puedan cumplir. Cada quien lo verá en su día y decide su hora.",
+      "name": "¿Qué harán juntos?",
+      "namePlaceholder": "Ej.: Caminar 20 minutos",
+      "minimumLabel": "Versión de 2 minutos",
+      "minimumPlaceholder": "Ej.: Salir a la puerta con zapatos",
+      "minimum": "Mínimo: {{text}}",
+      "create": "Crear el hábito del círculo",
+      "groupStreak": "del grupo",
+      "todayMet": "¡Hoy ya cuenta! {{done}} de {{total}} lo hicieron 🌱",
+      "todayNeed_one": "Hoy van {{done}}: falta {{count}} para que el día cuente",
+      "todayNeed_other": "Hoy van {{done}}: faltan {{count}} para que el día cuente",
+      "carriers": "Hoy regaron por todos: {{names}}",
+      "nobodyYet": "Nadie se ha unido todavía. ¡Empieza tú!",
+      "consistency": "Constancia del grupo esta semana: {{percent}} %",
+      "vsLastWeek": "la anterior {{percent}} %",
+      "join": "Unirme y sumarlo a mi día",
+      "rule": "🛡️ La racha del grupo crece cuando al menos la mitad lo hace. Un día que no se logra se perdona; dos seguidos la reinician.",
+      "streakLine_one": "{{icon}} {{name}}: {{count}} día de racha del grupo",
+      "streakLine_other": "{{icon}} {{name}}: {{count}} días de racha del grupo"
     }
   }
 }

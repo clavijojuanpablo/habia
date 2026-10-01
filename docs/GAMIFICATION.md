@@ -75,7 +75,11 @@ A couple is a circle of two, so the base is **friends and small circles**. Built
 - Cheers (reactions) and gentle nudges; intertwined trees for circles of two.
 - App Store requirement for user interaction (guideline 1.2): block, report, moderation, usernames; account deletion cascades.
 
-## Leagues (opt-in)
+## Shared circle habits (1.3.0, replaces leagues)
+A circle defines one habit everyone joins; each member keeps their own time and reminder. The group streak holds while at least half of the joined, non-resting members do it each day (everyone in a circle of two), with never-miss-twice forgiveness. The card shows today's count ("2 so far: 1 more for the day to count"), everyone's week, group consistency against last week and who "watered for everyone" — never who missed. Phase B (build 4): optional camera-only photo per shared habit, deleted after 7 days.
+
+## Leagues (dropped 2026-10-02)
+Kept for the record: rankings with strangers don't motivate (you can't influence them and don't care about them); the same energy goes into circles. Original idea:
 Weekly leagues of ~30 people, top ranks move up, bottom ranks move down (Duolingo-style) — not ELO, which models head-to-head matches. Score = **consistency % on your own scheduled habits**, never raw check-in counts (adding trivial habits must not win). Opt-in: competition motivates some people and causes the anxiety we promised to avoid in others.
 
 ## Rewards

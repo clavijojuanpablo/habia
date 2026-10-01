@@ -22,6 +22,7 @@ import { useCoachTip } from '@/features/coach/use-coach-tip';
 import { useWeeklyReviewSlot } from '@/features/coach/use-weekly-review-slot';
 import { NorthStarCard } from '@/features/north-star/components/north-star-card';
 import { CheersNotice, useUnseenCheers } from '@/features/social/components/cheers';
+import { useCircleLabels } from '@/features/social/use-circle-labels';
 import { useNorthStar } from '@/features/north-star/use-north-star';
 import { Brote } from '@/features/mascot/brote';
 import { isDone, isSkipped, nextInChain, type ScheduleBand, type ScheduledItem } from '@/features/schedule/build-schedule';
@@ -110,6 +111,7 @@ export default function TodayScreen() {
     onActionsOpened();
   };
   const habitsById = new Map(items.map((item) => [item.habit.id, item.habit]));
+  const circleLabels = useCircleLabels(items.some((item) => item.habit.circle_habit_id));
 
   // `focus` arrives from a tapped reminder: scroll to that habit and highlight it briefly.
   // Row offsets are relative to their section, so both are recorded as they lay out. The
@@ -290,6 +292,7 @@ export default function TodayScreen() {
                     onToggle={onToggle}
                     onOpenActions={openActions}
                     highlighted={item.habit.id === focus}
+                    circleLabel={item.habit.circle_habit_id ? circleLabels[item.habit.circle_habit_id] : undefined}
                     onLayout={(event) => {
                       rowY.current.set(item.key, { band, y: event.nativeEvent.layout.y });
                       scrollToFocus();
