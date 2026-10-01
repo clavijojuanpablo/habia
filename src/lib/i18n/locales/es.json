@@ -280,7 +280,10 @@
     "streak_one": "Racha de {{count}} día",
     "streak_other": "Racha de {{count}} días",
     "votes_one": "{{count}} semilla",
-    "votes_other": "{{count}} semillas"
+    "votes_other": "{{count}} semillas",
+    "circles_one": "{{count}} círculo",
+    "circles_other": "{{count}} círculos",
+    "noCircles": "Crea o únete a un círculo"
   },
   "appearance": {
     "title": "Apariencia",
@@ -769,7 +772,6 @@
       "you": "Tú",
       "hidden": "Alguien",
       "unavailable": "Este círculo ya no está disponible.",
-      "weekTitle": "Esta semana",
       "allPlanted_zero": "Aún no hay un día en que todos hayan sembrado. ¡El próximo puede ser hoy!",
       "allPlanted_one": "{{count}} día en que todos sembraron 🌱",
       "allPlanted_other": "{{count}} días en que todos sembraron 🌱",
@@ -787,7 +789,11 @@
       "newHint": "Ponle un nombre que los identifique: la familia, el equipo, los del gym.",
       "name": "Nombre",
       "namePlaceholder": "Ej.: Familia",
-      "emoji": "Ícono"
+      "emoji": "Ícono",
+      "leaveHabitTitle": "Antes de salir de «{{name}}»",
+      "leaveHabitBody": "«{{habit}}» tiene tus semillas y tu historia. ¿Qué hacemos con él?",
+      "leaveKeep": "Salir y conservarlo en mi lista",
+      "leaveArchive": "Salir y quitarlo de mi lista"
     },
     "invite": {
       "needUsername": "Antes, elige tu usuario: así te reconocerán.",
@@ -800,8 +806,8 @@
     },
     "circleHabit": {
       "title": "Hábitos del círculo",
-      "add": "+ Hábito",
-      "emptyOwner": "Propón un hábito para todos, como caminar 20 minutos. Cada quien lo suma a su día y la racha del grupo se mantiene si al menos la mitad lo cumple.",
+      "add": "+ Proponer hábito",
+      "emptyOwner": "Cada círculo tiene un hábito que hacen juntos, como caminar 20 minutos. Cada quien lo suma a su día y la racha del grupo se mantiene si al menos la mitad lo cumple. ¿Otro hábito? Crea otro círculo.",
       "emptyMember": "Aún no hay hábitos del círculo. Quien creó el círculo puede proponer uno.",
       "newTitle": "Hábito del círculo",
       "newHint": "Elijan algo pequeño que todos puedan cumplir. Cada quien lo verá en su día y decide su hora.",
@@ -812,8 +818,6 @@
       "minimum": "Mínimo: {{text}}",
       "create": "Crear el hábito del círculo",
       "nobodyYet": "Nadie se ha unido todavía. ¡Empieza tú!",
-      "consistency": "Constancia del grupo esta semana: {{percent}} %",
-      "vsLastWeek": "la anterior {{percent}} %",
       "join": "Unirme y sumarlo a mi día",
       "rule": "🛡️ La racha del grupo crece cuando al menos la mitad lo hace. Un día que no se logra se perdona; dos seguidos la reinician.",
       "todayShort_one": "Falta {{count}} para salvar la racha de hoy",
@@ -822,10 +826,16 @@
       "todayGreat": "¡Casi todo el círculo ya lo hizo! 🎉",
       "todayRest": "Hoy todos descansan: la racha no se mueve 💤",
       "todayOff": "Hoy no toca: la racha espera 💤",
-      "rankingTitle_one": "Constancia de cada uno (último día)",
-      "rankingTitle_other": "Constancia de cada uno (últimos {{count}} días)",
       "streakLabel_one": "Racha del grupo: {{count}} día",
-      "streakLabel_other": "Racha del grupo: {{count}} días"
+      "streakLabel_other": "Racha del grupo: {{count}} días",
+      "rankingTitle": "Constancia de cada uno",
+      "periods": {
+        "week": "Esta semana",
+        "month": "30 días",
+        "all": "General"
+      },
+      "end": "Terminar el hábito del círculo",
+      "endConfirm": "¿Terminar «{{name}}» para el círculo? Cada uno conserva el hábito en su lista, ya sin compartir. Luego pueden proponer otro."
     }
   }
 }

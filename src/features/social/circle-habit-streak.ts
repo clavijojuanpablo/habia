@@ -1,6 +1,7 @@
 import { addDays, daysBetween, formatLocalDate, getOccurrences, startOfWeek } from '@/lib/recurrence';
 
-import { SHARED_WINDOW_DAYS, type CircleWeekRow } from './shared-days';
+/** How far back a shared habit's days are fetched: a year, for overall consistency. */
+export const CIRCLE_HABIT_WINDOW_DAYS = 365;
 
 /** Who takes part in a shared habit, and since which local date. */
 export type CircleHabitMember = { user_id: string; joined_on: string };
@@ -13,8 +14,8 @@ export type GroupDayState = 'met' | 'short' | 'rest' | 'off' | 'pending' | 'futu
 /** How many must do it for the day to count: everyone up to two, then half (rounded up). */
 export const neededFor = (active: number) => (active <= 2 ? active : Math.ceil(active / 2));
 
-/** How many days back each person's consistency in the ranking looks. */
-export const RANKING_DAYS = 30;
+/** The ranking's periods: this week, the last 30 days, or everything since joining (up to a year). */
+export type RankingPeriod = 'week' | 'month' | 'all';
 
 /**
  * Today's counter color: short of the group's threshold (the streak is at risk), reached it, or
@@ -34,7 +35,7 @@ const percent = (done: number, expected: number) => (expected === 0 ? null : Mat
  * compares done / expected on closed days, this week against last week.
  */
 export function computeCircleHabit(members: CircleHabitMember[], days: CircleHabitDay[], rrule: string, today: Date) {
-  const first = addDays(today, -SHARED_WINDOW_DAYS);
+  const first = addDays(today, -CIRCLE_HABIT_WINDOW_DAYS);
   const scheduled = new Set(
     getOccurrences(
       { rrule, starts_on: formatLocalDate(first), window_start: null, window_end: null },
@@ -74,60 +75,43 @@ export function computeCircleHabit(members: CircleHabitMember[], days: CircleHab
 
   const monday = startOfWeek(today);
   const weekOf = (start: Date) => Array.from({ length: 7 }, (_, i) => addDays(start, i));
-  const consistency = (dates: Date[]) => {
-    let done = 0;
-    let expected = 0;
-    for (const date of dates) {
-      if (daysBetween(date, today) <= 0) continue; // closed days only
-      const info = dayInfo(date);
-      if (info.state === 'off' || info.state === 'rest') continue;
-      done += Math.min(info.doers.length, info.active);
-      expected += info.active;
-    }
-    return percent(done, expected);
-  };
-
   const week = weekOf(monday).map((date) => ({
     date,
     state: date > today ? ('future' as const) : dayInfo(date).state,
   }));
-  const rows: CircleWeekRow[] = members.map((m) => ({
-    userId: m.user_id,
-    days: weekOf(monday).map((date) => {
-      const key = formatLocalDate(date);
-      if (date > today || m.joined_on > key) return 'future';
-      const mark = byKey.get(`${m.user_id}:${key}`);
-      return mark?.done ? 'active' : mark?.skipped ? 'rest' : 'empty';
-    }),
-  }));
   const now = dayInfo(today);
 
-  // Each person's consistency over the last 30 days since they joined: closed days, plus today once done.
-  const ranking = members
-    .map((m) => {
-      let done = 0;
-      let expected = 0;
-      for (let date = addDays(today, -(RANKING_DAYS - 1)); daysBetween(date, today) >= 0; date = addDays(date, 1)) {
-        const key = formatLocalDate(date);
-        if (!scheduled.has(key) || m.joined_on > key) continue;
-        const mark = byKey.get(`${m.user_id}:${key}`);
-        if (mark?.skipped) continue;
-        const isToday = daysBetween(date, today) === 0;
-        if (isToday && !mark?.done) continue;
-        expected++;
-        if (mark?.done) done++;
-      }
-      return { userId: m.user_id, done, percent: percent(done, expected), doneToday: !!byKey.get(`${m.user_id}:${formatLocalDate(today)}`)?.done };
-    })
-    .sort((a, b) => (b.percent ?? -1) - (a.percent ?? -1) || b.done - a.done);
+  const periodStart: Record<RankingPeriod, Date> = { week: monday, month: addDays(today, -29), all: first };
+  // Each person's consistency in a period, since they joined: closed days, plus today once done.
+  const rankingFor = (period: RankingPeriod) =>
+    members
+      .map((m) => {
+        let done = 0;
+        let expected = 0;
+        for (let date = periodStart[period]; daysBetween(date, today) >= 0; date = addDays(date, 1)) {
+          const key = formatLocalDate(date);
+          if (!scheduled.has(key) || m.joined_on > key) continue;
+          const mark = byKey.get(`${m.user_id}:${key}`);
+          if (mark?.skipped) continue;
+          const isToday = daysBetween(date, today) === 0;
+          if (isToday && !mark?.done) continue;
+          expected++;
+          if (mark?.done) done++;
+        }
+        return {
+          userId: m.user_id,
+          done,
+          percent: percent(done, expected),
+          doneToday: !!byKey.get(`${m.user_id}:${formatLocalDate(today)}`)?.done,
+        };
+      })
+      .sort((a, b) => (b.percent ?? -1) - (a.percent ?? -1) || b.done - a.done);
+  const ranking = { week: rankingFor('week'), month: rankingFor('month'), all: rankingFor('all') };
 
   return {
     streak,
     week,
-    rows,
     today: { state: now.state, done: now.doers.length, needed: now.needed, active: now.active, carriers: now.doers },
     ranking,
-    thisWeek: consistency(weekOf(monday)),
-    lastWeek: consistency(weekOf(addDays(monday, -7))),
   };
 }

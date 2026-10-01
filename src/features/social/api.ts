@@ -5,7 +5,7 @@ import { track } from '@/lib/analytics';
 import { addDays, formatLocalDate } from '@/lib/recurrence';
 import { supabase } from '@/lib/supabase/client';
 
-import type { CircleHabitDay, CircleHabitMember } from './circle-habit-streak';
+import { CIRCLE_HABIT_WINDOW_DAYS, type CircleHabitDay, type CircleHabitMember } from './circle-habit-streak';
 import { SHARED_WINDOW_DAYS, type DayMark } from './shared-days';
 
 /** The numbers a friend sees on your card: the same ones you see in Progress. */
@@ -484,7 +484,7 @@ export function useCircleHabits(enabled = true) {
 /** Who takes part in a shared habit and their days on it (never any other habit). */
 export function useCircleHabitProgress(circleHabitId: string, today: Date) {
   const { session } = useSession();
-  const since = formatLocalDate(addDays(today, -SHARED_WINDOW_DAYS));
+  const since = formatLocalDate(addDays(today, -CIRCLE_HABIT_WINDOW_DAYS));
   return useQuery({
     queryKey: socialKey(session?.user.id, 'circle-habit', circleHabitId, since),
     enabled: !!session,
@@ -511,7 +511,8 @@ export function useCreateCircleHabit() {
         .insert({ ...input, created_by: session!.user.id })
         .select('id')
         .single();
-      if (error) throw toSocialError(error);
+      // A circle already has its habit (one per circle): not a username clash.
+      if (error) throw error.code === '23505' ? new SocialError('generic') : toSocialError(error);
       return data.id;
     },
     onSuccess: () => {
@@ -545,5 +546,22 @@ export function useJoinCircleHabit() {
       track('circle_habit_joined');
       return Promise.all([invalidate(), queryClient.invalidateQueries({ queryKey: ['habits'] })]);
     },
+  });
+}
+
+/** The owner ends the circle's habit: every member keeps theirs, unlinked (a trigger does it). */
+export function useEndCircleHabit() {
+  const queryClient = useQueryClient();
+  const invalidate = useSocialInvalidate();
+  return useMutation({
+    ...ONLINE_ONLY,
+    mutationFn: async (circleHabitId: string) => {
+      const { error } = await supabase
+        .from('circle_habits')
+        .update({ archived_at: new Date().toISOString() })
+        .eq('id', circleHabitId);
+      if (error) throw toSocialError(error);
+    },
+    onSuccess: () => Promise.all([invalidate(), queryClient.invalidateQueries({ queryKey: ['habits'] })]),
   });
 }

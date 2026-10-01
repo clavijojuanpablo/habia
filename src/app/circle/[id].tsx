@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Share, ScrollView, StyleSheet, View } from 'react-native';
 
@@ -11,21 +11,20 @@ import { useSession } from '@/features/auth/session-provider';
 import {
   useCircleHabits,
   useCircles,
+  useEndCircleHabit,
   useRegenerateCircleCode,
   useRemoveCircleMember,
-  useSocialDays,
   useSocialProfiles,
 } from '@/features/social/api';
+import { useArchiveHabit, useHabits } from '@/features/habits/api';
 import { CircleHabitCard } from '@/features/social/components/circle-habit-card';
 import { circleInviteLink } from '@/features/social/components/circles';
-import { ConsistencyRanking } from '@/features/social/components/consistency-ranking';
 import { SocialCard } from '@/features/social/components/social-card';
-import { computeCircleWeek } from '@/features/social/shared-days';
 import { useNow, useTodayRange } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
 import { confirmAction } from '@/lib/confirm';
 
-/** A circle: this week together, the invite, and leaving (or managing it, for its owner). */
+/** A circle and its one shared habit: today, everyone's consistency, the invite, and leaving or managing it. */
 export default function CircleScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -37,16 +36,20 @@ export default function CircleScreen() {
 
   const circles = useCircles();
   const circleHabits = useCircleHabits();
-  const sharedHabits = circleHabits.data?.filter((h) => h.circle_id === id) ?? [];
+  // One shared habit per circle (enforced by the database): another habit means another circle.
+  const sharedHabit = circleHabits.data?.find((h) => h.circle_id === id);
   const circle = circles.data?.circles.find((c) => c.id === id);
   const members = useMemo(() => circles.data?.members.filter((m) => m.circle_id === id) ?? [], [circles.data, id]);
   const memberIds = useMemo(() => members.map((m) => m.user_id), [members]);
   const profiles = useSocialProfiles(memberIds);
-  const days = useSocialDays(memberIds, today);
   const remove = useRemoveCircleMember();
   const regenerate = useRegenerateCircleCode();
+  const endHabit = useEndCircleHabit();
+  const archive = useArchiveHabit();
+  const { data: myHabits } = useHabits();
+  const myLinkedHabit = sharedHabit ? myHabits?.find((h) => h.circle_habit_id === sharedHabit.id) : undefined;
+  const [leaving, setLeaving] = useState(false);
 
-  const week = useMemo(() => computeCircleWeek(memberIds, days.data ?? [], today), [memberIds, days.data, today]);
   const profileById = Object.fromEntries((profiles.data ?? []).map((p) => [p.user_id, p]));
   const isOwner = members.some((m) => m.user_id === me && m.role === 'owner');
 
@@ -88,7 +91,7 @@ export default function CircleScreen() {
           <ThemedText type="heading" style={styles.flex}>
             {t('social.circleHabit.title')}
           </ThemedText>
-          {isOwner && (
+          {isOwner && !sharedHabit && (
             <Button
               variant="secondary"
               label={t('social.circleHabit.add')}
@@ -96,43 +99,29 @@ export default function CircleScreen() {
             />
           )}
         </View>
-        {sharedHabits.length === 0 && (
+        {!sharedHabit && (
           <ThemedText type="small" themeColor="textSecondary">
             {t(isOwner ? 'social.circleHabit.emptyOwner' : 'social.circleHabit.emptyMember')}
           </ThemedText>
         )}
-        {sharedHabits.map((habit) => (
-          <CircleHabitCard key={habit.id} habit={habit} profiles={profileById} today={today} />
-        ))}
-
-        <SocialCard>
-          <ThemedText type="heading">📅 {t('social.circle.weekTitle')}</ThemedText>
-          <ThemedText type="small" themeColor="textSecondary">
-            {t('social.circle.allPlanted', { count: week.allPlanted })}
-          </ThemedText>
-          {days.data ? (
-            <ConsistencyRanking
-              rows={week.rows
-                .map((row) => {
-                  // Share of this week's days so far (rests left out) on which they planted anything.
-                  const counted = row.days.filter((d) => d === 'active' || d === 'empty').length;
-                  const planted = row.days.filter((d) => d === 'active').length;
-                  return {
-                    userId: row.userId,
-                    name:
-                      row.userId === me
-                        ? t('social.circle.you')
-                        : (profileById[row.userId]?.display_name ?? t('social.circle.hidden')),
-                    color: profileById[row.userId]?.color ?? theme.textSecondary,
-                    percent: counted === 0 ? null : Math.round((planted / counted) * 100),
-                  };
-                })
-                .sort((a, b) => (b.percent ?? -1) - (a.percent ?? -1))}
-            />
-          ) : (
-            <ActivityIndicator color={theme.primary} />
-          )}
-        </SocialCard>
+        {sharedHabit && <CircleHabitCard habit={sharedHabit} profiles={profileById} today={today} />}
+        {sharedHabit && isOwner && (
+          <Button
+            variant="danger"
+            label={t('social.circleHabit.end')}
+            loading={endHabit.isPending}
+            onPress={() =>
+              confirmAction(
+                t('social.circleHabit.endConfirm', { name: sharedHabit.name }),
+                () => endHabit.mutate(sharedHabit.id),
+                {
+                  ok: t('social.circleHabit.end'),
+                  cancel: t('common.cancel'),
+                },
+              )
+            }
+          />
+        )}
 
         <SocialCard>
           <ThemedText type="heading">✉️ {t('social.circle.inviteTitle')}</ThemedText>
@@ -192,18 +181,47 @@ export default function CircleScreen() {
           </SocialCard>
         )}
 
-        <Button
-          variant="danger"
-          label={t('social.circle.leave')}
-          onPress={() =>
-            confirmAction(
-              t('social.circle.leaveConfirm', { name: circle.name }),
-              () => remove.mutate({ circleId: circle.id, userId: me }, { onSuccess: () => router.back() }),
-              { ok: t('social.circle.leave'), cancel: t('common.cancel') },
-            )
-          }
-        />
-        {(remove.isError || regenerate.isError) && (
+        {leaving && myLinkedHabit ? (
+          // Your habit holds your seeds and history: leaving never deletes it, you choose.
+          <SocialCard>
+            <ThemedText type="heading">{t('social.circle.leaveHabitTitle', { name: circle.name })}</ThemedText>
+            <ThemedText type="small" themeColor="textSecondary">
+              {t('social.circle.leaveHabitBody', { habit: myLinkedHabit.name })}
+            </ThemedText>
+            <Button
+              label={t('social.circle.leaveKeep')}
+              loading={remove.isPending && !archive.isPending}
+              onPress={() => remove.mutate({ circleId: circle.id, userId: me }, { onSuccess: () => router.back() })}
+            />
+            <Button
+              variant="secondary"
+              label={t('social.circle.leaveArchive')}
+              loading={archive.isPending}
+              onPress={() =>
+                archive.mutate(myLinkedHabit.id, {
+                  onSuccess: () =>
+                    remove.mutate({ circleId: circle.id, userId: me }, { onSuccess: () => router.back() }),
+                })
+              }
+            />
+            <Button variant="danger" label={t('common.cancel')} onPress={() => setLeaving(false)} />
+          </SocialCard>
+        ) : (
+          <Button
+            variant="danger"
+            label={t('social.circle.leave')}
+            onPress={() =>
+              myLinkedHabit
+                ? setLeaving(true)
+                : confirmAction(
+                    t('social.circle.leaveConfirm', { name: circle.name }),
+                    () => remove.mutate({ circleId: circle.id, userId: me }, { onSuccess: () => router.back() }),
+                    { ok: t('social.circle.leave'), cancel: t('common.cancel') },
+                  )
+            }
+          />
+        )}
+        {(remove.isError || regenerate.isError || endHabit.isError || archive.isError) && (
           <ThemedText type="small" themeColor="danger" style={styles.center}>
             {t('social.errors.generic')}
           </ThemedText>

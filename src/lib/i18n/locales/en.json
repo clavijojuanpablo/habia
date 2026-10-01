@@ -280,7 +280,10 @@
     "streak_one": "{{count}}-day streak",
     "streak_other": "{{count}}-day streak",
     "votes_one": "{{count}} seed",
-    "votes_other": "{{count}} seeds"
+    "votes_other": "{{count}} seeds",
+    "circles_one": "{{count}} circle",
+    "circles_other": "{{count}} circles",
+    "noCircles": "Create or join a circle"
   },
   "appearance": {
     "title": "Appearance",
@@ -769,7 +772,6 @@
       "you": "You",
       "hidden": "Someone",
       "unavailable": "This circle is no longer available.",
-      "weekTitle": "This week",
       "allPlanted_zero": "No day yet where everyone planted. The next one could be today!",
       "allPlanted_one": "{{count}} day everyone planted 🌱",
       "allPlanted_other": "{{count}} days everyone planted 🌱",
@@ -787,7 +789,11 @@
       "newHint": "Give it a name that says who you are: family, the team, the gym crew.",
       "name": "Name",
       "namePlaceholder": "E.g. Family",
-      "emoji": "Icon"
+      "emoji": "Icon",
+      "leaveHabitTitle": "Before leaving “{{name}}”",
+      "leaveHabitBody": "“{{habit}}” holds your seeds and history. What should we do with it?",
+      "leaveKeep": "Leave and keep it in my list",
+      "leaveArchive": "Leave and remove it from my list"
     },
     "invite": {
       "needUsername": "First, pick your username so they recognize you.",
@@ -800,8 +806,8 @@
     },
     "circleHabit": {
       "title": "Circle habits",
-      "add": "+ Habit",
-      "emptyOwner": "Suggest a habit for everyone, like walking 20 minutes. Each person adds it to their day, and the group streak holds while at least half do it.",
+      "add": "+ Suggest a habit",
+      "emptyOwner": "Each circle has one habit you do together, like walking 20 minutes. Everyone adds it to their day, and the group streak holds while at least half do it. Another habit? Create another circle.",
       "emptyMember": "No circle habits yet. Whoever created the circle can suggest one.",
       "newTitle": "Circle habit",
       "newHint": "Pick something small everyone can do. Each person sees it in their day and picks their own time.",
@@ -812,8 +818,6 @@
       "minimum": "Minimum: {{text}}",
       "create": "Create the circle habit",
       "nobodyYet": "Nobody has joined yet. Go first!",
-      "consistency": "Group consistency this week: {{percent}}%",
-      "vsLastWeek": "last week {{percent}}%",
       "join": "Join and add it to my day",
       "rule": "🛡️ The group streak grows when at least half do it. One day that doesn’t make it is forgiven; two in a row reset it.",
       "todayShort_one": "{{count}} more to save today's streak",
@@ -822,10 +826,16 @@
       "todayGreat": "Almost the whole circle did it! 🎉",
       "todayRest": "Everyone rests today: the streak doesn't move 💤",
       "todayOff": "Not scheduled today: the streak waits 💤",
-      "rankingTitle_one": "Everyone's consistency (last day)",
-      "rankingTitle_other": "Everyone's consistency (last {{count}} days)",
       "streakLabel_one": "Group streak: {{count}} day",
-      "streakLabel_other": "Group streak: {{count}} days"
+      "streakLabel_other": "Group streak: {{count}} days",
+      "rankingTitle": "Everyone's consistency",
+      "periods": {
+        "week": "This week",
+        "month": "30 days",
+        "all": "Overall"
+      },
+      "end": "End the circle's habit",
+      "endConfirm": "End “{{name}}” for the circle? Everyone keeps the habit in their list, no longer shared. You can suggest another one after."
     }
   }
 }

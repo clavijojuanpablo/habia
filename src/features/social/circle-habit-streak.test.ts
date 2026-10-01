@@ -1,6 +1,12 @@
 import { addDays, formatLocalDate } from '@/lib/recurrence';
 
-import { computeCircleHabit, neededFor, todayTier, type CircleHabitDay, type CircleHabitMember } from './circle-habit-streak';
+import {
+  computeCircleHabit,
+  neededFor,
+  todayTier,
+  type CircleHabitDay,
+  type CircleHabitMember,
+} from './circle-habit-streak';
 
 // Today is Wednesday 2026-09-23.
 const TODAY = new Date(2026, 8, 23);
@@ -67,7 +73,6 @@ describe('computeCircleHabit', () => {
     const days = [...marks('a', 'DD'), ...marks('b', 'DD')];
     const result = computeCircleHabit(late, days, 'FREQ=DAILY', TODAY);
     expect(result.streak).toBe(2);
-    expect(result.rows[2].days[1]).toBe('future');
   });
 
   it('ignores days the habit is not scheduled', () => {
@@ -76,14 +81,6 @@ describe('computeCircleHabit', () => {
     const result = computeCircleHabit(members('a', 'b'), days, 'FREQ=WEEKLY;BYDAY=MO,WE', TODAY);
     expect(result.week[1].state).toBe('off');
     expect(result.streak).toBe(2);
-  });
-
-  it('compares consistency on closed days, this week against last', () => {
-    const days = [...marks('a', 'DDDDDDDDD'), ...marks('b', 'D.D.D.D..')];
-    const result = computeCircleHabit(members('a', 'b'), days, 'FREQ=DAILY', TODAY);
-    // This week, Mon–Tue closed: a 2 + b 1 of 4. Last week (patterns start on Tuesday): a 6 + b 3 of 14.
-    expect(result.thisWeek).toBe(75);
-    expect(result.lastWeek).toBe(64);
   });
 });
 
@@ -97,11 +94,21 @@ describe('todayTier', () => {
 });
 
 describe('ranking', () => {
+  it('this week only counts from Monday', () => {
+    // Wednesday: Mon and Tue closed. b did both, a only Tuesday.
+    const days = [...marks('a', '.D.'), ...marks('b', 'DD.')];
+    const { week } = computeCircleHabit(members('a', 'b'), days, 'FREQ=DAILY', TODAY).ranking;
+    expect(week.map((r) => [r.userId, r.percent])).toEqual([
+      ['b', 100],
+      ['a', 50],
+    ]);
+  });
+
   it('orders people by their consistency, counting today only once done', () => {
     const days = [...marks('a', 'DDD.'), ...marks('b', 'DDDD'), ...marks('c', 'D.S.')];
     // Everyone joined three days ago.
     const joined = ['a', 'b', 'c'].map((user_id) => ({ user_id, joined_on: day(3) }));
-    const { ranking } = computeCircleHabit(joined, days, 'FREQ=DAILY', TODAY);
+    const ranking = computeCircleHabit(joined, days, 'FREQ=DAILY', TODAY).ranking.month;
     expect(ranking.map((r) => r.userId)).toEqual(['b', 'a', 'c']);
     expect(ranking[0]).toMatchObject({ percent: 100, doneToday: true });
     // a: 3 of 3 closed days, today not done yet (not counted). c: 1 of 2, the rest left out.

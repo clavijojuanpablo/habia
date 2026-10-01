@@ -1,5 +1,7 @@
+import { router } from 'expo-router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
@@ -8,7 +10,7 @@ import { useSession } from '@/features/auth/session-provider';
 import { useTheme } from '@/hooks/use-theme';
 
 import { SocialError, useCircleHabitProgress, useJoinCircleHabit, type CircleHabit, type SocialProfile } from '../api';
-import { computeCircleHabit, RANKING_DAYS, todayTier } from '../circle-habit-streak';
+import { computeCircleHabit, todayTier, type RankingPeriod } from '../circle-habit-streak';
 import { ConsistencyRanking } from './consistency-ranking';
 import { SocialAvatar } from './social-avatar';
 import { SocialCard } from './social-card';
@@ -33,6 +35,7 @@ export function CircleHabitCard({
   const me = session?.user.id ?? '';
   const progress = useCircleHabitProgress(habit.id, today);
   const join = useJoinCircleHabit();
+  const [period, setPeriod] = useState<RankingPeriod>('month');
 
   if (!progress.data) {
     return (
@@ -51,7 +54,8 @@ export function CircleHabitCard({
   const nameOf = (id: string) =>
     id === me ? t('social.circle.you') : (profiles[id]?.display_name ?? t('social.circle.hidden'));
   const colorOf = (id: string) => profiles[id]?.color ?? theme.primary;
-  const trend = group.thisWeek === null || group.lastWeek === null ? null : group.thisWeek - group.lastWeek;
+  // Anyone else opens their profile, where you can add them as a friend.
+  const openPerson = (id: string) => router.push({ pathname: '/friend/[id]', params: { id } });
   const joinError = join.error instanceof SocialError ? join.error.code : join.error ? 'generic' : null;
 
   const { done, needed, active, state } = group.today;
@@ -122,10 +126,16 @@ export function CircleHabitCard({
           )}
           <View style={styles.faces}>
             {/* Who already did it first, so the lit faces read together. */}
-            {[...group.ranking]
+            {[...group.ranking.all]
               .sort((x, y) => Number(y.doneToday) - Number(x.doneToday))
               .map((r) => (
-                <View key={r.userId} style={styles.face}>
+                <Pressable
+                  key={r.userId}
+                  disabled={r.userId === me}
+                  onPress={() => openPerson(r.userId)}
+                  accessibilityRole="button"
+                  accessibilityLabel={nameOf(r.userId)}
+                  style={styles.face}>
                   <View style={!r.doneToday && styles.dim}>
                     <SocialAvatar color={colorOf(r.userId)} size={44} />
                   </View>
@@ -138,7 +148,7 @@ export function CircleHabitCard({
                   <ThemedText type="caption" numberOfLines={1} style={styles.faceName}>
                     {nameOf(r.userId)}
                   </ThemedText>
-                </View>
+                </Pressable>
               ))}
           </View>
         </View>
@@ -147,9 +157,29 @@ export function CircleHabitCard({
       {/* Consistency ranking */}
       {members.length > 0 && (
         <>
-          <ThemedText type="smallBold">{t('social.circleHabit.rankingTitle', { count: RANKING_DAYS })}</ThemedText>
+          <View style={styles.rankingHeader}>
+            <ThemedText type="smallBold" style={styles.flex}>
+              {t('social.circleHabit.rankingTitle')}
+            </ThemedText>
+          </View>
+          <View style={[styles.periods, { backgroundColor: theme.background }]} accessibilityRole="tablist">
+            {(['week', 'month', 'all'] as const).map((p) => (
+              <Pressable
+                key={p}
+                onPress={() => setPeriod(p)}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: period === p }}
+                style={[styles.period, period === p && { backgroundColor: theme.backgroundElement }]}>
+                <ThemedText type="caption" style={{ color: period === p ? theme.text : theme.textSecondary }}>
+                  {t(`social.circleHabit.periods.${p}`)}
+                </ThemedText>
+              </Pressable>
+            ))}
+          </View>
           <ConsistencyRanking
-            rows={group.ranking.map((r) => ({
+            key={period}
+            onPress={(id) => id !== me && openPerson(id)}
+            rows={group.ranking[period].map((r) => ({
               userId: r.userId,
               name: nameOf(r.userId),
               color: colorOf(r.userId),
@@ -157,19 +187,6 @@ export function CircleHabitCard({
             }))}
           />
         </>
-      )}
-
-      {group.thisWeek !== null && (
-        <View style={[styles.consistency, { backgroundColor: theme.background }]}>
-          <ThemedText type="small" style={styles.flex}>
-            {t('social.circleHabit.consistency', { percent: group.thisWeek })}
-          </ThemedText>
-          {trend !== null && trend !== 0 && (
-            <ThemedText type="smallBold" style={{ color: trend > 0 ? theme.primary : theme.textSecondary }}>
-              {trend > 0 ? '↑' : '↓'} {t('social.circleHabit.vsLastWeek', { percent: group.lastWeek })}
-            </ThemedText>
-          )}
-        </View>
       )}
 
       {!joined && (
@@ -224,11 +241,7 @@ const styles = StyleSheet.create({
   },
   checkText: { fontSize: 12, lineHeight: 14, fontFamily: FontFamily.black },
   faceName: { textAlign: 'center', alignSelf: 'stretch' },
-  consistency: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.two,
-    padding: Spacing.two,
-    borderRadius: Radius.md,
-  },
+  rankingHeader: { flexDirection: 'row', alignItems: 'center' },
+  periods: { flexDirection: 'row', padding: Spacing.half, borderRadius: Radius.pill },
+  period: { flex: 1, alignItems: 'center', paddingVertical: Spacing.one, borderRadius: Radius.pill },
 });

@@ -5,15 +5,15 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { Radius, Spacing, type ThemeColor } from '@/constants/theme';
 import { useGarden } from '@/features/garden/use-garden';
+import { useCircles } from '@/features/social/api';
 import { useNow, useTodayRange } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
 
 import { useStreak } from '../use-streak';
 
-export const STAGE_EMOJI = ['🌰', '🌱', '🌿', '🌳', '🍎'];
-
 /**
- * Duolingo-style status bar: streak, votes and tree stage at a glance.
+ * Duolingo-style status bar: your streak, your circles (the way into them) and your seeds (the way
+ * into the garden, where the tree lives).
  * The flame stays grey until you complete a habit today.
  */
 export function TopBar() {
@@ -22,6 +22,8 @@ export function TopBar() {
   const { today } = useTodayRange(now);
   const { streak } = useStreak(today);
   const { summary } = useGarden(today);
+  const { data: circles } = useCircles();
+  const circleCount = circles?.circles.length ?? 0;
 
   return (
     <View style={styles.bar}>
@@ -34,18 +36,18 @@ export function TopBar() {
         onPress={() => router.push('/streak')}
       />
       <Counter
+        emoji="🫂"
+        value={circleCount > 0 ? circleCount : null}
+        text="+"
+        color="lavender"
+        label={circleCount > 0 ? t('topBar.circles', { count: circleCount }) : t('topBar.noCircles')}
+        onPress={() => router.navigate('/profile')}
+      />
+      <Counter
         emoji="🌱"
         value={summary.votes}
         color="primary"
         label={t('topBar.votes', { count: summary.votes })}
-        onPress={() => router.push('/garden')}
-      />
-      <Counter
-        emoji={STAGE_EMOJI[summary.stage]}
-        value={null}
-        text={t(`garden.stageShort.${summary.stage}`)}
-        color="lavender"
-        label={t(`garden.stage.${summary.stage}`)}
         onPress={() => router.push('/garden')}
       />
     </View>

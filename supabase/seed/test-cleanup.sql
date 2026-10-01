@@ -1,5 +1,5 @@
 -- Removes all TEST data created by test-circle.sql. Deleting the fake users cascades to their
--- profiles, habits, logs, cheers and memberships; the test circle goes with it. A habit the owner
+-- profiles, habits, logs, cheers, friendships and memberships; the test circle goes with it. A habit the owner
 -- joined from the test circle stays in their list, unlinked (delete it from the app if unwanted).
 --   npx supabase db query --linked -f supabase/seed/test-cleanup.sql
 delete from public.circles
