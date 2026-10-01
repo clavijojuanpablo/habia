@@ -40,7 +40,7 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - ✅ Identities: CRUD in Perfil, assign habits, identities are tree branches with per-habit leaf colors
 - ✅ DB trigger: anchors/identities must belong to the same user; no stack cycles
 - ✅ 2-minute rule and implementation intentions (since Phase 1)
-- ⏳ AI coach Edge Function (Claude)
+- ✅ AI coach Edge Function `weekly-review` (Claude, opt-in, 2026-10-01) · ⏳ capped chat · ⏳ push-dispatcher
 
 ## Block 1: Ready for real users 🚧 (next)
 - ✅ Merged into `main`, pushed to GitHub, CI (typecheck, lint, tests) on push and PRs
@@ -80,7 +80,7 @@ Testers first (TestFlight with the core), then every Pro feature **before the pu
 5. **Monetization** — Pro + cosmetics, before launch
 
 ## Phase 3B / Pro value ⏳ (next after TestFlight)
-- AI coach (hybrid: ✅ rules free — card on Today (v1 2026-09-30; 1.0.2 scored detectors, tip per day band, "¿Por qué?") · ⏳ 1.0.6 co-occurrence, seeds per identity, 👍/👎, Monday mini-review · ⏳ Claude weekly review via Batch · ⏳ capped Pro chat)
+- AI coach (hybrid: ✅ rules free — card on Today (v1 2026-09-30; 1.0.2 scored detectors, tip per day band, "¿Por qué?") · ⏳ 1.0.6 co-occurrence, seeds per identity, 👍/👎, Monday mini-review · ✅ Claude weekly review (on first open of the week; Batch API once a cron writes them) · ⏳ capped Pro chat)
 - Guided programs ("Caminos", 3 initial) + micro-lessons
 
 ## Character ⏳

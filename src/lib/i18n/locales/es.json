@@ -574,5 +574,19 @@
     },
     "notNow": "Ahora no",
     "thanks": "¡Gracias! Así sabemos si habia te sirve de verdad."
+  },
+  "weeklyReview": {
+    "label": "Tu semana, por Brote",
+    "win": "Lo que sembraste",
+    "pattern": "Lo que noté",
+    "suggestion": "Para esta semana",
+    "done": "Gracias, Brote",
+    "writing": "Brote está escribiendo tu semana…",
+    "offerTitle": "¿Quieres que Brote te escriba una revisión cada semana?",
+    "offerBody": "Al empezar cada semana, un resumen corto de tu semana: lo que sembraste, un patrón y un paso pequeño para la siguiente. Lo escribe la IA Claude, de Anthropic: para eso le enviamos los nombres de tus hábitos, sus identidades y lugares, cuántas veces los hiciste y tu nombre visible; nunca tu correo. Puedes desactivarlo en Perfil.",
+    "accept": "Sí, actívala",
+    "decline": "No, gracias",
+    "toggle": "Revisión semanal con IA",
+    "toggleHint": "Al empezar cada semana, Brote resume la anterior. Usa Claude (Anthropic): enviamos los nombres de tus hábitos, sus identidades y lugares, cuántas veces los hiciste y tu nombre visible; nunca tu correo."
   }
 }

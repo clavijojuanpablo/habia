@@ -53,7 +53,14 @@ step aside, and every tip has a "¿Por qué?" line with the data and the source.
 | rotating science fact (fallback) | — |
 
 Every detector stays silent below a minimum sample (e.g. at least 4 of a weekday, 5 timed
-check-ins). Claude (weekly review, chat) builds on top later.
+check-ins).
+
+## AI weekly review (Claude, opt-in)
+Habit tracking and feedback are a core lever ("make it satisfying"); a weekly reflection turns raw
+ticks into one win, one pattern and one small next step. The numbers are computed in code
+(`weekly-summary.ts`); Claude only words them, under rules that mirror this document: seeds /
+fruit (~66, range 18–254, never "21 days"), never miss twice, patterns as observations, and the
+suggestion must use a mechanism above (2-minute version, a place for the habit, stacking).
 
 ## Ethics guardrails
 - No variable-ratio "slot machine" rewards meant to create compulsion.

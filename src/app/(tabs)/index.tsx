@@ -14,7 +14,9 @@ import { BandEmoji, MaxContentWidth, Radius, Shadow, Spacing } from '@/constants
 import { DayCompleteOverlay } from '@/features/celebration/day-complete';
 import type { LogStatus } from '@/features/checkins/api';
 import { CoachCard } from '@/features/coach/components/coach-card';
+import { WeeklyReviewCard, WeeklyReviewOffer, WeeklyReviewWriting } from '@/features/coach/components/weekly-review-card';
 import { useCoachTip } from '@/features/coach/use-coach-tip';
+import { useWeeklyReviewSlot } from '@/features/coach/use-weekly-review-slot';
 import { NorthStarCard } from '@/features/north-star/components/north-star-card';
 import { useNorthStar } from '@/features/north-star/use-north-star';
 import { Brote } from '@/features/mascot/brote';
@@ -46,8 +48,8 @@ export default function TodayScreen() {
   const now = useNow();
   const { today, tomorrow } = useTodayRange(now);
   const { items, bands, hasHabits, isLoading, error, toggleItem } = useSchedule(today, tomorrow);
-  // One prompt above the list at a time: catching up yesterday (it protects today's streak), then the
-  // fortnightly north-star question, then the coach.
+  // One prompt above the list at a time: catching up yesterday (it protects today's streak), then
+  // Brote's weekly review, then the fortnightly north-star question, then the coach tip.
   // The coach waits until yesterday is settled, so it never comments on a miss that was only unlogged.
   const yesterdayDate = useMemo(() => addDays(today, -1), [today]);
   const yesterday = useSchedule(yesterdayDate, today);
@@ -55,8 +57,11 @@ export default function TodayScreen() {
   const todayKey = formatLocalDate(today);
   const catchUpPending =
     catchUpClosedOn !== todayKey && yesterday.items.some((item) => !isDone(item) && !isSkipped(item));
+  const weeklyReview = useWeeklyReviewSlot(today, !yesterday.isLoading && !catchUpPending);
+  const showWeeklyReview = !yesterday.isLoading && !catchUpPending && hasHabits && weeklyReview.slot !== null;
   const northStar = useNorthStar(today);
-  const showNorthStar = !yesterday.isLoading && !catchUpPending && hasHabits && northStar.visible;
+  const showNorthStar =
+    !yesterday.isLoading && !catchUpPending && !showWeeklyReview && hasHabits && northStar.visible;
   const closeCatchUp = () => {
     storage.setItem(CATCH_UP_CLOSED_KEY, todayKey);
     setCatchUpClosedOn(todayKey);
@@ -67,7 +72,7 @@ export default function TodayScreen() {
     bandConfig: bands,
     items,
     itemsLoading: isLoading,
-    enabled: !yesterday.isLoading && !catchUpPending && !showNorthStar,
+    enabled: !yesterday.isLoading && !catchUpPending && !showWeeklyReview && !showNorthStar,
   });
 
   // Keep only the key: the item itself is read fresh from `items` on every render.
@@ -206,6 +211,16 @@ export default function TodayScreen() {
             </View>
           )}
 
+          {showWeeklyReview && weeklyReview.slot?.kind === 'review' && (
+            <WeeklyReviewCard
+              review={weeklyReview.slot.review}
+              onDone={() => weeklyReview.slot?.kind === 'review' && weeklyReview.markSeen(weeklyReview.slot.review.id)}
+            />
+          )}
+          {showWeeklyReview && weeklyReview.slot?.kind === 'writing' && <WeeklyReviewWriting />}
+          {showWeeklyReview && weeklyReview.slot?.kind === 'offer' && (
+            <WeeklyReviewOffer onAccept={weeklyReview.accept} onDecline={weeklyReview.decline} />
+          )}
           {showNorthStar && (
             <NorthStarCard
               thanks={northStar.thanks}

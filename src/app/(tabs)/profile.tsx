@@ -12,6 +12,8 @@ import { ThemedView } from '@/components/themed-view';
 import { APP_RELEASE } from '@/constants/release';
 import { FontFamily, MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
 import { AppearancePicker, LanguagePicker } from '@/features/appearance/components/appearance-picker';
+import { AiReviewToggle } from '@/features/coach/components/ai-review-toggle';
+import { useWeeklyReviewAvailable } from '@/features/coach/weekly-review-api';
 import { DangerZone } from '@/features/auth/components/danger-zone';
 import { useSession } from '@/features/auth/session-provider';
 import { IdentitiesSection } from '@/features/identities/components/identities-section';
@@ -26,6 +28,7 @@ export default function ProfileScreen() {
   const theme = useTheme();
   const { session } = useSession();
   const { data: profile } = useProfile();
+  const { data: aiReviewAvailable } = useWeeklyReviewAvailable();
   const name = profile?.display_name ?? t('profile.title');
 
   return (
@@ -69,6 +72,12 @@ export default function ProfileScreen() {
           <Card>
             <AnalyticsToggle />
           </Card>
+
+          {aiReviewAvailable && (
+            <Card>
+              <AiReviewToggle />
+            </Card>
+          )}
 
           <Card>
             <ThemedText type="heading">{t('legal.title')}</ThemedText>

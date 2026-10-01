@@ -36,7 +36,7 @@ npx supabase db push         # apply migrations to the linked cloud project
 npx supabase gen types typescript --linked --schema public > src/lib/supabase/database.types.ts
 ```
 
-The project is linked to the Supabase cloud project "Habits Project" (no local Docker stack). Auth is email + password; email links are the Universal Link `https://habia.app/auth-callback` (the app verifies `token_hash`, fallback page in `web/`); auth settings live in `supabase/config.toml` and ship with `npx supabase config push`. Edge Functions are Deno and excluded from the app's tsconfig/eslint; deploy with `npx supabase functions deploy <name>`.
+The project is linked to the Supabase cloud project "Habits Project" (no local Docker stack). Auth is email + password; email links are the Universal Link `https://habia.app/auth-callback` (the app verifies `token_hash`, fallback page in `web/`); auth settings live in `supabase/config.toml` and ship with `npx supabase config push`. Edge Functions are Deno and excluded from the app's tsconfig/eslint; deploy with `npx supabase functions deploy <name>`. They reuse the app's pure modules through `supabase/functions/_shared/`: edit the source in `src/`, then run `node scripts/sync-shared.js` (a test fails on drift). Typecheck a function with `npx -y deno check --node-modules-dir=none supabase/functions/<name>/index.ts`.
 
 ## Project structure
 ```

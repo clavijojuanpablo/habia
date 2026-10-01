@@ -101,10 +101,21 @@ open the web fallback there; its "Open habia" button still works.
 
 ## Next steps
 
-**Start here — ship 1.0.5 and open the beta; let testers' data steer the coach.**
+**Start here — turn on the AI weekly review (owner, 3 steps), ship 1.0.6, open the beta.**
 
-1. **Ship 1.0.5 by OTA** (if not done): `npx eas-cli@latest update …` (recipe in Technical
-   state), reopen the TestFlight app twice; Profile shows `habia 1.0.5 · build 3 · …`. Since
+0. **Turn on the AI weekly review** (built and deployed 2026-10-01, idle until a key exists):
+   1. Create an API key at console.anthropic.com (set a monthly spend limit there).
+   2. `npx supabase secrets set ANTHROPIC_API_KEY=<key>` (never in the repo or `EXPO_PUBLIC_*`).
+      Optional: `COACH_MODEL` (default `claude-sonnet-5`, as CLAUDE.md says; Sonnet 5.5,
+      `claude-sonnet-5-5`, costs the same).
+   3. Ship 1.0.6 by OTA. In the app: Profile → "Revisión semanal con IA" on (or accept Brote's
+      offer on Today after a week of use). Opening Today in a new week writes last week's review.
+   Check it: `curl -X POST <SUPABASE_URL>/functions/v1/weekly-review -H "apikey: <publishable>" -H "Authorization: Bearer <publishable>" -d '{"check":true}'`
+   must answer `{"available":true}`.
+
+1. **Ship 1.0.6 by OTA** (if not done): `npx eas-cli@latest update …` (recipe in Technical
+   state), reopen the TestFlight app twice; Profile shows `habia 1.0.6 · build 3 · …`. 1.0.6 =
+   the AI weekly review (below) + the server-side "today". Since
    1.0.1: coach 1.0.2 (scored detectors, "¿Por qué?"); 1.0.3 simpler habit form ("Tentación
    asociada" removed, column kept; "Intención de implementación" became "¿Dónde?"; reminders read
    "📍 place"); 1.0.4 calmer Today (**one prompt above the list**: yesterday's catch-up, closable
@@ -114,16 +125,23 @@ open the web fallback there; its "Open habia" button still works.
 2. **External testers:** waiting for Beta App Review of the "Beta pública" group (demo account in
    App Store Connect; never delete it). When approved: enable the public link with a tester limit.
    The App Privacy questionnaire is only needed for the App Store, not TestFlight.
-3. **Server-side "today"** (`profiles.timezone` is synced but nothing reads it): the foundation for
-   the Claude weekly review and server pushes.
-4. **Claude weekly review (Pro):** Edge Function + Batch API; then capped chat.
-5. **Coach 1.0.6, shaped by tester data** (PostHog: `coach_tip_*` events per rule): habits that
+3. **After the weekly review proves useful:** capped chat with Brote (Pro), server pushes
+   (push-dispatcher reusing `_shared/` and `local_today`), and moving reviews to the Batch API
+   (50 % cheaper) once a cron writes them for everyone instead of on first open.
+4. **Coach 1.0.7, shaped by tester data** (PostHog: `coach_tip_*` events per rule): habits that
    pull each other (co-occurrence, worded as observation), seeds per identity, 👍/👎 per tip,
    rule-based Monday mini-review.
-6. Then, in this order (ROADMAP → "Order after Block 2"): **your character** →
+5. Then, in this order (ROADMAP → "Order after Block 2"): **your character** →
    **friends & circles** → opt-in **leagues** → **monetization**, all before the public launch.
    Start the "can a Colombian individual use Stripe?" question early (calendar weeks, not code),
    and the legal review (jurisdiction, EU opt-in for analytics).
+
+**AI weekly review (1.0.6):** opt-in (`profiles.ai_coach_enabled`, default off; Profile switch or a
+one-time offer on Today). Edge Function `weekly-review` computes last finished week in the user's
+zone with the app's own engine (`supabase/functions/_shared/`, synced by `node scripts/sync-shared.js`;
+a test fails on drift), Claude only writes the words (title / win / pattern / suggestion, structured
+output), stored in `coach_messages` (RLS: owner reads, marks seen; only the service role inserts).
+Today's slot: catch-up > weekly review > north-star > coach tip.
 
 **North-star question:** "¿Sientes que habia te está ayudando a mejorar tu día a día?" (1–5 faces)
 in the Today prompt slot, after 7 days from onboarding, then every 14 days ("Ahora no" = 3 days);
@@ -160,8 +178,15 @@ stored per account but per device (`habia.northStar.<userId>`): a user on iPhone
 - The actions sheet's scrim slides up with the sheet (`animationType="slide"`); cosmetic.
 - `guard-paths` hook covers Write/Edit only, not Bash, and its `.env` rule also blocks the
   committed template `.env.example`.
-- `profiles.timezone` is synced but nothing reads it yet: "today" still comes from the device
-  clock. Needed once the server sends pushes (push-dispatcher, coach).
+- The app's "today" still comes from the device clock; the server uses `profiles.timezone`
+  (`_shared/zoned.ts`, SQL `public.local_today`). They agree while the app keeps the timezone
+  in sync (`use-timezone-sync.ts`).
+- AI weekly review: generated on the first Today visit of a new week (no cron yet), one per user and
+  week; not yet tested end to end against Claude (no key during the build). Free for now (Pro later).
+  If a review fails, the app retries on the next launch (a persistent refusal would retry every
+  launch). `public.local_today` (SQL) has no caller yet: it is for the future push-dispatcher cron.
+  If the device zone differs from `profiles.timezone` (travel), app and server may disagree on
+  "last week" until the zone syncs.
 - Sign in with Apple / Google not implemented. Not required today: App Store guideline 4.8 asks for
   Sign in with Apple only when the app offers a third-party login (Google, Facebook…), so adding
   Google means adding Apple too.

@@ -574,5 +574,19 @@
     },
     "notNow": "Not now",
     "thanks": "Thank you! This is how we know whether habia really helps."
+  },
+  "weeklyReview": {
+    "label": "Your week, by Brote",
+    "win": "What you planted",
+    "pattern": "What I noticed",
+    "suggestion": "For this week",
+    "done": "Thanks, Brote",
+    "writing": "Brote is writing up your week…",
+    "offerTitle": "Want Brote to write you a review every week?",
+    "offerBody": "At the start of each week, a short summary of your week: what you planted, one pattern and one small step for the next. It is written by Claude, Anthropic’s AI: to do that we send it your habit names, their identities and places, how many times you did them and your display name; never your email. You can turn it off in Profile.",
+    "accept": "Yes, turn it on",
+    "decline": "No, thanks",
+    "toggle": "AI weekly review",
+    "toggleHint": "At the start of each week, Brote sums up the last one. It uses Claude (Anthropic): we send your habit names, their identities and places, how many times you did them and your display name; never your email."
   }
 }

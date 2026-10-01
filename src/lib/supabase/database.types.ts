@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      coach_messages: {
+        Row: {
+          content: Json
+          created_at: string
+          id: string
+          kind: string
+          model: string
+          period_start: string
+          seen_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content: Json
+          created_at?: string
+          id?: string
+          kind: string
+          model: string
+          period_start: string
+          seen_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          id?: string
+          kind?: string
+          model?: string
+          period_start?: string
+          seen_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       garden_state: {
         Row: {
           health: number
@@ -199,6 +232,7 @@ export type Database = {
       profiles: {
         Row: {
           afternoon_starts_at: number
+          ai_coach_enabled: boolean
           created_at: string
           display_name: string | null
           id: string
@@ -214,6 +248,7 @@ export type Database = {
         }
         Insert: {
           afternoon_starts_at?: number
+          ai_coach_enabled?: boolean
           created_at?: string
           display_name?: string | null
           id: string
@@ -229,6 +264,7 @@ export type Database = {
         }
         Update: {
           afternoon_starts_at?: number
+          ai_coach_enabled?: boolean
           created_at?: string
           display_name?: string | null
           id?: string
@@ -249,7 +285,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      local_today: { Args: { p_timezone: string }; Returns: string }
     }
     Enums: {
       habit_cue_type: "time" | "after_habit" | "context"

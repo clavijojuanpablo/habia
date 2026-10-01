@@ -25,7 +25,11 @@ export type AnalyticsEvent =
   | 'coach_why_opened'
   | 'coach_tip_expanded'
   | 'north_star_answered'
-  | 'north_star_snoozed';
+  | 'north_star_snoozed'
+  | 'ai_review_enabled'
+  | 'ai_review_disabled'
+  | 'ai_review_declined'
+  | 'ai_review_read';
 
 const OPT_OUT_KEY = 'habia.analytics.optOut';
 const apiKey = process.env.EXPO_PUBLIC_POSTHOG_KEY;
