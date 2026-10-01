@@ -162,7 +162,10 @@
     "nightEndsAt": "Your day ends at {{time}}",
     "timezone": "🌍 {{zone}}",
     "analytics": "Help improve habia",
-    "analyticsHint": "Share usage data (which screens you use, how many habits you check) tied to an internal code for your account. Never your habit names or email."
+    "analyticsHint": "Share usage data (which screens you use, how many habits you check) tied to an internal code for your account. Never your habit names or email.",
+    "version": "habia {{version}} ({{build}}) · {{update}}",
+    "updateEmbedded": "built-in",
+    "updateDev": "development"
   },
   "reminders": {
     "channel": "Habit reminders",

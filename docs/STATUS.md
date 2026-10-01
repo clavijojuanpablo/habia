@@ -24,6 +24,9 @@ TestFlight** (Block 2 closed 2026-09-30):
   Universal Links).
 - **EAS Update:** `expo-updates`, `runtimeVersion` policy `fingerprint` (an update never reaches
   an incompatible binary), channels `development` / `preview` / `production` per build profile.
+  **Proven on 2026-09-30:** the first OTA update reached build 3 on the iPhone (downloads on one
+  launch, applies on the next). Profile now ends with `habia 1.0.0 (3) · <update id>` (or
+  "de fábrica" for the JS embedded in the binary), the way to tell which JS a phone runs.
 - **EAS env `production`:** the five `EXPO_PUBLIC_*` plus `SENTRY_AUTH_TOKEN` (secret). Production
   builds upload JS source maps and dSYMs to Sentry `clavolab/habia`.
 - Still here from before: Sentry + PostHog, habia.app (Astro on Vercel) with legal pages, branded
@@ -76,25 +79,25 @@ open the web fallback there; its "Open habia" button still works.
 - Verification baseline: **89 tests / 12 suites green**, typecheck clean, lint clean, site builds
   7 pages. Typecheck ~8 s, tests ~8 s, lint ~25 s on this machine.
 - CI (typecheck + lint + tests) runs on push and PRs to `main`. Repo: `clavijojuanpablo/habia`.
-- Shipping: JS-only change → `eas update --channel production --environment production`;
+- Shipping: JS-only change → `eas update --channel production --environment production --platform ios --non-interactive --message "…"`
+  (~1 min; drop `--platform ios` once Android testers exist; without `--non-interactive` it once
+  sat for 20+ min on a silent prompt);
   native change (fingerprint moves) → `eas build --profile production --platform ios` →
-  `eas submit --platform ios --latest`. Estimate for the five post-TestFlight blocks
+  `eas submit --platform ios --latest`. EAS CLI is not installed globally: run every `eas …`
+  here as `npx eas-cli@latest …` (bare `eas` fails in PowerShell). Estimate for the five post-TestFlight blocks
   (2026-09-30): ~145–245 h of code plus character art and admin; re-estimate after the AI coach.
 
 ## Next steps
 
 **Start here — finish Block 2, then the AI coach.**
 
-1. **Rotate the Sentry token** (owner): it was pasted in the chat on 2026-09-30. New
-   Organization Token → delete the old one → check it with
-   `npx @sentry/cli@latest info --auth-token (Get-Clipboard)` → store it with
-   `eas env:set --name SENTRY_AUTH_TOKEN --environment production --visibility secret --value (Get-Clipboard) --non-interactive`.
-   Also delete the test bundle (`test.js`) in Sentry → Projects → habia → Source Maps.
-2. **First OTA update:** a tiny JS change → `eas update --channel production` → reopen the
-   TestFlight app twice and confirm it arrived. Proves the pipeline before an urgent fix needs it.
-3. **External testers:** public TestFlight link (Apple beta review), App Store Connect privacy
+1. **Finish the Sentry token rotation** (owner): the new token is already stored in EAS
+   (`env:set` on 2026-09-30). Still to confirm: the **old** token was deleted in Sentry, and the
+   test bundle (`test.js`) was removed in Sentry → Projects → habia → Source Maps. The next
+   production build proves the new token (source map upload).
+2. **External testers:** public TestFlight link (Apple beta review), App Store Connect privacy
    questionnaire (privacy URL `https://habia.app/privacidad`).
-4. Then, in this order (ROADMAP → "Order after Block 2"): **AI coach** → **your character** →
+3. Then, in this order (ROADMAP → "Order after Block 2"): **AI coach** → **your character** →
    **friends & circles** → opt-in **leagues** → **monetization**, all before the public launch.
    Plus the north-star self-report (PostHog survey). Start the "can a Colombian individual use
    Stripe?" question early: it takes calendar weeks, not code.

@@ -2,7 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import * as Application from 'expo-application';
 import { router } from 'expo-router';
+import * as Updates from 'expo-updates';
 
 import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
@@ -80,9 +82,29 @@ export default function ProfileScreen() {
           <Button label={t('auth.signOut')} variant="secondary" onPress={() => supabase.auth.signOut()} />
 
           <DangerZone />
+
+          <AppVersion />
         </ScrollView>
       </SafeAreaView>
     </ThemedView>
+  );
+}
+
+// Which binary and which OTA update is running: the only way to tell on a phone that an update arrived.
+function AppVersion() {
+  const { t } = useTranslation();
+  const version = Application.nativeApplicationVersion;
+  if (!version) return null;
+
+  const update = !Updates.updateId
+    ? t('profile.updateDev')
+    : Updates.isEmbeddedLaunch
+      ? t('profile.updateEmbedded')
+      : Updates.updateId.slice(0, 8);
+  return (
+    <ThemedText type="small" themeColor="textSecondary" style={styles.version}>
+      {t('profile.version', { version, build: Application.nativeBuildVersion, update })}
+    </ThemedText>
   );
 }
 
@@ -110,5 +132,6 @@ const styles = StyleSheet.create({
   },
   avatar: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center' },
   avatarText: { fontSize: 28, lineHeight: 34, fontFamily: FontFamily.black },
+  version: { textAlign: 'center' },
   card: { borderRadius: Radius.lg, padding: Spacing.three, gap: Spacing.two, boxShadow: Shadow.card },
 });

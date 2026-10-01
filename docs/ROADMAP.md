@@ -63,7 +63,7 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - ✅ EAS project (`eas.json`: development / preview / production) + Android development build (APK)
 - ✅ Apple Developer account (approved 2026-09-29) + iOS development build installed on the iPhone (EAS credentials, APNs key)
 - ✅ TestFlight (2026-09-30): production build 1.0.0 (3) with EAS env vars (`production`), Sentry source maps + dSYMs, Universal Links; submitted (ASC app 6817880518), installed through internal testing and tested on the iPhone
-- ✅ EAS Update: `expo-updates`, `runtimeVersion` policy `fingerprint`, one channel per build profile · ⏳ first OTA update to `production` · ⏳ external testers (public TestFlight link)
+- ✅ EAS Update: `expo-updates`, `runtimeVersion` policy `fingerprint`, one channel per build profile · ✅ first OTA update to `production` (2026-09-30) · ⏳ external testers (public TestFlight link)
 - ⏳ Play Internal Testing (no Android device yet; new personal accounts need a closed-testing period before production)
 - ✅ Sentry (crashes, off in development) + PostHog (closed event list, internal user id, opt-out in Profile) · ⏳ north-star self-report question (PostHog survey)
 - ✅ Branded auth emails (es/en) sent from hola@habia.app through Resend SMTP
