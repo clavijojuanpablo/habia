@@ -222,7 +222,6 @@
     "weekdaysTitle": "Tus días de la semana",
     "weekdaysInsight": "Tu día fuerte: {{best}} ({{bestPercent}} %). El que más cuesta: {{hardest}} ({{hardestPercent}} %). Últimas 8 semanas.",
     "weekdaysEven": "Tu constancia es pareja toda la semana: ningún día se queda atrás. Últimas 8 semanas.",
-    "highlightsTitle": "Tus hábitos destacados",
     "highlights": {
       "steady": "Tu hábito más firme",
       "steadyValue": "Lo cumpliste el {{percent}} % de las veces en los últimos 30 días.",
@@ -234,7 +233,8 @@
       "care": "Necesita un empujón",
       "careValue": "Lo cumpliste el {{percent}} % de las veces en 30 días. Un paso más pequeño ayuda.",
       "careEasier": "Darle una versión de 2 minutos",
-      "careOpen": "Revisar el hábito"
+      "careOpen": "Revisar el hábito",
+      "seeAnalysis": "Ver análisis"
     },
     "reviewsTitle": "Revisiones de Brote",
     "reviewsEarlier": "Semanas anteriores",
@@ -245,8 +245,7 @@
     "streakCaption_other": "Récord: {{count}} días",
     "ofTotal": "de {{total}}",
     "consistency": "Constancia",
-    "consistencyCaption": "últimos 30 días",
-    "highlightsSubtitle": "Lo que tus datos dicen de tus hábitos."
+    "consistencyCaption": "últimos 30 días"
   },
   "identity": {
     "new": "Nueva identidad",

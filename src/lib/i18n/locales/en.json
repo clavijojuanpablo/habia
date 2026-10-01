@@ -222,7 +222,6 @@
     "weekdaysTitle": "Your days of the week",
     "weekdaysInsight": "Your strong day: {{best}} ({{bestPercent}}%). The toughest: {{hardest}} ({{hardestPercent}}%). Last 8 weeks.",
     "weekdaysEven": "Your consistency is even all week: no day falls behind. Last 8 weeks.",
-    "highlightsTitle": "Your standout habits",
     "highlights": {
       "steady": "Your steadiest habit",
       "steadyValue": "You did it {{percent}}% of the time over the last 30 days.",
@@ -234,7 +233,8 @@
       "care": "Could use a nudge",
       "careValue": "You did it {{percent}}% of the time over 30 days. A smaller step helps.",
       "careEasier": "Give it a 2-minute version",
-      "careOpen": "Review the habit"
+      "careOpen": "Review the habit",
+      "seeAnalysis": "See the analysis"
     },
     "reviewsTitle": "Brote’s reviews",
     "reviewsEarlier": "Earlier weeks",
@@ -245,8 +245,7 @@
     "streakCaption_other": "Record: {{count}} days",
     "ofTotal": "of {{total}}",
     "consistency": "Consistency",
-    "consistencyCaption": "last 30 days",
-    "highlightsSubtitle": "What your data says about your habits."
+    "consistencyCaption": "last 30 days"
   },
   "identity": {
     "new": "New identity",
