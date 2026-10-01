@@ -162,6 +162,12 @@ stored per account but per device (`habia.northStar.<userId>`): a user on iPhone
 
 ## Known debts
 
+- **The native fingerprint includes `.gitignore`** (and `eas.json`, `app.json`, assets, native
+  packages). Editing any of them moves the runtime version, and OTA updates stop reaching build 3:
+  on 2026-10-01 a one-line `.gitignore` change sent the first 1.0.6 update to runtime `847d838…`,
+  which no binary has. Before an OTA, `npx expo-updates fingerprint:generate --platform ios` must
+  print `f15932ef…` (build 3).
+
 - **Window limit (120 days):** the *current* app-wide streak is computed from the last 121 days,
   so it caps at 121 (the record is stored in `profiles.best_streak`; fruit uses all-time counts from
   the `habit_completion_counts` view). Also: the 1% chart tap position is off on web when the tap lands on a line.
