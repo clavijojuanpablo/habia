@@ -1,0 +1,72 @@
+---
+// Where friend and circle invite links land without the app (habia.app/add/<username> and
+// habia.app/join/<code>, rewritten here by vercel.json). With the app installed, iOS opens
+// them directly (AASA); the button covers taps that stay in the browser.
+import Brote from '../components/Brote.astro';
+import Layout from '../layouts/Layout.astro';
+import { copy } from '../i18n';
+
+const langs = ['es', 'en'] as const;
+---
+
+<Layout lang="es" title={copy.es.invite.title} noindex>
+  <section class="container invite">
+    <Brote size={96} />
+    {
+      langs.map((lang) => {
+        const t = copy[lang].invite;
+        return (
+          <div class="card" lang={lang}>
+            <h1>{t.title}</h1>
+            <p>{t.body}</p>
+            <a class="button" data-open-app href="habia://friends">
+              🌱 {t.open}
+            </a>
+            <p class="hint">{t.hint}</p>
+          </div>
+        );
+      })
+    }
+  </section>
+</Layout>
+
+<script>
+  // Only the two invite shapes are forwarded; anything else opens the app's Friends tab.
+  const match = window.location.pathname.match(/^\/(add\/[a-z0-9_]{3,20}|join\/[A-Za-z0-9]{8})$/);
+  const target = match ? match[1] : 'friends';
+  for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-open-app]')) {
+    link.href = `habia://${target}`;
+  }
+</script>
+
+<style>
+  .invite {
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding-top: 16px;
+    text-align: center;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 28px 24px;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  h1 {
+    font-size: clamp(26px, 5vw, 32px);
+  }
+
+  .hint {
+    color: var(--text-secondary);
+    font-size: 15px;
+  }
+</style>

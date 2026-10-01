@@ -65,8 +65,8 @@ Each user has a **customizable character** that is *them* growing: the identity 
 ## Cosmetics (Pro)
 Skins, accessories, pots and garden themes. **Cosmetic only, never pay-to-win**; no loot boxes, no fake scarcity ("only today!"). Some cosmetics are earned by milestones, so free users also customize.
 
-## Friends & circles (replaces "Couples")
-A couple is a circle of two, so the base is **friends and small circles**:
+## Friends & circles (replaces "Couples") — built 2026-10-01 (1.1.0)
+A couple is a circle of two, so the base is **friends and small circles**. Built: usernames, requests by exact @ or invite link, shared streaks, circles of up to 8 with a weekly grid and "days everyone planted" (no group streak: with 8 people it would always break), 5 preset cheers (no free text, nothing to moderate), block/report. Still open: pushes, intertwined trees for two, nudges beyond cheers.
 - Follow / friend requests; see a friend's character, tree, streak and consistency %. **Habit names stay private by default** (people track sensitive habits).
 - **Shared streaks:** grow when both complete their day; they follow "never miss twice" — one partner's single miss never breaks it (no guilt toward the other).
 - Cheers (reactions) and gentle nudges; intertwined trees for circles of two.

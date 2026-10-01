@@ -70,13 +70,17 @@ open the web fallback there; its "Open habia" button still works.
 | Marketing site habia.app + auth fallback page + AASA (Astro, Vercel, root dir `web`) | ✅ | `web/` |
 | iOS distribution: TestFlight internal + EAS Update | ✅ | `app.json`, `eas.json` |
 | Coach (rule-based): scored detectors, tip per day band, "¿Por qué?" | ✅ | `src/features/coach/` |
-| Claude coach (weekly review, chat), character, friends, leagues, paywall | ⏳ not started | — |
+| AI weekly review (Claude, opt-in) | ✅ | `supabase/functions/weekly-review/`, `src/features/coach/` |
+| Friends & circles (1.1.0): usernames, requests, shared streaks, circles ≤ 8, preset cheers, block/report, invite links | ✅ built, migration not applied | `src/features/social/`, `supabase/migrations/20261001180242_social.sql` |
+| Character (plant avatar) | 🎨 art in progress (owner), guide ready | `docs/CHARACTER-ART.md`, `art/character/` |
+| Chat with Brote, server pushes, leagues, paywall | ⏳ not started | — |
 
 ## Technical state
 
 - Expo SDK 57 (`expo ~57.0.26`, React Native 0.86.3), Expo Router, TypeScript strict. All SDK
   patch versions current (`npx expo install --check`), `expo-doctor` 21/21.
-- Supabase cloud project "Habits Project" (no local Docker). 6 migrations applied; RLS on every
+- Supabase cloud project "Habits Project" (no local Docker). 8 migrations applied (+ `social`
+  pending); RLS on every
   table. Auth `site_url`, redirect allow-list and email templates ship with
   `npx supabase config push`; SMTP and the email rate limit (30/h) live only in the dashboard.
 - Skia 2.6.2 + Reanimated 4.5.1 for the tree; `react-native-svg` for charts and the mascot.
@@ -84,8 +88,9 @@ open the web fallback there; its "Open habia" button still works.
 - `web/`: Astro 7 static site, excluded from the app's tsconfig, ESLint and Metro; pins its own
   tsconfig in `astro.config.mjs` (Vercel installs only `web/` dependencies). `vercel.json` serves
   the AASA as JSON. Apex `habia.app` is primary (`www` redirects to it).
-- Verification baseline: **89 tests / 12 suites green**, typecheck clean, lint clean, site builds
-  7 pages. Typecheck ~8 s, tests ~8 s, lint ~25 s on this machine.
+- Verification baseline: **161 tests / 22 suites green**, typecheck clean, lint clean, site builds
+  8 pages. RLS of the social tables: `supabase/tests/social-rls.sql` (runs on the linked DB inside
+  BEGIN … ROLLBACK, ~30 asserts). Typecheck ~8 s, tests ~8 s, lint ~25 s on this machine.
 - CI (typecheck + lint + tests) runs on push and PRs to `main`. Repo: `clavijojuanpablo/habia`.
 - Versioning: `APP_RELEASE` in `src/constants/release.ts` is the version people see (Profile:
   `habia 1.0.1 · build 3 · <update id>`). Bump the patch for every OTA update; a new store binary
@@ -112,24 +117,45 @@ open the web fallback there; its "Open habia" button still works.
    Check it: `curl -X POST <SUPABASE_URL>/functions/v1/weekly-review -H "apikey: <publishable>" -H "Authorization: Bearer <publishable>" -d '{"check":true}'`
    must answer `{"available":true}`.
 
-1. **Ship 1.0.13 by OTA** (check the fingerprint is `f15932ef…` first). Since 1.0.8: crash fix for
+1. **Friends & circles → 1.1.0** (built 2026-10-01, JS-only, fingerprint `f15932ef…`). Owner steps, in order:
+   1. `npx supabase db push` (applies `20261001180242_social.sql`), then
+      `npx supabase gen types typescript --linked --schema public > src/lib/supabase/database.types.ts`
+      (types were hand-written to match; the diff should be empty or cosmetic) and
+      `npx supabase db query --linked -f supabase/tests/social-rls.sql` → `ALL SOCIAL RLS CHECKS PASSED`.
+   2. Push to GitHub so Vercel deploys `web/` (AASA `/add/*` + `/join/*`, `/invite` fallback page).
+      iOS refreshes the AASA through Apple's CDN (hours to days); until then links open the page,
+      whose button opens the app.
+   3. Ship 1.1.0 by OTA, then test with a second account (another email, on web or a tester's phone):
+      username, request by @, accept, cheer, circle by code, block, report.
+   Design: the Profile tab is now **Friends** (your card first; ⚙️ opens Settings = the old profile).
+   Friends see only `social_profiles` (name, color, a stats snapshot your app publishes) and
+   `social_days()` (which days you planted or rested, computed by the server from `habit_logs`);
+   never habits. Shared streak (`src/features/social/shared-days.ts`): grows on days both planted,
+   a lone day is a wait, two in a row reset it, rest days are neutral. Circles have no group streak
+   (weekly grid + "days everyone planted"). Cheers are 5 presets, one of each per pair per day.
+   Pushes for cheers/requests are the next step: check that build 3 can get an Expo push token
+   (aps-environment + APNs key in EAS); if not, it needs build 4.
+2. **Character art:** the owner draws the parts following `docs/CHARACTER-ART.md` (batch 1 = 13
+   SVGs into `art/character/`); then compose them in code (react-native-svg + Reanimated, no Rive)
+   and replace `SocialAvatar`.
+3. **Ship 1.0.13 by OTA** — superseded by 1.1.0 (it includes it). For the record (check the fingerprint is `f15932ef…` first). Since 1.0.8: crash fix for
    reopening the app (1.0.10, JSON-safe cache), root error screen (1.0.9), Progress polish (2×2 tiles,
    Brote's review as a green-framed card, visual standout-habit cards), and the **Garden as the
    identity space** (1.0.13): "¿Quién te estás volviendo?", one card per branch (identity) with this
    week's seeds and its habits, "Semillas sin rama" to link a habit to an identity in one tap, and an
    empty state that explains identities. Per-habit numbers left the Garden (they live in Progress).
    Next for the Garden: the character (plant avatar) and 💧 drops; maybe a 🌱→🌸→🍎 harvest.
-2. **External testers:** waiting for Beta App Review of the "Beta pública" group (demo account in
+4. **External testers:** waiting for Beta App Review of the "Beta pública" group (demo account in
    App Store Connect; never delete it). When approved: enable the public link with a tester limit.
    The App Privacy questionnaire is only needed for the App Store, not TestFlight.
-3. **After the weekly review proves useful:** capped chat with Brote (Pro), server pushes
+5. **After the weekly review proves useful:** capped chat with Brote (Pro), server pushes
    (push-dispatcher reusing `_shared/` and `local_today`), and moving reviews to the Batch API
    (50 % cheaper) once a cron writes them for everyone instead of on first open.
-4. **Coach 1.0.7, shaped by tester data** (PostHog: `coach_tip_*` events per rule): habits that
+6. **Coach, shaped by tester data** (PostHog: `coach_tip_*` events per rule): habits that
    pull each other (co-occurrence, worded as observation), seeds per identity, 👍/👎 per tip,
    rule-based Monday mini-review.
-5. Then, in this order (ROADMAP → "Order after Block 2"): **your character** →
-   **friends & circles** → opt-in **leagues** → **monetization**, all before the public launch.
+7. Then, in this order (ROADMAP → "Order after Block 2"): **your character** (art in progress) →
+   opt-in **leagues** → **monetization**, all before the public launch.
    Start the "can a Colombian individual use Stripe?" question early (calendar weeks, not code),
    and the legal review (jurisdiction, EU opt-in for analytics).
 
@@ -138,7 +164,7 @@ one-time offer on Today). Edge Function `weekly-review` computes last finished w
 zone with the app's own engine (`supabase/functions/_shared/`, synced by `node scripts/sync-shared.js`;
 a test fails on drift), Claude only writes the words (title / win / pattern / suggestion, structured
 output), stored in `coach_messages` (RLS: owner reads, marks seen; only the service role inserts).
-Today's slot: catch-up > weekly review > north-star > coach tip.
+Today's slot: catch-up > weekly review > north-star > cheers from friends > coach tip.
 
 **North-star question:** "¿Sientes que habia te está ayudando a mejorar tu día a día?" (1–5 faces)
 in the Today prompt slot, after 7 days from onboarding, then every 14 days ("Ahora no" = 3 days);
@@ -147,6 +173,14 @@ read it in PostHog as the product's success metric (trend per user and cohort). 
 stored per account but per device (`habia.northStar.<userId>`): a user on iPhone and web is asked on both.
 
 ## Known debts
+
+- **Social:** `social_days()` only knows logs, so a day with nothing scheduled looks like a miss in
+  shared streaks and circle grids ("never miss twice" absorbs one). The stats snapshot is as fresh as
+  the friend's last app open ("Actualizado hace N días"). Shared streaks read 60 days ("60+").
+  Social writes are online-only on purpose (`networkMode: 'always'`): offline they fail with a
+  message instead of queueing. No pushes yet; reports are reviewed by hand in the dashboard
+  (`public.reports`). Circle invite codes are 8 hex chars (32 bits) with no join rate limit: fine
+  for now, revisit with scale. Avatars are Brote on the person's color until the character exists.
 
 - **Persisted query data must be JSON-safe** (`src/lib/query/client.ts` persists the cache as JSON):
   never return a Map, Set or Date from a `queryFn`. A Map came back as `{}` after a restart and crashed
@@ -219,7 +253,8 @@ stored per account but per device (`habia.northStar.<userId>`): a user on iPhone
 
 - Register any EAS secret (via `--value (Get-Clipboard)`, never the masked prompt).
 - Invite TestFlight testers; answer App Store Connect questionnaires (privacy "nutrition labels").
-- Design the character's layered SVG parts (spec in GAMIFICATION.md).
+- Draw the character's SVG parts (`docs/CHARACTER-ART.md`, templates in `art/character/`).
+- Apply the `social` migration (`npx supabase db push`) and review `public.reports` from time to time.
 - Apple Developer renews yearly (US$99, next 2027-09-28). Google Play (US$25 one-off) can wait
   until there are Android testers.
 

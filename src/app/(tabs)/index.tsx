@@ -18,6 +18,7 @@ import { WeeklyReviewCard, WeeklyReviewOffer, WeeklyReviewWriting } from '@/feat
 import { useCoachTip } from '@/features/coach/use-coach-tip';
 import { useWeeklyReviewSlot } from '@/features/coach/use-weekly-review-slot';
 import { NorthStarCard } from '@/features/north-star/components/north-star-card';
+import { CheersNotice, useUnseenCheers } from '@/features/social/components/cheers';
 import { useNorthStar } from '@/features/north-star/use-north-star';
 import { Brote } from '@/features/mascot/brote';
 import { isDone, isSkipped, nextInChain, type ScheduleBand, type ScheduledItem } from '@/features/schedule/build-schedule';
@@ -49,7 +50,8 @@ export default function TodayScreen() {
   const { today, tomorrow } = useTodayRange(now);
   const { items, bands, hasHabits, isLoading, error, toggleItem } = useSchedule(today, tomorrow);
   // One prompt above the list at a time: catching up yesterday (it protects today's streak), then
-  // Brote's weekly review, then the fortnightly north-star question, then the coach tip.
+  // Brote's weekly review, then the fortnightly north-star question, then cheers from friends, then
+  // the coach tip.
   // The coach waits until yesterday is settled, so it never comments on a miss that was only unlogged.
   const yesterdayDate = useMemo(() => addDays(today, -1), [today]);
   const yesterday = useSchedule(yesterdayDate, today);
@@ -62,6 +64,9 @@ export default function TodayScreen() {
   const northStar = useNorthStar(today);
   const showNorthStar =
     yesterday.isReady && !catchUpPending && !showWeeklyReview && hasHabits && northStar.visible;
+  const unseenCheers = useUnseenCheers();
+  const showCheers =
+    yesterday.isReady && !catchUpPending && !showWeeklyReview && !showNorthStar && unseenCheers.length > 0;
   const closeCatchUp = () => {
     storage.setItem(CATCH_UP_CLOSED_KEY, todayKey);
     setCatchUpClosedOn(todayKey);
@@ -72,7 +77,7 @@ export default function TodayScreen() {
     bandConfig: bands,
     items,
     itemsLoading: isLoading,
-    enabled: yesterday.isReady && !catchUpPending && !showWeeklyReview && !showNorthStar,
+    enabled: yesterday.isReady && !catchUpPending && !showWeeklyReview && !showNorthStar && !showCheers,
   });
 
   // Keep only the key: the item itself is read fresh from `items` on every render.
@@ -228,6 +233,7 @@ export default function TodayScreen() {
               onSnooze={northStar.snooze}
             />
           )}
+          {showCheers && <CheersNotice cheers={unseenCheers} />}
           {coach.tip && hasHabits && (
             <CoachCard tip={coach.tip} items={items} onToggle={onToggle} onDismiss={coach.dismiss} />
           )}

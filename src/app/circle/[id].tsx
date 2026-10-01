@@ -1,0 +1,196 @@
+import { router, useLocalSearchParams } from 'expo-router';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ActivityIndicator, Share, ScrollView, StyleSheet, View } from 'react-native';
+
+import { Button } from '@/components/button';
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
+import { useSession } from '@/features/auth/session-provider';
+import {
+  useCircles,
+  useRegenerateCircleCode,
+  useRemoveCircleMember,
+  useSocialDays,
+  useSocialProfiles,
+} from '@/features/social/api';
+import { circleInviteLink, CircleWeekGrid } from '@/features/social/components/circles';
+import { SocialCard } from '@/features/social/components/social-card';
+import { computeCircleWeek } from '@/features/social/shared-days';
+import { useNow, useTodayRange } from '@/hooks/use-now';
+import { useTheme } from '@/hooks/use-theme';
+import { confirmAction } from '@/lib/confirm';
+
+/** A circle: this week together, the invite, and leaving (or managing it, for its owner). */
+export default function CircleScreen() {
+  const { t } = useTranslation();
+  const theme = useTheme();
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { session } = useSession();
+  const me = session?.user.id ?? '';
+  const now = useNow();
+  const { today } = useTodayRange(now);
+
+  const circles = useCircles();
+  const circle = circles.data?.circles.find((c) => c.id === id);
+  const members = useMemo(() => circles.data?.members.filter((m) => m.circle_id === id) ?? [], [circles.data, id]);
+  const memberIds = useMemo(() => members.map((m) => m.user_id), [members]);
+  const profiles = useSocialProfiles(memberIds);
+  const days = useSocialDays(memberIds, today);
+  const remove = useRemoveCircleMember();
+  const regenerate = useRegenerateCircleCode();
+
+  const week = useMemo(() => computeCircleWeek(memberIds, days.data ?? [], today), [memberIds, days.data, today]);
+  const profileById = Object.fromEntries((profiles.data ?? []).map((p) => [p.user_id, p]));
+  const isOwner = members.some((m) => m.user_id === me && m.role === 'owner');
+
+  if (circles.isLoading) {
+    return (
+      <ThemedView style={[styles.flex, styles.centered]}>
+        <ActivityIndicator color={theme.primary} />
+      </ThemedView>
+    );
+  }
+  if (!circle) {
+    return (
+      <ThemedView style={[styles.flex, styles.centered]}>
+        <ThemedText type="small" themeColor="textSecondary">
+          {t('social.circle.unavailable')}
+        </ThemedText>
+      </ThemedView>
+    );
+  }
+
+  const others = members.filter((m) => m.user_id !== me);
+
+  return (
+    <ThemedView style={styles.flex}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <View style={styles.header}>
+          <View style={[styles.emojiTile, { backgroundColor: theme.lavenderSoft }]}>
+            <ThemedText style={styles.emoji}>{circle.emoji}</ThemedText>
+          </View>
+          <ThemedText type="subtitle" style={styles.center}>
+            {circle.name}
+          </ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">
+            {t('social.circle.members', { count: members.length })}
+          </ThemedText>
+        </View>
+
+        <SocialCard>
+          <ThemedText type="heading">📅 {t('social.circle.weekTitle')}</ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">
+            {t('social.circle.allPlanted', { count: week.allPlanted })}
+          </ThemedText>
+          {days.data ? (
+            <CircleWeekGrid rows={week.rows} profiles={profileById} me={me} />
+          ) : (
+            <ActivityIndicator color={theme.primary} />
+          )}
+        </SocialCard>
+
+        <SocialCard>
+          <ThemedText type="heading">✉️ {t('social.circle.inviteTitle')}</ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">
+            {t('social.circle.inviteBody')}
+          </ThemedText>
+          <View style={[styles.code, { backgroundColor: theme.background, borderColor: theme.border }]}>
+            <ThemedText type="subtitle" selectable>
+              {circle.invite_code}
+            </ThemedText>
+          </View>
+          <Button
+            label={t('social.circle.share')}
+            onPress={() =>
+              Share.share({
+                message: t('social.circle.shareMessage', {
+                  name: circle.name,
+                  link: circleInviteLink(circle.invite_code),
+                }),
+              })
+            }
+          />
+          {isOwner && (
+            <Button
+              variant="secondary"
+              label={t('social.circle.newCode')}
+              loading={regenerate.isPending}
+              onPress={() => regenerate.mutate(circle.id)}
+            />
+          )}
+        </SocialCard>
+
+        {isOwner && others.length > 0 && (
+          <SocialCard>
+            <ThemedText type="heading">{t('social.circle.manage')}</ThemedText>
+            {others.map((m) => {
+              const name = profileById[m.user_id]?.display_name ?? t('social.circle.hidden');
+              return (
+                <View key={m.user_id} style={styles.memberRow}>
+                  <ThemedText type="smallBold" style={styles.flex} numberOfLines={1}>
+                    {name}
+                  </ThemedText>
+                  <Button
+                    variant="danger"
+                    label={t('social.circle.remove')}
+                    onPress={() =>
+                      confirmAction(
+                        t('social.circle.removeConfirm', { name }),
+                        () => remove.mutate({ circleId: circle.id, userId: m.user_id }),
+                        { ok: t('social.circle.remove'), cancel: t('common.cancel') },
+                      )
+                    }
+                  />
+                </View>
+              );
+            })}
+          </SocialCard>
+        )}
+
+        <Button
+          variant="danger"
+          label={t('social.circle.leave')}
+          onPress={() =>
+            confirmAction(
+              t('social.circle.leaveConfirm', { name: circle.name }),
+              () => remove.mutate({ circleId: circle.id, userId: me }, { onSuccess: () => router.back() }),
+              { ok: t('social.circle.leave'), cancel: t('common.cancel') },
+            )
+          }
+        />
+        {(remove.isError || regenerate.isError) && (
+          <ThemedText type="small" themeColor="danger" style={styles.center}>
+            {t('social.errors.generic')}
+          </ThemedText>
+        )}
+      </ScrollView>
+    </ThemedView>
+  );
+}
+
+const styles = StyleSheet.create({
+  flex: { flex: 1 },
+  centered: { alignItems: 'center', justifyContent: 'center', padding: Spacing.four },
+  content: {
+    padding: Spacing.three,
+    gap: Spacing.three,
+    paddingBottom: Spacing.six,
+    width: '100%',
+    maxWidth: MaxContentWidth,
+    alignSelf: 'center',
+  },
+  header: { alignItems: 'center', gap: Spacing.one },
+  emojiTile: { width: 72, height: 72, borderRadius: Radius.lg, alignItems: 'center', justifyContent: 'center' },
+  emoji: { fontSize: 40, lineHeight: 48 },
+  center: { textAlign: 'center' },
+  code: {
+    alignItems: 'center',
+    padding: Spacing.three,
+    borderRadius: Radius.md,
+    borderWidth: 2,
+    borderStyle: 'dashed',
+  },
+  memberRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
+});

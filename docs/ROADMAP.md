@@ -74,8 +74,8 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 Testers first (TestFlight with the core), then every Pro feature **before the public App Store launch**, shipped to testers as it lands (`expo-updates`). See GAMIFICATION.md for the design of 2–5.
 
 1. **AI coach** — moved up: the most direct lever on the north star; testers generate history while it is built
-2. **Your character** — a plant avatar (plant · pot · eyes · mouth · accessory) that is also the profile picture; parts free, earned with seeds or bought; assets designed outside, animated in Rive
-3. **Friends & circles** — replaces couples-only; shared streaks, cheers, privacy by default, block/report
+2. **Your character** — a plant avatar (plant · pot · eyes · mouth · accessory) that is also the profile picture; parts free, earned with seeds or bought; SVG parts drawn by the owner (`docs/CHARACTER-ART.md`), composed and animated in code
+3. **Friends & circles** — ✅ built 2026-10-01 (1.1.0): shared streaks, cheers, privacy by default, block/report
 4. **Leagues** — opt-in weekly leagues scored by consistency %, when there are enough users
 5. **Monetization** — Pro + cosmetics, before launch
 
@@ -84,13 +84,13 @@ Testers first (TestFlight with the core), then every Pro feature **before the pu
 - Guided programs ("Caminos", 3 initial) + micro-lessons
 
 ## Character ⏳
-- Concepts → layered SVG parts with anchor points (spec in GAMIFICATION.md) → Rive → `rive-react-native` (development build)
+- ✅ Art guide + Illustrator templates (`docs/CHARACTER-ART.md`, `art/character/`) → 🎨 owner draws batch 1 (13 SVGs) → compose with react-native-svg + Reanimated (no Rive, no development build)
 - Avatar builder screen; equipped combination on `profiles`; inventory + server-side seed ledger (migration); avatar as profile picture
 - Replaces the static Brote in onboarding, Hoy, celebrations, Garden
 
 ## Phase 5: Social ⏳
-- Friends & circles: schema + RLS for shared visibility, requests, Realtime feed, cheers/nudges, shared streaks ("never miss twice"), intertwined trees for circles of two
-- Usernames, block/report/moderation (App Store 1.2), account deletion cascade
+- ✅ Friends & circles (1.1.0): `social` migration (social_profiles, friendships, circles ≤ 8, cheers, blocks, reports; SECURITY DEFINER RPCs; `social_days()` shares which days, never which habits), shared streaks ("never miss twice"), circle weekly grid, 5 preset cheers, invite links (`/add/<username>`, `/join/<code>`), Friends tab (replaces Profile; Settings behind the gear)
+- ✅ Usernames, block/report (App Store 1.2), account deletion cascade · ⏳ pushes for cheers/requests (needs an Expo push token on build 3, else build 4) · ⏳ Realtime feed · ⏳ intertwined trees for circles of two
 - Opt-in weekly leagues by consistency %
 - Share cards, referrals, group challenges
 

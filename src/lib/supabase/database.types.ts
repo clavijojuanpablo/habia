@@ -14,6 +14,110 @@ export type Database = {
   }
   public: {
     Tables: {
+      blocks: {
+        Row: {
+          blocked: string
+          blocker: string
+          created_at: string
+        }
+        Insert: {
+          blocked: string
+          blocker: string
+          created_at?: string
+        }
+        Update: {
+          blocked?: string
+          blocker?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      cheers: {
+        Row: {
+          created_at: string
+          day: string
+          from_user: string
+          id: string
+          kind: string
+          seen_at: string | null
+          to_user: string
+        }
+        Insert: {
+          created_at?: string
+          day?: string
+          from_user?: string
+          id?: string
+          kind: string
+          seen_at?: string | null
+          to_user: string
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          from_user?: string
+          id?: string
+          kind?: string
+          seen_at?: string | null
+          to_user?: string
+        }
+        Relationships: []
+      }
+      circle_members: {
+        Row: {
+          circle_id: string
+          joined_at: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          circle_id: string
+          joined_at?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          circle_id?: string
+          joined_at?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circle_members_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "circles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      circles: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          emoji: string
+          id: string
+          invite_code: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          emoji?: string
+          id?: string
+          invite_code?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          emoji?: string
+          id?: string
+          invite_code?: string
+          name?: string
+        }
+        Relationships: []
+      }
       coach_messages: {
         Row: {
           content: Json
@@ -44,6 +148,33 @@ export type Database = {
           period_start?: string
           seen_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      friendships: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          requested_by: string
+          status: string
+          user_a: string
+          user_b: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          requested_by: string
+          status?: string
+          user_a: string
+          user_b: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          requested_by?: string
+          status?: string
+          user_a?: string
+          user_b?: string
         }
         Relationships: []
       }
@@ -283,6 +414,63 @@ export type Database = {
         }
         Relationships: []
       }
+      reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          reason: string
+          reported: string
+          reporter: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason: string
+          reported: string
+          reporter?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason?: string
+          reported?: string
+          reporter?: string
+        }
+        Relationships: []
+      }
+      social_profiles: {
+        Row: {
+          color: string
+          created_at: string
+          display_name: string
+          stats: Json
+          stats_updated_at: string | null
+          user_id: string
+          username: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          display_name: string
+          stats?: Json
+          stats_updated_at?: string | null
+          user_id: string
+          username: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          display_name?: string
+          stats?: Json
+          stats_updated_at?: string | null
+          user_id?: string
+          username?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       habit_completion_counts: {
@@ -302,7 +490,48 @@ export type Database = {
       }
     }
     Functions: {
+      accept_friend_request: { Args: { p_user: string }; Returns: boolean }
+      are_connected: { Args: { a: string; b: string }; Returns: boolean }
+      block_user: { Args: { p_user: string }; Returns: undefined }
+      can_see_profile: { Args: { target: string; viewer: string }; Returns: boolean }
+      create_circle: { Args: { p_emoji: string; p_name: string }; Returns: string }
+      find_profile: {
+        Args: { p_username: string }
+        Returns: {
+          color: string
+          display_name: string
+          user_id: string
+          username: string
+        }[]
+      }
+      is_blocked: { Args: { a: string; b: string }; Returns: boolean }
+      is_circle_member: { Args: { p_circle: string; p_user: string }; Returns: boolean }
+      is_circle_owner: { Args: { p_circle: string; p_user: string }; Returns: boolean }
+      join_circle: { Args: { p_code: string }; Returns: string }
+      list_friendships: {
+        Args: never
+        Returns: {
+          color: string
+          created_at: string
+          display_name: string
+          incoming: boolean
+          status: string
+          user_id: string
+          username: string
+        }[]
+      }
       local_today: { Args: { p_timezone: string }; Returns: string }
+      regenerate_circle_code: { Args: { p_circle: string }; Returns: string }
+      send_friend_request: { Args: { p_username: string }; Returns: string }
+      social_days: {
+        Args: { p_since: string; p_users: string[] }
+        Returns: {
+          active: boolean
+          day: string
+          skipped: boolean
+          user_id: string
+        }[]
+      }
     }
     Enums: {
       habit_cue_type: "time" | "after_habit" | "context"

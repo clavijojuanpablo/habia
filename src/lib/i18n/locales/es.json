@@ -38,7 +38,8 @@
     "week": "Semana",
     "garden": "Jardín",
     "progress": "Progreso",
-    "profile": "Perfil"
+    "friends": "Amigos",
+    "hasNews": "{{label}}, hay novedades"
   },
   "bands": {
     "morning": "Mañana",
@@ -637,5 +638,151 @@
     "title": "Algo se rompió 🌱",
     "body": "No es culpa tuya. Haz una captura de esta pantalla y envíala, así lo arreglamos rápido.",
     "retry": "Reintentar"
+  },
+  "settings": {
+    "title": "Ajustes"
+  },
+  "social": {
+    "title": "Amigos",
+    "friendsTitle": "Tus amigos",
+    "noFriends": "Aún no tienes amigos aquí. Invita a alguien con quien quieras crecer: los hábitos se sostienen mejor acompañados.",
+    "circlesTitle": "Tus círculos",
+    "privacyNote": "Tus amigos nunca ven tus hábitos: solo tu racha, tu constancia, tus semillas y qué días sembraste.",
+    "setup": {
+      "title": "Crece acompañado",
+      "body": "Elige cómo te verán tus amigos. Nunca verán tus hábitos: solo tu racha, tu constancia, tus semillas y qué días sembraste.",
+      "name": "Tu nombre",
+      "username": "Tu usuario",
+      "usernameHint": "Con él te encuentran. Letras, números y _ (3 a 20).",
+      "color": "Tu color",
+      "submit": "Empezar"
+    },
+    "errors": {
+      "not_found": "No encontramos a nadie con ese usuario o código. Revisa que esté bien escrito.",
+      "no_username": "Primero elige tu usuario en Amigos.",
+      "too_many_requests": "Tienes muchas solicitudes esperando. Espera a que respondan algunas.",
+      "too_many_circles": "Ya estás en 10 círculos, el máximo.",
+      "circle_full": "Ese círculo ya está completo (8 personas).",
+      "taken": "Ese usuario ya está en uso. Prueba otro.",
+      "generic": "No se pudo completar. Revisa tu conexión e intenta de nuevo."
+    },
+    "add": {
+      "title": "Agregar un amigo",
+      "placeholder": "@usuario",
+      "send": "Enviar solicitud",
+      "share": "Invitar",
+      "shareMessage": "¡Crezcamos juntos en habia! 🌱 Agrégame aquí: {{link}}",
+      "result": {
+        "requested": "Solicitud enviada. Te avisamos cuando acepte.",
+        "accepted": "¡Ya son amigos! 🎉",
+        "pending": "Ya le enviaste una solicitud.",
+        "friends": "Ya son amigos."
+      }
+    },
+    "requests": {
+      "title": "Solicitudes",
+      "incoming": "quiere ser tu amigo",
+      "outgoing": "esperando que acepte",
+      "accept": "Aceptar",
+      "decline": "Ahora no",
+      "cancel": "Cancelar"
+    },
+    "friend": {
+      "ownStreak_one": "{{count}} día",
+      "ownStreak_other": "{{count}} días",
+      "together": "juntos",
+      "unavailable": "Este perfil ya no está disponible.",
+      "streak": "Racha",
+      "consistency": "Constancia",
+      "seeds": "Semillas",
+      "tree": "Su árbol",
+      "updated_zero": "Actualizado hoy",
+      "updated_one": "Actualizado ayer",
+      "updated_other": "Actualizado hace {{count}} días",
+      "sharedStreak_zero": "Su racha juntos empieza el primer día en que los dos siembren 🌱",
+      "sharedStreak_one": "{{count}} día sembrando juntos",
+      "sharedStreak_other": "{{count}} días sembrando juntos",
+      "sharedHint": "Crece los días en que tú y {{name}} siembran. Si uno falla un día, no se rompe: solo dos días seguidos sin sembrar juntos la reinician.",
+      "theirWeek": "La semana de {{name}}",
+      "addFriend": "Agregar como amigo",
+      "privacy": "{{name}} ve lo mismo de ti: tu racha, tu constancia y qué días sembraste. Nunca tus hábitos.",
+      "remove": "Eliminar de amigos",
+      "removeConfirm": "¿Eliminar a {{name}} de tus amigos? Su racha juntos se perderá.",
+      "block": "Bloquear",
+      "blockConfirm": "¿Bloquear a {{name}}? Dejarán de verse y no podrá enviarte solicitudes ni ánimos."
+    },
+    "cheer": {
+      "title": "Anima a {{name}}",
+      "sendTo": "Enviar «{{cheer}}» a {{name}}",
+      "kinds": {
+        "clap": "¡Bien hecho!",
+        "water": "Te riego",
+        "fire": "¡Sigue así!",
+        "you_can": "Hoy puedes",
+        "plant_with_me": "Siembra conmigo"
+      },
+      "received": {
+        "clap": "{{name}} te aplaude: ¡bien hecho!",
+        "water": "{{name}} regó tu árbol",
+        "fire": "{{name}} dice: ¡sigue así!",
+        "you_can": "{{name}} cree en ti: hoy puedes",
+        "plant_with_me": "{{name}} te invita a sembrar juntos hoy"
+      },
+      "inboxTitle": "Ánimos recibidos",
+      "more_one": "y {{count}} ánimo más",
+      "more_other": "y {{count}} ánimos más",
+      "thanks": "Gracias 💚",
+      "answer": "Responder"
+    },
+    "report": {
+      "action": "Reportar",
+      "title": "¿Qué pasa con {{name}}?",
+      "reasons": {
+        "offensive_name": "Nombre ofensivo",
+        "harassment": "Me molesta o acosa",
+        "spam": "Spam",
+        "other": "Otra cosa"
+      },
+      "thanks": "Gracias por avisarnos. Lo revisaremos. Si te incomoda, también puedes bloquear."
+    },
+    "circle": {
+      "members_one": "{{count}} persona",
+      "members_other": "{{count}} personas",
+      "intro": "Un círculo es un grupo pequeño (hasta 8) para acompañarse: ven qué días siembra cada uno y se animan.",
+      "create": "Crear un círculo",
+      "codePlaceholder": "Código",
+      "join": "Unirme",
+      "you": "Tú",
+      "hidden": "Alguien",
+      "unavailable": "Este círculo ya no está disponible.",
+      "weekTitle": "Esta semana",
+      "allPlanted_zero": "Aún no hay un día en que todos hayan sembrado. ¡El próximo puede ser hoy!",
+      "allPlanted_one": "{{count}} día en que todos sembraron 🌱",
+      "allPlanted_other": "{{count}} días en que todos sembraron 🌱",
+      "inviteTitle": "Invitar",
+      "inviteBody": "Comparte el enlace o el código. Quien entre verá solo lo mismo que tú: rachas y días sembrados, nunca hábitos.",
+      "share": "Compartir invitación",
+      "shareMessage": "¡Únete a mi círculo «{{name}}» en habia! 🌱 {{link}}",
+      "newCode": "Generar un código nuevo",
+      "manage": "Personas del círculo",
+      "remove": "Quitar",
+      "removeConfirm": "¿Quitar a {{name}} del círculo?",
+      "leave": "Salir del círculo",
+      "leaveConfirm": "¿Salir de «{{name}}»?",
+      "newTitle": "Nuevo círculo",
+      "newHint": "Ponle un nombre que los identifique: la familia, el equipo, los del gym.",
+      "name": "Nombre",
+      "namePlaceholder": "Ej.: Familia",
+      "emoji": "Ícono"
+    },
+    "invite": {
+      "needUsername": "Antes, elige tu usuario: así te reconocerán.",
+      "pickUsername": "Elegir mi usuario",
+      "goFriends": "Ir a Amigos",
+      "addTitle": "¿Agregar a @{{username}}?",
+      "addBody": "Podrán ver la racha y los días sembrados del otro, y animarse. Nunca sus hábitos.",
+      "joinTitle": "¿Unirte al círculo?",
+      "joinBody": "Te invitaron a un círculo para acompañarse. Verán qué días siembra cada uno, nunca sus hábitos."
+    }
   }
 }

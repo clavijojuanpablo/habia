@@ -76,6 +76,12 @@ export const copy = {
       open: 'Abrir habia',
       hint: '¿Ya estás en el teléfono? Toca el botón.',
     },
+    invite: {
+      title: 'Te invitaron a crecer juntos en habia',
+      body: 'Alguien quiere acompañarte a construir tus hábitos. En habia ven la racha y los días que siembra cada uno, nunca sus hábitos.',
+      open: 'Abrir en habia',
+      hint: '¿Aún no tienes la app? Pronto estará en la App Store. Mientras tanto, pide a quien te invitó el enlace de TestFlight.',
+    },
   },
   en: {
     meta: {
@@ -136,6 +142,12 @@ export const copy = {
       body: 'This link confirms your account or lets you choose a new password, and it works inside the habia app. Open it from the email, on the phone where you have habia.',
       open: 'Open habia',
       hint: 'Already on your phone? Tap the button.',
+    },
+    invite: {
+      title: 'You were invited to grow together on habia',
+      body: 'Someone wants to keep you company while you build your habits. On habia you see each other’s streak and planted days, never your habits.',
+      open: 'Open in habia',
+      hint: 'No app yet? It will be on the App Store soon. Meanwhile, ask whoever invited you for the TestFlight link.',
     },
   },
 } as const;

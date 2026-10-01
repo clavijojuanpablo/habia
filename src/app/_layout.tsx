@@ -143,6 +143,12 @@ function RootNavigator() {
         <Stack.Screen name="identity/new" options={modal(t('identity.new'))} />
         <Stack.Screen name="identity/[id]" options={modal(t('identity.edit'))} />
         <Stack.Screen name="streak" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="settings" options={modal(t('settings.title'))} />
+        <Stack.Screen name="friend/[id]" options={modal('')} />
+        <Stack.Screen name="circle/[id]" options={modal('')} />
+        <Stack.Screen name="circle/new" options={modal(t('social.circle.newTitle'))} />
+        <Stack.Screen name="add/[username]" options={modal('')} />
+        <Stack.Screen name="join/[code]" options={modal('')} />
       </Stack.Protected>
       <Stack.Protected guard={!session}>
         <Stack.Screen name="sign-in" />

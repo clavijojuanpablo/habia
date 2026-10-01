@@ -38,7 +38,8 @@
     "week": "Week",
     "garden": "Garden",
     "progress": "Progress",
-    "profile": "Profile"
+    "friends": "Friends",
+    "hasNews": "{{label}}, something new"
   },
   "bands": {
     "morning": "Morning",
@@ -637,5 +638,151 @@
     "title": "Something broke 🌱",
     "body": "Not your fault. Take a screenshot of this screen and send it so we can fix it fast.",
     "retry": "Try again"
+  },
+  "settings": {
+    "title": "Settings"
+  },
+  "social": {
+    "title": "Friends",
+    "friendsTitle": "Your friends",
+    "noFriends": "No friends here yet. Invite someone you want to grow with: habits hold up better together.",
+    "circlesTitle": "Your circles",
+    "privacyNote": "Friends never see your habits: only your streak, your consistency, your seeds and which days you planted.",
+    "setup": {
+      "title": "Grow together",
+      "body": "Choose how friends will see you. They never see your habits: only your streak, your consistency, your seeds and which days you planted.",
+      "name": "Your name",
+      "username": "Your username",
+      "usernameHint": "How people find you. Letters, numbers and _ (3 to 20).",
+      "color": "Your color",
+      "submit": "Start"
+    },
+    "errors": {
+      "not_found": "We found nobody with that username or code. Check the spelling.",
+      "no_username": "Pick your username in Friends first.",
+      "too_many_requests": "You have many requests waiting. Wait for some answers first.",
+      "too_many_circles": "You are already in 10 circles, the maximum.",
+      "circle_full": "That circle is already full (8 people).",
+      "taken": "That username is taken. Try another one.",
+      "generic": "That didn’t work. Check your connection and try again."
+    },
+    "add": {
+      "title": "Add a friend",
+      "placeholder": "@username",
+      "send": "Send request",
+      "share": "Invite",
+      "shareMessage": "Let’s grow together on habia! 🌱 Add me here: {{link}}",
+      "result": {
+        "requested": "Request sent. We’ll let you know when they accept.",
+        "accepted": "You’re friends now! 🎉",
+        "pending": "You already sent them a request.",
+        "friends": "You’re already friends."
+      }
+    },
+    "requests": {
+      "title": "Requests",
+      "incoming": "wants to be friends",
+      "outgoing": "waiting for them to accept",
+      "accept": "Accept",
+      "decline": "Not now",
+      "cancel": "Cancel"
+    },
+    "friend": {
+      "ownStreak_one": "{{count}} day",
+      "ownStreak_other": "{{count}} days",
+      "together": "together",
+      "unavailable": "This profile is no longer available.",
+      "streak": "Streak",
+      "consistency": "Consistency",
+      "seeds": "Seeds",
+      "tree": "Their tree",
+      "updated_zero": "Updated today",
+      "updated_one": "Updated yesterday",
+      "updated_other": "Updated {{count}} days ago",
+      "sharedStreak_zero": "Your streak together starts the first day you both plant 🌱",
+      "sharedStreak_one": "{{count}} day planting together",
+      "sharedStreak_other": "{{count}} days planting together",
+      "sharedHint": "It grows on days both you and {{name}} plant. One missed day never breaks it: only two days in a row without planting together reset it.",
+      "theirWeek": "{{name}}’s week",
+      "addFriend": "Add as a friend",
+      "privacy": "{{name}} sees the same about you: your streak, your consistency and which days you planted. Never your habits.",
+      "remove": "Remove friend",
+      "removeConfirm": "Remove {{name}} from your friends? Your streak together will be lost.",
+      "block": "Block",
+      "blockConfirm": "Block {{name}}? You’ll stop seeing each other and they can’t send you requests or cheers."
+    },
+    "cheer": {
+      "title": "Cheer {{name}} on",
+      "sendTo": "Send “{{cheer}}” to {{name}}",
+      "kinds": {
+        "clap": "Well done!",
+        "water": "Watering you",
+        "fire": "Keep it up!",
+        "you_can": "You’ve got this",
+        "plant_with_me": "Plant with me"
+      },
+      "received": {
+        "clap": "{{name}} applauds you: well done!",
+        "water": "{{name}} watered your tree",
+        "fire": "{{name}} says: keep it up!",
+        "you_can": "{{name}} believes in you: you’ve got this",
+        "plant_with_me": "{{name}} invites you to plant together today"
+      },
+      "inboxTitle": "Cheers received",
+      "more_one": "and {{count}} more cheer",
+      "more_other": "and {{count}} more cheers",
+      "thanks": "Thanks 💚",
+      "answer": "Reply"
+    },
+    "report": {
+      "action": "Report",
+      "title": "What’s wrong with {{name}}?",
+      "reasons": {
+        "offensive_name": "Offensive name",
+        "harassment": "Bothering or harassing me",
+        "spam": "Spam",
+        "other": "Something else"
+      },
+      "thanks": "Thanks for telling us. We’ll review it. If it bothers you, you can also block."
+    },
+    "circle": {
+      "members_one": "{{count}} person",
+      "members_other": "{{count}} people",
+      "intro": "A circle is a small group (up to 8) to keep each other company: you see which days each one plants and cheer each other on.",
+      "create": "Create a circle",
+      "codePlaceholder": "Code",
+      "join": "Join",
+      "you": "You",
+      "hidden": "Someone",
+      "unavailable": "This circle is no longer available.",
+      "weekTitle": "This week",
+      "allPlanted_zero": "No day yet where everyone planted. The next one could be today!",
+      "allPlanted_one": "{{count}} day everyone planted 🌱",
+      "allPlanted_other": "{{count}} days everyone planted 🌱",
+      "inviteTitle": "Invite",
+      "inviteBody": "Share the link or the code. Whoever joins sees only what you see: streaks and planted days, never habits.",
+      "share": "Share invite",
+      "shareMessage": "Join my circle “{{name}}” on habia! 🌱 {{link}}",
+      "newCode": "Make a new code",
+      "manage": "People in the circle",
+      "remove": "Remove",
+      "removeConfirm": "Remove {{name}} from the circle?",
+      "leave": "Leave circle",
+      "leaveConfirm": "Leave “{{name}}”?",
+      "newTitle": "New circle",
+      "newHint": "Give it a name that says who you are: family, the team, the gym crew.",
+      "name": "Name",
+      "namePlaceholder": "E.g. Family",
+      "emoji": "Icon"
+    },
+    "invite": {
+      "needUsername": "First, pick your username so they recognize you.",
+      "pickUsername": "Pick my username",
+      "goFriends": "Go to Friends",
+      "addTitle": "Add @{{username}}?",
+      "addBody": "You’ll see each other’s streak and planted days, and cheer each other on. Never your habits.",
+      "joinTitle": "Join the circle?",
+      "joinBody": "You were invited to a circle to keep each other company. You’ll see which days each one plants, never their habits."
+    }
   }
 }

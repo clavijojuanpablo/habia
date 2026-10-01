@@ -6,7 +6,7 @@
  * TODO before launch: confirm JURISDICTION and have a lawyer review.
  */
 
-export const LEGAL_UPDATED = '2026-09-29';
+export const LEGAL_UPDATED = '2026-10-01';
 export const CONTACT_EMAIL = 'hola@habia.app';
 const JURISDICTION_ES = 'Colombia';
 const JURISDICTION_EN = 'Colombia';
@@ -27,6 +27,7 @@ const privacyEs: LegalDocument = {
         '• Tu actividad: qué hábitos completas y cuándo, para calcular rachas, estadísticas y tu árbol.',
         '• Preferencias: idioma, tema (claro u oscuro), franjas del día y zona horaria.',
         '• Si activas la revisión semanal con IA: las revisiones que Brote te escribe.',
+        '• Si usas Amigos: tu usuario, nombre visible y color; tus amistades, solicitudes y círculos; los ánimos que envías y recibes; y las personas que bloqueas o reportas.',
         '• Datos técnicos mínimos que genera la conexión con nuestro proveedor (por ejemplo, la dirección IP en los registros del servidor).',
         '• Informes de errores: si la app falla, un informe técnico (qué falló, modelo de teléfono, versión del sistema) asociado al identificador interno de tu cuenta (un código, no tu nombre ni tu correo).',
         '• Datos de uso, si no los desactivas: qué pantallas abres, acciones como crear un hábito o marcarlo y tus respuestas a la pregunta breve "¿habia te está ayudando?", asociados al mismo identificador interno, junto con el modelo de tu teléfono, su idioma y su zona horaria. Nunca los nombres de tus hábitos ni tu correo. Nos dicen qué funciona y qué no.',
@@ -49,8 +50,9 @@ const privacyEs: LegalDocument = {
       body: [
         '• Supabase, que aloja la base de datos y gestiona el inicio de sesión.',
         '• Sentry, que recibe los informes de errores para que podamos arreglarlos.',
-        '• PostHog, que recibe los datos de uso. Puedes desactivarlos en Perfil → Ayudar a mejorar habia.',
-        '• Anthropic (Claude), solo si activas la revisión semanal con IA (desactivada por defecto; Perfil → Revisión semanal con IA). Una vez por semana le enviamos un resumen de tu semana para que escriba la revisión: los nombres de tus hábitos, sus identidades y lugares, cuántas veces los hiciste y tu nombre visible si lo pusiste; nunca tu correo. Según sus condiciones para la API, Anthropic no usa estos datos para entrenar sus modelos. Puedes desactivarla cuando quieras.',
+        '• PostHog, que recibe los datos de uso. Puedes desactivarlos en Ajustes → Ayudar a mejorar habia.',
+        '• Anthropic (Claude), solo si activas la revisión semanal con IA (desactivada por defecto; Ajustes → Revisión semanal con IA). Una vez por semana le enviamos un resumen de tu semana para que escriba la revisión: los nombres de tus hábitos, sus identidades y lugares, cuántas veces los hiciste y tu nombre visible si lo pusiste; nunca tu correo. Según sus condiciones para la API, Anthropic no usa estos datos para entrenar sus modelos. Puedes desactivarla cuando quieras.',
+        '• Tus amigos y las personas de tus círculos, solo si usas Amigos: ven tu usuario, nombre y color, tu racha y tu récord, tu constancia de los últimos 30 días, tus semillas, la etapa de tu árbol y qué días completaste algún hábito o descansaste a propósito. Nunca los nombres de tus hábitos, tus identidades ni tu correo. Puedes eliminar amigos, salir de un círculo o bloquear a alguien en cualquier momento.',
         'Nadie más recibe tus datos, salvo obligación legal.',
       ],
     },
@@ -69,7 +71,7 @@ const privacyEs: LegalDocument = {
     {
       heading: 'Tus derechos',
       body: [
-        'Puedes acceder a tus datos desde la app, corregirlos y eliminarlos por completo en Perfil → Zona de peligro → Eliminar mi cuenta. Si quieres una copia de tus datos o tienes cualquier duda, escríbenos a ' +
+        'Puedes acceder a tus datos desde la app, corregirlos y eliminarlos por completo en Ajustes → Zona de peligro → Eliminar mi cuenta. Si quieres una copia de tus datos o tienes cualquier duda, escríbenos a ' +
           CONTACT_EMAIL +
           '.',
       ],
@@ -83,7 +85,7 @@ const privacyEs: LegalDocument = {
     {
       heading: 'Seguridad',
       body: [
-        'Las conexiones viajan cifradas. Cada usuario solo puede leer y escribir sus propios datos: la base de datos aplica esa regla fila por fila, no solo la app. Ningún sistema es infalible, pero trabajamos para mantener tus datos protegidos.',
+        'Las conexiones viajan cifradas. Cada usuario solo puede leer y escribir sus propios datos, más el resumen que sus amigos comparten (descrito arriba): la base de datos aplica esa regla fila por fila, no solo la app. Ningún sistema es infalible, pero trabajamos para mantener tus datos protegidos.',
       ],
     },
     {
@@ -121,6 +123,7 @@ const termsEs: LegalDocument = {
       heading: 'Uso aceptable',
       body: [
         'No puedes usar la app para actividades ilegales, intentar acceder a datos de otras personas, ni interferir con el servicio.',
+        'En Amigos y círculos no toleramos nombres ofensivos, acoso, suplantación ni spam. Puedes bloquear o reportar a cualquier persona desde su perfil; revisamos los reportes y podemos retirar contenido y suspender o eliminar las cuentas que incumplan estas reglas.',
       ],
     },
     {
@@ -175,6 +178,7 @@ const privacyEn: LegalDocument = {
         '• Your activity: which habits you complete and when, to compute streaks, stats and your tree.',
         '• Preferences: language, theme, day bands and time zone.',
         '• If you turn on the AI weekly review: the reviews Brote writes for you.',
+        '• If you use Friends: your username, display name and color; your friendships, requests and circles; the cheers you send and receive; and the people you block or report.',
         '• Minimal technical data produced by the connection to our provider (for example, the IP address in server logs).',
         '• Error reports: if the app crashes, a technical report (what failed, phone model, OS version) tied to your account’s internal id (a code, not your name or email).',
         '• Usage data, unless you turn it off: which screens you open, actions such as creating or checking a habit and your answers to the short "is habia helping?" question, tied to the same internal id, along with your phone model, language and time zone. Never your habit names or email. It tells us what works and what does not.',
@@ -197,8 +201,9 @@ const privacyEn: LegalDocument = {
       body: [
         '• Supabase, which hosts the database and handles sign-in.',
         '• Sentry, which receives error reports so we can fix them.',
-        '• PostHog, which receives the usage data. You can turn it off in Profile → Help improve habia.',
-        '• Anthropic (Claude), only if you turn on the AI weekly review (off by default; Profile → AI weekly review). Once a week we send it a summary of your week so it can write the review: your habit names, their identities and places, how many times you did them and your display name if you set one; never your email. Under its API terms, Anthropic does not use this data to train its models. You can turn it off at any time.',
+        '• PostHog, which receives the usage data. You can turn it off in Settings → Help improve habia.',
+        '• Anthropic (Claude), only if you turn on the AI weekly review (off by default; Settings → AI weekly review). Once a week we send it a summary of your week so it can write the review: your habit names, their identities and places, how many times you did them and your display name if you set one; never your email. Under its API terms, Anthropic does not use this data to train its models. You can turn it off at any time.',
+        '• Your friends and the people in your circles, only if you use Friends: they see your username, name and color, your streak and record, your consistency over the last 30 days, your seeds, your tree stage and which days you completed a habit or rested on purpose. Never your habit names, your identities or your email. You can remove friends, leave a circle or block someone at any time.',
         'Nobody else receives your data, unless legally required.',
       ],
     },
@@ -217,7 +222,7 @@ const privacyEn: LegalDocument = {
     {
       heading: 'Your rights',
       body: [
-        'You can access your data in the app, correct it, and delete everything in Profile → Danger zone → Delete my account. For a copy of your data or any question, write to ' +
+        'You can access your data in the app, correct it, and delete everything in Settings → Danger zone → Delete my account. For a copy of your data or any question, write to ' +
           CONTACT_EMAIL +
           '.',
       ],
@@ -229,7 +234,7 @@ const privacyEn: LegalDocument = {
     {
       heading: 'Security',
       body: [
-        'Connections are encrypted. Each user can only read and write their own rows: the database enforces that rule per row, not just the app. No system is perfect, but we work to keep your data safe.',
+        'Connections are encrypted. Each user can only read and write their own rows, plus the summary their friends share (described above): the database enforces that rule per row, not just the app. No system is perfect, but we work to keep your data safe.',
       ],
     },
     {
@@ -265,6 +270,7 @@ const termsEn: LegalDocument = {
       heading: 'Acceptable use',
       body: [
         'You may not use the app for illegal activity, attempt to access other people’s data, or interfere with the service.',
+        'In Friends and circles we do not tolerate offensive names, harassment, impersonation or spam. You can block or report anyone from their profile; we review reports and may remove content and suspend or delete accounts that break these rules.',
       ],
     },
     {

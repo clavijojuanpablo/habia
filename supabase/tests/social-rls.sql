@@ -1,0 +1,204 @@
+-- Privacy checks for the social migration (friends, circles, cheers, blocks).
+-- Runs against the linked project inside a transaction that is always rolled back:
+--   npx supabase db query --linked -f supabase/tests/social-rls.sql
+-- Success prints 'ALL SOCIAL RLS CHECKS PASSED'; a broken rule fails its ASSERT by name.
+begin;
+insert into auth.users (id, email, aud, role) values
+  ('00000000-0000-4000-8000-00000000000a', 'a@rls-test.invalid', 'authenticated', 'authenticated'),
+  ('00000000-0000-4000-8000-00000000000b', 'b@rls-test.invalid', 'authenticated', 'authenticated'),
+  ('00000000-0000-4000-8000-00000000000c', 'c@rls-test.invalid', 'authenticated', 'authenticated'),
+  ('00000000-0000-4000-8000-00000000000d', 'd@rls-test.invalid', 'authenticated', 'authenticated'),
+  ('00000000-0000-4000-8000-00000000000e', 'e@rls-test.invalid', 'authenticated', 'authenticated');
+
+update public.profiles set timezone = 'America/Bogota' where id = '00000000-0000-4000-8000-00000000000b';
+
+insert into public.social_profiles (user_id, username, display_name) values
+  ('00000000-0000-4000-8000-00000000000a', 'user_a', 'A'),
+  ('00000000-0000-4000-8000-00000000000b', 'user_b', 'B'),
+  ('00000000-0000-4000-8000-00000000000c', 'user_c', 'C'),
+  ('00000000-0000-4000-8000-00000000000d', 'user_d', 'D'),
+  ('00000000-0000-4000-8000-00000000000e', 'user_e', 'E');
+
+insert into public.friendships (user_a, user_b, requested_by, status) values
+  ('00000000-0000-4000-8000-00000000000a', '00000000-0000-4000-8000-00000000000b', '00000000-0000-4000-8000-00000000000a', 'accepted'),
+  ('00000000-0000-4000-8000-00000000000a', '00000000-0000-4000-8000-00000000000e', '00000000-0000-4000-8000-00000000000e', 'accepted');
+
+insert into public.habits (id, user_id, name) values
+  ('00000000-0000-4000-8000-0000000000f1', '00000000-0000-4000-8000-00000000000b', 'Secret habit');
+insert into public.habit_logs (user_id, habit_id, occurrence_at, status) values
+  ('00000000-0000-4000-8000-00000000000b', '00000000-0000-4000-8000-0000000000f1', now() - interval '1 day', 'done'),
+  ('00000000-0000-4000-8000-00000000000b', '00000000-0000-4000-8000-0000000000f1', now() - interval '2 day', 'skipped');
+
+do $$
+declare
+  a uuid := '00000000-0000-4000-8000-00000000000a';
+  b uuid := '00000000-0000-4000-8000-00000000000b';
+  c uuid := '00000000-0000-4000-8000-00000000000c';
+  d uuid := '00000000-0000-4000-8000-00000000000d';
+  e uuid := '00000000-0000-4000-8000-00000000000e';
+  n int;
+  r text;
+  ok boolean;
+  circle uuid;
+  code text;
+begin
+  -- Helpers must not be reachable through the API (/rpc/* only serves the public schema).
+  assert to_regprocedure('public.are_connected(uuid, uuid)') is null, 'helpers are not in public';
+  assert to_regprocedure('public.is_blocked(uuid, uuid)') is null, 'is_blocked is not in public';
+  assert to_regprocedure('private.are_connected(uuid, uuid)') is not null, 'helpers live in private';
+
+  perform set_config('role', 'authenticated', true);
+
+  -- ===== as A =====
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  select count(*) into n from public.social_profiles where user_id = b;
+  assert n = 1, 'A sees friend B';
+  select count(*) into n from public.social_profiles where user_id = c;
+  assert n = 0, 'A cannot see stranger C';
+  select count(*) into n from public.habits where user_id = b;
+  assert n = 0, 'A never sees B habits';
+  select count(*) into n from public.habit_logs where user_id = b;
+  assert n = 0, 'A never sees B logs';
+  select count(*) into n from public.social_days(array[b, c], current_date - 7) where user_id = b and active;
+  assert n = 1, 'A sees one active day of B';
+  select count(*) into n from public.social_days(array[b, c], current_date - 7) where user_id = b and skipped;
+  assert n = 1, 'A sees one rest day of B';
+  select count(*) into n from public.social_days(array[c], current_date - 7);
+  assert n = 0, 'A sees no days of stranger C';
+  select count(*) into n from public.find_profile('  USER_C ');
+  assert n = 1, 'find_profile is exact and case-insensitive';
+  select count(*) into n from public.list_friendships();
+  assert n = 2, 'A lists B and E';
+
+  select public.send_friend_request('user_c') into r;
+  assert r = 'requested', 'A requests C: ' || r;
+  select public.send_friend_request('user_c') into r;
+  assert r = 'pending', 'second request is pending: ' || r;
+  select public.send_friend_request('user_b') into r;
+  assert r = 'friends', 'B already friend: ' || r;
+
+  insert into public.cheers (to_user, kind) values (b, 'water');
+  begin
+    insert into public.cheers (to_user, kind) values (c, 'water');
+    assert false, 'A cannot cheer stranger C';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    insert into public.cheers (to_user, kind) values (b, 'water');
+    assert false, 'one cheer per kind per day';
+  exception when unique_violation then null;
+  end;
+  begin
+    insert into public.habits (user_id, name) values (b, 'Injected');
+    assert false, 'A cannot write B habits';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    insert into public.friendships (user_a, user_b, requested_by, status) values (a, d, a, 'accepted');
+    assert false, 'friendships only through functions';
+  exception when insufficient_privilege then null;
+  end;
+
+  select public.create_circle('Test', '🌱') into circle;
+  select invite_code into code from public.circles where id = circle;
+  assert code is not null, 'A reads own circle code';
+
+  perform public.block_user(e);
+  select count(*) into n from public.social_profiles where user_id = e;
+  assert n = 0, 'A no longer sees blocked E';
+
+  -- ===== as C (pending request from A) =====
+  perform set_config('request.jwt.claims', json_build_object('sub', c, 'role', 'authenticated')::text, true);
+  select count(*) into n from public.social_profiles where user_id = a;
+  assert n = 1, 'C sees requester A';
+  select count(*) into n from public.social_days(array[a], current_date - 7);
+  select count(*) into n from public.social_profiles where user_id = b;
+  assert n = 0, 'C cannot see B';
+  select count(*) into n from public.circles;
+  assert n = 0, 'C sees no circles before joining';
+  begin
+    insert into public.cheers (to_user, kind) values (a, 'clap');
+    assert false, 'C cannot cheer A while pending';
+  exception when insufficient_privilege then null;
+  end;
+  select public.accept_friend_request(a) into ok;
+  assert ok, 'C accepts A';
+
+  -- ===== as D: joins the circle by code, sees members but not B =====
+  perform set_config('request.jwt.claims', json_build_object('sub', d, 'role', 'authenticated')::text, true);
+  select public.join_circle(lower(code)) into circle;
+  select public.join_circle(code) into circle;
+  select count(*) into n from public.circle_members where circle_id = circle;
+  assert n = 2, 'D sees 2 members';
+  select count(*) into n from public.social_profiles where user_id = a;
+  assert n = 1, 'D sees circle mate A';
+  insert into public.cheers (to_user, kind) values (a, 'fire');
+  begin
+    update public.circles set name = 'Hacked' where id = circle;
+    get diagnostics n = row_count;
+    assert n = 0, 'member cannot rename';
+  end;
+  begin
+    perform public.regenerate_circle_code(circle);
+    assert false, 'member cannot regenerate code';
+  exception when raise_exception then null;
+  end;
+
+  -- ===== A removes D; D's old code no longer works =====
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  delete from public.circle_members where circle_id = circle and user_id = d;
+  select invite_code into r from public.circles where id = circle;
+  assert r <> code, 'removing someone changes the code';
+  perform set_config('request.jwt.claims', json_build_object('sub', d, 'role', 'authenticated')::text, true);
+  begin
+    perform public.join_circle(code);
+    assert false, 'removed member cannot rejoin with the old code';
+  exception when raise_exception then null;
+  end;
+  perform public.join_circle(r);
+  insert into public.reports (reported, reason) values (a, 'spam');
+  begin
+    insert into public.reports (reported, reason) values (a, 'spam');
+    assert false, 'one report per reason';
+  exception when unique_violation then null;
+  end;
+
+  -- ===== as E (blocked by A) =====
+  perform set_config('request.jwt.claims', json_build_object('sub', e, 'role', 'authenticated')::text, true);
+  select count(*) into n from public.social_profiles where user_id = a;
+  assert n = 0, 'E cannot see A';
+  select count(*) into n from public.find_profile('user_a');
+  assert n = 0, 'E cannot find A';
+  begin
+    perform public.send_friend_request('user_a');
+    assert false, 'E cannot request A';
+  exception when raise_exception then null;
+  end;
+
+  -- ===== as B: reads A's cheer, may only mark it seen =====
+  perform set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
+  select count(*) into n from public.cheers where to_user = b;
+  assert n = 1, 'B sees the cheer';
+  update public.cheers set seen_at = now() where to_user = b;
+  get diagnostics n = row_count;
+  assert n = 1, 'B marks seen';
+  begin
+    update public.cheers set kind = 'clap' where to_user = b;
+    assert false, 'B cannot edit the cheer';
+  exception when insufficient_privilege then null;
+  end;
+
+  -- ===== owner A leaves: D becomes owner =====
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  delete from public.circle_members where user_id = a and circle_id = circle;
+  perform set_config('role', 'none', true);
+  select role into r from public.circle_members where circle_id = circle and user_id = d;
+  assert r = 'owner', 'ownership passes to D';
+  delete from public.circle_members where circle_id = circle;
+  select count(*) into n from public.circles where id = circle;
+  assert n = 0, 'empty circle disappears';
+end;
+$$;
+
+select 'ALL SOCIAL RLS CHECKS PASSED' as result;
+rollback;

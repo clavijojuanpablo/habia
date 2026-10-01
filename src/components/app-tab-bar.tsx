@@ -1,4 +1,5 @@
 import type { BottomTabBarProps } from 'expo-router/js-tabs';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -13,15 +14,20 @@ const TAB_STYLE: Record<string, { emoji: string; tint: ThemeColor }> = {
   week: { emoji: '📅', tint: 'lavenderSoft' },
   garden: { emoji: '🌳', tint: 'primarySoft' },
   progress: { emoji: '📊', tint: 'goldSoft' },
-  profile: { emoji: '🙂', tint: 'backgroundSelected' },
+  friends: { emoji: '🤝', tint: 'lavenderSoft' },
 };
 
 export function AppTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.wrapper, { backgroundColor: theme.background, paddingBottom: Math.max(insets.bottom, Spacing.two) }]}>
+    <View
+      style={[
+        styles.wrapper,
+        { backgroundColor: theme.background, paddingBottom: Math.max(insets.bottom, Spacing.two) },
+      ]}>
       <View style={[styles.bar, { backgroundColor: theme.tabBar, boxShadow: Shadow.raised }]}>
         {state.routes.map((route, index) => {
           const focused = state.index === index;
@@ -43,10 +49,13 @@ export function AppTabBar({ state, descriptors, navigation }: BottomTabBarProps)
               onPress={onPress}
               accessibilityRole="tab"
               accessibilityState={{ selected: focused }}
-              accessibilityLabel={label}
+              accessibilityLabel={options.tabBarBadge !== undefined ? t('tabs.hasNews', { label }) : label}
               style={({ pressed }) => [styles.tab, { transform: [{ scale: pressed ? 0.92 : 1 }] }]}>
               <View style={[styles.iconTile, focused && { backgroundColor: theme[style.tint] }]}>
                 <ThemedText style={[styles.emoji, !focused && styles.unfocused]}>{style.emoji}</ThemedText>
+                {options.tabBarBadge !== undefined && (
+                  <View style={[styles.badge, { backgroundColor: theme.danger, borderColor: theme.tabBar }]} />
+                )}
               </View>
               <ThemedText
                 type="caption"
@@ -83,4 +92,6 @@ const styles = StyleSheet.create({
   },
   emoji: { fontSize: 24, lineHeight: 30 },
   unfocused: { opacity: 0.55 },
+  // Just "something new here": counts would turn friends into a number to clear.
+  badge: { position: 'absolute', top: 2, right: 8, width: 12, height: 12, borderRadius: 6, borderWidth: 2 },
 });

@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import * as Application from 'expo-application';
 import { router } from 'expo-router';
@@ -23,7 +22,8 @@ import { DayBandsEditor } from '@/features/profile/components/day-bands-editor';
 import { useTheme } from '@/hooks/use-theme';
 import { supabase } from '@/lib/supabase/client';
 
-export default function ProfileScreen() {
+/** Account and app settings (the old Profile tab): opened from the gear on Friends. */
+export default function SettingsScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
   const { session } = useSession();
@@ -33,69 +33,63 @@ export default function ProfileScreen() {
 
   return (
     <ThemedView style={styles.flex}>
-      <SafeAreaView style={styles.flex} edges={['top']}>
-        <ScrollView contentContainerStyle={styles.content}>
-          <View style={[styles.header, { backgroundColor: theme.lavenderSoft }]}>
-            <View style={[styles.avatar, { backgroundColor: theme.backgroundElement }]}>
-              <ThemedText style={styles.avatarText}>{name.charAt(0).toUpperCase()}</ThemedText>
-            </View>
-            <View style={styles.flex}>
-              <ThemedText type="subtitle" numberOfLines={1}>
-                {name}
-              </ThemedText>
-              <ThemedText type="small" themeColor="textSecondary" numberOfLines={1}>
-                {session?.user.email}
-              </ThemedText>
-              {profile?.timezone && (
-                <ThemedText type="small" themeColor="textSecondary" numberOfLines={1}>
-                  {t('profile.timezone', { zone: profile.timezone })}
-                </ThemedText>
-              )}
-            </View>
+      <ScrollView contentContainerStyle={styles.content}>
+        <View style={[styles.header, { backgroundColor: theme.lavenderSoft }]}>
+          <View style={[styles.avatar, { backgroundColor: theme.backgroundElement }]}>
+            <ThemedText style={styles.avatarText}>{name.charAt(0).toUpperCase()}</ThemedText>
           </View>
+          <View style={styles.flex}>
+            <ThemedText type="subtitle" numberOfLines={1}>
+              {name}
+            </ThemedText>
+            <ThemedText type="small" themeColor="textSecondary" numberOfLines={1}>
+              {session?.user.email}
+            </ThemedText>
+            {profile?.timezone && (
+              <ThemedText type="small" themeColor="textSecondary" numberOfLines={1}>
+                {t('profile.timezone', { zone: profile.timezone })}
+              </ThemedText>
+            )}
+          </View>
+        </View>
 
+        <Card>
+          <AppearancePicker />
+        </Card>
+        <Card>
+          <LanguagePicker />
+        </Card>
+        <Card>
+          <IdentitiesSection />
+        </Card>
+        {profile && (
           <Card>
-            <AppearancePicker />
+            <DayBandsEditor profile={profile} />
           </Card>
+        )}
+
+        <Card>
+          <AnalyticsToggle />
+        </Card>
+
+        {aiReviewAvailable && (
           <Card>
-            <LanguagePicker />
+            <AiReviewToggle />
           </Card>
-          <Card>
-            <IdentitiesSection />
-          </Card>
-          {profile && (
-            <Card>
-              <DayBandsEditor profile={profile} />
-            </Card>
-          )}
+        )}
 
-          <Card>
-            <AnalyticsToggle />
-          </Card>
+        <Card>
+          <ThemedText type="heading">{t('legal.title')}</ThemedText>
+          <Button label={t('legal.privacy')} variant="secondary" onPress={() => router.push('/legal/privacy')} />
+          <Button label={t('legal.terms')} variant="secondary" onPress={() => router.push('/legal/terms')} />
+        </Card>
 
-          {aiReviewAvailable && (
-            <Card>
-              <AiReviewToggle />
-            </Card>
-          )}
+        <Button label={t('auth.signOut')} variant="secondary" onPress={() => supabase.auth.signOut()} />
 
-          <Card>
-            <ThemedText type="heading">{t('legal.title')}</ThemedText>
-            <Button
-              label={t('legal.privacy')}
-              variant="secondary"
-              onPress={() => router.push('/legal/privacy')}
-            />
-            <Button label={t('legal.terms')} variant="secondary" onPress={() => router.push('/legal/terms')} />
-          </Card>
+        <DangerZone />
 
-          <Button label={t('auth.signOut')} variant="secondary" onPress={() => supabase.auth.signOut()} />
-
-          <DangerZone />
-
-          <AppVersion />
-        </ScrollView>
-      </SafeAreaView>
+        <AppVersion />
+      </ScrollView>
     </ThemedView>
   );
 }
