@@ -1,6 +1,6 @@
 # STATUS — where the project stands
 
-**Last updated: 2026-09-30.** This is the session entry point: a `SessionStart` hook injects it
+**Last updated: 2026-10-01.** This is the session entry point: a `SessionStart` hook injects it
 into every new Claude Code session. Keep it short and true. `ROADMAP.md` is the full backlog;
 this file is only "today".
 
