@@ -442,5 +442,43 @@
     "updated": "Updated on {{date}}",
     "consentPrefix": "By creating your account you accept the",
     "and": "and the"
+  },
+  "coach": {
+    "neverMissTwice": {
+      "minimum": "“{{name}}” slipped last time, and that's okay: one miss is an accident. Today, even just the minimum version: {{minimum}}.",
+      "plain": "“{{name}}” slipped last time, and that's okay: one miss is an accident. What matters is never missing twice in a row.",
+      "done": "That's it! “{{name}}” is back on track. Never miss twice: that's how a habit is built."
+    },
+    "comeback": "Coming back is what matters. A few unchecked days don't erase what you built: your tree is waiting. Start with today's easiest habit.",
+    "automaticity": {
+      "half": "“{{name}}” is at {{completions}} repetitions: halfway along the typical road to automaticity (~66, though it takes anywhere from 18 to 254).",
+      "close": "“{{name}}” is at {{completions}} repetitions: very close to the ~66 where, on average, a habit starts running on its own.",
+      "fruit": "🍎 “{{name}}” reached {{completions}} repetitions and is now a fruit on your tree. Each one was a vote for who you want to be."
+    },
+    "addMinimum": "“{{name}}” is putting up a fight ({{percent}}% this month). A 2-minute version makes it so easy it's hard to say no.",
+    "addIntention": "“{{name}}” is putting up a fight ({{percent}}% this month). Deciding when and where (“I will do this at … in …”) is among the things research finds helps most.",
+    "bestBand": "Your strong band: {{best}} ({{bestPercent}}%). The toughest: {{worst}} ({{worstPercent}}%). If a habit keeps slipping, try moving it to your strong band.",
+    "weekUp": "This week you're at {{thisWeek}}%, up from {{lastWeek}}% last week. Small gains that add up: that's the 1% rule.",
+    "facts": {
+      "0": "Every time you do a habit, you cast a vote for the person you want to become. You don't need unanimity, just a majority.",
+      "1": "1.01 to the power of 365 is about 37: a little better each day, sustained, compounds. Small things matter.",
+      "2": "A habit takes about 66 days on average to become automatic, anywhere from 18 to 254. There is no magic 21.",
+      "3": "Habit stacking works: “After [something you already do], I will [new habit].” The old routine becomes your reminder.",
+      "4": "Make the good obvious: the book on your pillow, the shoes by the door. Your environment decides more than willpower.",
+      "5": "Missing one day doesn't meaningfully affect forming a habit. What hurts is giving up.",
+      "6": "The 2-minute rule: start with a version so small you can't say no. First, it's about showing up.",
+      "7": "Pair what you need to do with something you enjoy: your favorite podcast, only while you walk."
+    },
+    "actions": {
+      "doMinimum": "Do the minimum version",
+      "markDone": "Mark as done",
+      "seeGarden": "See my garden",
+      "addMinimum": "Add a 2-minute version",
+      "addIntention": "Add when and where"
+    },
+    "taken": {
+      "minimum": "Done! “{{name}}” now has its 2-minute version: on hard days, that counts too.",
+      "intention": "Done! “{{name}}” now has its when and where: now the plan reminds you."
+    }
   }
 }

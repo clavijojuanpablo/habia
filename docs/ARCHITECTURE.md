@@ -2,7 +2,7 @@
 
 ```
 Expo app (iOS / Android / Web)
- ├─ Expo Router tabs: Hoy · Semana · Jardín · Coach · Perfil
+ ├─ Expo Router tabs: Hoy · Semana · Jardín · Progreso · Perfil (the coach is a daily card on Hoy for now)
  ├─ TanStack Query ⇄ supabase-js (Auth + Postgres through RLS)
  ├─ Recurrence engine (rrule) → occurrences for today / this week
  ├─ Local notification scheduler (expo-notifications)

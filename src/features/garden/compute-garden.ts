@@ -17,8 +17,12 @@ export type HabitGrowth = {
   streak: number;
   /** The most recent due occurrence was missed: one more miss breaks the streak. */
   atRisk: boolean;
+  /** Missed occurrences in a row up to now (0 when the last one was done). */
+  trailingMisses: number;
   /** Done / due over the last 30 days, 0–1. */
   consistency: number;
+  /** Due occurrences behind `consistency`: a ratio over 2 of them says little. */
+  recentDue: number;
   /** Progress toward ~66 repetitions, 0–1. */
   automaticity: number;
   /** Last 4 full weeks with ≥ 80% consistency → flowers. */
@@ -72,6 +76,8 @@ export function computeHabitGrowth(habit: Habit, logsByKey: Map<string, HabitLog
     }
   }
   const last = due[due.length - 1];
+  const lastDone = due.findLastIndex((d) => d.done);
+  const trailingMisses = due.length - 1 - lastDone;
 
   const completions = due.filter((d) => d.done).length;
   const since = (days: number) => due.filter((d) => d.at >= addDays(today, -days));
@@ -89,7 +95,9 @@ export function computeHabitGrowth(habit: Habit, logsByKey: Map<string, HabitLog
     recentCompletions: since(14).filter((d) => d.done).length,
     streak,
     atRisk: !!last && !last.done,
+    trailingMisses,
     consistency: ratio(since(30)),
+    recentDue: since(30).length,
     automaticity: Math.min(1, completions / AUTOMATICITY_REPETITIONS),
     flowers,
   };

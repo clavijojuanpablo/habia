@@ -35,6 +35,12 @@ describe('computeHabitGrowth', () => {
     expect(growth.atRisk).toBe(false);
   });
 
+  it('counts the misses in a row up to now', () => {
+    expect(computeHabitGrowth(habit, logsFor([-3, -2, -1]), TODAY).trailingMisses).toBe(0);
+    expect(computeHabitGrowth(habit, logsFor([-3, -2]), TODAY).trailingMisses).toBe(1);
+    expect(computeHabitGrowth(habit, logsFor([-3]), TODAY).trailingMisses).toBe(2);
+  });
+
   it('does not count today as missed while it is still pending', () => {
     expect(computeHabitGrowth(habit, logsFor([-2, -1]), TODAY).streak).toBe(2);
   });

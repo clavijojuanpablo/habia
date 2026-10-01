@@ -442,5 +442,43 @@
     "updated": "Actualizada el {{date}}",
     "consentPrefix": "Al crear tu cuenta aceptas los",
     "and": "y la"
+  },
+  "coach": {
+    "neverMissTwice": {
+      "minimum": "«{{name}}» se quedó pendiente la última vez, y está bien: un fallo es un accidente. Hoy, aunque sea la versión mínima: {{minimum}}.",
+      "plain": "«{{name}}» se quedó pendiente la última vez, y está bien: un fallo es un accidente. Lo importante es no fallar dos veces seguidas.",
+      "done": "¡Eso es! «{{name}}» vuelve al camino. Nunca dos veces seguidas: así se construye un hábito."
+    },
+    "comeback": "Volver es lo que importa. Unos días sin marcar no borran lo que ya construiste: tu árbol te espera. Empieza por el hábito más fácil de hoy.",
+    "automaticity": {
+      "half": "«{{name}}» ya suma {{completions}} repeticiones: la mitad del camino típico hacia el automatismo (~66, aunque a cada quien le toma entre 18 y 254).",
+      "close": "«{{name}}» lleva {{completions}} repeticiones: muy cerca de las ~66 en las que, de media, un hábito empieza a salir solo.",
+      "fruit": "🍎 «{{name}}» llegó a {{completions}} repeticiones y ya es fruto en tu árbol. Cada una fue un voto por quien quieres ser."
+    },
+    "addMinimum": "«{{name}}» se está resistiendo ({{percent}}% este mes). Una versión de 2 minutos lo vuelve tan fácil que cuesta decir que no.",
+    "addIntention": "«{{name}}» se está resistiendo ({{percent}}% este mes). Decidir cuándo y dónde («Haré esto a las … en …») es de lo que más ayuda según la investigación.",
+    "bestBand": "Tu franja fuerte: {{best}} ({{bestPercent}}%). La que más cuesta: {{worst}} ({{worstPercent}}%). Si un hábito se resiste, prueba moverlo a tu franja fuerte.",
+    "weekUp": "Esta semana vas en {{thisWeek}}%, frente a {{lastWeek}}% la anterior. Pequeñas mejoras que se suman: así funciona el 1%.",
+    "facts": {
+      "0": "Cada vez que cumples un hábito es un voto por la persona que quieres ser. No necesitas unanimidad, solo mayoría.",
+      "1": "1,01 elevado a 365 da unas 37: mejorar un poquito cada día, sostenido, se acumula. Lo pequeño importa.",
+      "2": "Un hábito tarda de media unos 66 días en volverse automático, aunque puede ir de 18 a 254. No existe un número mágico de 21.",
+      "3": "Encadenar hábitos funciona: «Después de [algo que ya haces], haré [hábito nuevo]». Lo de siempre se vuelve tu recordatorio.",
+      "4": "Haz que lo bueno sea obvio: el libro sobre la almohada, las zapatillas junto a la puerta. El entorno decide más que la fuerza de voluntad.",
+      "5": "Fallar un día no afecta de forma importante a la formación de un hábito. Lo que pesa es abandonar.",
+      "6": "La regla de los 2 minutos: empieza con una versión tan pequeña que no puedas decir que no. Primero se trata de presentarse.",
+      "7": "Junta lo que necesitas hacer con algo que disfrutas: tu podcast favorito, solo mientras caminas."
+    },
+    "actions": {
+      "doMinimum": "Hacer versión mínima",
+      "markDone": "Marcar como hecho",
+      "seeGarden": "Ver mi jardín",
+      "addMinimum": "Añadir versión de 2 minutos",
+      "addIntention": "Añadir cuándo y dónde"
+    },
+    "taken": {
+      "minimum": "¡Hecho! «{{name}}» ya tiene su versión de 2 minutos: los días difíciles, esa también cuenta.",
+      "intention": "¡Hecho! «{{name}}» ya tiene su cuándo y dónde: ahora el plan te recuerda a ti."
+    }
   }
 }

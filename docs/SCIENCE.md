@@ -19,11 +19,11 @@ Every feature must map to a mechanism here. If a feature doesn't, question it.
 
 ## Time to automaticity
 Lally et al. (2010): median **~66 days** to reach automaticity, range **18–254**. Missing a single day did not significantly affect the process.
-→ Show an honest "automaticity journey" per habit. Never promise "21 days". A habit becomes a **fruit** on the tree after ~66 days of consistency.
+→ Show an honest "automaticity journey" per habit. Never promise "21 days". A habit becomes a **fruit** on the tree after ~66 days of consistency. The coach marks halfway, "close" and the fruit (`automaticity`).
 
 ## Never miss twice
 One miss is an accident; two is the start of a new (bad) habit. Avoid the *abstinence violation effect* ("I already ruined it, so why bother").
-→ Streaks tolerate a single miss; the tree wilts slightly and recovers when you return. The coach suggests the 2-minute version after a miss.
+→ Streaks tolerate a single miss; the tree wilts slightly and recovers when you return. The coach suggests the 2-minute version after a miss (rule `never_miss_twice`, one tap to log it) and welcomes users back after two missed days (`comeback`).
 
 ## The 1% rule
 1.01^365 ≈ 37.8. Small improvements compound.
@@ -31,6 +31,12 @@ One miss is an accident; two is the start of a new (bad) habit. Avoid the *absti
 
 ## Time of day and energy
 Habits placed at consistent times and anchored to stable routines form faster. Show completion rate per day band (morning / afternoon / night) so users learn *when* they succeed.
+
+## Coach (rule-based daily tip)
+One tip a day on Today, picked by `src/features/coach/compute-tip.ts` in priority order; every rule
+cites a mechanism above: never miss twice → comeback → automaticity journey → struggling habit gets
+a 2-minute version (Law 3) or an implementation intention (Law 1) → best day band → week-over-week
+gain (1% rule) → a rotating science fact. Claude (weekly review, chat) builds on top later.
 
 ## Ethics guardrails
 - No variable-ratio "slot machine" rewards meant to create compulsion.

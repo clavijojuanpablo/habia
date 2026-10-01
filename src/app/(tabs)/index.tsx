@@ -13,6 +13,8 @@ import { ThemedView } from '@/components/themed-view';
 import { BandEmoji, MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
 import { DayCompleteOverlay } from '@/features/celebration/day-complete';
 import type { LogStatus } from '@/features/checkins/api';
+import { CoachCard } from '@/features/coach/components/coach-card';
+import { useCoachTip } from '@/features/coach/use-coach-tip';
 import { Brote } from '@/features/mascot/brote';
 import { isDone, isSkipped, nextInChain, type ScheduleBand, type ScheduledItem } from '@/features/schedule/build-schedule';
 import { ActionsTip, hasSeenActionsTip, markActionsTipSeen } from '@/features/schedule/components/actions-tip';
@@ -38,6 +40,7 @@ export default function TodayScreen() {
   const now = useNow();
   const { today, tomorrow } = useTodayRange(now);
   const { items, bands, hasHabits, isLoading, error, toggleItem } = useSchedule(today, tomorrow);
+  const coach = useCoachTip(today, items, isLoading);
 
   // Keep only the key: the item itself is read fresh from `items` on every render.
   const [chainNextKey, setChainNextKey] = useState<string | null>(null);
@@ -171,6 +174,10 @@ export default function TodayScreen() {
               </ThemedText>
               <Button label={t('today.createFirst')} onPress={() => router.push('/habit/new')} />
             </View>
+          )}
+
+          {coach.tip && hasHabits && (
+            <CoachCard tip={coach.tip} items={items} onToggle={onToggle} onDismiss={coach.dismiss} />
           )}
 
           <YesterdayCatchUp onActionsOpened={onActionsOpened} />

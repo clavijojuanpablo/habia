@@ -29,6 +29,10 @@ TestFlight** (Block 2 closed 2026-09-30):
   "de fábrica" for the JS embedded in the binary), the way to tell which JS a phone runs.
 - **EAS env `production`:** the five `EXPO_PUBLIC_*` plus `SENTRY_AUTH_TOKEN` (secret). Production
   builds upload JS source maps and dSYMs to Sentry `clavolab/habia`.
+- **Coach v1 (rule-based, free):** one tip a day on Today, voiced by Brote, pinned for the day,
+  dismissible, with a one-tap action (log the 2-minute version, edit the habit, see the garden).
+  Engine `src/features/coach/compute-tip.ts` (pure, tested), rules mapped in `docs/SCIENCE.md`.
+  Ships by OTA (JS only). Public TestFlight link submitted to Beta App Review (2026-09-30).
 - Still here from before: Sentry + PostHog, habia.app (Astro on Vercel) with legal pages, branded
   auth emails via Resend.
 
@@ -62,7 +66,8 @@ open the web fallback there; its "Open habia" button still works.
 | Legal texts (es/en), also at habia.app/privacidad and /terminos | ✅ | `src/features/legal/content.ts`, `web/` |
 | Marketing site habia.app + auth fallback page + AASA (Astro, Vercel, root dir `web`) | ✅ | `web/` |
 | iOS distribution: TestFlight internal + EAS Update | ✅ | `app.json`, `eas.json` |
-| AI coach, character, friends, leagues, paywall | ⏳ not started | — |
+| Coach v1: rule-based daily tip on Today | ✅ | `src/features/coach/` |
+| Claude coach (weekly review, chat), character, friends, leagues, paywall | ⏳ not started | — |
 
 ## Technical state
 
@@ -89,16 +94,28 @@ open the web fallback there; its "Open habia" button still works.
 
 ## Next steps
 
-**Start here — finish Block 2, then the AI coach.**
+**Start here — ship coach v1, then the Claude part of the coach.**
 
-1. **External testers:** public TestFlight link (Apple beta review), App Store Connect privacy
-   questionnaire (privacy URL `https://habia.app/privacidad`).
-2. Then, in this order (ROADMAP → "Order after Block 2"): **AI coach** → **your character** →
+1. **Ship coach v1 by OTA** (if not done): `npx eas-cli@latest update …` (recipe in Technical
+   state), reopen the TestFlight app twice, check the card on Today.
+2. **External testers:** waiting for Beta App Review of the "Beta pública" group (demo account in
+   App Store Connect; never delete it). When approved: enable the public link with a tester limit.
+   The App Privacy questionnaire is only needed for the App Store, not TestFlight.
+3. **Claude weekly review (Pro):** Edge Function + Batch API, Sonnet; first resolve the
+   server-side "today" (`profiles.timezone` debt). Then capped chat.
+4. Then, in this order (ROADMAP → "Order after Block 2"): **your character** → **your character** →
    **friends & circles** → opt-in **leagues** → **monetization**, all before the public launch.
    Plus the north-star self-report (PostHog survey). Start the "can a Colombian individual use
    Stripe?" question early: it takes calendar weeks, not code.
 
 ## Known debts
+
+- **Expo web crashes at startup when the PostHog key is set**: `PostHog: No storage available`
+  (`src/lib/analytics.ts`; posthog-react-native needs a storage provider on web). Native is fine.
+  Workaround for previews: `EXPO_NO_DOTENV=1` + fake Supabase vars + `expo export --clear`
+  (Metro caches inlined env vars).
+- Coach: `coach_tip_shown` fires on every Today mount (read it as impressions, not once a day).
+  Untested edge: a cold start with persisted logs could pin the day's tip before the refetch.
 
 - **Skia risk:** Shopify announced (2026-09-10) it is leaving React Native; it sponsors
   `@shopify/react-native-skia` only through end of 2026, then its creator forks it. Re-check the
