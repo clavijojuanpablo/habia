@@ -106,8 +106,7 @@ open the web fallback there; its "Open habia" button still works.
 0. **Turn on the AI weekly review** (built and deployed 2026-10-01, idle until a key exists):
    1. Create an API key at console.anthropic.com (set a monthly spend limit there).
    2. `npx supabase secrets set ANTHROPIC_API_KEY=<key>` (never in the repo or `EXPO_PUBLIC_*`).
-      Optional: `COACH_MODEL` (default `claude-sonnet-5`, as CLAUDE.md says; Sonnet 5.5,
-      `claude-sonnet-5-5`, costs the same).
+      Optional: `COACH_MODEL` overrides the model (default `claude-sonnet-5-5`, ~$0.02 per review).
    3. Ship 1.0.6 by OTA. In the app: Profile → "Revisión semanal con IA" on (or accept Brote's
       offer on Today after a week of use). Opening Today in a new week writes last week's review.
    Check it: `curl -X POST <SUPABASE_URL>/functions/v1/weekly-review -H "apikey: <publishable>" -H "Authorization: Bearer <publishable>" -d '{"check":true}'`

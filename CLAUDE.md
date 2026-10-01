@@ -20,7 +20,7 @@ A visual, gamified habit tracker grounded in *Atomic Habits* (James Clear) and h
 - **Recurrence:** RFC 5545 RRULE strings (supported subset), expanded on the client by our own engine in `src/lib/recurrence/` (local-time arithmetic, DST-safe).
 - **Notifications:** `expo-notifications` (local scheduled reminders; push via Expo Push from Edge Functions).
 - **Payments (Phase 4):** RevenueCat (in-app) + Stripe (web).
-- **AI coach (Phase 3):** Claude API called only from a Supabase Edge Function — Haiku 4.5 (`claude-haiku-4-5-20251001`) for daily messages, Sonnet 5 (`claude-sonnet-5`) for weekly reviews.
+- **AI coach (Phase 3):** Claude API called only from a Supabase Edge Function — Haiku 4.5 (`claude-haiku-4-5-20251001`) for daily messages, Sonnet 5.5 (`claude-sonnet-5-5`) for weekly reviews (chosen 2026-10-01: same price as Sonnet 5; Haiku is half the price but weaker at the review's many tone rules, and rejects `effort`). Calls use `fallbacks: "default"` (beta `server-side-fallback-2026-07-01`).
 - **Observability:** Sentry + PostHog.
 
 Install libraries with `npx expo install <pkg>` (see AGENTS.md). Libraries with native code that Expo Go does not bundle (e.g. MMKV, RevenueCat) require a development build; Skia, SVG, notifications and SQLite work in Expo Go.

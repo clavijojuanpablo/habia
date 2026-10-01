@@ -21,8 +21,8 @@ import { lastWeekStart, type SummaryLog, summarizeWeek } from '../_shared/weekly
 import { toZonedFloating } from '../_shared/zoned.ts';
 import { SYSTEM_PROMPT, userMessage } from './prompt.ts';
 
-// Model named for weekly reviews in CLAUDE.md; overridable without a redeploy of code.
-const MODEL = Deno.env.get('COACH_MODEL') ?? 'claude-sonnet-5';
+// The current Sonnet (same price as Sonnet 5); overridable with the COACH_MODEL secret, no code change.
+const MODEL = Deno.env.get('COACH_MODEL') ?? 'claude-sonnet-5-5';
 const LOG_PAGE = 1000;
 
 const corsHeaders = {
@@ -130,7 +130,10 @@ Deno.serve(async (req) => {
   const anthropic = new Anthropic({ apiKey });
   let review: z.infer<typeof Review>;
   try {
-    const response = await anthropic.messages.parse({
+    const response = await anthropic.beta.messages.parse({
+      // If a safety classifier declines by mistake, the API retries on its recommended fallback model.
+      betas: ['server-side-fallback-2026-07-01'],
+      fallbacks: 'default',
       model: MODEL,
       max_tokens: 4000,
       system: [{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
