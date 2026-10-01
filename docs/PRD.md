@@ -4,10 +4,10 @@
 A habit app that makes behavior change visible, forgiving and science-based, so users see real improvements in their lifestyle. Ambition: become the reference habit app for Spanish speakers, the way Duolingo is for language learning.
 
 ## Positioning
-**"La app de hábitos basada en ciencia, donde tu árbol crece con cada voto por la persona que quieres ser."**
+**"La app de hábitos basada en ciencia, donde tu árbol crece con cada semilla que siembras por la persona que quieres ser."**
 
 Differentiators (every feature should reinforce at least one):
-1. **The living Identity Tree** - "every action is a vote" made visible. The brand's hero image.
+1. **The living Identity Tree** - "every action is a seed" made visible (Clear's identity votes, told as sowing). The brand's hero image.
 2. **Real science, no gimmicks** - honest ~66 days, never miss twice, implementation intentions, habit stacking.
 3. **Kind, never guilt-tripping** - the anti-Duolingo-guilt habit app. No shame copy, no manipulative notifications.
 4. **Spanish first** - built for LatAm + Spain, English second.
@@ -47,7 +47,7 @@ Habits with flexible frequency, Today/Week views with day bands, reminders, Iden
 - Home/lock-screen **widgets**, **Apple Health / Health Connect** auto-completion, **Apple Watch**, **Siri shortcuts** (need native code / development build).
 - **Earnable streak shield** - 7 consistent days earn one protected day.
 - **Calendar (read-only)** - show device calendar events in Hoy/Semana as context.
-- **One-off reminders** - simple to-dos ("comprar comida gata") in their own table, never counted in streaks, votes or the tree. Build only if TestFlight users ask.
+- **One-off reminders** - simple to-dos ("comprar comida gata") in their own table, never counted in streaks, seeds or the tree. Build only if TestFlight users ask.
 
 ### D. Depth (Pro)
 - **AI coach** - hybrid: rule-based daily tips (free), Claude weekly review (Batch) and capped chat (Pro).
@@ -59,7 +59,7 @@ Habits with flexible frequency, Today/Week views with day bands, reminders, Iden
 
 ## Scope decisions
 - **Not a notes / lists / full calendar app.** Built-in apps do this free and well; it would dilute positioning and distort habit metrics. Integrate (read the calendar) instead of reinventing.
-- One-off tasks stay separate from habits so streaks, votes and the tree keep measuring repetition.
+- One-off tasks stay separate from habits so streaks, seeds and the tree keep measuring repetition.
 
 ## Monetization
 | Plan | Price (reference) | Includes |

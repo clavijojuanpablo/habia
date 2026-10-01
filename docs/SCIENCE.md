@@ -15,7 +15,7 @@ Every feature must map to a mechanism here. If a feature doesn't, question it.
 | 4. Make it satisfying | Immediate reward; habit tracking | Check-in animation + haptics, the tree grows immediately, visual tracker |
 
 ## Identity-based habits
-"Every action you take is a vote for the type of person you wish to become." Completions are **votes** that grow the Identity Tree (see `GAMIFICATION.md`). Users define identities ("Soy una persona que lee") and link habits to them.
+"Every action you take is a vote for the type of person you wish to become." In the app this is told as sowing: each completion is a **seed** planted for that person, consistency **waters** it, and ~66 repetitions are the **harvest** (see `GAMIFICATION.md`). Users define identities ("Soy una persona que lee") and link habits to them.
 
 ## Time to automaticity
 Lally et al. (2010): median **~66 days** to reach automaticity, range **18–254**. Missing a single day did not significantly affect the process.
@@ -49,7 +49,7 @@ step aside, and every tip has a "¿Por qué?" line with the data and the source.
 | heavy day in the weakest band → front-load | Time of day and energy |
 | best day band | Time of day and energy |
 | better week | The 1% rule |
-| minimum version kept the streak alive | 2-minute rule; identity votes |
+| minimum version kept the streak alive | 2-minute rule; identity (seeds) |
 | rotating science fact (fallback) | — |
 
 Every detector stays silent below a minimum sample (e.g. at least 4 of a weekday, 5 timed

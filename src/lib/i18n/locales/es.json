@@ -9,7 +9,7 @@
     "close": "Cerrar"
   },
   "auth": {
-    "title": "Cada acción es un voto por la persona que quieres ser.",
+    "title": "Cada acción es una semilla para la persona que quieres ser.",
     "email": "Correo",
     "password": "Contraseña",
     "signIn": "Entrar",
@@ -54,14 +54,14 @@
     },
     "progress": "{{done}} de {{total}} completados",
     "empty": "Aún no tienes hábitos. Empieza con uno pequeño: tan fácil que no puedas decir que no.",
-    "allDone": "¡Día completo! Cada voto cuenta.",
+    "allDone": "¡Día completo! Cada semilla cuenta.",
     "addHabit": "Nuevo hábito",
     "minimumDone": "Versión de 2 min",
     "restDay": "Descanso",
     "afterHabit": "↳ Después de {{habit}}",
     "nextInChain": "Siguiente en tu cadena",
     "markDone": "Hecho",
-    "heroEmpty": "Crea tu primer hábito para empezar a sumar votos.",
+    "heroEmpty": "Crea tu primer hábito para empezar a sembrar.",
     "emptyTitle": "Tu jardín empieza con una semilla",
     "createFirst": "Crear mi primer hábito",
     "actions": {
@@ -166,7 +166,7 @@
   },
   "reminders": {
     "channel": "Recordatorios de hábitos",
-    "body": "Es tu momento. Un pequeño voto por quien quieres ser.",
+    "body": "Es tu momento. Siembra una pequeña semilla por quien quieres ser.",
     "bodyMinimum": "Aunque sea la versión mínima: {{minimum}}",
     "bodyWhere": "📍 {{where}}"
   },
@@ -178,8 +178,8 @@
       "3": "Un árbol",
       "4": "Un árbol con frutos"
     },
-    "votes_one": "{{count}} voto por la persona que quieres ser",
-    "votes_other": "{{count}} votos por la persona que quieres ser",
+    "votes_one": "{{count}} semilla sembrada para la persona que quieres ser",
+    "votes_other": "{{count}} semillas sembradas para la persona que quieres ser",
     "healthGood": "Tu árbol está sano. Cada acción cuenta.",
     "healthLow": "Algunas hojas se ven cansadas. Un fallo es un accidente: hoy retomas.",
     "streak_one": "{{count}} seguido",
@@ -195,15 +195,15 @@
       "3": "Árbol",
       "4": "Frutos"
     },
-    "toNextStage_one": "A {{count}} voto de convertirse en {{stage}}",
-    "toNextStage_other": "A {{count}} votos de convertirse en {{stage}}"
+    "toNextStage_one": "A {{count}} semilla de convertirse en {{stage}}",
+    "toNextStage_other": "A {{count}} semillas de convertirse en {{stage}}"
   },
   "progress": {
     "title": "Tu progreso",
     "today": "Hoy",
     "thisWeek": "Esta semana",
     "bestStreak": "Mejor racha",
-    "votes": "Votos",
+    "votes": "Semillas",
     "heatmapSubtitle": "Cada día, qué tanto cumpliste. Toca un día para ver el detalle.",
     "dayDetail": "{{date}}: {{done}} de {{due}} hábitos",
     "less": "Menos",
@@ -223,7 +223,7 @@
     "new": "Nueva identidad",
     "edit": "Editar identidad",
     "title": "¿Quién quieres ser?",
-    "sectionHint": "Cada identidad es una rama de tu árbol. Tus hábitos son votos por ella.",
+    "sectionHint": "Cada identidad es una rama de tu árbol. Tus hábitos son las semillas que la hacen crecer.",
     "explainer": "Los hábitos duran cuando son parte de quién eres. Escribe la persona que quieres ser, no la meta.",
     "statement": "Soy una persona que…",
     "statementPlaceholder": "cuida su cuerpo, lee cada día, está presente…",
@@ -243,8 +243,8 @@
   "topBar": {
     "streak_one": "Racha de {{count}} día",
     "streak_other": "Racha de {{count}} días",
-    "votes_one": "{{count}} voto",
-    "votes_other": "{{count}} votos"
+    "votes_one": "{{count}} semilla",
+    "votes_other": "{{count}} semillas"
   },
   "appearance": {
     "title": "Apariencia",
@@ -300,7 +300,7 @@
     "skip": "Ya uso la app, saltar",
     "start": "Empezar 🌱",
     "welcomeTitle": "¡Hola! Soy Brote",
-    "welcomeBody": "Voy a crecer contigo. Cada hábito que cumplas es un voto por la persona que quieres ser, y este jardín lo hace visible.",
+    "welcomeBody": "Voy a crecer contigo. Cada hábito que cumplas es una semilla para la persona que quieres ser, y este jardín te deja verla crecer.",
     "identityTitle": "¿Quién quieres ser?",
     "identityBody": "Los hábitos duran cuando forman parte de tu identidad. No elijas una meta: elige una persona.",
     "identitySuggestion": {
@@ -421,8 +421,8 @@
     "title": "¡Día completo!",
     "body_one": "Cumpliste tu hábito de hoy. Así se construye.",
     "body_other": "Cumpliste tus {{count}} hábitos de hoy. Así se construye.",
-    "votes_one": "+{{count}} voto por quien quieres ser",
-    "votes_other": "+{{count}} votos por quien quieres ser"
+    "votes_one": "+{{count}} semilla para quien quieres ser",
+    "votes_other": "+{{count}} semillas para quien quieres ser"
   },
   "time": {
     "anyTime": "En cualquier momento",
@@ -479,8 +479,8 @@
       }
     },
     "doneToday": {
-      "v0": "¡Hecho! «{{name}}» ya cuenta hoy. Un voto más por quien quieres ser.",
-      "v1": "«{{name}}» ✔️ Otro voto por la persona que quieres ser."
+      "v0": "¡Hecho! «{{name}}» ya cuenta hoy. Una semilla más para quien quieres ser.",
+      "v1": "«{{name}}» ✔️ Otra semilla sembrada para la persona que quieres ser."
     },
     "automaticity": {
       "half": {
@@ -492,7 +492,7 @@
         "v1": "Ya casi: {{completions}} repeticiones de «{{name}}». Pronto será fruto en tu árbol."
       },
       "fruit": {
-        "v0": "🍎 «{{name}}» llegó a {{completions}} repeticiones y ya es fruto en tu árbol. Cada una fue un voto por quien quieres ser.",
+        "v0": "🍎 «{{name}}» llegó a {{completions}} repeticiones y ya es fruto en tu árbol. Lo que sembraste, hoy lo cosechas.",
         "v1": "🍎 ¡Fruto! {{completions}} repeticiones de «{{name}}». Esto ya es parte de quien eres."
       }
     },
@@ -540,7 +540,7 @@
       "fact": "Un dato de la ciencia de los hábitos (Clear, Lally, Gollwitzer)."
     },
     "facts": {
-      "0": "Cada vez que cumples un hábito es un voto por la persona que quieres ser. No necesitas unanimidad, solo mayoría.",
+      "0": "Cada hábito que cumples es una semilla para la persona que quieres ser. No todas tienen que brotar: lo que importa es seguir sembrando.",
       "1": "1,01 elevado a 365 da unas 37: mejorar un poquito cada día, sostenido, se acumula. Lo pequeño importa.",
       "2": "Un hábito tarda de media unos 66 días en volverse automático, aunque puede ir de 18 a 254. No existe un número mágico de 21.",
       "3": "Encadenar hábitos funciona: «Después de [algo que ya haces], haré [hábito nuevo]». Lo de siempre se vuelve tu recordatorio.",

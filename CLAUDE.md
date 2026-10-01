@@ -8,7 +8,7 @@ A visual, gamified habit tracker grounded in *Atomic Habits* (James Clear) and h
 
 ## Product principles
 - Science over gimmicks: the 4 laws (obvious, attractive, easy, satisfying), implementation intentions, habit stacking, the 2-minute rule, "never miss twice", ~66 days to automaticity (never promise "21 days").
-- Identity-based: each completion is a "vote" for who the user wants to become. This drives the Identity Tree (`docs/GAMIFICATION.md`).
+- Identity-based: each completion is a **seed** planted for who the user wants to become (Clear's "vote", told as sowing: plant → water → harvest). This drives the Identity Tree (`docs/GAMIFICATION.md`).
 - Forgiving, not punishing: a single miss never wipes progress. No shame copy, no dark patterns, no manipulative streak anxiety.
 - Highly visual and alive: day bands (morning / afternoon / night), animated tree, satisfying check-ins (animation + haptics).
 

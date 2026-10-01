@@ -20,12 +20,12 @@ export const copy = {
     meta: {
       title: 'habia · Hábitos que se quedan',
       description:
-        'Un tracker de hábitos visual y amable, basado en la ciencia. Cada acción es un voto por la persona que quieres ser.',
+        'Un tracker de hábitos visual y amable, basado en la ciencia. Cada acción es una semilla para la persona que quieres ser.',
     },
     nav: { switchLang: 'English', switchLangLabel: 'Ver en inglés' },
     hero: {
       badge: 'Muy pronto en iPhone y Android',
-      title: 'Cada acción es un voto por la persona que quieres ser.',
+      title: 'Cada acción es una semilla para la persona que quieres ser.',
       body: 'habia es un tracker de hábitos visual y amable, basado en la ciencia de cómo se forman los hábitos. Marca tus pequeñas victorias, mira crecer tu árbol y conviértete en quien quieres ser.',
       cta: 'Avísame cuando salga',
       ctaSubject: 'Quiero probar habia',
@@ -50,7 +50,7 @@ export const copy = {
         {
           emoji: '🌳',
           title: 'Tu árbol de identidad',
-          body: 'Cada hábito cumplido es un voto. Tus votos hacen crecer un árbol que muestra en quién te estás convirtiendo.',
+          body: 'Cada hábito cumplido es una semilla. Lo que siembras hace crecer un árbol que muestra en quién te estás convirtiendo, y con constancia da frutos.',
         },
         {
           emoji: '🌱',
@@ -81,12 +81,12 @@ export const copy = {
     meta: {
       title: 'habia · Habits that stick',
       description:
-        'A visual, kind habit tracker grounded in science. Every action is a vote for the person you want to become.',
+        'A visual, kind habit tracker grounded in science. Every action is a seed for the person you want to become.',
     },
     nav: { switchLang: 'Español', switchLangLabel: 'Ver en español' },
     hero: {
       badge: 'Coming soon to iPhone and Android',
-      title: 'Every action is a vote for the person you want to become.',
+      title: 'Every action is a seed for the person you want to become.',
       body: 'habia is a visual, kind habit tracker grounded in the science of how habits form. Check off your small wins, watch your tree grow and become who you want to be.',
       cta: 'Tell me when it launches',
       ctaSubject: 'I want to try habia',
@@ -111,7 +111,7 @@ export const copy = {
         {
           emoji: '🌳',
           title: 'Your identity tree',
-          body: 'Every habit you complete is a vote. Your votes grow a tree that shows who you are becoming.',
+          body: 'Every habit you complete is a seed. What you plant grows a tree that shows who you are becoming, and with consistency it bears fruit.',
         },
         {
           emoji: '🌱',

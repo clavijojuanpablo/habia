@@ -9,7 +9,7 @@
     "close": "Close"
   },
   "auth": {
-    "title": "Every action is a vote for the person you want to become.",
+    "title": "Every action is a seed for the person you want to become.",
     "email": "Email",
     "password": "Password",
     "signIn": "Sign in",
@@ -54,14 +54,14 @@
     },
     "progress": "{{done}} of {{total}} done",
     "empty": "No habits yet. Start with a tiny one: so easy you can't say no.",
-    "allDone": "Day complete! Every vote counts.",
+    "allDone": "Day complete! Every seed counts.",
     "addHabit": "New habit",
     "minimumDone": "2-min version",
     "restDay": "Rest day",
     "afterHabit": "↳ After {{habit}}",
     "nextInChain": "Next in your chain",
     "markDone": "Done",
-    "heroEmpty": "Create your first habit to start casting votes.",
+    "heroEmpty": "Create your first habit to start planting.",
     "emptyTitle": "Your garden starts with a seed",
     "createFirst": "Create my first habit",
     "actions": {
@@ -166,7 +166,7 @@
   },
   "reminders": {
     "channel": "Habit reminders",
-    "body": "It is time. A small vote for who you want to be.",
+    "body": "It’s time. Plant a small seed for who you want to be.",
     "bodyMinimum": "Even the minimum version counts: {{minimum}}",
     "bodyWhere": "📍 {{where}}"
   },
@@ -178,8 +178,8 @@
       "3": "A tree",
       "4": "A fruiting tree"
     },
-    "votes_one": "{{count}} vote for the person you want to become",
-    "votes_other": "{{count}} votes for the person you want to become",
+    "votes_one": "{{count}} seed planted for the person you want to become",
+    "votes_other": "{{count}} seeds planted for the person you want to become",
     "healthGood": "Your tree is healthy. Every action counts.",
     "healthLow": "Some leaves look tired. One miss is an accident: today you get back on track.",
     "streak_one": "{{count}} in a row",
@@ -195,15 +195,15 @@
       "3": "Tree",
       "4": "Fruits"
     },
-    "toNextStage_one": "{{count}} vote away from becoming a {{stage}}",
-    "toNextStage_other": "{{count}} votes away from becoming a {{stage}}"
+    "toNextStage_one": "{{count}} seed away from becoming a {{stage}}",
+    "toNextStage_other": "{{count}} seeds away from becoming a {{stage}}"
   },
   "progress": {
     "title": "Your progress",
     "today": "Today",
     "thisWeek": "This week",
     "bestStreak": "Best streak",
-    "votes": "Votes",
+    "votes": "Seeds",
     "heatmapSubtitle": "How much you completed each day. Tap a day for details.",
     "dayDetail": "{{date}}: {{done}} of {{due}} habits",
     "less": "Less",
@@ -223,7 +223,7 @@
     "new": "New identity",
     "edit": "Edit identity",
     "title": "Who do you want to become?",
-    "sectionHint": "Each identity is a branch of your tree. Your habits are votes for it.",
+    "sectionHint": "Each identity is a branch of your tree. Your habits are the seeds that make it grow.",
     "explainer": "Habits stick when they are part of who you are. Write the person you want to be, not the goal.",
     "statement": "I am a person who…",
     "statementPlaceholder": "takes care of their body, reads every day, is present…",
@@ -243,8 +243,8 @@
   "topBar": {
     "streak_one": "{{count}}-day streak",
     "streak_other": "{{count}}-day streak",
-    "votes_one": "{{count}} vote",
-    "votes_other": "{{count}} votes"
+    "votes_one": "{{count}} seed",
+    "votes_other": "{{count}} seeds"
   },
   "appearance": {
     "title": "Appearance",
@@ -300,7 +300,7 @@
     "skip": "I already use the app, skip",
     "start": "Start 🌱",
     "welcomeTitle": "Hi! I am Brote",
-    "welcomeBody": "I will grow with you. Every habit you complete is a vote for the person you want to become, and this garden makes it visible.",
+    "welcomeBody": "I’ll grow with you. Every habit you complete is a seed for the person you want to become, and this garden lets you watch it grow.",
     "identityTitle": "Who do you want to become?",
     "identityBody": "Habits last when they are part of your identity. Do not pick a goal: pick a person.",
     "identitySuggestion": {
@@ -421,8 +421,8 @@
     "title": "Day complete!",
     "body_one": "You did your habit for today. This is how it is built.",
     "body_other": "You did all {{count}} habits for today. This is how it is built.",
-    "votes_one": "+{{count}} vote for who you want to be",
-    "votes_other": "+{{count}} votes for who you want to be"
+    "votes_one": "+{{count}} seed for who you want to be",
+    "votes_other": "+{{count}} seeds for who you want to be"
   },
   "time": {
     "anyTime": "Any time",
@@ -479,8 +479,8 @@
       }
     },
     "doneToday": {
-      "v0": "Done! “{{name}}” counts today. One more vote for who you want to be.",
-      "v1": "“{{name}}” ✔️ Another vote for the person you want to become."
+      "v0": "Done! “{{name}}” counts today. One more seed for who you want to be.",
+      "v1": "“{{name}}” ✔️ Another seed planted for the person you want to become."
     },
     "automaticity": {
       "half": {
@@ -492,7 +492,7 @@
         "v1": "Almost there: {{completions}} repetitions of “{{name}}”. Soon it’ll be a fruit on your tree."
       },
       "fruit": {
-        "v0": "🍎 “{{name}}” reached {{completions}} repetitions and is now a fruit on your tree. Each one was a vote for who you want to be.",
+        "v0": "🍎 “{{name}}” reached {{completions}} repetitions and is now a fruit on your tree. What you planted, you now harvest.",
         "v1": "🍎 Fruit! {{completions}} repetitions of “{{name}}”. This is part of who you are now."
       }
     },
@@ -540,7 +540,7 @@
       "fact": "A fact from habit science (Clear, Lally, Gollwitzer)."
     },
     "facts": {
-      "0": "Every time you do a habit, you cast a vote for the person you want to become. You don't need unanimity, just a majority.",
+      "0": "Every habit you complete is a seed for the person you want to become. Not every one has to sprout: what matters is to keep planting.",
       "1": "1.01 to the power of 365 is about 37: a little better each day, sustained, compounds. Small things matter.",
       "2": "A habit takes about 66 days on average to become automatic, anywhere from 18 to 254. There is no magic 21.",
       "3": "Habit stacking works: “After [something you already do], I will [new habit].” The old routine becomes your reminder.",

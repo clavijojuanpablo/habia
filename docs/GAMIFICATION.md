@@ -1,6 +1,13 @@
 # Gamification: the Identity Tree
 
-Every completed habit is a **vote** for the person you want to become. Votes feed a living tree rendered with Skia.
+Every completed habit is a **seed** planted for the person you want to become. Seeds feed a living tree rendered with Skia.
+
+**The sowing metaphor (decided 2026-09-30, replaces "votes" in all copy):**
+- **Plant (🌱 semillas):** every completed habit. The counter in the top bar, the garden and Progress.
+- **Water (💧 gotas):** earned by consistency; the currency of the character (below).
+- **Harvest (🍎 frutos):** a habit that reached ~66 repetitions.
+
+Code still calls planted seeds `votes` (`useVotes`, `votesKey`, i18n keys `*.votes_*`): only the words changed.
 
 ## Anatomy
 | Tree part | Meaning |
@@ -13,7 +20,7 @@ Every completed habit is a **vote** for the person you want to become. Votes fee
 | Roots | Habit stacks (`anchor_habit_id` chains), visible underground |
 
 ## Growth stages (`garden_state.stage`)
-0 Seed → 1 Sprout → 2 Sapling → 3 Tree → 4 Fruiting tree. Thresholds are based on votes and weeks of consistency, tuned during Phase 2.
+0 Seed → 1 Sprout → 2 Sapling → 3 Tree → 4 Fruiting tree. Thresholds are based on seeds planted and weeks of consistency, tuned during Phase 2.
 
 ## Health (`garden_state.health`)
 - A single miss makes leaves droop slightly ("never miss twice"); it recovers fully on the next completion.
@@ -41,10 +48,10 @@ Each user has a **customizable character** that is *them* growing: the identity 
 - **Launch small, grow in seasons:** ~6 plants, 4 pots, 5 eyes, 5 mouths, 6 accessories at launch (thousands of combinations); new parts in themed drops. Rive files can be fetched remotely, so new parts need no app update.
 - Open: whether the avatar plant also grows in stages with consistency (lovely, but multiplies plant art — later).
 
-**Unlocks: free, earned with seeds, or bought.**
-- **Seeds (🌱)** are earned by **consistency, never by raw check-ins**: streak milestones, consistent weeks, the ~66-day automaticity mark; daily cap. Adding trivial habits must not earn more.
-- **Seeds are never sold for money.** Paid items are bought directly; otherwise completing habits becomes "the slow way to pay" (overjustification risk, see SCIENCE.md ethics).
-- **Computed on the server:** an append-only seed ledger written by Postgres from real logs (function/trigger), never granted by the client. Inventory table records each owned part and its source (free / earned / purchased); `profiles` stores the equipped combination.
+**Unlocks: free, earned with drops, or bought.**
+- **Drops (💧 gotas)** are earned by **consistency, never by raw check-ins**: streak milestones, consistent weeks, the ~66-day automaticity mark; daily cap. Adding trivial habits must not earn more.
+- **Drops are never sold for money.** Paid items are bought directly; otherwise completing habits becomes "the slow way to pay" (overjustification risk, see SCIENCE.md ethics).
+- **Computed on the server:** an append-only drop ledger written by Postgres from real logs (function/trigger), never granted by the client. Inventory table records each owned part and its source (free / earned / purchased); `profiles` stores the equipped combination.
 
 **Asset spec (for designing with other AIs / Claude Cowork):**
 - SVG, `viewBox="0 0 120 120"`, flat shapes (no filters, no raster), palette from `src/constants/theme.ts` + the Brote colors in `src/features/mascot/brote.tsx`.
