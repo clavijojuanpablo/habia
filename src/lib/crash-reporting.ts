@@ -17,6 +17,11 @@ Sentry.init({
 
 export const wrapRoot = Sentry.wrap;
 
+/** Errors caught by an error boundary never reach the global handler: send them explicitly. */
+export function reportError(error: unknown) {
+  Sentry.captureException(error);
+}
+
 export function setCrashUser(userId: string | null) {
   Sentry.setUser(userId ? { id: userId } : null);
 }

@@ -619,5 +619,10 @@
     "FR": "Friday",
     "SA": "Saturday",
     "SU": "Sunday"
+  },
+  "crash": {
+    "title": "Something broke 🌱",
+    "body": "Not your fault. Take a screenshot of this screen and send it so we can fix it fast.",
+    "retry": "Try again"
   }
 }

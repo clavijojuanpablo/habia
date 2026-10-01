@@ -1,4 +1,5 @@
-import '@/lib/i18n';
+// First: initializes i18n before anything renders.
+import i18n from '@/lib/i18n';
 
 import {
   Nunito_600SemiBold,
@@ -8,27 +9,51 @@ import {
   useFonts,
 } from '@expo-google-fonts/nunito';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider, usePathname } from 'expo-router';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider, usePathname, type ErrorBoundaryProps } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { Colors } from '@/constants/theme';
+import { Colors, Radius, Spacing } from '@/constants/theme';
 import { AppearanceProvider, useAppearance } from '@/features/appearance/appearance-provider';
 import { SessionProvider, useSession } from '@/features/auth/session-provider';
 import { useProfile } from '@/features/profile/api';
 import { useTheme } from '@/hooks/use-theme';
 import { useTimezoneSync } from '@/features/profile/use-timezone-sync';
 import { trackScreen } from '@/lib/analytics';
-import { wrapRoot } from '@/lib/crash-reporting';
+import { reportError, wrapRoot } from '@/lib/crash-reporting';
 import { startNetworkWatcher, syncOnlineState } from '@/lib/network';
 import { persister, queryClient } from '@/lib/query/client';
 
 SplashScreen.preventAutoHideAsync();
 
 export default wrapRoot(RootLayout);
+
+/**
+ * Any screen that throws while rendering lands here instead of closing the app: the error is
+ * sent to Sentry and shown (message + first stack lines) so a tester can report it, with a retry.
+ * Plain components and the light palette only: providers (theme, fonts) may be what failed.
+ */
+export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
+  useEffect(() => reportError(error), [error]);
+  const colors = Colors.light;
+  const stack = (error.stack ?? '').split('\n').slice(0, 6).join('\n');
+  return (
+    <ScrollView style={{ backgroundColor: colors.background }} contentContainerStyle={styles.errorContent}>
+      <Text style={[styles.errorTitle, { color: colors.text }]}>{i18n.t('crash.title')}</Text>
+      <Text style={{ color: colors.textSecondary }}>{i18n.t('crash.body')}</Text>
+      <Text selectable style={[styles.errorDetail, { color: colors.text, backgroundColor: colors.backgroundElement }]}>
+        {error.message}
+        {stack ? `\n\n${stack}` : ''}
+      </Text>
+      <Pressable onPress={retry} style={[styles.errorButton, { backgroundColor: colors.primary }]} accessibilityRole="button">
+        <Text style={{ color: colors.onPrimary }}>{i18n.t('crash.retry')}</Text>
+      </Pressable>
+    </ScrollView>
+  );
+}
 
 function RootLayout() {
   useEffect(startNetworkWatcher, []);
@@ -146,4 +171,8 @@ function RootNavigator() {
 
 const styles = StyleSheet.create({
   overlay: { alignItems: 'center', justifyContent: 'center' },
+  errorContent: { padding: Spacing.four, paddingTop: Spacing.six, gap: Spacing.three },
+  errorTitle: { fontSize: 22, lineHeight: 28 },
+  errorDetail: { padding: Spacing.three, borderRadius: Radius.md, fontSize: 12, lineHeight: 16 },
+  errorButton: { padding: Spacing.three, borderRadius: Radius.lg, alignItems: 'center' },
 });

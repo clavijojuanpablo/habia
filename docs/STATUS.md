@@ -148,6 +148,11 @@ stored per account but per device (`habia.northStar.<userId>`): a user on iPhone
 
 ## Known debts
 
+- **Open (2026-10-01): 1.0.8 crashed on the owner's iPhone** right after the OTA; not reproducible on web
+  with empty data (Progress and Today mount fine), so it depends on real data or Hermes. 1.0.9 adds a
+  root `ErrorBoundary` (src/app/_layout.tsx) that shows the error and reports it to Sentry; next step is
+  the owner's screenshot of that screen. Sentry had received no events at all: check the DSN/project.
+
 - **The native fingerprint includes `.gitignore`** (and `eas.json`, `app.json`, assets, native
   packages). Editing any of them moves the runtime version, and OTA updates stop reaching build 3:
   on 2026-10-01 a one-line `.gitignore` change sent the first 1.0.6 update to runtime `847d838…`,

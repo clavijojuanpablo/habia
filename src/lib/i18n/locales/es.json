@@ -619,5 +619,10 @@
     "FR": "viernes",
     "SA": "sábado",
     "SU": "domingo"
+  },
+  "crash": {
+    "title": "Algo se rompió 🌱",
+    "body": "No es culpa tuya. Haz una captura de esta pantalla y envíala, así lo arreglamos rápido.",
+    "retry": "Reintentar"
   }
 }
