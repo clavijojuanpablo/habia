@@ -3,42 +3,45 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Radius, Shadow, Spacing, type ThemeColor } from '@/constants/theme';
+import { Radius, Spacing, type ThemeColor } from '@/constants/theme';
 import { AUTOMATICITY_REPETITIONS } from '@/features/garden/compute-garden';
 import { useTheme } from '@/hooks/use-theme';
 import { parseLocalDate } from '@/lib/recurrence';
 
 import type { Highlight } from '../highlights';
+import { ChartCard } from './chart-card';
 
 const LOOK: Record<Highlight['kind'], { emoji: string; tint: ThemeColor }> = {
   steady: { emoji: '🏆', tint: 'streakSoft' },
   rising: { emoji: '🚀', tint: 'lavenderSoft' },
   next_fruit: { emoji: '🍎', tint: 'primarySoft' },
-  care: { emoji: '💧', tint: 'lavenderSoft' },
+  care: { emoji: '🤝', tint: 'lavenderSoft' },
 };
 
-/** "Tus hábitos destacados": one small card per highlight, two per row. */
+/**
+ * "Tus hábitos destacados": one card, one row per highlight, each read as a sentence
+ * (what it means, which habit, the number behind it), in the same style as the charts.
+ */
 export function HighlightCards({ highlights }: { highlights: Highlight[] }) {
   const { t } = useTranslation();
   if (highlights.length === 0) return null;
   return (
-    <View style={styles.section}>
-      <ThemedText type="heading">{t('progress.highlightsTitle')}</ThemedText>
-      <View style={styles.grid}>
-        {highlights.map((h) => (
-          <HighlightCard key={h.kind} highlight={h} />
+    <ChartCard title={t('progress.highlightsTitle')} subtitle={t('progress.highlightsSubtitle')}>
+      <View style={styles.list}>
+        {highlights.map((h, i) => (
+          <HighlightRow key={h.kind} highlight={h} last={i === highlights.length - 1} />
         ))}
       </View>
-    </View>
+    </ChartCard>
   );
 }
 
-function HighlightCard({ highlight: h }: { highlight: Highlight }) {
+function HighlightRow({ highlight: h, last }: { highlight: Highlight; last: boolean }) {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
   const { emoji, tint } = LOOK[h.kind];
 
-  const value =
+  const sentence =
     h.kind === 'steady'
       ? t('progress.highlights.steadyValue', { percent: h.percent })
       : h.kind === 'rising'
@@ -47,53 +50,44 @@ function HighlightCard({ highlight: h }: { highlight: Highlight }) {
           ? t('progress.highlights.nextFruitValue', {
               count: h.completions,
               total: AUTOMATICITY_REPETITIONS,
-              date: parseLocalDate(h.eta).toLocaleDateString(i18n.language, { day: 'numeric', month: 'short' }),
+              date: parseLocalDate(h.eta).toLocaleDateString(i18n.language, { day: 'numeric', month: 'long' }),
             })
           : t('progress.highlights.careValue', { percent: h.percent });
 
   return (
-    <View style={[styles.card, { backgroundColor: theme.backgroundElement }]}>
-      <View style={styles.header}>
-        <View style={[styles.badge, { backgroundColor: theme[tint] }]}>
-          <ThemedText style={styles.emoji}>{emoji}</ThemedText>
-        </View>
-        <ThemedText type="caption" themeColor="textSecondary" style={styles.flex}>
+    <View style={[styles.row, !last && { borderBottomColor: theme.border, borderBottomWidth: StyleSheet.hairlineWidth }]}>
+      <View style={[styles.badge, { backgroundColor: theme[tint] }]}>
+        <ThemedText style={styles.emoji}>{emoji}</ThemedText>
+      </View>
+      <View style={styles.texts}>
+        <ThemedText type="caption" themeColor="textSecondary">
           {t(`progress.highlights.${h.kind}`)}
         </ThemedText>
+        <ThemedText type="smallBold">
+          {h.icon} {h.name}
+        </ThemedText>
+        <ThemedText type="small" themeColor="textSecondary">
+          {sentence}
+        </ThemedText>
+        {h.kind === 'care' && (
+          <Pressable
+            onPress={() => router.push({ pathname: '/habit/[id]', params: { id: h.habitId } })}
+            hitSlop={8}
+            accessibilityRole="button">
+            <ThemedText type="smallBold" style={{ color: theme.primary }}>
+              {t(h.hasMinimum ? 'progress.highlights.careOpen' : 'progress.highlights.careEasier')} ›
+            </ThemedText>
+          </Pressable>
+        )}
       </View>
-      <ThemedText type="smallBold" numberOfLines={1}>
-        {h.icon} {h.name}
-      </ThemedText>
-      <ThemedText type="small" themeColor="textSecondary">
-        {value}
-      </ThemedText>
-      {h.kind === 'care' && (
-        <Pressable
-          onPress={() => router.push({ pathname: '/habit/[id]', params: { id: h.habitId } })}
-          hitSlop={8}
-          accessibilityRole="button">
-          <ThemedText type="caption" style={{ color: theme.primary }}>
-            {t(h.hasMinimum ? 'progress.highlights.careOpen' : 'progress.highlights.careEasier')}
-          </ThemedText>
-        </Pressable>
-      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  section: { gap: Spacing.two },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
-  card: {
-    flexGrow: 1,
-    flexBasis: '45%',
-    borderRadius: Radius.lg,
-    padding: Spacing.three,
-    gap: Spacing.one,
-    boxShadow: Shadow.card,
-  },
-  header: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
-  badge: { width: 28, height: 28, borderRadius: Radius.sm, alignItems: 'center', justifyContent: 'center' },
-  emoji: { fontSize: 15, lineHeight: 20 },
-  flex: { flex: 1 },
+  list: { gap: Spacing.two },
+  row: { flexDirection: 'row', gap: Spacing.three, paddingBottom: Spacing.two },
+  badge: { width: 40, height: 40, borderRadius: Radius.md, alignItems: 'center', justifyContent: 'center' },
+  emoji: { fontSize: 20, lineHeight: 26 },
+  texts: { flex: 1, gap: Spacing.half },
 });

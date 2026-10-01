@@ -213,9 +213,7 @@
     "bandsTitle": "When in the day do you do best?",
     "bandsInsight": "The {{band}} is harder for you. Try anchoring those habits to a routine you already have.",
     "streak": "Streak",
-    "streakCaption_one": "day · record {{record}}",
-    "streakCaption_other": "days · record {{record}}",
-    "thisWeekCaption": "done so far",
+    "thisWeekCaption": "habits done so far",
     "seeds": "Seeds",
     "seedsCaption": "planted in total",
     "calendarTitle": "Your calendar",
@@ -227,20 +225,28 @@
     "highlightsTitle": "Your standout habits",
     "highlights": {
       "steady": "Your steadiest habit",
-      "steadyValue": "{{percent}}% over the last 30 days",
+      "steadyValue": "You did it {{percent}}% of the time over the last 30 days.",
       "rising": "Grew the most",
-      "risingValue": "From {{from}}% to {{to}}% in 4 weeks",
-      "next_fruit": "Next fruit",
-      "nextFruitValue_one": "{{count}} of {{total}} · around {{date}}",
-      "nextFruitValue_other": "{{count}} of {{total}} · around {{date}}",
-      "care": "Could use some care",
-      "careValue": "{{percent}}% over the last 30 days. A smaller step helps.",
+      "risingValue": "Went from {{from}}% to {{to}}% over the last 4 weeks.",
+      "next_fruit": "Almost automatic",
+      "nextFruitValue_one": "{{count}} of {{total}} repetitions: at your pace it bears fruit around {{date}}.",
+      "nextFruitValue_other": "{{count}} of {{total}} repetitions: at your pace it bears fruit around {{date}}.",
+      "care": "Could use a nudge",
+      "careValue": "You did it {{percent}}% of the time over 30 days. A smaller step helps.",
       "careEasier": "Give it a 2-minute version",
       "careOpen": "Review the habit"
     },
     "reviewsTitle": "Brote’s reviews",
     "reviewsEarlier": "Earlier weeks",
-    "reviewWeek": "Week of {{date}}"
+    "reviewWeek": "Week of {{date}}",
+    "days_one": "day",
+    "days_other": "days",
+    "streakCaption_one": "Record: {{count}} day",
+    "streakCaption_other": "Record: {{count}} days",
+    "ofTotal": "of {{total}}",
+    "consistency": "Consistency",
+    "consistencyCaption": "last 30 days",
+    "highlightsSubtitle": "What your data says about your habits."
   },
   "identity": {
     "new": "New identity",
@@ -609,7 +615,9 @@
     "decline": "Not now",
     "toggle": "AI weekly review",
     "toggleHint": "Brote sums up your week with an external AI. We never send your email.",
-    "details": "More details"
+    "details": "More details",
+    "badge": "✨ Made for you from your data",
+    "readMore": "Read the full review"
   },
   "weekdaysLong": {
     "MO": "Monday",

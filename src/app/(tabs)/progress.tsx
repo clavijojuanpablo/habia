@@ -55,17 +55,27 @@ export default function ProgressScreen() {
             <StatTile
               label={t('progress.streak')}
               value={String(streak.current)}
-              caption={t('progress.streakCaption', { count: streak.current, record: streak.record })}
+              unit={t('progress.days', { count: streak.current })}
+              caption={t('progress.streakCaption', { count: streak.record })}
               emoji="🔥"
               tint="streakSoft"
               onPress={() => router.push('/streak')}
             />
             <StatTile
               label={t('progress.thisWeek')}
-              value={stats.thisWeek.due === 0 ? '–' : `${stats.thisWeek.done}/${stats.thisWeek.due}`}
+              value={stats.thisWeek.due === 0 ? '–' : String(stats.thisWeek.done)}
+              unit={stats.thisWeek.due === 0 ? undefined : t('progress.ofTotal', { total: stats.thisWeek.due })}
               caption={t('progress.thisWeekCaption')}
               emoji="📅"
               tint="lavenderSoft"
+            />
+            <StatTile
+              label={t('progress.consistency')}
+              value={stats.last30.ratio === null ? '–' : String(Math.round(stats.last30.ratio * 100))}
+              unit={stats.last30.ratio === null ? undefined : '%'}
+              caption={t('progress.consistencyCaption')}
+              emoji="🎯"
+              tint="primarySoft"
             />
             <StatTile
               label={t('progress.seeds')}

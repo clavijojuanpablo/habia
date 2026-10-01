@@ -213,9 +213,7 @@
     "bandsTitle": "¿En qué momento del día te va mejor?",
     "bandsInsight": "Te cuesta más en la {{band}}. Prueba a anclar esos hábitos a una rutina que ya tengas.",
     "streak": "Racha",
-    "streakCaption_one": "día · récord {{record}}",
-    "streakCaption_other": "días · récord {{record}}",
-    "thisWeekCaption": "cumplidos hasta hoy",
+    "thisWeekCaption": "hábitos hechos hasta hoy",
     "seeds": "Semillas",
     "seedsCaption": "sembradas en total",
     "calendarTitle": "Tu calendario",
@@ -227,20 +225,28 @@
     "highlightsTitle": "Tus hábitos destacados",
     "highlights": {
       "steady": "Tu hábito más firme",
-      "steadyValue": "{{percent}} % en los últimos 30 días",
+      "steadyValue": "Lo cumpliste el {{percent}} % de las veces en los últimos 30 días.",
       "rising": "El que más creció",
-      "risingValue": "De {{from}} % a {{to}} % en 4 semanas",
-      "next_fruit": "El próximo fruto",
-      "nextFruitValue_one": "{{count}} de {{total}} · hacia el {{date}}",
-      "nextFruitValue_other": "{{count}} de {{total}} · hacia el {{date}}",
-      "care": "El que pide cariño",
-      "careValue": "{{percent}} % en los últimos 30 días. Un paso más pequeño ayuda.",
+      "risingValue": "Subió de {{from}} % a {{to}} % en las últimas 4 semanas.",
+      "next_fruit": "Casi automático",
+      "nextFruitValue_one": "{{count}} de {{total}} repeticiones: a tu ritmo será fruto hacia el {{date}}.",
+      "nextFruitValue_other": "{{count}} de {{total}} repeticiones: a tu ritmo será fruto hacia el {{date}}.",
+      "care": "Necesita un empujón",
+      "careValue": "Lo cumpliste el {{percent}} % de las veces en 30 días. Un paso más pequeño ayuda.",
       "careEasier": "Darle una versión de 2 minutos",
       "careOpen": "Revisar el hábito"
     },
     "reviewsTitle": "Revisiones de Brote",
     "reviewsEarlier": "Semanas anteriores",
-    "reviewWeek": "Semana del {{date}}"
+    "reviewWeek": "Semana del {{date}}",
+    "days_one": "día",
+    "days_other": "días",
+    "streakCaption_one": "Récord: {{count}} día",
+    "streakCaption_other": "Récord: {{count}} días",
+    "ofTotal": "de {{total}}",
+    "consistency": "Constancia",
+    "consistencyCaption": "últimos 30 días",
+    "highlightsSubtitle": "Lo que tus datos dicen de tus hábitos."
   },
   "identity": {
     "new": "Nueva identidad",
@@ -609,7 +615,9 @@
     "decline": "Ahora no",
     "toggle": "Revisión semanal con IA",
     "toggleHint": "Brote resume tu semana con una IA externa. Nunca enviamos tu correo.",
-    "details": "Más detalles"
+    "details": "Más detalles",
+    "badge": "✨ Hecha para ti con tus datos",
+    "readMore": "Leer la revisión completa"
   },
   "weekdaysLong": {
     "MO": "lunes",

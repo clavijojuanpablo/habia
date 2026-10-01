@@ -27,7 +27,7 @@ export function WeeklyReviewHistory() {
   return (
     <View style={styles.section}>
       <ThemedText type="heading">{t('progress.reviewsTitle')}</ThemedText>
-      <WeeklyReviewCard review={latest} />
+      <WeeklyReviewCard review={latest} teaser />
       {earlier.length > 0 && (
         <View style={[styles.list, { backgroundColor: theme.backgroundElement }]}>
           <ThemedText type="smallBold" themeColor="textSecondary">

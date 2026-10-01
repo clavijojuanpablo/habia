@@ -20,6 +20,8 @@ export type Stats = {
   weeks: WeekStat[];
   /** Completion rate per day band over the last 30 days. */
   bands: BandStat[];
+  /** Everything settled in the last 30 days: the headline consistency. */
+  last30: Ratio;
   /** Completion rate per weekday (0 = Monday) over the last 8 weeks: which days are strong. */
   weekdays: Ratio[];
 };
@@ -103,6 +105,7 @@ export function computeStats(
     thisWeek: weeks[weeks.length - 1],
     weeks,
     bands: bandStats,
+    last30: ratioOf(recent),
     weekdays,
   };
 }
