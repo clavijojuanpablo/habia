@@ -84,6 +84,10 @@ open the web fallback there; its "Open habia" button still works.
 - Verification baseline: **89 tests / 12 suites green**, typecheck clean, lint clean, site builds
   7 pages. Typecheck ~8 s, tests ~8 s, lint ~25 s on this machine.
 - CI (typecheck + lint + tests) runs on push and PRs to `main`. Repo: `clavijojuanpablo/habia`.
+- Versioning: `APP_RELEASE` in `src/constants/release.ts` is the version people see (Profile:
+  `habia 1.0.1 · build 3 · <update id>`). Bump the patch for every OTA update; a new store binary
+  bumps the minor **and** sets the same number as `version` in app.json (which changes the
+  fingerprint, so never in an OTA). Build numbers are auto-incremented by EAS (remote).
 - Shipping: JS-only change → `eas update --channel production --environment production --platform ios --non-interactive --message "…"`
   (~1 min; drop `--platform ios` once Android testers exist; without `--non-interactive` it once
   sat for 20+ min on a silent prompt);

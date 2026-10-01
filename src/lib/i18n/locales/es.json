@@ -163,7 +163,7 @@
     "timezone": "🌍 {{zone}}",
     "analytics": "Ayudar a mejorar habia",
     "analyticsHint": "Comparte datos de uso (qué pantallas usas, cuántos hábitos marcas) ligados a un código interno de tu cuenta. Nunca los nombres de tus hábitos ni tu correo.",
-    "version": "habia {{version}} ({{build}}) · {{update}}",
+    "version": "habia {{version}} · build {{build}} · {{update}}",
     "updateEmbedded": "de fábrica",
     "updateDev": "desarrollo"
   },

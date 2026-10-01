@@ -9,6 +9,7 @@ import * as Updates from 'expo-updates';
 import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { APP_RELEASE } from '@/constants/release';
 import { FontFamily, MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
 import { AppearancePicker, LanguagePicker } from '@/features/appearance/components/appearance-picker';
 import { DangerZone } from '@/features/auth/components/danger-zone';
@@ -93,8 +94,8 @@ export default function ProfileScreen() {
 // Which binary and which OTA update is running: the only way to tell on a phone that an update arrived.
 function AppVersion() {
   const { t } = useTranslation();
-  const version = Application.nativeApplicationVersion;
-  if (!version) return null;
+  const build = Application.nativeBuildVersion;
+  if (!build) return null;
 
   const update = !Updates.updateId
     ? t('profile.updateDev')
@@ -103,7 +104,7 @@ function AppVersion() {
       : Updates.updateId.slice(0, 8);
   return (
     <ThemedText type="small" themeColor="textSecondary" style={styles.version}>
-      {t('profile.version', { version, build: Application.nativeBuildVersion, update })}
+      {t('profile.version', { version: APP_RELEASE, build, update })}
     </ThemedText>
   );
 }
