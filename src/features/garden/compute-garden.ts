@@ -122,11 +122,12 @@ export function computeGarden(
   logs: HabitLog[],
   votes: number,
   now: Date,
-  completionsByHabit: Map<string, number> = new Map(),
+  /** All-time completions by habit id. A plain object: it comes from the persisted query cache (JSON). */
+  completionsByHabit: Record<string, number> = {},
 ): GardenSummary {
   const today = startOfDay(now);
   const logsByKey = new Map(logs.map((log) => [occurrenceKey(log.habit_id, new Date(log.occurrence_at)), log]));
-  const growth = habits.map((habit) => computeHabitGrowth(habit, logsByKey, today, completionsByHabit.get(habit.id)));
+  const growth = habits.map((habit) => computeHabitGrowth(habit, logsByKey, today, completionsByHabit[habit.id]));
   const fruits = growth.filter((g) => g.automaticity >= 1).length;
   const wilted = growth.filter((g) => g.atRisk).length;
 

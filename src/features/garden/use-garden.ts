@@ -38,7 +38,9 @@ function useCompletions() {
     queryFn: async () => {
       const { data, error } = await supabase.from('habit_completion_counts').select('habit_id, completions');
       if (error) throw error;
-      return new Map(data.flatMap((row) => (row.habit_id ? [[row.habit_id, row.completions ?? 0] as const] : [])));
+      // A plain object, never a Map: the query cache is persisted as JSON, and a Map comes back as {}
+      // after a restart (that crashed 1.0.8 on reopening the app).
+      return Object.fromEntries(data.flatMap((row) => (row.habit_id ? [[row.habit_id, row.completions ?? 0]] : [])));
     },
   });
 }

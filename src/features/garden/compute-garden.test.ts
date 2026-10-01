@@ -116,3 +116,13 @@ describe('computeGarden', () => {
     expect(computeGarden([habit], [], 0, NOW).health).toBe(85);
   });
 });
+
+describe('computeGarden with cached completions', () => {
+  it('reads all-time completions from a plain object, as restored from the persisted cache', () => {
+    // The cache is JSON: whatever is stored must survive JSON.stringify → JSON.parse.
+    const restored = JSON.parse(JSON.stringify({ h1: 70 })) as Record<string, number>;
+    const garden = computeGarden([habit], [], 0, NOW, restored);
+    expect(garden.habits[0].completions).toBe(70);
+    expect(garden.fruits).toBe(1);
+  });
+});
