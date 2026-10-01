@@ -120,7 +120,9 @@ open the web fallback there; its "Open habia" button still works.
   committed template `.env.example`.
 - `profiles.timezone` is synced but nothing reads it yet: "today" still comes from the device
   clock. Needed once the server sends pushes (push-dispatcher, coach).
-- Sign in with Apple / Google not implemented (required-ish for App Store review polish).
+- Sign in with Apple / Google not implemented. Not required today: App Store guideline 4.8 asks for
+  Sign in with Apple only when the app offers a third-party login (Google, Facebook…), so adding
+  Google means adding Apple too.
 - Web billing: Stripe may not accept a Colombian individual — check before Phase 4 (ROADMAP).
 - Garden aggregates are computed on the client over 120 days; move to a Postgres RPC when log
   volume grows. `garden_state` table is unused.
