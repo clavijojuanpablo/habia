@@ -74,7 +74,9 @@
       "unrest": "Quitar el descanso",
       "edit": "Editar hábito",
       "tip": "Toca un hábito para ver más opciones: hacer solo la versión de 2 minutos o tomarte un día de descanso."
-    }
+    },
+    "heroRest": "Hoy no te toca ningún hábito. Descansar también es parte del proceso.",
+    "heroAllRest": "Hoy todo es descanso. Descansar a propósito también es parte del proceso."
   },
   "week": {
     "title": "Semana",
@@ -560,5 +562,17 @@
       "addMinimum": "Añadir versión de 2 minutos",
       "addIntention": "Añadir dónde"
     }
+  },
+  "northStar": {
+    "question": "¿Sientes que habia te está ayudando a mejorar tu día a día?",
+    "scale": {
+      "1": "Nada",
+      "2": "Poco",
+      "3": "Algo",
+      "4": "Bastante",
+      "5": "Mucho"
+    },
+    "notNow": "Ahora no",
+    "thanks": "¡Gracias! Así sabemos si habia te sirve de verdad."
   }
 }

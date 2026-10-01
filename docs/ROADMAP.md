@@ -65,7 +65,7 @@ Status: ✅ done · 🚧 in progress · ⏳ pending
 - ✅ TestFlight (2026-09-30): production build 1.0.0 (3) with EAS env vars (`production`), Sentry source maps + dSYMs, Universal Links; submitted (ASC app 6817880518), installed through internal testing and tested on the iPhone
 - ✅ EAS Update: `expo-updates`, `runtimeVersion` policy `fingerprint`, one channel per build profile · ✅ first OTA update to `production` (2026-09-30) · ⏳ external testers (public TestFlight link)
 - ⏳ Play Internal Testing (no Android device yet; new personal accounts need a closed-testing period before production)
-- ✅ Sentry (crashes, off in development) + PostHog (closed event list, internal user id, opt-out in Profile) · ⏳ north-star self-report question (PostHog survey)
+- ✅ Sentry (crashes, off in development) + PostHog (closed event list, internal user id, opt-out in Profile) · ✅ north-star self-report question (in-app 1–5 card every 14 days, event `north_star_answered`, 1.0.5)
 - ✅ Branded auth emails (es/en) sent from hola@habia.app through Resend SMTP
 - ✅ Universal Links (`https://habia.app/auth-callback`): opens the app directly (tested from TestFlight), bilingual web fallback page with an "Open habia" button (`habia://`) for desktop or no app
 - Ask testers about one-off reminders / calendar
@@ -80,7 +80,7 @@ Testers first (TestFlight with the core), then every Pro feature **before the pu
 5. **Monetization** — Pro + cosmetics, before launch
 
 ## Phase 3B / Pro value ⏳ (next after TestFlight)
-- AI coach (hybrid: ✅ rules free — card on Today (v1 2026-09-30; 1.0.2 scored detectors, tip per day band, "¿Por qué?") · ⏳ 1.0.5 co-occurrence, identity votes, 👍/👎, Monday mini-review · ⏳ Claude weekly review via Batch · ⏳ capped Pro chat)
+- AI coach (hybrid: ✅ rules free — card on Today (v1 2026-09-30; 1.0.2 scored detectors, tip per day band, "¿Por qué?") · ⏳ 1.0.6 co-occurrence, seeds per identity, 👍/👎, Monday mini-review · ⏳ Claude weekly review via Batch · ⏳ capped Pro chat)
 - Guided programs ("Caminos", 3 initial) + micro-lessons
 
 ## Character ⏳

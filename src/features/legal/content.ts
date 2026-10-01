@@ -28,7 +28,7 @@ const privacyEs: LegalDocument = {
         '• Preferencias: idioma, tema (claro u oscuro), franjas del día y zona horaria.',
         '• Datos técnicos mínimos que genera la conexión con nuestro proveedor (por ejemplo, la dirección IP en los registros del servidor).',
         '• Informes de errores: si la app falla, un informe técnico (qué falló, modelo de teléfono, versión del sistema) asociado al identificador interno de tu cuenta (un código, no tu nombre ni tu correo).',
-        '• Datos de uso, si no los desactivas: qué pantallas abres y acciones como crear un hábito o marcarlo, asociados al mismo identificador interno, junto con el modelo de tu teléfono, su idioma y su zona horaria. Nunca los nombres de tus hábitos ni tu correo. Nos dicen qué funciona y qué no.',
+        '• Datos de uso, si no los desactivas: qué pantallas abres, acciones como crear un hábito o marcarlo y tus respuestas a la pregunta breve "¿habia te está ayudando?", asociados al mismo identificador interno, junto con el modelo de tu teléfono, su idioma y su zona horaria. Nunca los nombres de tus hábitos ni tu correo. Nos dicen qué funciona y qué no.',
       ],
     },
     {
@@ -175,7 +175,7 @@ const privacyEn: LegalDocument = {
         '• Preferences: language, theme, day bands and time zone.',
         '• Minimal technical data produced by the connection to our provider (for example, the IP address in server logs).',
         '• Error reports: if the app crashes, a technical report (what failed, phone model, OS version) tied to your account’s internal id (a code, not your name or email).',
-        '• Usage data, unless you turn it off: which screens you open and actions such as creating or checking a habit, tied to the same internal id, along with your phone model, language and time zone. Never your habit names or email. It tells us what works and what does not.',
+        '• Usage data, unless you turn it off: which screens you open, actions such as creating or checking a habit and your answers to the short "is habia helping?" question, tied to the same internal id, along with your phone model, language and time zone. Never your habit names or email. It tells us what works and what does not.',
       ],
     },
     {

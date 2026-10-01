@@ -101,33 +101,40 @@ open the web fallback there; its "Open habia" button still works.
 
 ## Next steps
 
-**Start here — ship 1.0.4, then coach 1.0.5, then the Claude part of the coach.**
+**Start here — ship 1.0.5 and open the beta; let testers' data steer the coach.**
 
-1. **Ship 1.0.4 by OTA** (if not done): `npx eas-cli@latest update …` (recipe in Technical
-   state), reopen the TestFlight app twice; Profile shows `habia 1.0.4 · build 3 · …`. Since
-   1.0.1: coach 1.0.2; 1.0.3 simpler habit form ("Tentación asociada" removed, column kept;
-   "Intención de implementación" became "¿Dónde?"; reminders read "📍 place"); 1.0.4 calmer Today:
-   **one prompt above the list** — "yesterday" catch-up first (now closable with "Así está bien",
-   logs untouched), otherwise the coach, collapsed to two lines until tapped.
-2. **Coach 1.0.5** (agreed scope, needs its own plan): habits that pull each other (co-occurrence,
-   worded as observation), votes per identity, 👍/👎 per tip (local down-weighting + analytics),
-   rule-based Monday mini-review.
-3. **External testers:** waiting for Beta App Review of the "Beta pública" group (demo account in
+1. **Ship 1.0.5 by OTA** (if not done): `npx eas-cli@latest update …` (recipe in Technical
+   state), reopen the TestFlight app twice; Profile shows `habia 1.0.5 · build 3 · …`. Since
+   1.0.1: coach 1.0.2 (scored detectors, "¿Por qué?"); 1.0.3 simpler habit form ("Tentación
+   asociada" removed, column kept; "Intención de implementación" became "¿Dónde?"; reminders read
+   "📍 place"); 1.0.4 calmer Today (**one prompt above the list**: yesterday's catch-up, closable
+   with "Así está bien", otherwise the coach collapsed to two lines); 1.0.5 the **north-star
+   question** (below), the **sowing metaphor** (seeds instead of votes), Today hero fixes, and the
+   Expo web PostHog crash fixed.
+2. **External testers:** waiting for Beta App Review of the "Beta pública" group (demo account in
    App Store Connect; never delete it). When approved: enable the public link with a tester limit.
    The App Privacy questionnaire is only needed for the App Store, not TestFlight.
-4. **Claude weekly review (Pro):** Edge Function + Batch API, Sonnet; first resolve the
-   server-side "today" (`profiles.timezone` debt). Then capped chat.
-5. Then, in this order (ROADMAP → "Order after Block 2"): **your character** →
+3. **Server-side "today"** (`profiles.timezone` is synced but nothing reads it): the foundation for
+   the Claude weekly review and server pushes.
+4. **Claude weekly review (Pro):** Edge Function + Batch API; then capped chat.
+5. **Coach 1.0.6, shaped by tester data** (PostHog: `coach_tip_*` events per rule): habits that
+   pull each other (co-occurrence, worded as observation), seeds per identity, 👍/👎 per tip,
+   rule-based Monday mini-review.
+6. Then, in this order (ROADMAP → "Order after Block 2"): **your character** →
    **friends & circles** → opt-in **leagues** → **monetization**, all before the public launch.
-   Plus the north-star self-report (PostHog survey). Start the "can a Colombian individual use
-   Stripe?" question early: it takes calendar weeks, not code.
+   Start the "can a Colombian individual use Stripe?" question early (calendar weeks, not code),
+   and the legal review (jurisdiction, EU opt-in for analytics).
+
+**North-star question:** "¿Sientes que habia te está ayudando a mejorar tu día a día?" (1–5 faces)
+in the Today prompt slot, after 7 days from onboarding, then every 14 days ("Ahora no" = 3 days);
+only when PostHog is configured and not opted out. Event `north_star_answered { score }` —
+read it in PostHog as the product's success metric (trend per user and cohort). Its schedule is
+stored per account but per device (`habia.northStar.<userId>`): a user on iPhone and web is asked on both.
 
 ## Known debts
 
-- **Expo web crashes at startup when the PostHog key is set**: `PostHog: No storage available`
-  (`src/lib/analytics.ts`; posthog-react-native needs a storage provider on web). Native is fine.
-  Workaround for previews: `EXPO_NO_DOTENV=1` + fake Supabase vars + `expo export --clear`
-  (Metro caches inlined env vars).
+- Web previews: Metro caches inlined `EXPO_PUBLIC_*` values; after changing env vars, export with
+  `--clear`. (The PostHog web crash is fixed: `customStorage` on web, `src/lib/analytics.ts`.)
 - Coach: `coach_tip_shown` fires on every Today mount (read it as impressions, not once per tip).
   Time-aware tips (`usual_time`, `agenda`) are only evaluated when a band's tip is first pinned,
   so opening the app late in a band can miss them. Dismissing hides the tip for that band only (up

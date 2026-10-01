@@ -15,6 +15,8 @@ import { DayCompleteOverlay } from '@/features/celebration/day-complete';
 import type { LogStatus } from '@/features/checkins/api';
 import { CoachCard } from '@/features/coach/components/coach-card';
 import { useCoachTip } from '@/features/coach/use-coach-tip';
+import { NorthStarCard } from '@/features/north-star/components/north-star-card';
+import { useNorthStar } from '@/features/north-star/use-north-star';
 import { Brote } from '@/features/mascot/brote';
 import { isDone, isSkipped, nextInChain, type ScheduleBand, type ScheduledItem } from '@/features/schedule/build-schedule';
 import { ActionsTip, hasSeenActionsTip, markActionsTipSeen } from '@/features/schedule/components/actions-tip';
@@ -44,7 +46,8 @@ export default function TodayScreen() {
   const now = useNow();
   const { today, tomorrow } = useTodayRange(now);
   const { items, bands, hasHabits, isLoading, error, toggleItem } = useSchedule(today, tomorrow);
-  // One prompt above the list at a time. Catching up yesterday wins: it protects today's streak.
+  // One prompt above the list at a time: catching up yesterday (it protects today's streak), then the
+  // fortnightly north-star question, then the coach.
   // The coach waits until yesterday is settled, so it never comments on a miss that was only unlogged.
   const yesterdayDate = useMemo(() => addDays(today, -1), [today]);
   const yesterday = useSchedule(yesterdayDate, today);
@@ -52,6 +55,8 @@ export default function TodayScreen() {
   const todayKey = formatLocalDate(today);
   const catchUpPending =
     catchUpClosedOn !== todayKey && yesterday.items.some((item) => !isDone(item) && !isSkipped(item));
+  const northStar = useNorthStar(today);
+  const showNorthStar = !yesterday.isLoading && !catchUpPending && hasHabits && northStar.visible;
   const closeCatchUp = () => {
     storage.setItem(CATCH_UP_CLOSED_KEY, todayKey);
     setCatchUpClosedOn(todayKey);
@@ -62,7 +67,7 @@ export default function TodayScreen() {
     bandConfig: bands,
     items,
     itemsLoading: isLoading,
-    enabled: !yesterday.isLoading && !catchUpPending,
+    enabled: !yesterday.isLoading && !catchUpPending && !showNorthStar,
   });
 
   // Keep only the key: the item itself is read fresh from `items` on every render.
@@ -137,7 +142,9 @@ export default function TodayScreen() {
     if (completing && pendingAfter === 0) {
       hapticSuccess();
       setCelebrating(true);
-      track('day_completed', { habits: items.length });
+      track('day_completed', {
+        habits: items.filter((other) => !isSkipped(other) || other.key === item.key).length,
+      });
     }
   };
 
@@ -163,17 +170,17 @@ export default function TodayScreen() {
               </ThemedText>
               <ThemedText type="subtitle">{t(`today.greeting.${currentBand}`)}</ThemedText>
               <ThemedText type="small" themeColor="textSecondary">
-                {items.length === 0
-                  ? t('today.heroEmpty')
-                  : done === items.length
+                {countable.length === 0
+                  ? t(items.length > 0 ? 'today.heroAllRest' : hasHabits ? 'today.heroRest' : 'today.heroEmpty')
+                  : done === countable.length
                     ? t('today.allDone')
-                    : t('today.progress', { done, total: items.length })}
+                    : t('today.progress', { done, total: countable.length })}
               </ThemedText>
             </View>
-            {items.length > 0 && (
+            {countable.length > 0 && (
               <ProgressRing progress={progress} size={92} stroke={10} color={sky.accent} track={theme.backgroundElement}>
                 <ThemedText type="heading" style={{ color: sky.accent }}>
-                  {done}/{items.length}
+                  {done}/{countable.length}
                 </ThemedText>
               </ProgressRing>
             )}
@@ -199,6 +206,13 @@ export default function TodayScreen() {
             </View>
           )}
 
+          {showNorthStar && (
+            <NorthStarCard
+              thanks={northStar.thanks}
+              onAnswer={northStar.answer}
+              onSnooze={northStar.snooze}
+            />
+          )}
           {coach.tip && hasHabits && (
             <CoachCard tip={coach.tip} items={items} onToggle={onToggle} onDismiss={coach.dismiss} />
           )}
@@ -252,7 +266,7 @@ export default function TodayScreen() {
 
         <HabitActionsSheet item={actionsItem} onToggle={onToggle} onClose={() => setActionsKey(null)} />
 
-        {celebrating && <DayCompleteOverlay votes={items.length} onDismiss={() => setCelebrating(false)} />}
+        {celebrating && <DayCompleteOverlay votes={countable.length} onDismiss={() => setCelebrating(false)} />}
 
         {chainNext && (
           <ChainPrompt item={chainNext} onDone={() => onToggle(chainNext)} onDismiss={() => setChainNextKey(null)} />

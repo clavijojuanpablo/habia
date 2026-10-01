@@ -72,6 +72,6 @@ Regional pricing for LatAm. Later: family plan, gifts.
 ## Success metrics
 - **North star:** weekly users who complete ≥1 habit on 4+ days of the week.
 - Retention D1 / D7 / D30; % of habits that reach 66 days; weekly consistency trend per user.
-- Self-reported lifestyle improvement (periodic in-app survey).
+- Self-reported lifestyle improvement: "¿Sientes que habia te está ayudando a mejorar tu día a día?" (1–5, every 14 days; `north_star_answered`).
 - Growth: share-card and referral conversion.
 - Culture: experiment with PostHog feature flags / A/B tests (onboarding first).

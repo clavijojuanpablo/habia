@@ -1,4 +1,5 @@
 import PostHog from 'posthog-react-native';
+import { Platform } from 'react-native';
 
 import { storage } from '@/lib/storage';
 
@@ -22,7 +23,9 @@ export type AnalyticsEvent =
   | 'coach_tip_action'
   | 'coach_tip_dismissed'
   | 'coach_why_opened'
-  | 'coach_tip_expanded';
+  | 'coach_tip_expanded'
+  | 'north_star_answered'
+  | 'north_star_snoozed';
 
 const OPT_OUT_KEY = 'habia.analytics.optOut';
 const apiKey = process.env.EXPO_PUBLIC_POSTHOG_KEY;
@@ -34,8 +37,13 @@ const client = apiKey
       captureAppLifecycleEvents: true,
       enableSessionReplay: false,
       defaultOptIn: storage.getItem(OPT_OUT_KEY) !== '1',
+      // On web PostHog finds no storage of its own and throws at startup; give it localStorage.
+      ...(Platform.OS === 'web' ? { customStorage: storage } : {}),
     })
   : null;
+
+/** False when no PostHog key is set (local dev): nothing would be sent. */
+export const analyticsConfigured = client !== null;
 
 export function track(event: AnalyticsEvent, props?: EventProps) {
   client?.capture(event, props);

@@ -74,7 +74,9 @@
       "unrest": "Remove the rest day",
       "edit": "Edit habit",
       "tip": "Tap a habit for more options: do just the 2-minute version or take a rest day."
-    }
+    },
+    "heroRest": "No habits due today. Rest is part of the process too.",
+    "heroAllRest": "Everything is a rest day today. Resting on purpose is part of the process too."
   },
   "week": {
     "title": "Week",
@@ -560,5 +562,17 @@
       "addMinimum": "Add a 2-minute version",
       "addIntention": "Add where"
     }
+  },
+  "northStar": {
+    "question": "Do you feel habia is helping you improve your daily life?",
+    "scale": {
+      "1": "Not at all",
+      "2": "A little",
+      "3": "Somewhat",
+      "4": "Quite a lot",
+      "5": "A lot"
+    },
+    "notNow": "Not now",
+    "thanks": "Thank you! This is how we know whether habia really helps."
   }
 }
