@@ -20,7 +20,8 @@ export type AnalyticsEvent =
   | 'habit_actions_opened'
   | 'coach_tip_shown'
   | 'coach_tip_action'
-  | 'coach_tip_dismissed';
+  | 'coach_tip_dismissed'
+  | 'coach_why_opened';
 
 const OPT_OUT_KEY = 'habia.analytics.optOut';
 const apiKey = process.env.EXPO_PUBLIC_POSTHOG_KEY;

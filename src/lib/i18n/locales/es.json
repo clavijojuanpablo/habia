@@ -444,21 +444,96 @@
     "and": "y la"
   },
   "coach": {
+    "whyLink": "¿Por qué?",
     "neverMissTwice": {
-      "minimum": "«{{name}}» se quedó pendiente la última vez, y está bien: un fallo es un accidente. Hoy, aunque sea la versión mínima: {{minimum}}.",
-      "plain": "«{{name}}» se quedó pendiente la última vez, y está bien: un fallo es un accidente. Lo importante es no fallar dos veces seguidas.",
-      "done": "¡Eso es! «{{name}}» vuelve al camino. Nunca dos veces seguidas: así se construye un hábito."
+      "minimum": {
+        "v0": "«{{name}}» se quedó pendiente la última vez, y está bien: un fallo es un accidente. Hoy, aunque sea la versión mínima: {{minimum}}.",
+        "v1": "La última vez «{{name}}» no pasó. No pasa nada, solo que no sean dos seguidas: hoy basta con {{minimum}}."
+      },
+      "plain": {
+        "v0": "«{{name}}» se quedó pendiente la última vez, y está bien: un fallo es un accidente. Lo importante es no fallar dos veces seguidas.",
+        "v1": "La última vez «{{name}}» no pasó. Un día suelto no cambia nada; hoy es el que cuenta."
+      },
+      "done": {
+        "v0": "¡Eso es! «{{name}}» vuelve al camino. Nunca dos veces seguidas: así se construye un hábito.",
+        "v1": "¡Volviste! «{{name}}» sigue vivo. Así se ve alguien que no falla dos veces."
+      },
+      "comebacks_one": "La última vez que se te pasó, volviste a la siguiente.",
+      "comebacks_other": "Las últimas {{count}} veces que se te pasó, volviste a la siguiente. Tú vuelves."
     },
-    "comeback": "Volver es lo que importa. Unos días sin marcar no borran lo que ya construiste: tu árbol te espera. Empieza por el hábito más fácil de hoy.",
+    "comeback": {
+      "v0": "Volver es lo que importa. Unos días sin marcar no borran lo que ya construiste: tu árbol te espera. Empieza por el hábito más fácil de hoy.",
+      "v1": "Hola de nuevo 🌱 Nada de lo que hiciste se perdió. Hoy, solo uno: el más fácil."
+    },
+    "usualTime": {
+      "v0": "Sueles hacer «{{name}}» hacia las {{time}} y hoy sigue pendiente. ¿Lo haces ahora?",
+      "v1": "Normalmente a esta hora «{{name}}» ya está hecho (sueles marcarlo hacia las {{time}}). Aún estás a tiempo."
+    },
+    "weakWeekday": {
+      "v0": "Los días como hoy ({{weekday}}) «{{name}}» te cuesta más: {{weekdayPercent}} % frente a {{averagePercent}} % en general. Hoy baja la barra: con la versión mínima basta.",
+      "v1": "Ojo: los días como hoy ({{weekday}}) suelen ser difíciles para «{{name}}» ({{weekdayPercent}} %). Saberlo ya es media batalla; hazlo pequeño, pero hazlo."
+    },
+    "doneToday": {
+      "v0": "¡Hecho! «{{name}}» ya cuenta hoy. Un voto más por quien quieres ser.",
+      "v1": "«{{name}}» ✔️ Justo cuando más cuesta: así se construye identidad."
+    },
     "automaticity": {
-      "half": "«{{name}}» ya suma {{completions}} repeticiones: la mitad del camino típico hacia el automatismo (~66, aunque a cada quien le toma entre 18 y 254).",
-      "close": "«{{name}}» lleva {{completions}} repeticiones: muy cerca de las ~66 en las que, de media, un hábito empieza a salir solo.",
-      "fruit": "🍎 «{{name}}» llegó a {{completions}} repeticiones y ya es fruto en tu árbol. Cada una fue un voto por quien quieres ser."
+      "half": {
+        "v0": "«{{name}}» ya suma {{completions}} repeticiones: la mitad del camino típico hacia el automatismo (~66, aunque a cada quien le toma entre 18 y 254).",
+        "v1": "Mitad del camino: {{completions}} repeticiones de «{{name}}». Cada vez cuesta un poco menos, aunque no lo notes."
+      },
+      "close": {
+        "v0": "«{{name}}» lleva {{completions}} repeticiones: muy cerca de las ~66 en las que, de media, un hábito empieza a salir solo.",
+        "v1": "Ya casi: {{completions}} repeticiones de «{{name}}». Pronto será fruto en tu árbol."
+      },
+      "fruit": {
+        "v0": "🍎 «{{name}}» llegó a {{completions}} repeticiones y ya es fruto en tu árbol. Cada una fue un voto por quien quieres ser.",
+        "v1": "🍎 ¡Fruto! {{completions}} repeticiones de «{{name}}». Esto ya es parte de quien eres."
+      }
     },
-    "addMinimum": "«{{name}}» se está resistiendo ({{percent}}% este mes). Una versión de 2 minutos lo vuelve tan fácil que cuesta decir que no.",
-    "addIntention": "«{{name}}» se está resistiendo ({{percent}}% este mes). Decidir cuándo y dónde («Haré esto a las … en …») es de lo que más ayuda según la investigación.",
-    "bestBand": "Tu franja fuerte: {{best}} ({{bestPercent}}%). La que más cuesta: {{worst}} ({{worstPercent}}%). Si un hábito se resiste, prueba moverlo a tu franja fuerte.",
-    "weekUp": "Esta semana vas en {{thisWeek}}%, frente a {{lastWeek}}% la anterior. Pequeñas mejoras que se suman: así funciona el 1%.",
+    "addMinimum": {
+      "v0": "«{{name}}» se está resistiendo ({{percent}} % este mes). Una versión de 2 minutos lo vuelve tan fácil que cuesta decir que no.",
+      "v1": "«{{name}}» va en {{percent}} % este mes. ¿Y si tuviera una versión tan pequeña que no pudieras saltártela?"
+    },
+    "addIntention": {
+      "v0": "«{{name}}» se está resistiendo ({{percent}} % este mes). Decidir cuándo y dónde («Haré esto a las … en …») es de lo que más ayuda según la investigación.",
+      "v1": "«{{name}}» va en {{percent}} % este mes. Dale una cita fija: «a las … en …». Un plan concreto pesa más que la motivación."
+    },
+    "weekUp": {
+      "v0": "Esta semana vas en {{thisWeek}} %, frente a {{lastWeek}} % la anterior. Pequeñas mejoras que se suman: así funciona el 1 %.",
+      "v1": "Subiste de {{lastWeek}} % a {{thisWeek}} % respecto a la semana pasada. Lo pequeño, sostenido, se nota."
+    },
+    "projection": {
+      "v0": "A tu ritmo de las últimas semanas, «{{name}}» será fruto hacia el {{date}}. Ya llevas {{completions}}.",
+      "v1": "Si sigues así, el {{date}} «{{name}}» llegará a ~66 repeticiones. Vas por {{completions}}."
+    },
+    "agenda": {
+      "v0": "Hoy tienes {{total}} hábitos y {{count}} caen en tu franja más difícil: {{band}} ({{percent}} %). ¿Adelantas alguno mientras tienes energía?",
+      "v1": "Día cargado: {{total}} hábitos, {{count}} en tu franja más difícil ({{band}}). Si puedes, haz uno antes."
+    },
+    "bestBand": {
+      "v0": "Tu franja fuerte: {{best}} ({{bestPercent}} %). La que más cuesta: {{worst}} ({{worstPercent}} %). Si un hábito se resiste, prueba moverlo a tu franja fuerte.",
+      "v1": "Franja fuerte: {{best}} ({{bestPercent}} %). Franja difícil: {{worst}} ({{worstPercent}} %). Tu energía ya te dice dónde poner lo difícil."
+    },
+    "minimumSaved": {
+      "v0": "Este mes usaste la versión mínima de «{{name}}» {{count}} veces y tu racha sigue en {{streak}}. Para eso existe: presentarse cuenta.",
+      "v1": "{{count}} días difíciles salvados con la versión mínima de «{{name}}». Racha: {{streak}}. Así se sostiene un hábito."
+    },
+    "why": {
+      "neverMissTwice": "Un fallo es un accidente; dos seguidos empiezan a ser un hábito nuevo. Por eso «nunca dos veces» (Clear).",
+      "comeback": "Tus dos últimos días con hábitos quedaron sin marcar. Pensar «ya lo arruiné» es lo que más hace abandonar; volver con algo pequeño lo corta.",
+      "usualTime": "Hora mediana de tus últimos {{sample}} registros de «{{name}}». Los hábitos a una hora estable se automatizan antes.",
+      "weakWeekday": "Tus últimos {{sample}} días como hoy ({{weekday}}): {{weekdayPercent}} % frente a {{averagePercent}} % en general. Bajar la barra el día difícil protege la constancia (regla de los 2 minutos).",
+      "automaticity": "{{completions}} repeticiones en los últimos 120 días. Lally et al. (2010): mediana de ~66 días hasta el automatismo, con un rango de 18 a 254.",
+      "addMinimum": "{{percent}} % de {{sample}} veces en los últimos 30 días. Regla de los 2 minutos (Clear): primero presentarse, luego mejorar.",
+      "addIntention": "{{percent}} % de {{sample}} veces en los últimos 30 días. Intenciones de implementación: decidir cuándo y dónde tiene un efecto medio-grande (Gollwitzer y Sheeran, 2006).",
+      "weekUp": "Porcentaje de hábitos cumplidos esta semana frente a la anterior. Regla del 1 %: pequeñas mejoras que se acumulan.",
+      "projection": "{{recent}} repeticiones en los últimos 28 días; a ese ritmo llegas a ~66. Es una estimación, no una promesa: a cada quien le toma entre 18 y 254 días.",
+      "agenda": "Tu franja más difícil en los últimos 30 días: {{band}} ({{percent}} %). Hacer lo difícil cuando hay energía ayuda.",
+      "bestBand": "Tus últimos 30 días por franja. Los hábitos anclados a momentos estables se forman más rápido.",
+      "minimumSaved": "{{count}} veces con la versión mínima en 30 días y una racha de {{streak}}. Presentarse cuenta más que la intensidad (regla de los 2 minutos).",
+      "fact": "Un dato de la ciencia de los hábitos (Clear, Lally, Gollwitzer)."
+    },
     "facts": {
       "0": "Cada vez que cumples un hábito es un voto por la persona que quieres ser. No necesitas unanimidad, solo mayoría.",
       "1": "1,01 elevado a 365 da unas 37: mejorar un poquito cada día, sostenido, se acumula. Lo pequeño importa.",
@@ -469,16 +544,16 @@
       "6": "La regla de los 2 minutos: empieza con una versión tan pequeña que no puedas decir que no. Primero se trata de presentarse.",
       "7": "Junta lo que necesitas hacer con algo que disfrutas: tu podcast favorito, solo mientras caminas."
     },
+    "taken": {
+      "minimum": "¡Hecho! «{{name}}» ya tiene su versión de 2 minutos: los días difíciles, esa también cuenta.",
+      "intention": "¡Hecho! «{{name}}» ya tiene su cuándo y dónde: ahora el plan te recuerda a ti."
+    },
     "actions": {
       "doMinimum": "Hacer versión mínima",
       "markDone": "Marcar como hecho",
       "seeGarden": "Ver mi jardín",
       "addMinimum": "Añadir versión de 2 minutos",
       "addIntention": "Añadir cuándo y dónde"
-    },
-    "taken": {
-      "minimum": "¡Hecho! «{{name}}» ya tiene su versión de 2 minutos: los días difíciles, esa también cuenta.",
-      "intention": "¡Hecho! «{{name}}» ya tiene su cuándo y dónde: ahora el plan te recuerda a ti."
     }
   }
 }

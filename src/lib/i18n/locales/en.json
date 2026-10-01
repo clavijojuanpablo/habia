@@ -444,21 +444,96 @@
     "and": "and the"
   },
   "coach": {
+    "whyLink": "Why?",
     "neverMissTwice": {
-      "minimum": "“{{name}}” slipped last time, and that's okay: one miss is an accident. Today, even just the minimum version: {{minimum}}.",
-      "plain": "“{{name}}” slipped last time, and that's okay: one miss is an accident. What matters is never missing twice in a row.",
-      "done": "That's it! “{{name}}” is back on track. Never miss twice: that's how a habit is built."
+      "minimum": {
+        "v0": "“{{name}}” slipped last time, and that’s okay: one miss is an accident. Today, even just the minimum version: {{minimum}}.",
+        "v1": "“{{name}}” didn’t happen last time. That’s fine, just not twice in a row: today {{minimum}} is enough."
+      },
+      "plain": {
+        "v0": "“{{name}}” slipped last time, and that’s okay: one miss is an accident. What matters is never missing twice in a row.",
+        "v1": "“{{name}}” didn’t happen last time. One day changes nothing; today is the one that counts."
+      },
+      "done": {
+        "v0": "That’s it! “{{name}}” is back on track. Never miss twice: that’s how a habit is built.",
+        "v1": "You’re back! “{{name}}” is still alive. That’s what someone who never misses twice looks like."
+      },
+      "comebacks_one": "Last time it slipped, you came back the next time.",
+      "comebacks_other": "The last {{count}} times it slipped, you came back the next time. You come back."
     },
-    "comeback": "Coming back is what matters. A few unchecked days don't erase what you built: your tree is waiting. Start with today's easiest habit.",
+    "comeback": {
+      "v0": "Coming back is what matters. A few unchecked days don’t erase what you built: your tree is waiting. Start with today’s easiest habit.",
+      "v1": "Welcome back 🌱 Nothing you did is lost. Today, just one: the easiest."
+    },
+    "usualTime": {
+      "v0": "You usually do “{{name}}” around {{time}} and it’s still pending today. Do it now?",
+      "v1": "By now “{{name}}” is usually done (you tend to check it around {{time}}). There’s still time."
+    },
+    "weakWeekday": {
+      "v0": "Days like today ({{weekday}}) are harder for “{{name}}”: {{weekdayPercent}}% vs {{averagePercent}}% overall. Lower the bar today: the minimum version is enough.",
+      "v1": "Heads up: days like today ({{weekday}}) tend to be tough for “{{name}}” ({{weekdayPercent}}%). Knowing it is half the battle; make it small, but do it."
+    },
+    "doneToday": {
+      "v0": "Done! “{{name}}” counts today. One more vote for who you want to be.",
+      "v1": "“{{name}}” ✔️ Right when it’s hardest: that’s how identity is built."
+    },
     "automaticity": {
-      "half": "“{{name}}” is at {{completions}} repetitions: halfway along the typical road to automaticity (~66, though it takes anywhere from 18 to 254).",
-      "close": "“{{name}}” is at {{completions}} repetitions: very close to the ~66 where, on average, a habit starts running on its own.",
-      "fruit": "🍎 “{{name}}” reached {{completions}} repetitions and is now a fruit on your tree. Each one was a vote for who you want to be."
+      "half": {
+        "v0": "“{{name}}” is at {{completions}} repetitions: halfway along the typical road to automaticity (~66, though it takes anywhere from 18 to 254).",
+        "v1": "Halfway there: {{completions}} repetitions of “{{name}}”. Each one costs a bit less, even if you don’t notice."
+      },
+      "close": {
+        "v0": "“{{name}}” is at {{completions}} repetitions: very close to the ~66 where, on average, a habit starts running on its own.",
+        "v1": "Almost there: {{completions}} repetitions of “{{name}}”. Soon it’ll be a fruit on your tree."
+      },
+      "fruit": {
+        "v0": "🍎 “{{name}}” reached {{completions}} repetitions and is now a fruit on your tree. Each one was a vote for who you want to be.",
+        "v1": "🍎 Fruit! {{completions}} repetitions of “{{name}}”. This is part of who you are now."
+      }
     },
-    "addMinimum": "“{{name}}” is putting up a fight ({{percent}}% this month). A 2-minute version makes it so easy it's hard to say no.",
-    "addIntention": "“{{name}}” is putting up a fight ({{percent}}% this month). Deciding when and where (“I will do this at … in …”) is among the things research finds helps most.",
-    "bestBand": "Your strong band: {{best}} ({{bestPercent}}%). The toughest: {{worst}} ({{worstPercent}}%). If a habit keeps slipping, try moving it to your strong band.",
-    "weekUp": "This week you're at {{thisWeek}}%, up from {{lastWeek}}% last week. Small gains that add up: that's the 1% rule.",
+    "addMinimum": {
+      "v0": "“{{name}}” is putting up a fight ({{percent}}% this month). A 2-minute version makes it so easy it’s hard to say no.",
+      "v1": "“{{name}}” is at {{percent}}% this month. What if it had a version so small you couldn’t skip it?"
+    },
+    "addIntention": {
+      "v0": "“{{name}}” is putting up a fight ({{percent}}% this month). Deciding when and where (“I will do this at … in …”) is among the things research finds helps most.",
+      "v1": "“{{name}}” is at {{percent}}% this month. Give it a fixed appointment: “at … in …”. A concrete plan beats motivation."
+    },
+    "weekUp": {
+      "v0": "This week you’re at {{thisWeek}}%, up from {{lastWeek}}% last week. Small gains that add up: that’s the 1% rule.",
+      "v1": "You went from {{lastWeek}}% to {{thisWeek}}% compared to last week. Small things, sustained, show."
+    },
+    "projection": {
+      "v0": "At your pace of the last few weeks, “{{name}}” will be a fruit around {{date}}. You’re at {{completions}}.",
+      "v1": "Keep this up and “{{name}}” reaches ~66 repetitions on {{date}}. You’re at {{completions}}."
+    },
+    "agenda": {
+      "v0": "You have {{total}} habits today and {{count}} fall in your toughest band: {{band}} ({{percent}}%). Get one done early while you have energy?",
+      "v1": "Busy day: {{total}} habits, {{count}} in your toughest band ({{band}}). If you can, do one sooner."
+    },
+    "bestBand": {
+      "v0": "Your strong band: {{best}} ({{bestPercent}}%). The toughest: {{worst}} ({{worstPercent}}%). If a habit keeps slipping, try moving it to your strong band.",
+      "v1": "Strong band: {{best}} ({{bestPercent}}%). Tough band: {{worst}} ({{worstPercent}}%). Your energy is already telling you where to put the hard stuff."
+    },
+    "minimumSaved": {
+      "v0": "This month you used the minimum version of “{{name}}” {{count}} times and your streak is at {{streak}}. That’s what it’s for: showing up counts.",
+      "v1": "{{count}} hard days saved by the minimum version of “{{name}}”. Streak: {{streak}}. That’s how a habit holds."
+    },
+    "why": {
+      "neverMissTwice": "One miss is an accident; two in a row start a new habit. Hence “never miss twice” (Clear).",
+      "comeback": "Your last two days with habits went unchecked. Thinking “I already ruined it” is what makes people quit most; coming back with something small breaks it.",
+      "usualTime": "Median time of your last {{sample}} check-ins of “{{name}}”. Habits at a stable time become automatic sooner.",
+      "weakWeekday": "Your last {{sample}} days like today ({{weekday}}): {{weekdayPercent}}% vs {{averagePercent}}% overall. Lowering the bar on hard days protects consistency (2-minute rule).",
+      "automaticity": "{{completions}} repetitions in the last 120 days. Lally et al. (2010): a median of ~66 days to automaticity, ranging from 18 to 254.",
+      "addMinimum": "{{percent}}% of {{sample}} times in the last 30 days. The 2-minute rule (Clear): show up first, improve later.",
+      "addIntention": "{{percent}}% of {{sample}} times in the last 30 days. Implementation intentions: deciding when and where has a medium-to-large effect (Gollwitzer & Sheeran, 2006).",
+      "weekUp": "Share of habits done this week vs last. The 1% rule: small gains that compound.",
+      "projection": "{{recent}} repetitions in the last 28 days; at that pace you reach ~66. An estimate, not a promise: it takes anywhere from 18 to 254 days.",
+      "agenda": "Your toughest band over the last 30 days: {{band}} ({{percent}}%). Doing the hard thing while you have energy helps.",
+      "bestBand": "Your last 30 days by band. Habits anchored to stable moments form faster.",
+      "minimumSaved": "{{count}} times with the minimum version in 30 days and a streak of {{streak}}. Showing up beats intensity (2-minute rule).",
+      "fact": "A fact from habit science (Clear, Lally, Gollwitzer)."
+    },
     "facts": {
       "0": "Every time you do a habit, you cast a vote for the person you want to become. You don't need unanimity, just a majority.",
       "1": "1.01 to the power of 365 is about 37: a little better each day, sustained, compounds. Small things matter.",
@@ -469,16 +544,16 @@
       "6": "The 2-minute rule: start with a version so small you can't say no. First, it's about showing up.",
       "7": "Pair what you need to do with something you enjoy: your favorite podcast, only while you walk."
     },
+    "taken": {
+      "minimum": "Done! “{{name}}” now has its 2-minute version: on hard days, that counts too.",
+      "intention": "Done! “{{name}}” now has its when and where: now the plan reminds you."
+    },
     "actions": {
       "doMinimum": "Do the minimum version",
       "markDone": "Mark as done",
       "seeGarden": "See my garden",
       "addMinimum": "Add a 2-minute version",
       "addIntention": "Add when and where"
-    },
-    "taken": {
-      "minimum": "Done! “{{name}}” now has its 2-minute version: on hard days, that counts too.",
-      "intention": "Done! “{{name}}” now has its when and where: now the plan reminds you."
     }
   }
 }

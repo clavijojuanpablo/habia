@@ -40,7 +40,7 @@ export default function TodayScreen() {
   const now = useNow();
   const { today, tomorrow } = useTodayRange(now);
   const { items, bands, hasHabits, isLoading, error, toggleItem } = useSchedule(today, tomorrow);
-  const coach = useCoachTip(today, items, isLoading);
+  const coach = useCoachTip({ today, now, bandConfig: bands, items, itemsLoading: isLoading });
 
   // Keep only the key: the item itself is read fresh from `items` on every render.
   const [chainNextKey, setChainNextKey] = useState<string | null>(null);
