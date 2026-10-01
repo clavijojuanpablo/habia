@@ -6,18 +6,24 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Button } from '@/components/button';
 import { TextField } from '@/components/text-field';
 import { ThemedText } from '@/components/themed-text';
-import { Radius, Shadow, Spacing } from '@/constants/theme';
+import { FontFamily, Radius, Shadow, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
-import { SocialError, useJoinCircle, type Circle, type SocialProfile } from '../api';
-import type { CircleWeekRow } from '../shared-days';
-import { SocialAvatar } from './social-avatar';
+import { SocialError, useJoinCircle, type Circle } from '../api';
 import { SocialCard } from './social-card';
-import { WeekDots } from './week-dots';
 
 export const circleInviteLink = (code: string) => `https://habia.app/join/${code}`;
 
-export function CircleCard({ circle, memberCount }: { circle: Circle; memberCount: number }) {
+/** `streak`: the main shared habit's group streak; the flame is lit once today is saved. */
+export function CircleCard({
+  circle,
+  memberCount,
+  streak,
+}: {
+  circle: Circle;
+  memberCount: number;
+  streak?: { count: number; lit: boolean; habit: string };
+}) {
   const { t } = useTranslation();
   const theme = useTheme();
   return (
@@ -35,13 +41,25 @@ export function CircleCard({ circle, memberCount }: { circle: Circle; memberCoun
         <ThemedText type="heading" numberOfLines={1}>
           {circle.name}
         </ThemedText>
-        <ThemedText type="caption" themeColor="textSecondary">
+        <ThemedText type="caption" themeColor="textSecondary" numberOfLines={1}>
           {t('social.circle.members', { count: memberCount })}
+          {streak ? ` · ${streak.habit}` : ''}
         </ThemedText>
       </View>
-      <ThemedText type="heading" themeColor="textSecondary">
-        ›
-      </ThemedText>
+      {streak ? (
+        <View
+          accessibilityLabel={t('social.circleHabit.streakLabel', { count: streak.count })}
+          style={[styles.streak, { backgroundColor: streak.lit ? theme.streakSoft : theme.backgroundSelected }]}>
+          <ThemedText style={[styles.flame, !streak.lit && styles.dim]}>🔥</ThemedText>
+          <ThemedText style={[styles.streakNumber, { color: streak.lit ? theme.streak : theme.textSecondary }]}>
+            {streak.count}
+          </ThemedText>
+        </View>
+      ) : (
+        <ThemedText type="heading" themeColor="textSecondary">
+          ›
+        </ThemedText>
+      )}
     </Pressable>
   );
 }
@@ -99,43 +117,6 @@ export function CirclesActions() {
 
 export const circleDot = { active: 'full', rest: 'rest', empty: 'empty', future: 'future' } as const;
 
-/** One row per member with this week's planted days; tapping a member opens their card. */
-export function CircleWeekGrid({
-  rows,
-  profiles,
-  me,
-}: {
-  rows: CircleWeekRow[];
-  profiles: Record<string, SocialProfile>;
-  me: string;
-}) {
-  const { t } = useTranslation();
-  const theme = useTheme();
-  return (
-    <View style={styles.grid}>
-      {rows.map((row, i) => {
-        const profile = profiles[row.userId];
-        return (
-          <Pressable
-            key={row.userId}
-            disabled={!profile || row.userId === me}
-            onPress={() => router.push({ pathname: '/friend/[id]', params: { id: row.userId } })}
-            accessibilityRole="button"
-            style={styles.member}>
-            <View style={styles.memberName}>
-              <SocialAvatar color={profile?.color ?? theme.textSecondary} size={32} />
-              <ThemedText type="smallBold" numberOfLines={1} style={styles.flex}>
-                {row.userId === me ? t('social.circle.you') : (profile?.display_name ?? t('social.circle.hidden'))}
-              </ThemedText>
-            </View>
-            <WeekDots states={row.days.map((d) => circleDot[d])} size={14} showLabels={i === rows.length - 1} />
-          </Pressable>
-        );
-      })}
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
@@ -149,7 +130,15 @@ const styles = StyleSheet.create({
   emoji: { fontSize: 26, lineHeight: 32 },
   flex: { flex: 1 },
   joinRow: { flexDirection: 'row', alignItems: 'flex-end', gap: Spacing.two },
-  grid: { gap: Spacing.three },
-  member: { gap: Spacing.one },
-  memberName: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
+  streak: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.one,
+    borderRadius: Radius.md,
+    paddingHorizontal: Spacing.two,
+    paddingVertical: Spacing.one,
+  },
+  flame: { fontSize: 22, lineHeight: 28 },
+  streakNumber: { fontSize: 22, lineHeight: 28, fontFamily: FontFamily.black },
+  dim: { opacity: 0.35 },
 });

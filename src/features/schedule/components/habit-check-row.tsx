@@ -75,7 +75,6 @@ export function HabitCheckRow({
       ? `📍 ${item.habit.context_label}`
       : null;
   const subtitle = [
-    circleLabel,
     cue ?? (item.hasTime ? formatTime(item.at) : null),
     skipped ? t('today.restDay') : minimum ? t('today.minimumDone') : item.habit.two_minute_version,
   ]
@@ -92,6 +91,9 @@ export function HabitCheckRow({
           boxShadow: Shadow.card,
           opacity: done || skipped ? 0.7 : 1,
           marginLeft: item.anchorHabitId ? Math.min(item.depth, 3) * Spacing.three : 0,
+          // Shared with a circle: a lavender edge, so it reads as "ours" at a glance.
+          borderLeftWidth: circleLabel ? 5 : 0,
+          borderLeftColor: theme.lavender,
           // An outline, not a border, so the highlight never shifts the layout.
           outlineWidth: highlighted ? 2.5 : 0,
           outlineColor: color,
@@ -108,6 +110,13 @@ export function HabitCheckRow({
           <ThemedText style={styles.emojiText}>{item.habit.icon}</ThemedText>
         </View>
         <View style={styles.texts}>
+          {circleLabel && (
+            <View style={[styles.circleTag, { backgroundColor: theme.lavenderSoft }]}>
+              <ThemedText type="caption" numberOfLines={1} style={{ color: theme.lavender }}>
+                {circleLabel}
+              </ThemedText>
+            </View>
+          )}
           <ThemedText
             type="heading"
             numberOfLines={1}
@@ -163,7 +172,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   emojiText: { fontSize: 26, lineHeight: 32 },
-  texts: { flex: 1 },
+  texts: { flex: 1, gap: 2 },
+  circleTag: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: Spacing.two,
+    paddingVertical: 1,
+    borderRadius: Radius.pill,
+    maxWidth: '100%',
+  },
   check: {
     width: 40,
     height: 40,

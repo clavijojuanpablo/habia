@@ -13,6 +13,18 @@ export type GroupDayState = 'met' | 'short' | 'rest' | 'off' | 'pending' | 'futu
 /** How many must do it for the day to count: everyone up to two, then half (rounded up). */
 export const neededFor = (active: number) => (active <= 2 ? active : Math.ceil(active / 2));
 
+/** How many days back each person's consistency in the ranking looks. */
+export const RANKING_DAYS = 30;
+
+/**
+ * Today's counter color: short of the group's threshold (the streak is at risk), reached it, or
+ * nearly everyone (80 %+) is in.
+ */
+export function todayTier(done: number, needed: number, active: number): 'short' | 'met' | 'great' {
+  if (active === 0 || done < needed) return 'short';
+  return done >= Math.max(needed, Math.ceil(active * 0.8)) ? 'great' : 'met';
+}
+
 const percent = (done: number, expected: number) => (expected === 0 ? null : Math.round((done / expected) * 100));
 
 /**
@@ -90,11 +102,31 @@ export function computeCircleHabit(members: CircleHabitMember[], days: CircleHab
   }));
   const now = dayInfo(today);
 
+  // Each person's consistency over the last 30 days since they joined: closed days, plus today once done.
+  const ranking = members
+    .map((m) => {
+      let done = 0;
+      let expected = 0;
+      for (let date = addDays(today, -(RANKING_DAYS - 1)); daysBetween(date, today) >= 0; date = addDays(date, 1)) {
+        const key = formatLocalDate(date);
+        if (!scheduled.has(key) || m.joined_on > key) continue;
+        const mark = byKey.get(`${m.user_id}:${key}`);
+        if (mark?.skipped) continue;
+        const isToday = daysBetween(date, today) === 0;
+        if (isToday && !mark?.done) continue;
+        expected++;
+        if (mark?.done) done++;
+      }
+      return { userId: m.user_id, done, percent: percent(done, expected), doneToday: !!byKey.get(`${m.user_id}:${formatLocalDate(today)}`)?.done };
+    })
+    .sort((a, b) => (b.percent ?? -1) - (a.percent ?? -1) || b.done - a.done);
+
   return {
     streak,
     week,
     rows,
-    today: { state: now.state, done: now.doers.length, needed: now.needed, carriers: now.doers },
+    today: { state: now.state, done: now.doers.length, needed: now.needed, active: now.active, carriers: now.doers },
+    ranking,
     thisWeek: consistency(weekOf(monday)),
     lastWeek: consistency(weekOf(addDays(monday, -7))),
   };

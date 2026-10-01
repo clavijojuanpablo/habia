@@ -17,7 +17,8 @@ import {
   useSocialProfiles,
 } from '@/features/social/api';
 import { CircleHabitCard } from '@/features/social/components/circle-habit-card';
-import { circleInviteLink, CircleWeekGrid } from '@/features/social/components/circles';
+import { circleInviteLink } from '@/features/social/components/circles';
+import { ConsistencyRanking } from '@/features/social/components/consistency-ranking';
 import { SocialCard } from '@/features/social/components/social-card';
 import { computeCircleWeek } from '@/features/social/shared-days';
 import { useNow, useTodayRange } from '@/hooks/use-now';
@@ -110,7 +111,24 @@ export default function CircleScreen() {
             {t('social.circle.allPlanted', { count: week.allPlanted })}
           </ThemedText>
           {days.data ? (
-            <CircleWeekGrid rows={week.rows} profiles={profileById} me={me} />
+            <ConsistencyRanking
+              rows={week.rows
+                .map((row) => {
+                  // Share of this week's days so far (rests left out) on which they planted anything.
+                  const counted = row.days.filter((d) => d === 'active' || d === 'empty').length;
+                  const planted = row.days.filter((d) => d === 'active').length;
+                  return {
+                    userId: row.userId,
+                    name:
+                      row.userId === me
+                        ? t('social.circle.you')
+                        : (profileById[row.userId]?.display_name ?? t('social.circle.hidden')),
+                    color: profileById[row.userId]?.color ?? theme.textSecondary,
+                    percent: counted === 0 ? null : Math.round((planted / counted) * 100),
+                  };
+                })
+                .sort((a, b) => (b.percent ?? -1) - (a.percent ?? -1))}
+            />
           ) : (
             <ActivityIndicator color={theme.primary} />
           )}

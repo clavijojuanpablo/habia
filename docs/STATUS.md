@@ -117,6 +117,7 @@ open the web fallback there; its "Open habia" button still works.
    Check it: `curl -X POST <SUPABASE_URL>/functions/v1/weekly-review -H "apikey: <publishable>" -H "Authorization: Bearer <publishable>" -d '{"check":true}'`
    must answer `{"available":true}`.
 
+0. **1.3.1 — circle polish:** shared habit card shows today first (big "3/8": red below the threshold, yellow once saved, green at 80 %+; everyone's face lit with ✓ once done) and each person's 30-day consistency as an animated ranking (`consistency-ranking.tsx`, also for the circle's week); the dot grids are gone. Streak tab circles show 🔥 N on the card (lit once today is saved). Shared habits on Today carry a lavender "🤝 circle" tag and edge. Only the circle owner can remove people (RLS + UI).
 0. **1.3.0 — shared circle habits** (built 2026-10-02, JS + migration `20261001220811_circle_habits.sql`,
    fingerprint `f15932ef…`). Owner steps: `npx supabase db push`; optional test data
    `npx supabase db query --linked -f supabase/seed/test-circle.sql` (6 fake `@habia.test` people in a private

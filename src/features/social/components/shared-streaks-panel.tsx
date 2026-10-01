@@ -16,6 +16,7 @@ import {
   useCircles,
   useMySocialProfile,
   useSocialDays,
+  type Circle,
   type CircleHabit,
 } from '../api';
 import { computeCircleHabit } from '../circle-habit-streak';
@@ -99,15 +100,15 @@ export function SharedStreaksPanel({
         const week = days.data ? computeCircleWeek(ids, days.data, today) : null;
         return (
           <View key={circle.id} style={styles.circle}>
-            <CircleCard circle={circle} memberCount={ids.length} />
             {mainHabit(circle.id) ? (
-              <GroupStreakLine habit={mainHabit(circle.id)!} today={today} />
+              <CircleWithStreak circle={circle} memberCount={ids.length} habit={mainHabit(circle.id)!} today={today} />
             ) : (
-              week && (
-                <ThemedText type="caption" themeColor="textSecondary" style={styles.indent}>
-                  {t('social.circle.allPlanted', { count: week.allPlanted })}
-                </ThemedText>
-              )
+              <CircleCard circle={circle} memberCount={ids.length} />
+            )}
+            {!mainHabit(circle.id) && week && (
+              <ThemedText type="caption" themeColor="textSecondary" style={styles.indent}>
+                {t('social.circle.allPlanted', { count: week.allPlanted })}
+              </ThemedText>
             )}
           </View>
         );
@@ -116,15 +117,30 @@ export function SharedStreaksPanel({
   );
 }
 
-function GroupStreakLine({ habit, today }: { habit: CircleHabit; today: Date }) {
-  const { t } = useTranslation();
+/** A circle with its main shared habit's group streak on the card: lit once today is saved. */
+function CircleWithStreak({
+  circle,
+  memberCount,
+  habit,
+  today,
+}: {
+  circle: Circle;
+  memberCount: number;
+  habit: CircleHabit;
+  today: Date;
+}) {
   const { data } = useCircleHabitProgress(habit.id, today);
-  if (!data) return null;
-  const { streak } = computeCircleHabit(data.members, data.days, habit.rrule, today);
+  const group = data ? computeCircleHabit(data.members, data.days, habit.rrule, today) : null;
   return (
-    <ThemedText type="caption" themeColor="textSecondary" style={styles.indent}>
-      {t('social.circleHabit.streakLine', { icon: habit.icon, name: habit.name, count: streak })}
-    </ThemedText>
+    <CircleCard
+      circle={circle}
+      memberCount={memberCount}
+      streak={
+        group
+          ? { count: group.streak, lit: group.today.state === 'met', habit: `${habit.icon} ${habit.name}` }
+          : undefined
+      }
+    />
   );
 }
 

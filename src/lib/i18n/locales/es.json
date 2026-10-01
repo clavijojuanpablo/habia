@@ -811,18 +811,21 @@
       "minimumPlaceholder": "Ej.: Salir a la puerta con zapatos",
       "minimum": "Mínimo: {{text}}",
       "create": "Crear el hábito del círculo",
-      "groupStreak": "del grupo",
-      "todayMet": "¡Hoy ya cuenta! {{done}} de {{total}} lo hicieron 🌱",
-      "todayNeed_one": "Hoy van {{done}}: falta {{count}} para que el día cuente",
-      "todayNeed_other": "Hoy van {{done}}: faltan {{count}} para que el día cuente",
-      "carriers": "Hoy regaron por todos: {{names}}",
       "nobodyYet": "Nadie se ha unido todavía. ¡Empieza tú!",
       "consistency": "Constancia del grupo esta semana: {{percent}} %",
       "vsLastWeek": "la anterior {{percent}} %",
       "join": "Unirme y sumarlo a mi día",
       "rule": "🛡️ La racha del grupo crece cuando al menos la mitad lo hace. Un día que no se logra se perdona; dos seguidos la reinician.",
-      "streakLine_one": "{{icon}} {{name}}: {{count}} día de racha del grupo",
-      "streakLine_other": "{{icon}} {{name}}: {{count}} días de racha del grupo"
+      "todayShort_one": "Falta {{count}} para salvar la racha de hoy",
+      "todayShort_other": "Faltan {{count}} para salvar la racha de hoy",
+      "todaySaved": "¡La racha de hoy está a salvo! 🌱",
+      "todayGreat": "¡Casi todo el círculo ya lo hizo! 🎉",
+      "todayRest": "Hoy todos descansan: la racha no se mueve 💤",
+      "todayOff": "Hoy no toca: la racha espera 💤",
+      "rankingTitle_one": "Constancia de cada uno (último día)",
+      "rankingTitle_other": "Constancia de cada uno (últimos {{count}} días)",
+      "streakLabel_one": "Racha del grupo: {{count}} día",
+      "streakLabel_other": "Racha del grupo: {{count}} días"
     }
   }
 }

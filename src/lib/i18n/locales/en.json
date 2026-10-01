@@ -811,18 +811,21 @@
       "minimumPlaceholder": "E.g. Step out the door with shoes on",
       "minimum": "Minimum: {{text}}",
       "create": "Create the circle habit",
-      "groupStreak": "group",
-      "todayMet": "Today counts! {{done}} of {{total}} did it 🌱",
-      "todayNeed_one": "{{done}} so far today: {{count}} more for the day to count",
-      "todayNeed_other": "{{done}} so far today: {{count}} more for the day to count",
-      "carriers": "Watered for everyone today: {{names}}",
       "nobodyYet": "Nobody has joined yet. Go first!",
       "consistency": "Group consistency this week: {{percent}}%",
       "vsLastWeek": "last week {{percent}}%",
       "join": "Join and add it to my day",
       "rule": "🛡️ The group streak grows when at least half do it. One day that doesn’t make it is forgiven; two in a row reset it.",
-      "streakLine_one": "{{icon}} {{name}}: {{count}}-day group streak",
-      "streakLine_other": "{{icon}} {{name}}: {{count}}-day group streak"
+      "todayShort_one": "{{count}} more to save today's streak",
+      "todayShort_other": "{{count}} more to save today's streak",
+      "todaySaved": "Today's streak is safe! 🌱",
+      "todayGreat": "Almost the whole circle did it! 🎉",
+      "todayRest": "Everyone rests today: the streak doesn't move 💤",
+      "todayOff": "Not scheduled today: the streak waits 💤",
+      "rankingTitle_one": "Everyone's consistency (last day)",
+      "rankingTitle_other": "Everyone's consistency (last {{count}} days)",
+      "streakLabel_one": "Group streak: {{count}} day",
+      "streakLabel_other": "Group streak: {{count}} days"
     }
   }
 }
