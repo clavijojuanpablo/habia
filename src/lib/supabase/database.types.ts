@@ -491,10 +491,11 @@ export type Database = {
     }
     Functions: {
       accept_friend_request: { Args: { p_user: string }; Returns: boolean }
-      are_connected: { Args: { a: string; b: string }; Returns: boolean }
       block_user: { Args: { p_user: string }; Returns: undefined }
-      can_see_profile: { Args: { target: string; viewer: string }; Returns: boolean }
-      create_circle: { Args: { p_emoji: string; p_name: string }; Returns: string }
+      create_circle: {
+        Args: { p_emoji: string; p_name: string }
+        Returns: string
+      }
       find_profile: {
         Args: { p_username: string }
         Returns: {
@@ -504,9 +505,6 @@ export type Database = {
           username: string
         }[]
       }
-      is_blocked: { Args: { a: string; b: string }; Returns: boolean }
-      is_circle_member: { Args: { p_circle: string; p_user: string }; Returns: boolean }
-      is_circle_owner: { Args: { p_circle: string; p_user: string }; Returns: boolean }
       join_circle: { Args: { p_code: string }; Returns: string }
       list_friendships: {
         Args: never
