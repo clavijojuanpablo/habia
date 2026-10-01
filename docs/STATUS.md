@@ -151,7 +151,8 @@ stored per account but per device (`habia.northStar.<userId>`): a user on iPhone
 - **Open (2026-10-01): 1.0.8 crashed on the owner's iPhone** right after the OTA; not reproducible on web
   with empty data (Progress and Today mount fine), so it depends on real data or Hermes. 1.0.9 adds a
   root `ErrorBoundary` (src/app/_layout.tsx) that shows the error and reports it to Sentry; next step is
-  the owner's screenshot of that screen. Sentry had received no events at all: check the DSN/project.
+  the owner's screenshot of that screen. Sentry works (a test crash from a web preview reached it), so the 1.0.8 crash most likely
+  closed the app before the event could be sent; the boundary keeps it open long enough.
 
 - **The native fingerprint includes `.gitignore`** (and `eas.json`, `app.json`, assets, native
   packages). Editing any of them moves the runtime version, and OTA updates stop reaching build 3:
@@ -166,6 +167,8 @@ stored per account but per device (`habia.northStar.<userId>`): a user on iPhone
 - Three near-identical Chip components (habit form, identity form, onboarding): move one to
   `src/components/` when a fourth appears. White-on-pastel chip text can be low contrast.
 
+- **Web previews must not use the real env**: export with `EXPO_NO_DOTENV=1` + fake Supabase vars, or a
+  preview error reaches the owner's Sentry (it happened on 2026-10-01).
 - Web previews: Metro caches inlined `EXPO_PUBLIC_*` values; after changing env vars, export with
   `--clear`. (The PostHog web crash is fixed: `customStorage` on web, `src/lib/analytics.ts`.)
 - Coach: `coach_tip_shown` fires on every Today mount (read it as impressions, not once per tip).
