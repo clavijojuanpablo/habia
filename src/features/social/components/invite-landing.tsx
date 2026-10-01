@@ -54,14 +54,14 @@ export function InviteLanding({
             <ThemedText type="small" style={styles.center}>
               {t('social.invite.needUsername')}
             </ThemedText>
-            <Button label={t('social.invite.pickUsername')} onPress={() => router.replace('/friends')} />
+            <Button label={t('social.invite.pickUsername')} onPress={() => router.replace('/profile')} />
           </>
         ) : done ? (
           <>
             <ThemedText type="smallBold" themeColor="primary" style={styles.center}>
               {done}
             </ThemedText>
-            <Button label={t('social.invite.goFriends')} onPress={() => router.replace('/friends')} />
+            <Button label={t('social.invite.goFriends')} onPress={() => router.replace('/profile')} />
           </>
         ) : (
           <Button label={actionLabel} loading={pending} onPress={onAction} />

@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,9 +11,12 @@ import { ProgressRing } from '@/components/progress-ring';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BandEmoji, MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
+import { completedIdentity } from '@/features/celebration/completed-identity';
 import { DayCompleteOverlay } from '@/features/celebration/day-complete';
+import { IdentityStepToast } from '@/features/celebration/identity-step';
 import type { LogStatus } from '@/features/checkins/api';
 import { CoachCard } from '@/features/coach/components/coach-card';
+import { useIdentities } from '@/features/identities/api';
 import { WeeklyReviewCard, WeeklyReviewOffer, WeeklyReviewWriting } from '@/features/coach/components/weekly-review-card';
 import { useCoachTip } from '@/features/coach/use-coach-tip';
 import { useWeeklyReviewSlot } from '@/features/coach/use-weekly-review-slot';
@@ -34,7 +37,7 @@ import { useBandColors, useTheme } from '@/hooks/use-theme';
 import { addDays, formatLocalDate } from '@/lib/recurrence';
 import { storage } from '@/lib/storage';
 import { track } from '@/lib/analytics';
-import { hapticSuccess } from '@/lib/haptics';
+import { hapticLight, hapticSuccess } from '@/lib/haptics';
 import { getDayBand } from '@/lib/time/day-bands';
 
 const SECTION_ORDER: ScheduleBand[] = ['morning', 'afternoon', 'night', 'anytime'];
@@ -83,6 +86,11 @@ export default function TodayScreen() {
   // Keep only the key: the item itself is read fresh from `items` on every render.
   const [chainNextKey, setChainNextKey] = useState<string | null>(null);
   const [celebrating, setCelebrating] = useState(false);
+  // Finishing a whole branch today: "closer to becoming…". The day's confetti wins on the same tap.
+  const { data: identities } = useIdentities();
+  const [identityStepId, setIdentityStepId] = useState<string | null>(null);
+  const identityStep = identities?.find((identity) => identity.id === identityStepId) ?? null;
+  const closeIdentityStep = useCallback(() => setIdentityStepId(null), []);
   const chainNext = items.find((item) => item.key === chainNextKey && !isDone(item) && !isSkipped(item));
   const [actionsKey, setActionsKey] = useState<string | null>(null);
   const [tipSeen, setTipSeen] = useState(hasSeenActionsTip);
@@ -151,10 +159,18 @@ export default function TodayScreen() {
     const pendingAfter = items.filter((other) => !isDone(other) && !isSkipped(other) && other.key !== item.key).length;
     if (completing && pendingAfter === 0) {
       hapticSuccess();
+      setIdentityStepId(null);
       setCelebrating(true);
       track('day_completed', {
         habits: items.filter((other) => !isSkipped(other) || other.key === item.key).length,
       });
+    } else if (completing) {
+      const identityId = completedIdentity(item, items);
+      if (identityId) {
+        hapticLight();
+        setIdentityStepId(identityId);
+        track('identity_day_completed');
+      }
     }
   };
 
@@ -287,6 +303,9 @@ export default function TodayScreen() {
 
         <HabitActionsSheet item={actionsItem} onToggle={onToggle} onClose={() => setActionsKey(null)} />
 
+        {identityStep && !celebrating && !chainNext && (
+          <IdentityStepToast key={identityStep.id} identity={identityStep} onDismiss={closeIdentityStep} />
+        )}
         {celebrating && <DayCompleteOverlay votes={countable.length} onDismiss={() => setCelebrating(false)} />}
 
         {chainNext && (

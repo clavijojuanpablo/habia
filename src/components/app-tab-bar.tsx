@@ -14,7 +14,7 @@ const TAB_STYLE: Record<string, { emoji: string; tint: ThemeColor }> = {
   week: { emoji: '📅', tint: 'lavenderSoft' },
   garden: { emoji: '🌳', tint: 'primarySoft' },
   progress: { emoji: '📊', tint: 'goldSoft' },
-  friends: { emoji: '🤝', tint: 'lavenderSoft' },
+  profile: { emoji: '🙂', tint: 'lavenderSoft' },
 };
 
 export function AppTabBar({ state, descriptors, navigation }: BottomTabBarProps) {

@@ -15,7 +15,7 @@ Every feature must map to a mechanism here. If a feature doesn't, question it.
 | 4. Make it satisfying | Immediate reward; habit tracking | Check-in animation + haptics, the tree grows immediately, visual tracker |
 
 ## Identity-based habits
-"Every action you take is a vote for the type of person you wish to become." In the app this is told as sowing: each completion is a **seed** planted for that person, consistency **waters** it, and ~66 repetitions are the **harvest** (see `GAMIFICATION.md`). Users define identities ("Soy una persona que lee") and link habits to them.
+"Every action you take is a vote for the type of person you wish to become." In the app this is told as sowing: each completion is a **seed** planted for that person, consistency **waters** it, and ~66 repetitions are the **harvest** (see `GAMIFICATION.md`). Users define who they are **becoming** ("Me estoy convirtiendo en… una persona que lee", since 1.2.0) and link habits to them ("Este hábito me ayuda a convertirme en…"); finishing every habit of an identity in a day says "Hoy estás más cerca de convertirte en…". Nuance kept in the copy: an identity describes who you are or what you do ("una persona activa", "lectora"), not an outcome ("más delgada"); examples steer to identities, outcomes are allowed.
 
 ## Time to automaticity
 Lally et al. (2010): median **~66 days** to reach automaticity, range **18–254**. Missing a single day did not significantly affect the process.

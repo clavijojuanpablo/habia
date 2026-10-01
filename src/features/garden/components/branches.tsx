@@ -30,9 +30,12 @@ export function BranchCard({ branch }: { branch: Branch }) {
       ]}>
       <View style={styles.titleRow}>
         <ThemedText style={styles.emoji}>{identityEmoji(branch.identity)}</ThemedText>
-        <ThemedText type="heading" style={styles.flex}>
-          {branch.identity.statement}
-        </ThemedText>
+        <View style={styles.flex}>
+          <ThemedText type="caption" themeColor="textSecondary">
+            {t('identity.becoming')}
+          </ThemedText>
+          <ThemedText type="heading">{branch.identity.statement}</ThemedText>
+        </View>
       </View>
       <ThemedText type="smallBold" style={{ color }}>
         🌱 {t('garden.seedsThisWeek', { count: branch.seedsThisWeek })}

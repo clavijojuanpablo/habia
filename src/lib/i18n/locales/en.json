@@ -38,8 +38,8 @@
     "week": "Week",
     "garden": "Garden",
     "progress": "Progress",
-    "friends": "Friends",
-    "hasNews": "{{label}}, something new"
+    "hasNews": "{{label}}, something new",
+    "profile": "Profile"
   },
   "bands": {
     "morning": "Morning",
@@ -121,7 +121,7 @@
     "reminderAtTime": "At the time",
     "reminderBefore": "{{count}} min before",
     "reminderWebHint": "Reminders are delivered by the phone app (iOS / Android).",
-    "identity": "Identity",
+    "identity": "This habit helps me become…",
     "identityNone": "None",
     "cue": "When will you do it?",
     "cueType": {
@@ -195,16 +195,16 @@
     "toNextStage_one": "{{count}} seed away from becoming a {{stage}}",
     "toNextStage_other": "{{count}} seeds away from becoming a {{stage}}",
     "whoTitle": "Who are you becoming?",
-    "whoBody": "Each branch of your tree is a person you want to be. Your habits make it grow.",
+    "whoBody": "Each branch of your tree is a person you are becoming. Your habits make it grow.",
     "seedsThisWeek_one": "{{count}} seed this week",
     "seedsThisWeek_other": "{{count}} seeds this week",
     "branchEmpty": "No habit feeds this branch yet.",
     "looseTitle": "Seeds without a branch",
-    "looseBody": "These habits don’t feed any branch yet. Who do you do them for? Tap it and your tree grows with them.",
+    "looseBody": "These habits don’t feed any branch yet. Who do they help you become? Tap it and your tree grows with them.",
     "assignTo": "Connect {{habit}} to {{identity}}",
     "newBranch": "+ New branch",
     "emptyTitle": "Give your tree branches",
-    "emptyBody": "Think of who you want to be: “I am a reader”, “I take care of myself”. Every habit you connect grows that branch.",
+    "emptyBody": "Think of who you want to become: “a reader”, “a calmer person”. Every habit you connect grows that branch.",
     "createBranch": "Create my first branch"
   },
   "progress": {
@@ -257,12 +257,12 @@
   "identity": {
     "new": "New identity",
     "edit": "Edit identity",
-    "title": "Who do you want to become?",
-    "sectionHint": "Each identity is a branch of your tree. Your habits are the seeds that make it grow.",
-    "explainer": "Habits stick when they are part of who you are. Write the person you want to be, not the goal.",
-    "statement": "I am a person who…",
-    "statementPlaceholder": "takes care of their body, reads every day, is present…",
-    "statementRequired": "Write who you want to be",
+    "title": "Who are you becoming?",
+    "sectionHint": "Each branch of your tree is a person you are becoming. Your habits are the seeds that make it grow.",
+    "explainer": "Habits stick when they are part of who you are. Write the person you want to become (who you are, not a result).",
+    "statement": "I am becoming…",
+    "statementPlaceholder": "a stronger person, a calmer person, a reader…",
+    "statementRequired": "Write who you want to become",
     "area": "Area",
     "areas": {
       "health": "Health",
@@ -273,7 +273,8 @@
     },
     "habitCount_one": "{{count}} habit",
     "habitCount_other": "{{count}} habits",
-    "deleteConfirm": "Delete this identity? Its habits are kept without an identity."
+    "deleteConfirm": "Delete this identity? Its habits are kept without an identity.",
+    "becoming": "Becoming"
   },
   "topBar": {
     "streak_one": "{{count}}-day streak",
@@ -294,20 +295,30 @@
     "safeToday": "Streak secured for today! 🎉",
     "keepItUp": "Complete at least one habit today to keep your streak.",
     "rule": "🛡️ One missed day is forgiven. Two in a row reset the streak. 💤 Days without habits do not count.",
-    "challenge": "Next challenge",
-    "challengeName_one": "{{count}}-day challenge",
-    "challengeName_other": "{{count}}-day challenge",
-    "challengeProgress": "Day {{current}} of {{total}}",
     "started": "Streak started",
     "record": "Record",
-    "milestones": "Milestones",
-    "milestone_one": "{{count}}-day streak",
-    "milestone_other": "{{count}}-day streak",
+    "milestones": "Your goals",
     "milestone66": "~66 days: the median time for a habit to become automatic",
-    "reached": "Reached!",
-    "locked": "Locked",
     "dayCount_one": "{{count}} day",
-    "dayCount_other": "{{count}} days"
+    "dayCount_other": "{{count}} days",
+    "tabs": {
+      "personal": "Personal",
+      "friends": "With friends"
+    },
+    "toGoal_one": "{{count}} day to go for the {{goal}}-day goal",
+    "toGoal_other": "{{count}} days to go for the {{goal}}-day goal",
+    "withFriend_one": "{{count}} day planting with {{name}}",
+    "withFriend_other": "{{count}} days planting with {{name}}",
+    "sharedRule": "🛡️ It grows on days you both plant. One missed day never breaks it.",
+    "friends": {
+      "goalsWith": "Your goals with {{name}}",
+      "emptyTitle": "Streaks are better together",
+      "emptyBody": "Add someone or create a circle: you will see which days each one plants and grow together.",
+      "invite": "Invite someone",
+      "noProfileTitle": "Pick your username to plant with friends",
+      "noProfileBody": "Friends never see your habits: only your streak and which days you planted."
+    },
+    "noSharedYet": "Plant on the same day to start a streak together 🌱"
   },
   "account": {
     "dangerZone": "Danger zone",
@@ -337,13 +348,13 @@
     "welcomeTitle": "Hi! I am Brote",
     "welcomeBody": "I’ll grow with you. Every habit you complete is a seed for the person you want to become, and this garden lets you watch it grow.",
     "identityTitle": "Who do you want to become?",
-    "identityBody": "Habits last when they are part of your identity. Do not pick a goal: pick a person.",
+    "identityBody": "Habits stick when they are part of who you are. Don’t pick a goal: pick the person you want to become.",
     "identitySuggestion": {
-      "health": "I am a person who takes care of their body",
-      "mind": "I am a person who takes care of their mind",
-      "relationships": "I am a person who is present for their people",
-      "work": "I am a person who does work that matters",
-      "growth": "I am a person who learns every day"
+      "health": "someone who takes care of their body",
+      "mind": "a calmer person",
+      "relationships": "someone who is present for their people",
+      "work": "someone who does work that matters",
+      "growth": "someone who learns every day"
     },
     "habitTitle": "Let us start with one habit",
     "habitBody": "A small one you can do today. You can add more later.",
@@ -457,7 +468,9 @@
     "body_one": "You did your habit for today. This is how it is built.",
     "body_other": "You did all {{count}} habits for today. This is how it is built.",
     "votes_one": "+{{count}} seed for who you want to be",
-    "votes_other": "+{{count}} seeds for who you want to be"
+    "votes_other": "+{{count}} seeds for who you want to be",
+    "identityLead": "Today you are closer to becoming",
+    "identityDone": "You did everything on this branch today 🌱"
   },
   "time": {
     "anyTime": "Any time",
@@ -643,7 +656,7 @@
     "title": "Settings"
   },
   "social": {
-    "title": "Friends",
+    "title": "Profile",
     "friendsTitle": "Your friends",
     "noFriends": "No friends here yet. Invite someone you want to grow with: habits hold up better together.",
     "circlesTitle": "Your circles",
@@ -659,7 +672,7 @@
     },
     "errors": {
       "not_found": "We found nobody with that username or code. Check the spelling.",
-      "no_username": "Pick your username in Friends first.",
+      "no_username": "Pick your username in Profile first.",
       "too_many_requests": "You have many requests waiting. Wait for some answers first.",
       "too_many_circles": "You are already in 10 circles, the maximum.",
       "circle_full": "That circle is already full (8 people).",
@@ -778,7 +791,7 @@
     "invite": {
       "needUsername": "First, pick your username so they recognize you.",
       "pickUsername": "Pick my username",
-      "goFriends": "Go to Friends",
+      "goFriends": "Go to my profile",
       "addTitle": "Add @{{username}}?",
       "addBody": "You’ll see each other’s streak and planted days, and cheer each other on. Never your habits.",
       "joinTitle": "Join the circle?",

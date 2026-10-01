@@ -38,8 +38,8 @@
     "week": "Semana",
     "garden": "Jardín",
     "progress": "Progreso",
-    "friends": "Amigos",
-    "hasNews": "{{label}}, hay novedades"
+    "hasNews": "{{label}}, hay novedades",
+    "profile": "Perfil"
   },
   "bands": {
     "morning": "Mañana",
@@ -121,7 +121,7 @@
     "reminderAtTime": "A la hora",
     "reminderBefore": "{{count}} min antes",
     "reminderWebHint": "Los recordatorios llegan en la app del teléfono (iOS / Android).",
-    "identity": "Identidad",
+    "identity": "Este hábito me ayuda a convertirme en…",
     "identityNone": "Ninguna",
     "cue": "¿Cuándo lo harás?",
     "cueType": {
@@ -195,16 +195,16 @@
     "toNextStage_one": "A {{count}} semilla de convertirse en {{stage}}",
     "toNextStage_other": "A {{count}} semillas de convertirse en {{stage}}",
     "whoTitle": "¿Quién te estás volviendo?",
-    "whoBody": "Cada rama de tu árbol es una persona que quieres ser. Tus hábitos la hacen crecer.",
+    "whoBody": "Cada rama de tu árbol es una persona en la que te estás convirtiendo. Tus hábitos la hacen crecer.",
     "seedsThisWeek_one": "{{count}} semilla esta semana",
     "seedsThisWeek_other": "{{count}} semillas esta semana",
     "branchEmpty": "Aún ningún hábito alimenta esta rama.",
     "looseTitle": "Semillas sin rama",
-    "looseBody": "Estos hábitos aún no alimentan ninguna rama. ¿Para quién los haces? Tócala y tu árbol crecerá con ellos.",
+    "looseBody": "Estos hábitos aún no alimentan ninguna rama. ¿En quién te ayudan a convertirte? Tócala y tu árbol crecerá con ellos.",
     "assignTo": "Conectar {{habit}} con {{identity}}",
     "newBranch": "+ Nueva rama",
     "emptyTitle": "Dale ramas a tu árbol",
-    "emptyBody": "Piensa en quién quieres ser: «Soy una persona que lee», «Soy alguien que se cuida». Cada hábito que conectes hará crecer esa rama.",
+    "emptyBody": "Piensa en quién te quieres convertir: «una persona que lee», «una persona más tranquila». Cada hábito que conectes hará crecer esa rama.",
     "createBranch": "Crear mi primera rama"
   },
   "progress": {
@@ -257,12 +257,12 @@
   "identity": {
     "new": "Nueva identidad",
     "edit": "Editar identidad",
-    "title": "¿Quién quieres ser?",
-    "sectionHint": "Cada identidad es una rama de tu árbol. Tus hábitos son las semillas que la hacen crecer.",
-    "explainer": "Los hábitos duran cuando son parte de quién eres. Escribe la persona que quieres ser, no la meta.",
-    "statement": "Soy una persona que…",
-    "statementPlaceholder": "cuida su cuerpo, lee cada día, está presente…",
-    "statementRequired": "Escribe quién quieres ser",
+    "title": "¿En quién te estás convirtiendo?",
+    "sectionHint": "Cada rama de tu árbol es una persona en la que te estás convirtiendo. Tus hábitos son las semillas que la hacen crecer.",
+    "explainer": "Los hábitos duran cuando son parte de quién eres. Escribe la persona en la que te quieres convertir (quién eres, no un resultado).",
+    "statement": "Me estoy convirtiendo en…",
+    "statementPlaceholder": "una persona más fuerte, más tranquila, lectora…",
+    "statementRequired": "Escribe en quién te quieres convertir",
     "area": "Área",
     "areas": {
       "health": "Salud",
@@ -273,7 +273,8 @@
     },
     "habitCount_one": "{{count}} hábito",
     "habitCount_other": "{{count}} hábitos",
-    "deleteConfirm": "¿Eliminar esta identidad? Sus hábitos se conservan sin identidad."
+    "deleteConfirm": "¿Eliminar esta identidad? Sus hábitos se conservan sin identidad.",
+    "becoming": "Convirtiéndome en"
   },
   "topBar": {
     "streak_one": "Racha de {{count}} día",
@@ -294,20 +295,30 @@
     "safeToday": "¡Racha asegurada por hoy! 🎉",
     "keepItUp": "Completa al menos un hábito hoy para mantener tu racha.",
     "rule": "🛡️ Un día fallado se perdona. Dos seguidos reinician la racha. 💤 Los días sin hábitos no cuentan.",
-    "challenge": "Próximo reto",
-    "challengeName_one": "Reto de {{count}} día",
-    "challengeName_other": "Reto de {{count}} días",
-    "challengeProgress": "Día {{current}} de {{total}}",
     "started": "Inicio de la racha",
     "record": "Récord",
-    "milestones": "Hitos",
-    "milestone_one": "{{count}} día de racha",
-    "milestone_other": "{{count}} días de racha",
+    "milestones": "Tus metas",
     "milestone66": "~66 días: la mediana para que un hábito se vuelva automático",
-    "reached": "¡Logrado!",
-    "locked": "Por desbloquear",
     "dayCount_one": "{{count}} día",
-    "dayCount_other": "{{count}} días"
+    "dayCount_other": "{{count}} días",
+    "tabs": {
+      "personal": "Personal",
+      "friends": "Con amigos"
+    },
+    "toGoal_one": "Te falta {{count}} día para la meta de {{goal}}",
+    "toGoal_other": "Te faltan {{count}} días para la meta de {{goal}}",
+    "withFriend_one": "{{count}} día sembrando con {{name}}",
+    "withFriend_other": "{{count}} días sembrando con {{name}}",
+    "sharedRule": "🛡️ Crece los días en que los dos siembran. Si uno falla un día, no se rompe.",
+    "friends": {
+      "goalsWith": "Tus metas con {{name}}",
+      "emptyTitle": "Las rachas se disfrutan acompañado",
+      "emptyBody": "Agrega a alguien o crea un círculo: verán qué días siembra cada uno y crecerán juntos.",
+      "invite": "Invitar a alguien",
+      "noProfileTitle": "Elige tu usuario para sembrar con amigos",
+      "noProfileBody": "Tus amigos nunca verán tus hábitos: solo tu racha y qué días sembraste."
+    },
+    "noSharedYet": "Siembren el mismo día para empezar una racha juntos 🌱"
   },
   "account": {
     "dangerZone": "Zona de peligro",
@@ -336,14 +347,14 @@
     "start": "Empezar 🌱",
     "welcomeTitle": "¡Hola! Soy Brote",
     "welcomeBody": "Voy a crecer contigo. Cada hábito que cumplas es una semilla para la persona que quieres ser, y este jardín te deja verla crecer.",
-    "identityTitle": "¿Quién quieres ser?",
-    "identityBody": "Los hábitos duran cuando forman parte de tu identidad. No elijas una meta: elige una persona.",
+    "identityTitle": "¿En quién te quieres convertir?",
+    "identityBody": "Los hábitos duran cuando forman parte de quién eres. No elijas una meta: elige la persona que quieres llegar a ser.",
     "identitySuggestion": {
-      "health": "Soy una persona que cuida su cuerpo",
-      "mind": "Soy una persona que cuida su mente",
-      "relationships": "Soy una persona presente con los suyos",
-      "work": "Soy una persona que hace trabajo que importa",
-      "growth": "Soy una persona que aprende cada día"
+      "health": "una persona que cuida su cuerpo",
+      "mind": "una persona más tranquila",
+      "relationships": "una persona presente con los suyos",
+      "work": "una persona que hace un trabajo que importa",
+      "growth": "una persona que aprende cada día"
     },
     "habitTitle": "Empecemos con un solo hábito",
     "habitBody": "Uno pequeño que puedas cumplir hoy. Después agregas más.",
@@ -457,7 +468,9 @@
     "body_one": "Cumpliste tu hábito de hoy. Así se construye.",
     "body_other": "Cumpliste tus {{count}} hábitos de hoy. Así se construye.",
     "votes_one": "+{{count}} semilla para quien quieres ser",
-    "votes_other": "+{{count}} semillas para quien quieres ser"
+    "votes_other": "+{{count}} semillas para quien quieres ser",
+    "identityLead": "Hoy estás más cerca de convertirte en",
+    "identityDone": "Cumpliste todo lo de esta rama hoy 🌱"
   },
   "time": {
     "anyTime": "En cualquier momento",
@@ -643,7 +656,7 @@
     "title": "Ajustes"
   },
   "social": {
-    "title": "Amigos",
+    "title": "Perfil",
     "friendsTitle": "Tus amigos",
     "noFriends": "Aún no tienes amigos aquí. Invita a alguien con quien quieras crecer: los hábitos se sostienen mejor acompañados.",
     "circlesTitle": "Tus círculos",
@@ -659,7 +672,7 @@
     },
     "errors": {
       "not_found": "No encontramos a nadie con ese usuario o código. Revisa que esté bien escrito.",
-      "no_username": "Primero elige tu usuario en Amigos.",
+      "no_username": "Primero elige tu usuario en Perfil.",
       "too_many_requests": "Tienes muchas solicitudes esperando. Espera a que respondan algunas.",
       "too_many_circles": "Ya estás en 10 círculos, el máximo.",
       "circle_full": "Ese círculo ya está completo (8 personas).",
@@ -778,7 +791,7 @@
     "invite": {
       "needUsername": "Antes, elige tu usuario: así te reconocerán.",
       "pickUsername": "Elegir mi usuario",
-      "goFriends": "Ir a Amigos",
+      "goFriends": "Ir a mi perfil",
       "addTitle": "¿Agregar a @{{username}}?",
       "addBody": "Podrán ver la racha y los días sembrados del otro, y animarse. Nunca sus hábitos.",
       "joinTitle": "¿Unirte al círculo?",

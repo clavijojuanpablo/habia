@@ -15,7 +15,7 @@ export default function TabsLayout() {
   const { t } = useTranslation();
   useReminderSync();
   const { data: socialProfile } = useMySocialProfile();
-  // A dot on Friends when someone is waiting: a request to answer or a cheer not yet seen.
+  // A dot on Profile when someone is waiting: a request to answer or a cheer not yet seen.
   const { data: friendships } = useFriendships();
   const unseenCheers = useUnseenCheers();
   const friendsNews = unseenCheers.length > 0 || (friendships ?? []).some((f) => f.status === 'pending' && f.incoming);
@@ -35,7 +35,7 @@ export default function TabsLayout() {
         <Tabs.Screen name="week" options={{ title: t('tabs.week') }} />
         <Tabs.Screen name="garden" options={{ title: t('tabs.garden') }} />
         <Tabs.Screen name="progress" options={{ title: t('tabs.progress') }} />
-        <Tabs.Screen name="friends" options={{ title: t('tabs.friends'), tabBarBadge: friendsNews ? '' : undefined }} />
+        <Tabs.Screen name="profile" options={{ title: t('tabs.profile'), tabBarBadge: friendsNews ? '' : undefined }} />
       </Tabs>
     </>
   );

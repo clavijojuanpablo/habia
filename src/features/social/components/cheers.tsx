@@ -125,7 +125,7 @@ export function CheersNotice({ cheers }: { cheers: Cheer[] }) {
             label={t('social.cheer.answer')}
             onPress={() => {
               markSeen.mutate();
-              router.navigate('/friends');
+              router.navigate('/profile');
             }}
           />
         </View>

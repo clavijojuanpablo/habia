@@ -65,6 +65,9 @@ Each user has a **customizable character** that is *them* growing: the identity 
 ## Cosmetics (Pro)
 Skins, accessories, pots and garden themes. **Cosmetic only, never pay-to-win**; no loot boxes, no fake scarcity ("only today!"). Some cosmetics are earned by milestones, so free users also customize.
 
+## Identity as becoming (1.2.0)
+Each branch is a person the user is **becoming** ("una persona más fuerte"), stored in `identities.statement`. Finishing every habit of a branch today (≥2) shows its own celebration — a card rising in the branch color with seeds turning into leaves — distinct from the day's confetti (which wins on the same tap) and from streak milestones (a horizontal timeline of the 4 nearby goals on the streak screen).
+
 ## Friends & circles (replaces "Couples") — built 2026-10-01 (1.1.0)
 A couple is a circle of two, so the base is **friends and small circles**. Built: usernames, requests by exact @ or invite link, shared streaks, circles of up to 8 with a weekly grid and "days everyone planted" (no group streak: with 8 people it would always break), 5 preset cheers (no free text, nothing to moderate), block/report. Still open: pushes, intertwined trees for two, nudges beyond cheers.
 - Follow / friend requests; see a friend's character, tree, streak and consistency %. **Habit names stay private by default** (people track sensitive habits).

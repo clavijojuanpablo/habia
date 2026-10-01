@@ -19,7 +19,7 @@ const langs = ['es', 'en'] as const;
           <div class="card" lang={lang}>
             <h1>{t.title}</h1>
             <p>{t.body}</p>
-            <a class="button" data-open-app href="habia://friends">
+            <a class="button" data-open-app href="habia://profile">
               🌱 {t.open}
             </a>
             <p class="hint">{t.hint}</p>
@@ -31,9 +31,9 @@ const langs = ['es', 'en'] as const;
 </Layout>
 
 <script>
-  // Only the two invite shapes are forwarded; anything else opens the app's Friends tab.
+  // Only the two invite shapes are forwarded; anything else opens the app's Profile tab.
   const match = window.location.pathname.match(/^\/(add\/[a-z0-9_]{3,20}|join\/[A-Za-z0-9]{8})$/);
-  const target = match ? match[1] : 'friends';
+  const target = match ? match[1] : 'profile';
   for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-open-app]')) {
     link.href = `habia://${target}`;
   }

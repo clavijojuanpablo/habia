@@ -33,6 +33,9 @@ export function IdentitiesSection() {
             style={[styles.row, { backgroundColor: theme.background, borderLeftColor: identity.color ?? theme.primary }]}>
             <ThemedText style={styles.emoji}>{identityEmoji(identity)}</ThemedText>
             <View style={styles.flex}>
+              <ThemedText type="caption" themeColor="textSecondary">
+                {t('identity.becoming')}
+              </ThemedText>
               <ThemedText type="smallBold">{identity.statement}</ThemedText>
               <ThemedText type="small" themeColor="textSecondary">
                 {t('identity.habitCount', { count })}

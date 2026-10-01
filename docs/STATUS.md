@@ -117,7 +117,18 @@ open the web fallback there; its "Open habia" button still works.
    Check it: `curl -X POST <SUPABASE_URL>/functions/v1/weekly-review -H "apikey: <publishable>" -H "Authorization: Bearer <publishable>" -d '{"check":true}'`
    must answer `{"available":true}`.
 
-1. **Friends & circles → 1.1.0** (built 2026-10-01, JS-only, fingerprint `f15932ef…`). Owner steps, in order:
+1. **1.2.0 — identity as "becoming", Profile, streaks with friends, goals timeline** (built 2026-10-01,
+   JS + one data migration, fingerprint `f15932ef…`). Owner steps: `npx supabase db push` (applies
+   `20261001190801_identity_becoming.sql`: "Soy una persona que X" and bare endings become "una persona
+   que X"; validated in BEGIN … ROLLBACK), `npx supabase functions deploy weekly-review` (prompt speaks
+   of "becoming"), `git push`, OTA 1.2.0. What changed: identity form "Me estoy convirtiendo en…", habit
+   form "Este hábito me ayuda a convertirme en…", Garden captions "Convirtiéndome en"; a new identity
+   celebration on Today (card rising from the bottom in the branch color, seeds turning into leaves) when
+   a check-in finishes all of an identity's ≥2 items today (`completed-identity.ts`; the day's confetti
+   wins on the same tap); the Friends tab is **Profile** again with a real "⚙️ Ajustes" button; the streak
+   screen has **Personal | Con amigos** tabs (best shared streak, friends, circles) and a horizontal goals
+   timeline with 4 nearby milestones (`milestone-window.ts`).
+1b. **Friends & circles → 1.1.0** (shipped 2026-10-01, migration applied). Owner steps, done:
    1. `npx supabase db push` (applies `20261001180242_social.sql`), then
       `npx supabase gen types typescript --linked --schema public > src/lib/supabase/database.types.ts`
       (types were hand-written to match; the diff should be empty or cosmetic) and
@@ -127,7 +138,7 @@ open the web fallback there; its "Open habia" button still works.
       whose button opens the app.
    3. Ship 1.1.0 by OTA, then test with a second account (another email, on web or a tester's phone):
       username, request by @, accept, cheer, circle by code, block, report.
-   Design: the Profile tab is now **Friends** (your card first; ⚙️ opens Settings = the old profile).
+   Design: the Profile tab holds your card first, then friends and circles (⚙️ Ajustes = the old profile).
    Friends see only `social_profiles` (name, color, a stats snapshot your app publishes) and
    `social_days()` (which days you planted or rested, computed by the server from `habit_logs`);
    never habits. Shared streak (`src/features/social/shared-days.ts`): grows on days both planted,
