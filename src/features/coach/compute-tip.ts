@@ -3,9 +3,6 @@ import { daysBetween, parseLocalDate } from '@/lib/recurrence';
 import { DETECTORS } from './detectors';
 import type { CoachInput, CoachRule, CoachTip, ShownTip } from './types';
 
-export type { CoachInput, CoachTip } from './types';
-export { FACT_COUNT } from './detectors';
-
 /** Phrasings per rule in i18n (`v0`, `v1`): the same insight never reads the same two days running. */
 export const VARIANTS = 2;
 /** An insight shown in the last few days loses this much, so the coach does not nag. */

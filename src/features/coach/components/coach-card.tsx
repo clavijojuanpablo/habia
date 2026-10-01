@@ -101,15 +101,19 @@ const formatTime = (minutes: number, lang: string) =>
     hour: 'numeric',
     minute: '2-digit',
   });
-const weekdayName = (lang: string) => new Date().toLocaleDateString(lang, { weekday: 'long' });
+/** 2 January 2000 was a Sunday, so day 2 + weekday falls on that weekday. */
+const weekdayName = (weekday: number, lang: string) =>
+  new Date(2000, 0, 2 + weekday).toLocaleDateString(lang, { weekday: 'long' });
+/** Band names read mid-sentence ("tu franja más difícil: noche"). */
+const bandName = (band: string, t: TFunction, lang: string) => t(`bands.${band}`).toLocaleLowerCase(lang);
 
 /** Interpolation values for the "¿Por qué?" line: the tip's numbers, with names localized. */
 function whyParams(tip: CoachTip, t: TFunction, lang: string) {
   switch (tip.rule) {
     case 'weak_weekday':
-      return { ...tip, weekday: weekdayName(lang) };
+      return { ...tip, weekday: weekdayName(tip.weekday, lang) };
     case 'agenda':
-      return { ...tip, band: t(`bands.${tip.band}`) };
+      return { ...tip, band: bandName(tip.band, t, lang) };
     default:
       return tip;
   }
@@ -151,11 +155,14 @@ function describe(
       const minimum = tip.rule === 'weak_weekday' ? tip.minimum : null;
       const { done, action } = today(tip.habitId, minimum);
       if (done) return { text: t(`coach.doneToday.${v}`, tip), mood: 'celebrate' };
-      const params =
-        tip.rule === 'usual_time'
-          ? { ...tip, time: formatTime(tip.minutes, lang) }
-          : { ...tip, weekday: weekdayName(lang) };
-      return { text: t(`coach.${I18N_KEY[tip.rule]}.${v}`, params), mood: 'cheer', action };
+      if (tip.rule === 'usual_time')
+        return {
+          text: t(`coach.usualTime.${v}`, { ...tip, time: formatTime(tip.minutes, lang) }),
+          mood: 'cheer',
+          action,
+        };
+      const params = { ...tip, weekday: weekdayName(tip.weekday, lang) };
+      return { text: t(`coach.weakWeekday.${tip.minimum ? 'minimum' : 'plain'}.${v}`, params), mood: 'cheer', action };
     }
     case 'comeback':
       return { text: t(`coach.comeback.${v}`), mood: 'cheer' };
@@ -193,10 +200,14 @@ function describe(
         action: { label: t('coach.actions.seeGarden'), run: () => router.push('/garden') },
       };
     case 'agenda':
-      return { text: t(`coach.agenda.${v}`, { ...tip, band: t(`bands.${tip.band}`) }), mood: 'happy' };
+      return { text: t(`coach.agenda.${v}`, { ...tip, band: bandName(tip.band, t, lang) }), mood: 'happy' };
     case 'best_band':
       return {
-        text: t(`coach.bestBand.${v}`, { ...tip, best: t(`bands.${tip.best}`), worst: t(`bands.${tip.worst}`) }),
+        text: t(`coach.bestBand.${v}`, {
+          ...tip,
+          best: bandName(tip.best, t, lang),
+          worst: bandName(tip.worst, t, lang),
+        }),
         mood: 'happy',
       };
     case 'minimum_saved':

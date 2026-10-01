@@ -32,11 +32,28 @@ One miss is an accident; two is the start of a new (bad) habit. Avoid the *absti
 ## Time of day and energy
 Habits placed at consistent times and anchored to stable routines form faster. Show completion rate per day band (morning / afternoon / night) so users learn *when* they succeed.
 
-## Coach (rule-based daily tip)
-One tip a day on Today, picked by `src/features/coach/compute-tip.ts` in priority order; every rule
-cites a mechanism above: never miss twice → comeback → automaticity journey → struggling habit gets
-a 2-minute version (Law 3) or an implementation intention (Law 1) → best day band → week-over-week
-gain (1% rule) → a rotating science fact. Claude (weekly review, chat) builds on top later.
+## Coach (rule-based tip)
+A tip on Today per day band. Detectors (`src/features/coach/detectors.ts`) read the user's own
+history and each cites a mechanism above; the highest score wins, insights shown in the last 3 days
+step aside, and every tip has a "¿Por qué?" line with the data and the source.
+
+| Detector | Mechanism |
+|---|---|
+| never miss twice (+ "you came back the last N times") | Never miss twice; abstinence violation effect |
+| comeback after two missed days | Abstinence violation effect |
+| usual check-in time, running late | Stable times form habits faster (time of day) |
+| weak weekday → lower the bar | 2-minute rule (Law 3) |
+| automaticity: halfway, close, fruit | Lally et al. (2010), ~66 days, range 18–254 |
+| projected fruit date from recent pace | Lally et al.; worded as an estimate, never a promise |
+| struggling habit → 2-minute version / when and where | Law 3; implementation intentions (Law 1) |
+| heavy day in the weakest band → front-load | Time of day and energy |
+| best day band | Time of day and energy |
+| better week | The 1% rule |
+| minimum version kept the streak alive | 2-minute rule; identity votes |
+| rotating science fact (fallback) | — |
+
+Every detector stays silent below a minimum sample (e.g. at least 4 of a weekday, 5 timed
+check-ins). Claude (weekly review, chat) builds on top later.
 
 ## Ethics guardrails
 - No variable-ratio "slot machine" rewards meant to create compulsion.

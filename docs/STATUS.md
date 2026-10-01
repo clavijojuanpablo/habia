@@ -25,14 +25,17 @@ TestFlight** (Block 2 closed 2026-09-30):
 - **EAS Update:** `expo-updates`, `runtimeVersion` policy `fingerprint` (an update never reaches
   an incompatible binary), channels `development` / `preview` / `production` per build profile.
   **Proven on 2026-09-30:** the first OTA update reached build 3 on the iPhone (downloads on one
-  launch, applies on the next). Profile now ends with `habia 1.0.0 (3) · <update id>` (or
+  launch, applies on the next). Profile ends with `habia <release> · build <n> · <update id>` (or
   "de fábrica" for the JS embedded in the binary), the way to tell which JS a phone runs.
 - **EAS env `production`:** the five `EXPO_PUBLIC_*` plus `SENTRY_AUTH_TOKEN` (secret). Production
   builds upload JS source maps and dSYMs to Sentry `clavolab/habia`.
-- **Coach v1 (rule-based, free):** one tip a day on Today, voiced by Brote, pinned for the day,
-  dismissible, with a one-tap action (log the 2-minute version, edit the habit, see the garden).
-  Engine `src/features/coach/compute-tip.ts` (pure, tested), rules mapped in `docs/SCIENCE.md`.
-  Ships by OTA (JS only). Public TestFlight link submitted to Beta App Review (2026-09-30).
+- **Coach (rule-based, free, release 1.0.2):** a tip on Today per day band (up to 3 a day), voiced
+  by Brote, dismissible, with a one-tap action and a "¿Por qué?" line (the data + the science).
+  12 detectors read the user's own history (`src/features/coach/history.ts`: real check-in times,
+  weekdays, pace, minimum versions) and propose scored candidates (`detectors.ts`); the brain
+  (`compute-tip.ts`) penalizes insights shown in the last 3 days and alternates two phrasings.
+  Pure and tested; rules mapped in `docs/SCIENCE.md`. Ships by OTA. Public TestFlight link
+  submitted to Beta App Review (2026-09-30).
 - Still here from before: Sentry + PostHog, habia.app (Astro on Vercel) with legal pages, branded
   auth emails via Resend.
 
@@ -66,7 +69,7 @@ open the web fallback there; its "Open habia" button still works.
 | Legal texts (es/en), also at habia.app/privacidad and /terminos | ✅ | `src/features/legal/content.ts`, `web/` |
 | Marketing site habia.app + auth fallback page + AASA (Astro, Vercel, root dir `web`) | ✅ | `web/` |
 | iOS distribution: TestFlight internal + EAS Update | ✅ | `app.json`, `eas.json` |
-| Coach v1: rule-based daily tip on Today | ✅ | `src/features/coach/` |
+| Coach (rule-based): scored detectors, tip per day band, "¿Por qué?" | ✅ | `src/features/coach/` |
 | Claude coach (weekly review, chat), character, friends, leagues, paywall | ⏳ not started | — |
 
 ## Technical state
@@ -98,16 +101,19 @@ open the web fallback there; its "Open habia" button still works.
 
 ## Next steps
 
-**Start here — ship coach v1, then the Claude part of the coach.**
+**Start here — ship 1.0.2, then coach 1.0.3, then the Claude part of the coach.**
 
-1. **Ship coach v1 by OTA** (if not done): `npx eas-cli@latest update …` (recipe in Technical
-   state), reopen the TestFlight app twice, check the card on Today.
-2. **External testers:** waiting for Beta App Review of the "Beta pública" group (demo account in
+1. **Ship 1.0.2 by OTA** (if not done): `npx eas-cli@latest update …` (recipe in Technical
+   state), reopen the TestFlight app twice; Profile shows `habia 1.0.2 · build 3 · …`.
+2. **Coach 1.0.3** (agreed scope, needs its own plan): habits that pull each other (co-occurrence,
+   worded as observation), votes per identity, 👍/👎 per tip (local down-weighting + analytics),
+   rule-based Monday mini-review.
+3. **External testers:** waiting for Beta App Review of the "Beta pública" group (demo account in
    App Store Connect; never delete it). When approved: enable the public link with a tester limit.
    The App Privacy questionnaire is only needed for the App Store, not TestFlight.
-3. **Claude weekly review (Pro):** Edge Function + Batch API, Sonnet; first resolve the
+4. **Claude weekly review (Pro):** Edge Function + Batch API, Sonnet; first resolve the
    server-side "today" (`profiles.timezone` debt). Then capped chat.
-4. Then, in this order (ROADMAP → "Order after Block 2"): **your character** → **your character** →
+5. Then, in this order (ROADMAP → "Order after Block 2"): **your character** →
    **friends & circles** → opt-in **leagues** → **monetization**, all before the public launch.
    Plus the north-star self-report (PostHog survey). Start the "can a Colombian individual use
    Stripe?" question early: it takes calendar weeks, not code.
@@ -118,7 +124,11 @@ open the web fallback there; its "Open habia" button still works.
   (`src/lib/analytics.ts`; posthog-react-native needs a storage provider on web). Native is fine.
   Workaround for previews: `EXPO_NO_DOTENV=1` + fake Supabase vars + `expo export --clear`
   (Metro caches inlined env vars).
-- Coach: `coach_tip_shown` fires on every Today mount (read it as impressions, not once a day).
+- Coach: `coach_tip_shown` fires on every Today mount (read it as impressions, not once per tip).
+  Time-aware tips (`usual_time`, `agenda`) are only evaluated when a band's tip is first pinned,
+  so opening the app late in a band can miss them. Dismissing hides the tip for that band only (up
+  to 3 tips a day): watch whether testers find it insistent. Just after midnight the band is still
+  "night" but `today` has changed, so last night's unchecked habits already count as misses.
   Untested edge: a cold start with persisted logs could pin the day's tip before the refetch.
 
 - **Skia risk:** Shopify announced (2026-09-10) it is leaving React Native; it sponsors

@@ -121,6 +121,8 @@ const usualTime: Detector = (input) => {
   const now = minutesOfDay(input.now);
   return input.history.flatMap(({ habit, occurrences }) => {
     if (!pending.has(habit.id)) return [];
+    // A habit with several occurrences a day ("every 3 hours") has no single usual time.
+    if (input.agenda.filter((a) => a.habitId === habit.id).length > 1) return [];
     // Only same-day check-ins: a late catch-up says nothing about the usual time.
     const times = occurrences
       .filter((o) => o.done && o.loggedAt && daysBetween(o.at, o.loggedAt) === 0)
@@ -158,6 +160,7 @@ const weakWeekday: Detector = (input) => {
           habitId: habit.id,
           name: habit.name,
           minimum: habit.two_minute_version,
+          weekday,
           weekdayPercent: percent(dayRate),
           averagePercent: percent(average),
           sample: sameDay.length,
@@ -187,7 +190,7 @@ const automaticity: Detector = ({ growth }) => {
       candidate(
         { rule: 'automaticity', habitId: g.habit.id, name: g.habit.name, completions: n, stage },
         SCORES.automaticity,
-        g.habit.id,
+        `${stage}:${g.habit.id}`,
       ),
     ];
   });
@@ -237,8 +240,8 @@ const projection: Detector = (input) =>
           recent,
           eta: formatLocalDate(addDays(input.today, daysLeft)),
         },
-        // The closer the fruit, the more motivating the date.
-        SCORES.projection + (PROJECTION_MAX_DAYS - daysLeft) / 10,
+        // The closer the fruit, the more motivating the date (at most +3: stays below week_up).
+        SCORES.projection + (PROJECTION_MAX_DAYS - daysLeft) / 20,
         g.habit.id,
       ),
     ];
@@ -259,7 +262,7 @@ const agenda: Detector = ({ agenda, bands, bandConfig, now }) => {
     candidate(
       {
         rule: 'agenda',
-        total: agenda.length,
+        total: new Set(agenda.map((a) => a.habitId)).size,
         band: weakest.band,
         count: inWeak,
         percent: percent(weakest.ratio ?? 0),

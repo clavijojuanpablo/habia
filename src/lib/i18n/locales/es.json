@@ -466,16 +466,22 @@
       "v1": "Hola de nuevo 🌱 Nada de lo que hiciste se perdió. Hoy, solo uno: el más fácil."
     },
     "usualTime": {
-      "v0": "Sueles hacer «{{name}}» hacia las {{time}} y hoy sigue pendiente. ¿Lo haces ahora?",
-      "v1": "Normalmente a esta hora «{{name}}» ya está hecho (sueles marcarlo hacia las {{time}}). Aún estás a tiempo."
+      "v0": "Tu hora habitual para «{{name}}» es {{time}} y hoy sigue pendiente. ¿Lo haces ahora?",
+      "v1": "A esta hora «{{name}}» suele estar hecho (tu hora habitual: {{time}}). Aún estás a tiempo."
     },
     "weakWeekday": {
-      "v0": "Los días como hoy ({{weekday}}) «{{name}}» te cuesta más: {{weekdayPercent}} % frente a {{averagePercent}} % en general. Hoy baja la barra: con la versión mínima basta.",
-      "v1": "Ojo: los días como hoy ({{weekday}}) suelen ser difíciles para «{{name}}» ({{weekdayPercent}} %). Saberlo ya es media batalla; hazlo pequeño, pero hazlo."
+      "minimum": {
+        "v0": "Los días como hoy ({{weekday}}) «{{name}}» te cuesta más: {{weekdayPercent}} % frente a {{averagePercent}} % en general. Hoy baja la barra: con la versión mínima basta.",
+        "v1": "Ojo: los días como hoy ({{weekday}}) suelen ser difíciles para «{{name}}» ({{weekdayPercent}} %). Hoy, la versión mínima cuenta igual."
+      },
+      "plain": {
+        "v0": "Los días como hoy ({{weekday}}) «{{name}}» te cuesta más: {{weekdayPercent}} % frente a {{averagePercent}} % en general. Hoy hazlo pequeño, pero hazlo.",
+        "v1": "Ojo: los días como hoy ({{weekday}}) suelen ser difíciles para «{{name}}» ({{weekdayPercent}} %). Saberlo ya es media batalla."
+      }
     },
     "doneToday": {
       "v0": "¡Hecho! «{{name}}» ya cuenta hoy. Un voto más por quien quieres ser.",
-      "v1": "«{{name}}» ✔️ Justo cuando más cuesta: así se construye identidad."
+      "v1": "«{{name}}» ✔️ Otro voto por la persona que quieres ser."
     },
     "automaticity": {
       "half": {
@@ -505,7 +511,7 @@
     },
     "projection": {
       "v0": "A tu ritmo de las últimas semanas, «{{name}}» será fruto hacia el {{date}}. Ya llevas {{completions}}.",
-      "v1": "Si sigues así, el {{date}} «{{name}}» llegará a ~66 repeticiones. Vas por {{completions}}."
+      "v1": "Si sigues así, «{{name}}» llegará a ~66 repeticiones hacia el {{date}}. Vas por {{completions}}."
     },
     "agenda": {
       "v0": "Hoy tienes {{total}} hábitos y {{count}} caen en tu franja más difícil: {{band}} ({{percent}} %). ¿Adelantas alguno mientras tienes energía?",

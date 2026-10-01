@@ -51,6 +51,12 @@ describe('computeTip', () => {
     expect(NOVELTY_PENALTY).toBeGreaterThan(0);
   });
 
+  it('celebrates the fruit even right after "almost there" was shown', () => {
+    const data = input({ growth: [growth('a', {}, { completions: 66 })] });
+    const memory = [{ date: formatLocalDate(addDays(TODAY, -1)), key: 'automaticity:close:a' }];
+    expect(computeTip(data, memory)).toMatchObject({ rule: 'automaticity', stage: 'fruit' });
+  });
+
   it('never silences a fresh miss for novelty', () => {
     const data = input({ growth: [growth('a', {}, { trailingMisses: 1 })], agenda: [pending('a')] });
     const memory = [{ date: formatLocalDate(TODAY), key: 'never_miss_twice:a' }];

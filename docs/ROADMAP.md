@@ -80,7 +80,7 @@ Testers first (TestFlight with the core), then every Pro feature **before the pu
 5. **Monetization** — Pro + cosmetics, before launch
 
 ## Phase 3B / Pro value ⏳ (next after TestFlight)
-- AI coach (hybrid: ✅ rules free — coach v1 card on Today, 2026-09-30 · ⏳ Claude weekly review via Batch · ⏳ capped Pro chat)
+- AI coach (hybrid: ✅ rules free — card on Today (v1 2026-09-30; 1.0.2 scored detectors, tip per day band, "¿Por qué?") · ⏳ 1.0.3 co-occurrence, identity votes, 👍/👎, Monday mini-review · ⏳ Claude weekly review via Batch · ⏳ capped Pro chat)
 - Guided programs ("Caminos", 3 initial) + micro-lessons
 
 ## Character ⏳

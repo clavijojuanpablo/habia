@@ -25,6 +25,8 @@ export type TipBody =
       habitId: string;
       name: string;
       minimum: string | null;
+      /** 0 = Sunday, as `Date.getDay()`. */
+      weekday: number;
       weekdayPercent: number;
       averagePercent: number;
       sample: number;

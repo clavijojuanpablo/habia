@@ -61,6 +61,14 @@ describe('usual_time', () => {
     expect(found(data(4), 'usual_time')).toHaveLength(0);
   });
 
+  it('stays silent for habits with several occurrences a day', () => {
+    const data = input({
+      history: [{ habit: growth('a').habit, occurrences: checkins(6) }],
+      agenda: [pending('a'), { habitId: 'a', band: 'night', pending: true }],
+    });
+    expect(found(data, 'usual_time')).toHaveLength(0);
+  });
+
   it('ignores late catch-ups logged on another day', () => {
     const late = checkins(6).map((o) => ({ ...o, loggedAt: new Date(o.at.getTime() + 30 * 3600_000) }));
     const data = input({ history: [{ habit: growth('a').habit, occurrences: late }], agenda: [pending('a')] });
@@ -121,6 +129,14 @@ describe('agenda', () => {
   it('suggests front-loading a heavy day while the weakest band is still ahead', () => {
     const [c] = found(data(NOW), 'agenda');
     expect(c.body).toEqual({ rule: 'agenda', total: 4, band: 'night', count: 2, percent: 30 });
+  });
+
+  it('counts habits, not occurrences', () => {
+    const repeated = input({
+      bands: [band('morning', 10, 9), band('night', 10, 3)],
+      agenda: [pending('a'), pending('b'), pending('c', 'night'), pending('c', 'night'), pending('d', 'night')],
+    });
+    expect(found(repeated, 'agenda')[0].body).toMatchObject({ total: 4 });
   });
 
   it('stays silent once the weakest band has started', () => {

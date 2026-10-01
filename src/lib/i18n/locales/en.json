@@ -466,16 +466,22 @@
       "v1": "Welcome back 🌱 Nothing you did is lost. Today, just one: the easiest."
     },
     "usualTime": {
-      "v0": "You usually do “{{name}}” around {{time}} and it’s still pending today. Do it now?",
-      "v1": "By now “{{name}}” is usually done (you tend to check it around {{time}}). There’s still time."
+      "v0": "Your usual time for “{{name}}” is {{time}} and it’s still pending today. Do it now?",
+      "v1": "By now “{{name}}” is usually done (your usual time: {{time}}). There’s still time."
     },
     "weakWeekday": {
-      "v0": "Days like today ({{weekday}}) are harder for “{{name}}”: {{weekdayPercent}}% vs {{averagePercent}}% overall. Lower the bar today: the minimum version is enough.",
-      "v1": "Heads up: days like today ({{weekday}}) tend to be tough for “{{name}}” ({{weekdayPercent}}%). Knowing it is half the battle; make it small, but do it."
+      "minimum": {
+        "v0": "Days like today ({{weekday}}) are harder for “{{name}}”: {{weekdayPercent}}% vs {{averagePercent}}% overall. Lower the bar today: the minimum version is enough.",
+        "v1": "Heads up: days like today ({{weekday}}) tend to be tough for “{{name}}” ({{weekdayPercent}}%). Today, the minimum version counts just the same."
+      },
+      "plain": {
+        "v0": "Days like today ({{weekday}}) are harder for “{{name}}”: {{weekdayPercent}}% vs {{averagePercent}}% overall. Make it small today, but do it.",
+        "v1": "Heads up: days like today ({{weekday}}) tend to be tough for “{{name}}” ({{weekdayPercent}}%). Knowing it is half the battle."
+      }
     },
     "doneToday": {
       "v0": "Done! “{{name}}” counts today. One more vote for who you want to be.",
-      "v1": "“{{name}}” ✔️ Right when it’s hardest: that’s how identity is built."
+      "v1": "“{{name}}” ✔️ Another vote for the person you want to become."
     },
     "automaticity": {
       "half": {
@@ -505,7 +511,7 @@
     },
     "projection": {
       "v0": "At your pace of the last few weeks, “{{name}}” will be a fruit around {{date}}. You’re at {{completions}}.",
-      "v1": "Keep this up and “{{name}}” reaches ~66 repetitions on {{date}}. You’re at {{completions}}."
+      "v1": "Keep this up and “{{name}}” reaches ~66 repetitions around {{date}}. You’re at {{completions}}."
     },
     "agenda": {
       "v0": "You have {{total}} habits today and {{count}} fall in your toughest band: {{band}} ({{percent}}%). Get one done early while you have energy?",
