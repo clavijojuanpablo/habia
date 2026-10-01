@@ -91,13 +91,9 @@ open the web fallback there; its "Open habia" button still works.
 
 **Start here — finish Block 2, then the AI coach.**
 
-1. **Finish the Sentry token rotation** (owner): the new token is already stored in EAS
-   (`env:set` on 2026-09-30). Still to confirm: the **old** token was deleted in Sentry, and the
-   test bundle (`test.js`) was removed in Sentry → Projects → habia → Source Maps. The next
-   production build proves the new token (source map upload).
-2. **External testers:** public TestFlight link (Apple beta review), App Store Connect privacy
+1. **External testers:** public TestFlight link (Apple beta review), App Store Connect privacy
    questionnaire (privacy URL `https://habia.app/privacidad`).
-3. Then, in this order (ROADMAP → "Order after Block 2"): **AI coach** → **your character** →
+2. Then, in this order (ROADMAP → "Order after Block 2"): **AI coach** → **your character** →
    **friends & circles** → opt-in **leagues** → **monetization**, all before the public launch.
    Plus the north-star self-report (PostHog survey). Start the "can a Colombian individual use
    Stripe?" question early: it takes calendar weeks, not code.
@@ -108,6 +104,10 @@ open the web fallback there; its "Open habia" button still works.
   `@shopify/react-native-skia` only through end of 2026, then its creator forks it. Re-check the
   fork's health at the next Expo SDK upgrade; plan B is redrawing the tree with
   `react-native-svg` + Reanimated (`src/features/garden/`).
+- Sentry token rotated on 2026-09-30: both old tokens return `401 Invalid org token`; the new
+  one lives only in EAS (secret, unreadable) and is first exercised by the next production build
+  (source map upload). Owner believes the `test.js` bundle was deleted (Sentry → Projects →
+  habia → Source Maps); not verified.
 - **Secrets in EAS:** never type them into the masked prompt of `eas env:create`/`env:set` — on
   2026-09-30 it stored a wrong value and the build failed with a Sentry `400`. Use
   `--value (Get-Clipboard)` after checking the token with sentry-cli.
@@ -132,7 +132,7 @@ open the web fallback there; its "Open habia" button still works.
 
 ## Only the user can do these
 
-- Rotate the Sentry token; register any EAS secret.
+- Register any EAS secret (via `--value (Get-Clipboard)`, never the masked prompt).
 - Invite TestFlight testers; answer App Store Connect questionnaires (privacy "nutrition labels").
 - Design the character's layered SVG parts (spec in GAMIFICATION.md).
 - Apple Developer renews yearly (US$99, next 2027-09-28). Google Play (US$25 one-off) can wait
