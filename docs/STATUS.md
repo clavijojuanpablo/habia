@@ -101,7 +101,7 @@ open the web fallback there; its "Open habia" button still works.
 
 ## Next steps
 
-**Start here — ship 1.0.2, then coach 1.0.3, then the Claude part of the coach.**
+**Start here — ship 1.0.3, then coach 1.0.4, then the Claude part of the coach.**
 
 1. **Ship 1.0.3 by OTA** (if not done): `npx eas-cli@latest update …` (recipe in Technical
    state), reopen the TestFlight app twice; Profile shows `habia 1.0.3 · build 3 · …`. 1.0.3 =
