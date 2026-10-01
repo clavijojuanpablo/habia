@@ -72,9 +72,7 @@ export function CircleHabitCard({
       </View>
 
       {(group.today.state === 'met' || group.today.state === 'pending') && (
-        <ThemedText
-          type="smallBold"
-          style={{ color: group.today.state === 'met' ? theme.primary : theme.text }}>
+        <ThemedText type="smallBold" style={{ color: group.today.state === 'met' ? theme.primary : theme.text }}>
           {group.today.state === 'met'
             ? t('social.circleHabit.todayMet', { done: group.today.done, total: members.length })
             : t('social.circleHabit.todayNeed', {
