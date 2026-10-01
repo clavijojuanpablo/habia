@@ -184,12 +184,6 @@
     "votes_other": "{{count}} seeds planted for the person you want to become",
     "healthGood": "Your tree is healthy. Every action counts.",
     "healthLow": "Some leaves look tired. One miss is an accident: today you get back on track.",
-    "streak_one": "{{count}} in a row",
-    "streak_other": "{{count}} in a row",
-    "consistency": "{{percent}}% over 30 days",
-    "automaticity": "{{count}} of ~{{total}} repetitions toward automaticity",
-    "neverMissTwice": "You missed last time. That is fine: today is the day you never miss twice.",
-    "otherHabits": "Other habits",
     "stageShort": {
       "0": "Seed",
       "1": "Sprout",
@@ -198,7 +192,19 @@
       "4": "Fruits"
     },
     "toNextStage_one": "{{count}} seed away from becoming a {{stage}}",
-    "toNextStage_other": "{{count}} seeds away from becoming a {{stage}}"
+    "toNextStage_other": "{{count}} seeds away from becoming a {{stage}}",
+    "whoTitle": "Who are you becoming?",
+    "whoBody": "Each branch of your tree is a person you want to be. Your habits make it grow.",
+    "seedsThisWeek_one": "{{count}} seed this week",
+    "seedsThisWeek_other": "{{count}} seeds this week",
+    "branchEmpty": "No habit feeds this branch yet.",
+    "looseTitle": "Seeds without a branch",
+    "looseBody": "These habits don’t feed any branch yet. Who do you do them for? Tap it and your tree grows with them.",
+    "assignTo": "Connect {{habit}} to {{identity}}",
+    "newBranch": "+ New branch",
+    "emptyTitle": "Give your tree branches",
+    "emptyBody": "Think of who you want to be: “I am a reader”, “I take care of myself”. Every habit you connect grows that branch.",
+    "createBranch": "Create my first branch"
   },
   "progress": {
     "title": "Your progress",

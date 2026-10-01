@@ -184,12 +184,6 @@
     "votes_other": "{{count}} semillas sembradas para la persona que quieres ser",
     "healthGood": "Tu árbol está sano. Cada acción cuenta.",
     "healthLow": "Algunas hojas se ven cansadas. Un fallo es un accidente: hoy retomas.",
-    "streak_one": "{{count}} seguido",
-    "streak_other": "{{count}} seguidos",
-    "consistency": "{{percent}}% en 30 días",
-    "automaticity": "{{count}} de ~{{total}} repeticiones hacia el automatismo",
-    "neverMissTwice": "Fallaste la última vez. No pasa nada: hoy es el día de no fallar dos veces.",
-    "otherHabits": "Otros hábitos",
     "stageShort": {
       "0": "Semilla",
       "1": "Brote",
@@ -198,7 +192,19 @@
       "4": "Frutos"
     },
     "toNextStage_one": "A {{count}} semilla de convertirse en {{stage}}",
-    "toNextStage_other": "A {{count}} semillas de convertirse en {{stage}}"
+    "toNextStage_other": "A {{count}} semillas de convertirse en {{stage}}",
+    "whoTitle": "¿Quién te estás volviendo?",
+    "whoBody": "Cada rama de tu árbol es una persona que quieres ser. Tus hábitos la hacen crecer.",
+    "seedsThisWeek_one": "{{count}} semilla esta semana",
+    "seedsThisWeek_other": "{{count}} semillas esta semana",
+    "branchEmpty": "Aún ningún hábito alimenta esta rama.",
+    "looseTitle": "Semillas sin rama",
+    "looseBody": "Estos hábitos aún no alimentan ninguna rama. ¿Para quién los haces? Tócala y tu árbol crecerá con ellos.",
+    "assignTo": "Conectar {{habit}} con {{identity}}",
+    "newBranch": "+ Nueva rama",
+    "emptyTitle": "Dale ramas a tu árbol",
+    "emptyBody": "Piensa en quién quieres ser: «Soy una persona que lee», «Soy alguien que se cuida». Cada hábito que conectes hará crecer esa rama.",
+    "createBranch": "Crear mi primera rama"
   },
   "progress": {
     "title": "Tu progreso",

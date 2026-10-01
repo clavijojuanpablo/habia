@@ -29,7 +29,8 @@ export type AnalyticsEvent =
   | 'ai_review_enabled'
   | 'ai_review_disabled'
   | 'ai_review_declined'
-  | 'ai_review_read';
+  | 'ai_review_read'
+  | 'habit_branch_assigned';
 
 const OPT_OUT_KEY = 'habia.analytics.optOut';
 const apiKey = process.env.EXPO_PUBLIC_POSTHOG_KEY;

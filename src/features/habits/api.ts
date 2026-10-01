@@ -74,6 +74,27 @@ export function useSaveHabit() {
   });
 }
 
+/** Links a habit to an identity (a branch of the tree) in one tap; shown at once, saved behind. */
+export function useAssignIdentity() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ habitId, identityId }: { habitId: string; identityId: string | null }) => {
+      const { error } = await supabase.from('habits').update({ identity_id: identityId }).eq('id', habitId);
+      if (error) throw error;
+    },
+    onMutate: async ({ habitId, identityId }) => {
+      await queryClient.cancelQueries({ queryKey: habitsKey });
+      const previous = queryClient.getQueryData<Habit[]>(habitsKey);
+      queryClient.setQueryData<Habit[]>(habitsKey, (old) =>
+        old?.map((h) => (h.id === habitId ? { ...h, identity_id: identityId } : h)),
+      );
+      return { previous };
+    },
+    onError: (_error, _input, context) => queryClient.setQueryData(habitsKey, context?.previous),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: habitsKey }),
+  });
+}
+
 export function useArchiveHabit() {
   const queryClient = useQueryClient();
   return useMutation({

@@ -6,16 +6,21 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
+import { useLogs } from '@/features/checkins/api';
+import { BranchCard, LooseSeeds, NoBranches } from '@/features/garden/components/branches';
 import { GardenScene } from '@/features/garden/components/garden-scene';
-import { HabitGrowthRow } from '@/features/garden/components/habit-growth-row';
+import { computeBranches } from '@/features/garden/compute-branches';
+import { GARDEN_WINDOW_DAYS } from '@/features/garden/compute-garden';
 import { useGarden } from '@/features/garden/use-garden';
+import { useHabits } from '@/features/habits/api';
 import { Brote } from '@/features/mascot/brote';
-import { identityEmoji, useIdentities } from '@/features/identities/api';
+import { useIdentities } from '@/features/identities/api';
 import { isDone } from '@/features/schedule/build-schedule';
 import { useSchedule } from '@/features/schedule/use-schedule';
 import { TopBar } from '@/features/streak/components/top-bar';
 import { useNow, useTodayRange } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
+import { addDays, startOfWeek } from '@/lib/recurrence';
 import { getDayBand } from '@/lib/time/day-bands';
 import { skyProgress } from '@/lib/time/sky';
 
@@ -32,19 +37,16 @@ export default function GardenScreen() {
   const { data: identities = [] } = useIdentities();
   const branchIdentities = useMemo(() => identities.map((i) => ({ id: i.id, color: i.color })), [identities]);
 
-  // Cards grouped like the tree: one section per identity, then habits without one.
-  const sections = [
-    ...identities.map((identity) => ({
-      key: identity.id,
-      title: `${identityEmoji(identity)} ${identity.statement}`,
-      habits: summary.habits.filter((g) => g.habit.identity_id === identity.id),
-    })),
-    {
-      key: 'other',
-      title: identities.length > 0 ? t('garden.otherHabits') : null,
-      habits: summary.habits.filter((g) => !identities.some((i) => i.id === g.habit.identity_id)),
-    },
-  ].filter((section) => section.habits.length > 0);
+  // The garden is about identity, not numbers (those live in Progress): one card per branch,
+  // then the habits that feed no branch yet, with a one-tap way to link them.
+  const habits = useHabits();
+  // Same range as the garden's own logs: served from the same cached request.
+  const logsFrom = useMemo(() => addDays(today, -GARDEN_WINDOW_DAYS), [today]);
+  const logs = useLogs(logsFrom, tomorrow);
+  const { branches, loose } = useMemo(
+    () => computeBranches(identities, habits.data ?? [], logs.data ?? [], startOfWeek(today)),
+    [identities, habits.data, logs.data, today],
+  );
 
   // Votes needed for each stage (mirrors stageFor in compute-garden).
   const STAGE_VOTES = [0, 5, 25, 75, 200] as const;
@@ -120,14 +122,18 @@ export default function GardenScreen() {
             </ThemedText>
           )}
 
-          {sections.map((section) => (
-            <View key={section.key} style={styles.section}>
-              {section.title && <ThemedText type="heading">{section.title}</ThemedText>}
-              {section.habits.map((growth) => (
-                <HabitGrowthRow key={growth.habit.id} growth={growth} />
-              ))}
-            </View>
-          ))}
+          <View style={styles.section}>
+            <ThemedText type="subtitle">{t('garden.whoTitle')}</ThemedText>
+            <ThemedText type="small" themeColor="textSecondary">
+              {t('garden.whoBody')}
+            </ThemedText>
+          </View>
+          {identities.length === 0 ? (
+            <NoBranches />
+          ) : (
+            branches.map((branch) => <BranchCard key={branch.identity.id} branch={branch} />)
+          )}
+          {identities.length > 0 && loose.length > 0 && <LooseSeeds habits={loose} identities={identities} />}
         </ScrollView>
       </SafeAreaView>
     </ThemedView>

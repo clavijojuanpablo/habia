@@ -112,13 +112,13 @@ open the web fallback there; its "Open habia" button still works.
    Check it: `curl -X POST <SUPABASE_URL>/functions/v1/weekly-review -H "apikey: <publishable>" -H "Authorization: Bearer <publishable>" -d '{"check":true}'`
    must answer `{"available":true}`.
 
-1. **Ship 1.0.8 by OTA** (if not done): `npx eas-cli@latest update …`; first check
-   `npx expo-updates fingerprint:generate --platform ios` prints `f15932ef…`. 1.0.8 = **Progress
-   redesign**: tiles (day streak + stored record, this week done/due so far, seeds), Brote's review
-   history (always readable after closing it on Today), **standout habits** (steadiest, rising most,
-   next fruit with ETA, the one that wants care), a month-by-month calendar (back to joining; months
-   in the 120-day window reuse the cache), weekly consistency, **weekdays** (strong and hard day over
-   8 weeks) and moments of the day; the 1% chart is gone. 1.0.7 = shorter AI opt-in + dated review.
+1. **Ship 1.0.13 by OTA** (check the fingerprint is `f15932ef…` first). Since 1.0.8: crash fix for
+   reopening the app (1.0.10, JSON-safe cache), root error screen (1.0.9), Progress polish (2×2 tiles,
+   Brote's review as a green-framed card, visual standout-habit cards), and the **Garden as the
+   identity space** (1.0.13): "¿Quién te estás volviendo?", one card per branch (identity) with this
+   week's seeds and its habits, "Semillas sin rama" to link a habit to an identity in one tap, and an
+   empty state that explains identities. Per-habit numbers left the Garden (they live in Progress).
+   Next for the Garden: the character (plant avatar) and 💧 drops; maybe a 🌱→🌸→🍎 harvest.
 2. **External testers:** waiting for Beta App Review of the "Beta pública" group (demo account in
    App Store Connect; never delete it). When approved: enable the public link with a tester limit.
    The App Privacy questionnaire is only needed for the App Store, not TestFlight.
