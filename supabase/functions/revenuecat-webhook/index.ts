@@ -60,8 +60,9 @@ Deno.serve(async (req) => {
     auth: { autoRefreshToken: false, persistSession: false },
   });
   for (const id of ids) {
-    const subscriber = await fetchSubscriber(id);
-    if (!subscriber) return json({ error: 'revenuecat_unavailable' }, 502); // RevenueCat retries later
+    const { subscriber, status } = await fetchSubscriber(id);
+    // RevenueCat retries later. 401/403 here = REVENUECAT_SECRET_KEY is wrong or not a V1 key.
+    if (!subscriber) return json({ error: 'revenuecat_unavailable', status }, 502);
     const pro = subscriber.entitlements[ENTITLEMENT];
     const subscription = pro ? subscriber.subscriptions[pro.product_identifier] : undefined;
     const refunded = !!subscription?.refunded_at;
@@ -96,11 +97,11 @@ async function sameSecret(given: string, expected: string) {
   return diff === 0;
 }
 
-async function fetchSubscriber(id: string): Promise<Subscriber | null> {
+async function fetchSubscriber(id: string): Promise<{ subscriber: Subscriber | null; status: number }> {
   const response = await fetch(`https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(id)}`, {
     headers: { Authorization: `Bearer ${Deno.env.get('REVENUECAT_SECRET_KEY')}` },
   });
-  if (!response.ok) return null;
+  if (!response.ok) return { subscriber: null, status: response.status };
   const body = (await response.json()) as { subscriber?: Subscriber };
-  return body.subscriber ?? null;
+  return { subscriber: body.subscriber ?? null, status: response.status };
 }
