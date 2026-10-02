@@ -304,24 +304,8 @@
     "milestone66": "~66 days: the median time for a habit to become automatic",
     "dayCount_one": "{{count}} day",
     "dayCount_other": "{{count}} days",
-    "tabs": {
-      "personal": "Personal",
-      "friends": "With friends"
-    },
     "toGoal_one": "{{count}} day to go for the {{goal}}-day goal",
-    "toGoal_other": "{{count}} days to go for the {{goal}}-day goal",
-    "withFriend_one": "{{count}} day planting with {{name}}",
-    "withFriend_other": "{{count}} days planting with {{name}}",
-    "sharedRule": "🛡️ It grows on days you both plant. One missed day never breaks it.",
-    "friends": {
-      "goalsWith": "Your goals with {{name}}",
-      "emptyTitle": "Streaks are better together",
-      "emptyBody": "Add someone or create a circle: you will see which days each one plants and grow together.",
-      "invite": "Invite someone",
-      "noProfileTitle": "Pick your username to plant with friends",
-      "noProfileBody": "Friends never see your habits: only your streak and which days you planted."
-    },
-    "noSharedYet": "Plant on the same day to start a streak together 🌱"
+    "toGoal_other": "{{count}} days to go for the {{goal}}-day goal"
   },
   "account": {
     "dangerZone": "Danger zone",
@@ -660,8 +644,6 @@
   },
   "social": {
     "title": "Profile",
-    "friendsTitle": "Your friends",
-    "noFriends": "No friends here yet. Invite someone you want to grow with: habits hold up better together.",
     "circlesTitle": "Your circles",
     "privacyNote": "Friends never see your habits: only your streak, your consistency, your seeds and which days you planted.",
     "setup": {
@@ -707,7 +689,6 @@
     "friend": {
       "ownStreak_one": "{{count}} day",
       "ownStreak_other": "{{count}} days",
-      "together": "together",
       "unavailable": "This profile is no longer available.",
       "streak": "Streak",
       "consistency": "Consistency",
@@ -716,17 +697,14 @@
       "updated_zero": "Updated today",
       "updated_one": "Updated yesterday",
       "updated_other": "Updated {{count}} days ago",
-      "sharedStreak_zero": "Your streak together starts the first day you both plant 🌱",
-      "sharedStreak_one": "{{count}} day planting together",
-      "sharedStreak_other": "{{count}} days planting together",
-      "sharedHint": "It grows on days both you and {{name}} plant. One missed day never breaks it: only two days in a row without planting together reset it.",
       "theirWeek": "{{name}}’s week",
       "addFriend": "Add as a friend",
       "privacy": "{{name}} sees the same about you: your streak, your consistency and which days you planted. Never your habits.",
       "remove": "Remove friend",
       "removeConfirm": "Remove {{name}} from your friends? Your streak together will be lost.",
       "block": "Block",
-      "blockConfirm": "Block {{name}}? You’ll stop seeing each other and they can’t send you requests or cheers."
+      "blockConfirm": "Block {{name}}? You’ll stop seeing each other and they can’t send you requests or cheers.",
+      "circleTogether": "🫂 Create a circle with {{name}}"
     },
     "cheer": {
       "title": "Cheer {{name}} on",
@@ -765,16 +743,13 @@
     "circle": {
       "members_one": "{{count}} person",
       "members_other": "{{count}} people",
-      "intro": "A circle is a small group (up to 8) to keep each other company: you see which days each one plants and cheer each other on.",
+      "intro": "Each circle is a habit you do together (up to 8 people) with a group streak. With one friend, it is your streak for two.",
       "create": "Create a circle",
       "codePlaceholder": "Code",
       "join": "Join",
       "you": "You",
       "hidden": "Someone",
       "unavailable": "This circle is no longer available.",
-      "allPlanted_zero": "No day yet where everyone planted. The next one could be today!",
-      "allPlanted_one": "{{count}} day everyone planted 🌱",
-      "allPlanted_other": "{{count}} days everyone planted 🌱",
       "inviteTitle": "Invite",
       "inviteBody": "Share the link or the code. Whoever joins sees only what you see: streaks and planted days, never habits.",
       "share": "Share invite",
@@ -836,6 +811,13 @@
       },
       "end": "End the circle's habit",
       "endConfirm": "End “{{name}}” for the circle? Everyone keeps the habit in their list, no longer shared. You can suggest another one after."
+    },
+    "friendsCount_one": "You have {{count}} friend",
+    "friendsCount_other": "You have {{count}} friends",
+    "noFriendsShort": "No friends here yet",
+    "circles": {
+      "emptyTitle": "Streaks are better together",
+      "emptyBody": "A circle is a habit you do together, with a group streak. With a friend, it is your streak for two; with family or a team, everyone’s. Create one and invite with the link or code."
     }
   }
 }

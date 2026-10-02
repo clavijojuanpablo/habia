@@ -12,8 +12,8 @@ import { useTheme } from '@/hooks/use-theme';
 import { useStreak } from '../use-streak';
 
 /**
- * Duolingo-style status bar: your streak, your circles (the way into them) and your seeds (the way
- * into the garden, where the tree lives).
+ * Duolingo-style status bar: your streak (→ your streak), your circles (→ Tus círculos, the streaks
+ * with friends) and your seeds (→ the garden, where the tree lives).
  * The flame stays grey until you complete a habit today.
  */
 export function TopBar() {
@@ -41,7 +41,7 @@ export function TopBar() {
         text="+"
         color="lavender"
         label={circleCount > 0 ? t('topBar.circles', { count: circleCount }) : t('topBar.noCircles')}
-        onPress={() => router.navigate('/profile')}
+        onPress={() => router.push('/circles')}
       />
       <Counter
         emoji="🌱"

@@ -75,7 +75,7 @@ Testers first (TestFlight with the core), then every Pro feature **before the pu
 
 1. **AI coach** — moved up: the most direct lever on the north star; testers generate history while it is built
 2. **Your character** — a plant avatar (plant · pot · eyes · mouth · accessory) that is also the profile picture; parts free, earned with seeds or bought; SVG parts drawn by the owner (`docs/CHARACTER-ART.md`), composed and animated in code
-3. **Friends & circles** — ✅ built 2026-10-01 (1.1.0): shared streaks, cheers, privacy by default, block/report · ✅ 1.2.0: shared streaks on the streak screen (Personal | Con amigos), goals timeline, identity as "becoming" + identity celebration
+3. **Friends & circles** — ✅ built 2026-10-01 (1.1.0): shared streaks, cheers, privacy by default, block/report · 1.2.0 goals timeline (its Personal | Con amigos tabs and the 1:1 streaks were removed in 1.4.0: streaks with friends are circles, opened from 🫂), identity as "becoming" + identity celebration
 4. ~~**Leagues**~~ — dropped 2026-10-02: rankings with strangers don't motivate. Replaced by ✅ **shared circle habits** (1.3.0: group streak at ≥ 50 %, group consistency) → ⏳ photo proof + push in build 4
 5. **Monetization** — Pro + cosmetics, before launch
 

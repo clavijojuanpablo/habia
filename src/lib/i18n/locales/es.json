@@ -304,24 +304,8 @@
     "milestone66": "~66 días: la mediana para que un hábito se vuelva automático",
     "dayCount_one": "{{count}} día",
     "dayCount_other": "{{count}} días",
-    "tabs": {
-      "personal": "Personal",
-      "friends": "Con amigos"
-    },
     "toGoal_one": "Te falta {{count}} día para la meta de {{goal}}",
-    "toGoal_other": "Te faltan {{count}} días para la meta de {{goal}}",
-    "withFriend_one": "{{count}} día sembrando con {{name}}",
-    "withFriend_other": "{{count}} días sembrando con {{name}}",
-    "sharedRule": "🛡️ Crece los días en que los dos siembran. Si uno falla un día, no se rompe.",
-    "friends": {
-      "goalsWith": "Tus metas con {{name}}",
-      "emptyTitle": "Las rachas se disfrutan acompañado",
-      "emptyBody": "Agrega a alguien o crea un círculo: verán qué días siembra cada uno y crecerán juntos.",
-      "invite": "Invitar a alguien",
-      "noProfileTitle": "Elige tu usuario para sembrar con amigos",
-      "noProfileBody": "Tus amigos nunca verán tus hábitos: solo tu racha y qué días sembraste."
-    },
-    "noSharedYet": "Siembren el mismo día para empezar una racha juntos 🌱"
+    "toGoal_other": "Te faltan {{count}} días para la meta de {{goal}}"
   },
   "account": {
     "dangerZone": "Zona de peligro",
@@ -660,8 +644,6 @@
   },
   "social": {
     "title": "Perfil",
-    "friendsTitle": "Tus amigos",
-    "noFriends": "Aún no tienes amigos aquí. Invita a alguien con quien quieras crecer: los hábitos se sostienen mejor acompañados.",
     "circlesTitle": "Tus círculos",
     "privacyNote": "Tus amigos nunca ven tus hábitos: solo tu racha, tu constancia, tus semillas y qué días sembraste.",
     "setup": {
@@ -707,7 +689,6 @@
     "friend": {
       "ownStreak_one": "{{count}} día",
       "ownStreak_other": "{{count}} días",
-      "together": "juntos",
       "unavailable": "Este perfil ya no está disponible.",
       "streak": "Racha",
       "consistency": "Constancia",
@@ -716,17 +697,14 @@
       "updated_zero": "Actualizado hoy",
       "updated_one": "Actualizado ayer",
       "updated_other": "Actualizado hace {{count}} días",
-      "sharedStreak_zero": "Su racha juntos empieza el primer día en que los dos siembren 🌱",
-      "sharedStreak_one": "{{count}} día sembrando juntos",
-      "sharedStreak_other": "{{count}} días sembrando juntos",
-      "sharedHint": "Crece los días en que tú y {{name}} siembran. Si uno falla un día, no se rompe: solo dos días seguidos sin sembrar juntos la reinician.",
       "theirWeek": "La semana de {{name}}",
       "addFriend": "Agregar como amigo",
       "privacy": "{{name}} ve lo mismo de ti: tu racha, tu constancia y qué días sembraste. Nunca tus hábitos.",
       "remove": "Eliminar de amigos",
       "removeConfirm": "¿Eliminar a {{name}} de tus amigos? Su racha juntos se perderá.",
       "block": "Bloquear",
-      "blockConfirm": "¿Bloquear a {{name}}? Dejarán de verse y no podrá enviarte solicitudes ni ánimos."
+      "blockConfirm": "¿Bloquear a {{name}}? Dejarán de verse y no podrá enviarte solicitudes ni ánimos.",
+      "circleTogether": "🫂 Crear un círculo con {{name}}"
     },
     "cheer": {
       "title": "Anima a {{name}}",
@@ -765,16 +743,13 @@
     "circle": {
       "members_one": "{{count}} persona",
       "members_other": "{{count}} personas",
-      "intro": "Un círculo es un grupo pequeño (hasta 8) para acompañarse: ven qué días siembra cada uno y se animan.",
+      "intro": "Cada círculo es un hábito que hacen juntos (hasta 8 personas) con una racha de grupo. Con un amigo, es su racha de dos.",
       "create": "Crear un círculo",
       "codePlaceholder": "Código",
       "join": "Unirme",
       "you": "Tú",
       "hidden": "Alguien",
       "unavailable": "Este círculo ya no está disponible.",
-      "allPlanted_zero": "Aún no hay un día en que todos hayan sembrado. ¡El próximo puede ser hoy!",
-      "allPlanted_one": "{{count}} día en que todos sembraron 🌱",
-      "allPlanted_other": "{{count}} días en que todos sembraron 🌱",
       "inviteTitle": "Invitar",
       "inviteBody": "Comparte el enlace o el código. Quien entre verá solo lo mismo que tú: rachas y días sembrados, nunca hábitos.",
       "share": "Compartir invitación",
@@ -836,6 +811,13 @@
       },
       "end": "Terminar el hábito del círculo",
       "endConfirm": "¿Terminar «{{name}}» para el círculo? Cada uno conserva el hábito en su lista, ya sin compartir. Luego pueden proponer otro."
+    },
+    "friendsCount_one": "Tienes {{count}} amigo",
+    "friendsCount_other": "Tienes {{count}} amigos",
+    "noFriendsShort": "Aún no tienes amigos aquí",
+    "circles": {
+      "emptyTitle": "Las rachas se disfrutan acompañado",
+      "emptyBody": "Un círculo es un hábito que hacen juntos, con una racha de grupo. Con un amigo, es su racha de dos; con la familia o el equipo, la de todos. Crea uno e invita con el enlace o el código."
     }
   }
 }

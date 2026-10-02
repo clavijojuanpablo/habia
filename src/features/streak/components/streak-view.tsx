@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, {
@@ -13,9 +13,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
-import { SharedStreaksPanel } from '@/features/social/components/shared-streaks-panel';
-import { useSharedStreaks } from '@/features/social/use-shared-streaks';
-import { useNow, useTodayRange } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
 import { WEEKDAYS } from '@/lib/recurrence';
 
@@ -23,25 +20,13 @@ import { type DayState, type Streak } from '../compute-streak';
 import { MilestoneTimeline } from './milestone-timeline';
 
 type Props = { streak: Streak; onClose: () => void };
-type Tab = 'personal' | 'friends';
 
 const DAY_EMOJI: Partial<Record<DayState, string>> = { done: '🔥', forgiven: '🛡️', rest: '💤' };
 
-/** Full streak screen: yours and the ones you grow with friends, each with its goals timeline. */
+/** Your streak: hero flame, this week, the goals timeline, start date and record. Circles have their own streaks. */
 export function StreakView({ streak, onClose }: Props) {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
-  const now = useNow();
-  const { today } = useTodayRange(now);
-  const [tab, setTab] = useState<Tab>('personal');
-  const { friends, isLoading: friendsLoading } = useSharedStreaks(today);
-
-  // The friends' hero shows the longest streak you are growing with someone right now.
-  const best = friends
-    .filter((f) => f.shared && f.shared.current > 0)
-    .sort((a, b) => b.shared!.current - a.shared!.current)[0];
-  const heroValue = tab === 'personal' ? streak.current : (best?.shared?.current ?? 0);
-
   // A gentle "breathing" flame.
   const pulse = useSharedValue(1);
   useEffect(() => {
@@ -76,102 +61,71 @@ export function StreakView({ streak, onClose }: Props) {
             </Pressable>
           </View>
 
-          <View style={[styles.segmented, { backgroundColor: theme.backgroundElement }]} accessibilityRole="tablist">
-            {(['personal', 'friends'] as const).map((key) => (
-              <Pressable
-                key={key}
-                onPress={() => setTab(key)}
-                accessibilityRole="tab"
-                accessibilityState={{ selected: tab === key }}
-                style={[styles.segment, tab === key && { backgroundColor: theme.streak }]}>
-                <ThemedText type="smallBold" style={{ color: tab === key ? theme.onPrimary : theme.textSecondary }}>
-                  {t(`streak.tabs.${key}`)}
-                </ThemedText>
-              </Pressable>
-            ))}
-          </View>
-
-          <Animated.Text style={[styles.flame, flameStyle, heroValue === 0 && styles.flameOff]}>
-            {tab === 'personal' ? '🔥' : '🤝'}
-          </Animated.Text>
+          <Animated.Text style={[styles.flame, flameStyle, streak.current === 0 && styles.flameOff]}>🔥</Animated.Text>
           <ThemedText type="hero" style={{ color: theme.streak }}>
-            {heroValue}
+            {streak.current}
           </ThemedText>
           <ThemedText type="heading" style={[styles.center, { color: theme.streak }]}>
-            {tab === 'personal'
-              ? t('streak.days', { count: streak.current })
-              : best
-                ? t('streak.withFriend', { count: heroValue, name: best.friend.display_name })
-                : t('streak.noSharedYet')}
+            {t('streak.days', { count: streak.current })}
           </ThemedText>
           <ThemedText type="small" themeColor="textSecondary" style={styles.center}>
-            {tab === 'personal'
-              ? streak.todayDone
-                ? t('streak.safeToday')
-                : t('streak.keepItUp')
-              : t('streak.sharedRule')}
+            {streak.todayDone ? t('streak.safeToday') : t('streak.keepItUp')}
           </ThemedText>
         </SafeAreaView>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        {tab === 'personal' ? (
-          <>
-            {/* This week */}
-            <View style={[styles.card, { backgroundColor: theme.backgroundElement, borderColor: theme.streakSoft }]}>
-              <View style={styles.weekRow}>
-                {streak.week.map(({ date, state }, i) => {
-                  const active = state === 'done';
-                  return (
-                    <View key={date.getTime()} style={styles.weekDay}>
-                      <ThemedText type="caption" style={{ color: active ? theme.streak : theme.textSecondary }}>
-                        {t(`weekdays.${WEEKDAYS[i]}`)}
-                      </ThemedText>
-                      <View
-                        style={[
-                          styles.dayTile,
-                          { backgroundColor: active ? theme.streakSoft : theme.backgroundSelected },
-                          state === 'pending' && { borderColor: theme.streak, borderStyle: 'dashed', borderWidth: 2 },
-                        ]}>
-                        <ThemedText style={[styles.dayEmoji, state === 'forgiven' && { opacity: 0.8 }]}>
-                          {DAY_EMOJI[state] ?? ''}
-                        </ThemedText>
-                      </View>
-                    </View>
-                  );
-                })}
-              </View>
-              <ThemedText type="caption" themeColor="textSecondary" style={styles.center}>
-                {t('streak.rule')}
-              </ThemedText>
-            </View>
+        {/* This week */}
+        <View style={[styles.card, { backgroundColor: theme.backgroundElement, borderColor: theme.streakSoft }]}>
+          <View style={styles.weekRow}>
+            {streak.week.map(({ date, state }, i) => {
+              const active = state === 'done';
+              return (
+                <View key={date.getTime()} style={styles.weekDay}>
+                  <ThemedText type="caption" style={{ color: active ? theme.streak : theme.textSecondary }}>
+                    {t(`weekdays.${WEEKDAYS[i]}`)}
+                  </ThemedText>
+                  <View
+                    style={[
+                      styles.dayTile,
+                      { backgroundColor: active ? theme.streakSoft : theme.backgroundSelected },
+                      state === 'pending' && { borderColor: theme.streak, borderStyle: 'dashed', borderWidth: 2 },
+                    ]}>
+                    <ThemedText style={[styles.dayEmoji, state === 'forgiven' && { opacity: 0.8 }]}>
+                      {DAY_EMOJI[state] ?? ''}
+                    </ThemedText>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+          <ThemedText type="caption" themeColor="textSecondary" style={styles.center}>
+            {t('streak.rule')}
+          </ThemedText>
+        </View>
 
-            {/* Goals */}
-            <ThemedText type="heading">{t('streak.milestones')}</ThemedText>
-            <View style={[styles.card, { backgroundColor: theme.backgroundElement }]}>
-              <MilestoneTimeline current={streak.current} />
-            </View>
+        {/* Goals */}
+        <ThemedText type="heading">{t('streak.milestones')}</ThemedText>
+        <View style={[styles.card, { backgroundColor: theme.backgroundElement }]}>
+          <MilestoneTimeline current={streak.current} />
+        </View>
 
-            {/* Started / record */}
-            <View style={[styles.card, styles.split, { backgroundColor: theme.backgroundElement }]}>
-              <View style={styles.splitCell}>
-                <ThemedText type="heading">{streak.startedOn ? formatDate(streak.startedOn) : '–'}</ThemedText>
-                <ThemedText type="caption" themeColor="textSecondary">
-                  {t('streak.started')}
-                </ThemedText>
-              </View>
-              <View style={[styles.divider, { backgroundColor: theme.border }]} />
-              <View style={styles.splitCell}>
-                <ThemedText type="heading">{t('streak.dayCount', { count: streak.record })}</ThemedText>
-                <ThemedText type="caption" themeColor="textSecondary">
-                  {t('streak.record')}
-                </ThemedText>
-              </View>
-            </View>
-          </>
-        ) : (
-          <SharedStreaksPanel friends={friends} best={best} today={today} loading={friendsLoading} />
-        )}
+        {/* Started / record */}
+        <View style={[styles.card, styles.split, { backgroundColor: theme.backgroundElement }]}>
+          <View style={styles.splitCell}>
+            <ThemedText type="heading">{streak.startedOn ? formatDate(streak.startedOn) : '–'}</ThemedText>
+            <ThemedText type="caption" themeColor="textSecondary">
+              {t('streak.started')}
+            </ThemedText>
+          </View>
+          <View style={[styles.divider, { backgroundColor: theme.border }]} />
+          <View style={styles.splitCell}>
+            <ThemedText type="heading">{t('streak.dayCount', { count: streak.record })}</ThemedText>
+            <ThemedText type="caption" themeColor="textSecondary">
+              {t('streak.record')}
+            </ThemedText>
+          </View>
+        </View>
       </ScrollView>
     </View>
   );
@@ -190,17 +144,6 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.two,
   },
   close: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  segmented: {
-    flexDirection: 'row',
-    alignSelf: 'center',
-    maxWidth: 360,
-    width: '100%',
-    marginTop: Spacing.two,
-    padding: Spacing.one,
-    borderRadius: Radius.pill,
-    boxShadow: Shadow.card,
-  },
-  segment: { flex: 1, alignItems: 'center', paddingVertical: Spacing.two, borderRadius: Radius.pill },
   flame: { fontSize: 88, lineHeight: 104, marginTop: Spacing.two },
   flameOff: { opacity: 0.3 },
   content: {

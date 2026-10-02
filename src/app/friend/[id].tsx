@@ -7,7 +7,6 @@ import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
-import { useSession } from '@/features/auth/session-provider';
 import {
   useBlockUser,
   useFriendships,
@@ -20,11 +19,10 @@ import {
 } from '@/features/social/api';
 import { CheerRow } from '@/features/social/components/cheers';
 import { circleDot } from '@/features/social/components/circles';
-import { sharedDot } from '@/features/social/components/friend-card';
 import { SocialAvatar } from '@/features/social/components/social-avatar';
 import { SocialCard } from '@/features/social/components/social-card';
 import { WeekDots } from '@/features/social/components/week-dots';
-import { computeCircleWeek, computeSharedStreak } from '@/features/social/shared-days';
+import { computePersonWeek } from '@/features/social/shared-days';
 import { useNow, useTodayRange } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
 import { confirmAction } from '@/lib/confirm';
@@ -37,14 +35,12 @@ export default function FriendScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { session } = useSession();
-  const me = session?.user.id;
   const now = useNow();
   const { today } = useTodayRange(now);
 
   const friendships = useFriendships();
   const profiles = useSocialProfiles([id]);
-  const days = useSocialDays(me ? [me, id] : [], today);
+  const days = useSocialDays([id], today);
   const removeFriend = useRemoveFriendship();
   const block = useBlockUser();
   const report = useReportUser();
@@ -54,16 +50,7 @@ export default function FriendScreen() {
   const profile = profiles.data?.[0];
   const isFriend = friendships.data?.some((f) => f.user_id === id && f.status === 'accepted') ?? false;
   const marks = useMemo(() => days.data ?? [], [days.data]);
-  const shared = useMemo(
-    () =>
-      computeSharedStreak(
-        marks.filter((m) => m.user_id === me),
-        marks.filter((m) => m.user_id === id),
-        today,
-      ),
-    [marks, me, id, today],
-  );
-  const theirWeek = useMemo(() => computeCircleWeek([id], marks, today).rows[0], [id, marks, today]);
+  const theirWeek = useMemo(() => computePersonWeek(id, marks, today), [id, marks, today]);
 
   if (profiles.isLoading) {
     return (
@@ -120,21 +107,17 @@ export default function FriendScreen() {
           </ThemedText>
         )}
 
-        {isFriend ? (
-          <SocialCard>
-            <ThemedText type="heading">
-              🔥 {t('social.friend.sharedStreak', { count: shared.current })}
-              {shared.capped ? '+' : ''}
-            </ThemedText>
-            <ThemedText type="small" themeColor="textSecondary">
-              {t('social.friend.sharedHint', { name })}
-            </ThemedText>
-            {days.data && <WeekDots states={shared.week.map((d) => sharedDot[d.state])} />}
-          </SocialCard>
-        ) : (
-          <SocialCard>
-            <ThemedText type="heading">📅 {t('social.friend.theirWeek', { name })}</ThemedText>
-            {days.data && theirWeek && <WeekDots states={theirWeek.days.map((d) => circleDot[d])} />}
+        <SocialCard>
+          <ThemedText type="heading">📅 {t('social.friend.theirWeek', { name })}</ThemedText>
+          {days.data && <WeekDots states={theirWeek.map((d) => circleDot[d])} />}
+          {isFriend ? (
+            // Streaks with friends live in circles: a circle of two is a shared habit with a group streak.
+            <Button
+              variant="secondary"
+              label={t('social.friend.circleTogether', { name })}
+              onPress={() => router.push('/circle/new')}
+            />
+          ) : (
             <Button
               variant="secondary"
               label={t(request.data ? `social.add.result.${request.data}` : 'social.friend.addFriend')}
@@ -142,8 +125,8 @@ export default function FriendScreen() {
               loading={request.isPending}
               onPress={() => request.mutate(profile.username)}
             />
-          </SocialCard>
-        )}
+          )}
+        </SocialCard>
 
         <SocialCard>
           <ThemedText type="heading">💌 {t('social.cheer.title', { name })}</ThemedText>

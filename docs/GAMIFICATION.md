@@ -43,7 +43,7 @@ Each user has a **customizable character** that is *them* growing: the identity 
 | Mouth | several styles, each with the moods below |
 | Accessory | cap, glasses, crown, bow, … |
 
-- **It is the user's profile picture**: what friends see in shared streaks, circles and leagues. Every part must read at ~40 px.
+- **It is the user's profile picture**: what friends see in their profile and in circles. Every part must read at ~40 px.
 - **Anchor points, not fixed positions:** each plant declares a `face` and a `head` anchor (named marker circles in its SVG); pots share one rim line (y 84) and `base` line (y 112). Eyes, mouths and accessories are drawn once, centered on their anchor, so any part fits any plant and a new plant never forces redrawing the others.
 - **Launch small, grow in seasons:** ~6 plants, 4 pots, 5 eyes, 5 mouths, 6 accessories at launch (thousands of combinations); new parts in themed drops. Parts are SVG data, so later drops can be fetched remotely without an app update.
 - Open: whether the avatar plant also grows in stages with consistency (lovely, but multiplies plant art — later).
@@ -69,9 +69,9 @@ Skins, accessories, pots and garden themes. **Cosmetic only, never pay-to-win**;
 Each branch is a person the user is **becoming** ("una persona más fuerte"), stored in `identities.statement`. Finishing every habit of a branch today (≥2) shows its own celebration — a card rising in the branch color with seeds turning into leaves — distinct from the day's confetti (which wins on the same tap) and from streak milestones (a horizontal timeline of the 4 nearby goals on the streak screen).
 
 ## Friends & circles (replaces "Couples") — built 2026-10-01 (1.1.0)
-A couple is a circle of two, so the base is **friends and small circles**. Built: usernames, requests by exact @ or invite link, shared streaks, circles of up to 8 with a weekly grid and "days everyone planted" (no group streak: with 8 people it would always break), 5 preset cheers (no free text, nothing to moderate), block/report. Still open: pushes, intertwined trees for two, nudges beyond cheers.
+A couple is a circle of two, so the base is **friends and small circles**. Built: usernames, requests by exact @ or invite link, circles of up to 8 built around one shared habit with a group streak at ≥ 50 % (1.3.0), 5 preset cheers (no free text, nothing to moderate), block/report. Still open: pushes, intertwined trees for two, nudges beyond cheers.
 - Follow / friend requests; see a friend's character, tree, streak and consistency %. **Habit names stay private by default** (people track sensitive habits).
-- **Shared streaks:** grow when both complete their day; they follow "never miss twice" — one partner's single miss never breaks it (no guilt toward the other).
+- **Streaks with friends are circles** (1.4.0): the 1:1 shared streak (any habit, any day) was dropped — it measured nothing in common. A streak with one friend is a circle of two around one shared habit; it follows "never miss twice" and, from build 4, photos.
 - Cheers (reactions) and gentle nudges; intertwined trees for circles of two.
 - App Store requirement for user interaction (guideline 1.2): block, report, moderation, usernames; account deletion cascades.
 
