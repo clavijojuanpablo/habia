@@ -69,3 +69,12 @@ describe('buildSchedule with stacks', () => {
     expect(nextInChain(withRest[0], withRest)).toBeUndefined();
   });
 });
+
+describe('buildSchedule with archived habits', () => {
+  it('keeps the days before the archive date and drops the rest', () => {
+    // Archived on Sep 19 at noon: the 17th and 18th stay history, the 19th onward is gone.
+    const archived = habit({ id: 'old', archived_at: new Date(2026, 8, 19, 12).toISOString() });
+    const items = buildSchedule([archived], [], addDays(TODAY, -4), TOMORROW, DEFAULT_DAY_BANDS);
+    expect(items.map((i) => i.at.getDate())).toEqual([17, 18]);
+  });
+});

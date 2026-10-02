@@ -1,7 +1,7 @@
 import type { HabitLog } from '@/features/checkins/api';
 import type { Habit } from '@/features/habits/api';
 import { activeAnchorId, stackDepth } from '@/features/habits/stacking';
-import { formatLocalDate, getOccurrences, occurrenceKey } from '@/lib/recurrence';
+import { formatLocalDate, getOccurrences, occurrenceKey, startOfDay } from '@/lib/recurrence';
 import { getDayBand, type DayBand, type DayBandConfig } from '@/lib/time/day-bands';
 
 export type ScheduleBand = DayBand | 'anytime';
@@ -23,6 +23,13 @@ export type ScheduledItem = {
   log?: HabitLog;
 };
 
+/** An archived habit's schedule ends the day it was archived (that day no longer asks for it). */
+const endOf = (habit: Habit, to: Date) => {
+  if (!habit.archived_at) return to;
+  const archivedDay = startOfDay(new Date(habit.archived_at));
+  return archivedDay < to ? archivedDay : to;
+};
+
 /** Joins habits' occurrences in [from, to) with their logs, sorted for display. */
 export function buildSchedule(
   habits: Habit[],
@@ -36,7 +43,8 @@ export function buildSchedule(
   );
 
   const items: ScheduledItem[] = habits.flatMap((habit) =>
-    getOccurrences(habit, from, to).map(({ at, hasTime }): ScheduledItem => {
+    // Archived habits keep their past: their days before the archive date are still history.
+    getOccurrences(habit, from, endOf(habit, to)).map(({ at, hasTime }): ScheduledItem => {
       const key = occurrenceKey(habit.id, at);
       return {
         key,

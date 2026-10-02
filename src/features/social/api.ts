@@ -486,16 +486,23 @@ export function useCircleHabitProgress(circleHabitId: string, today: Date) {
   const { session } = useSession();
   const since = formatLocalDate(addDays(today, -CIRCLE_HABIT_WINDOW_DAYS));
   return useQuery({
-    queryKey: socialKey(session?.user.id, 'circle-habit', circleHabitId, since),
+    // No date in the key: a new key every day would keep a year of days per copy in the persisted cache.
+    queryKey: socialKey(session?.user.id, 'circle-habit', circleHabitId),
     enabled: !!session,
     queryFn: async () => {
-      const [members, days] = await Promise.all([
-        supabase.rpc('circle_habit_members', { p_circle_habit: circleHabitId }),
-        supabase.rpc('circle_habit_days', { p_circle_habit: circleHabitId, p_since: since }),
-      ]);
+      const members = await supabase.rpc('circle_habit_members', { p_circle_habit: circleHabitId });
       if (members.error) throw members.error;
-      if (days.error) throw days.error;
-      return { members: members.data as CircleHabitMember[], days: days.data as CircleHabitDay[] };
+      // A year × 8 people can pass the API's 1000-row cap: page (the function orders by person, day).
+      const days: CircleHabitDay[] = [];
+      for (let page = 0; ; page++) {
+        const { data, error } = await supabase
+          .rpc('circle_habit_days', { p_circle_habit: circleHabitId, p_since: since })
+          .range(page * 1000, page * 1000 + 999);
+        if (error) throw error;
+        days.push(...(data as CircleHabitDay[]));
+        if (data.length < 1000) break;
+      }
+      return { members: members.data as CircleHabitMember[], days };
     },
   });
 }

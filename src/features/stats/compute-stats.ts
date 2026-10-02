@@ -64,6 +64,12 @@ export function monthDays(habits: Habit[], logs: HabitLog[], month: Date, today:
   return tallyDays(items, first, last);
 }
 
+/** Per-day due/done over [from, today], rests left out: what the streak walks, over any window. */
+export function dailyTotals(habits: Habit[], logs: HabitLog[], from: Date, today: Date, bands: DayBandConfig): DayStat[] {
+  const items = buildSchedule(habits, logs, from, addDays(today, 1), bands).filter((item) => !isSkipped(item));
+  return tallyDays(items, from, today);
+}
+
 /**
  * Aggregates habits × logs into the numbers the Progress screen shows.
  * A pending habit today is not a miss yet: past-looking stats only count today's done items.
@@ -88,7 +94,8 @@ export function computeStats(
     return { weekStart, ...ratioOf(settled.filter((it) => it.at >= weekStart && it.at < weekEnd)) };
   });
 
-  const recent = settled.filter((it) => daysBetween(it.at, today) <= BAND_DAYS);
+  // Today and the 29 days before it: exactly 30 days.
+  const recent = settled.filter((it) => daysBetween(it.at, today) < BAND_DAYS);
   const bandStats = BAND_ORDER.map((band) => ({ band, ...ratioOf(recent.filter((it) => it.band === band)) })).filter(
     (b) => b.due > 0,
   );

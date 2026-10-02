@@ -26,20 +26,33 @@ export type HabitInput = Pick<
 
 const habitsKey = ['habits'] as const;
 
-export function useHabits() {
+/**
+ * One cached request with every habit, archived ones included: the past needs them (an archived
+ * habit's days still count in the streak and stats until the day it was archived).
+ */
+function useHabitsQuery<T>(select: (habits: Habit[]) => T) {
   return useQuery({
     queryKey: habitsKey,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('habits')
-        .select('*')
-        .is('archived_at', null)
-        .order('sort_order')
-        .order('created_at');
+      const { data, error } = await supabase.from('habits').select('*').order('sort_order').order('created_at');
       if (error) throw error;
       return data;
     },
+    select,
   });
+}
+
+const activeOnly = (habits: Habit[]) => habits.filter((h) => !h.archived_at);
+const all = (habits: Habit[]) => habits;
+
+/** Habits in use: Today, the week, reminders, forms, the garden. */
+export function useHabits() {
+  return useHabitsQuery(activeOnly);
+}
+
+/** Every habit, archived included: for history (streak, stats, calendar), cut at each archive date. */
+export function useHabitHistory() {
+  return useHabitsQuery(all);
 }
 
 export function useHabit(id: string | undefined) {

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { useLogs } from '@/features/checkins/api';
 import { GARDEN_WINDOW_DAYS } from '@/features/garden/compute-garden';
-import { useHabits } from '@/features/habits/api';
+import { useHabitHistory } from '@/features/habits/api';
 import { useDayBands } from '@/features/profile/api';
 import { addDays } from '@/lib/recurrence';
 
@@ -22,7 +22,7 @@ export function useMonthDays(month: Date, today: Date) {
     const next = new Date(month.getFullYear(), month.getMonth() + 1, 1);
     return { from: first, to: next < tomorrow ? next : tomorrow };
   }, [month, today]);
-  const habits = useHabits();
+  const habits = useHabitHistory();
   const logs = useLogs(from, to);
   const bands = useDayBands();
 

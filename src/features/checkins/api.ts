@@ -13,6 +13,8 @@ import {
 
 export type { HabitLog, LogStatus };
 
+const LOGS_PAGE = 1000;
+
 const logsKey = (from: Date, to: Date) => ['logs', from.toISOString(), to.toISOString()] as const;
 
 /** Logs whose occurrence falls in [from, to). */
@@ -20,13 +22,22 @@ export function useLogs(from: Date, to: Date) {
   return useQuery({
     queryKey: logsKey(from, to),
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('habit_logs')
-        .select('*')
-        .gte('occurrence_at', from.toISOString())
-        .lt('occurrence_at', to.toISOString());
-      if (error) throw error;
-      return data;
+      // The API returns at most 1000 rows per request (PostgREST max_rows) and cuts silently:
+      // page through in a stable order so long windows (the streak reads 400 days) are complete.
+      const rows: HabitLog[] = [];
+      for (let page = 0; ; page++) {
+        const { data, error } = await supabase
+          .from('habit_logs')
+          .select('*')
+          .gte('occurrence_at', from.toISOString())
+          .lt('occurrence_at', to.toISOString())
+          .order('occurrence_at')
+          .order('id')
+          .range(page * LOGS_PAGE, (page + 1) * LOGS_PAGE - 1);
+        if (error) throw error;
+        rows.push(...data);
+        if (data.length < LOGS_PAGE) return rows;
+      }
     },
   });
 }
