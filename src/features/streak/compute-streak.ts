@@ -21,9 +21,8 @@ export type Streak = {
   /** Monday → Sunday of the current week. */
   week: { date: Date; state: DayState }[];
   todayDone: boolean;
-  /** The next milestone to reach and the last one passed (0 if none). */
-  nextMilestone: number;
-  previousMilestone: number;
+  /** Nothing due today (all rested or nothing scheduled): the streak is safe without a check-in. */
+  todayRest: boolean;
 };
 
 const isActive = (d: DayStat) => d.done > 0;
@@ -81,8 +80,6 @@ export function computeStreak(days: DayStat[], today: Date): Streak {
     return { date, state };
   });
 
-  const nextMilestone = STREAK_MILESTONES.find((m) => m > run) ?? run + 100;
-  const previousMilestone = [...STREAK_MILESTONES].reverse().find((m) => m <= run) ?? 0;
   const todayStat = days.find((d) => daysBetween(d.date, today) === 0);
 
   return {
@@ -91,7 +88,6 @@ export function computeStreak(days: DayStat[], today: Date): Streak {
     startedOn,
     week,
     todayDone: !!todayStat && isActive(todayStat),
-    nextMilestone,
-    previousMilestone,
+    todayRest: !todayStat || isRest(todayStat),
   };
 }

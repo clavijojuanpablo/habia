@@ -146,7 +146,7 @@ export function HabitCheckRow({
               : { borderColor: done ? color : color + '66', backgroundColor: done ? color : color + '12' },
             checkStyle,
           ]}>
-          {done && <Icon name="check" size={20} color="#fff" />}
+          {done && <Icon name="check" size={20} color={theme.onPrimary} />}
           {skipped && <Icon name="rest" size={18} color={theme.textSecondary} />}
         </Animated.View>
       </Pressable>

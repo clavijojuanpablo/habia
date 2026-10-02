@@ -114,7 +114,6 @@
     "twoMinutePlaceholder": "Leer una página",
     "nameRequired": "Ponle un nombre al hábito",
     "daysRequired": "Elige al menos un día",
-    "invalidTime": "Usa el formato HH:MM",
     "deleteConfirm": "¿Archivar este hábito? Tu historial se conserva.",
     "reminder": "Recordatorio",
     "reminderNone": "Sin recordatorio",
@@ -206,7 +205,14 @@
     "newBranch": "+ Nueva rama",
     "emptyTitle": "Dale ramas a tu árbol",
     "emptyBody": "Piensa en quién te quieres convertir: «una persona que lee», «una persona más tranquila». Cada hábito que conectes hará crecer esa rama.",
-    "createBranch": "Crear mi primera rama"
+    "createBranch": "Crear mi primera rama",
+    "stageInSentence": {
+      "0": "una semilla",
+      "1": "un brote",
+      "2": "un arbolito",
+      "3": "un árbol",
+      "4": "un árbol con frutos"
+    }
   },
   "progress": {
     "title": "Tu progreso",
@@ -312,7 +318,9 @@
     "dayCount_one": "{{count}} día",
     "dayCount_other": "{{count}} días",
     "toGoal_one": "Te falta {{count}} día para la meta de {{goal}}",
-    "toGoal_other": "Te faltan {{count}} días para la meta de {{goal}}"
+    "toGoal_other": "Te faltan {{count}} días para la meta de {{goal}}",
+    "restToday": "Hoy es día de descanso: tu racha está a salvo 💤",
+    "startToday": "Completa un hábito hoy para empezar tu racha 🌱"
   },
   "account": {
     "dangerZone": "Zona de peligro",
@@ -708,10 +716,12 @@
       "addFriend": "Agregar como amigo",
       "privacy": "{{name}} ve lo mismo de ti: tu racha, tu constancia y qué días sembraste. Nunca tus hábitos.",
       "remove": "Eliminar de amigos",
-      "removeConfirm": "¿Eliminar a {{name}} de tus amigos? Su racha juntos se perderá.",
+      "removeConfirm": "¿Eliminar a {{name}} de tus amigos? Podrán volver a agregarse cuando quieran.",
       "block": "Bloquear",
       "blockConfirm": "¿Bloquear a {{name}}? Dejarán de verse y no podrá enviarte solicitudes ni ánimos.",
-      "circleTogether": "🫂 Crear un círculo con {{name}}"
+      "circleTogether": "🫂 Crear un círculo con {{name}}",
+      "pendingIncoming": "{{name}} quiere ser tu amigo. Al aceptar, podrán ver qué días siembra cada uno y animarse.",
+      "pendingOutgoing": "Le enviaste una solicitud a {{name}}. Cuando acepte, podrán animarse."
     },
     "cheer": {
       "title": "Anima a {{name}}",
@@ -780,7 +790,6 @@
     },
     "invite": {
       "needUsername": "Antes, elige tu usuario: así te reconocerán. Luego seguimos con la invitación.",
-      "pickUsername": "Elegir mi usuario",
       "goFriends": "Ir a mi perfil",
       "addTitle": "¿Agregar a @{{username}}?",
       "addBody": "Podrán ver la racha y los días sembrados del otro, y animarse. Nunca sus hábitos.",
@@ -789,10 +798,10 @@
       "retry": "Reintentar"
     },
     "circleHabit": {
-      "title": "Hábitos del círculo",
+      "title": "Hábito del círculo",
       "add": "+ Proponer hábito",
       "emptyOwner": "Cada círculo tiene un hábito que hacen juntos, como caminar 20 minutos. Cada quien lo suma a su día y la racha del grupo se mantiene si al menos la mitad lo cumple. ¿Otro hábito? Crea otro círculo.",
-      "emptyMember": "Aún no hay hábitos del círculo. Quien creó el círculo puede proponer uno.",
+      "emptyMember": "Este círculo aún no tiene hábito. Quien lo creó puede proponer uno.",
       "newTitle": "Hábito del círculo",
       "newHint": "Elijan algo pequeño que todos puedan cumplir. Cada quien lo verá en su día y decide su hora.",
       "name": "¿Qué harán juntos?",
@@ -810,8 +819,6 @@
       "todayGreat": "¡Casi todo el círculo ya lo hizo! 🎉",
       "todayRest": "Hoy todos descansan: la racha no se mueve 💤",
       "todayOff": "Hoy no toca: la racha espera 💤",
-      "streakLabel_one": "Racha del grupo: {{count}} día",
-      "streakLabel_other": "Racha del grupo: {{count}} días",
       "rankingTitle": "Constancia de cada uno",
       "periods": {
         "week": "Esta semana",
@@ -819,14 +826,20 @@
         "all": "General"
       },
       "end": "Terminar el hábito del círculo",
-      "endConfirm": "¿Terminar «{{name}}» para el círculo? Cada uno conserva el hábito en su lista, ya sin compartir. Luego pueden proponer otro."
+      "endConfirm": "¿Terminar «{{name}}» para el círculo? Cada uno conserva el hábito en su lista, ya sin compartir. Luego pueden proponer otro.",
+      "todayAll": "¡Todo el círculo lo hizo hoy! 🎉"
     },
     "friendsCount_one": "Tienes {{count}} amigo",
     "friendsCount_other": "Tienes {{count}} amigos",
     "noFriendsShort": "Aún no tienes amigos aquí",
     "circles": {
       "emptyTitle": "Las rachas se disfrutan acompañado",
-      "emptyBody": "Un círculo es un hábito que hacen juntos, con una racha de grupo. Con un amigo, es su racha de dos; con la familia o el equipo, la de todos. Crea uno e invita con el enlace o el código."
+      "emptyBody": "Un círculo es un hábito que hacen juntos, con una racha de grupo. Con un amigo, es su racha de dos; con la familia o el equipo, la de todos. Crea uno e invita con el enlace o el código.",
+      "noHabitOwner": "Aún sin hábito. Entra y propón uno para empezar la racha del grupo.",
+      "noHabitMember": "Aún sin hábito: quien creó el círculo puede proponer uno.",
+      "youDid": "✓ Ya regaste hoy por el grupo",
+      "yourTurn": "Te toca: {{habit}}",
+      "notJoined": "Aún no te uniste a este hábito"
     }
   }
 }

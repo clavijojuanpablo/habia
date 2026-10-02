@@ -59,9 +59,8 @@ describe('computeStreak', () => {
     expect(streak.week.map((d) => d.state)).toEqual(['done', 'done', 'pending', 'future', 'future', 'future', 'future']);
   });
 
-  it('points to the next milestone', () => {
-    const streak = computeStreak(days('DDDDD'), TODAY);
-    expect(streak.previousMilestone).toBe(3);
-    expect(streak.nextMilestone).toBe(7);
+  it('knows when today is a rest day', () => {
+    expect(computeStreak(days('DDR'), TODAY).todayRest).toBe(true);
+    expect(computeStreak(days('DDP'), TODAY).todayRest).toBe(false);
   });
 });

@@ -114,7 +114,6 @@
     "twoMinutePlaceholder": "Read one page",
     "nameRequired": "Give the habit a name",
     "daysRequired": "Pick at least one day",
-    "invalidTime": "Use the HH:MM format",
     "deleteConfirm": "Archive this habit? Your history is kept.",
     "reminder": "Reminder",
     "reminderNone": "No reminder",
@@ -193,8 +192,8 @@
       "3": "Tree",
       "4": "Fruits"
     },
-    "toNextStage_one": "{{count}} seed away from becoming a {{stage}}",
-    "toNextStage_other": "{{count}} seeds away from becoming a {{stage}}",
+    "toNextStage_one": "{{count}} seed away from becoming {{stage}}",
+    "toNextStage_other": "{{count}} seeds away from becoming {{stage}}",
     "whoTitle": "Who are you becoming?",
     "whoBody": "Each branch of your tree is a person you are becoming. Your habits make it grow.",
     "seedsThisWeek_one": "{{count}} seed this week",
@@ -206,7 +205,14 @@
     "newBranch": "+ New branch",
     "emptyTitle": "Give your tree branches",
     "emptyBody": "Think of who you want to become: “a reader”, “a calmer person”. Every habit you connect grows that branch.",
-    "createBranch": "Create my first branch"
+    "createBranch": "Create my first branch",
+    "stageInSentence": {
+      "0": "a seed",
+      "1": "a sprout",
+      "2": "a sapling",
+      "3": "a tree",
+      "4": "a fruiting tree"
+    }
   },
   "progress": {
     "title": "Your progress",
@@ -312,7 +318,9 @@
     "dayCount_one": "{{count}} day",
     "dayCount_other": "{{count}} days",
     "toGoal_one": "{{count}} day to go for the {{goal}}-day goal",
-    "toGoal_other": "{{count}} days to go for the {{goal}}-day goal"
+    "toGoal_other": "{{count}} days to go for the {{goal}}-day goal",
+    "restToday": "Today is a rest day: your streak is safe 💤",
+    "startToday": "Complete a habit today to start your streak 🌱"
   },
   "account": {
     "dangerZone": "Danger zone",
@@ -708,10 +716,12 @@
       "addFriend": "Add as a friend",
       "privacy": "{{name}} sees the same about you: your streak, your consistency and which days you planted. Never your habits.",
       "remove": "Remove friend",
-      "removeConfirm": "Remove {{name}} from your friends? Your streak together will be lost.",
+      "removeConfirm": "Remove {{name}} from your friends? You can add each other again any time.",
       "block": "Block",
       "blockConfirm": "Block {{name}}? You’ll stop seeing each other and they can’t send you requests or cheers.",
-      "circleTogether": "🫂 Create a circle with {{name}}"
+      "circleTogether": "🫂 Create a circle with {{name}}",
+      "pendingIncoming": "{{name}} wants to be your friend. Once you accept, you will see which days each of you plants and cheer each other on.",
+      "pendingOutgoing": "You sent {{name}} a request. Once they accept, you can cheer each other on."
     },
     "cheer": {
       "title": "Cheer {{name}} on",
@@ -780,7 +790,6 @@
     },
     "invite": {
       "needUsername": "First, pick your username so they recognize you. Then we carry on with the invite.",
-      "pickUsername": "Pick my username",
       "goFriends": "Go to my profile",
       "addTitle": "Add @{{username}}?",
       "addBody": "You’ll see each other’s streak and planted days, and cheer each other on. Never your habits.",
@@ -789,10 +798,10 @@
       "retry": "Try again"
     },
     "circleHabit": {
-      "title": "Circle habits",
+      "title": "Circle habit",
       "add": "+ Suggest a habit",
       "emptyOwner": "Each circle has one habit you do together, like walking 20 minutes. Everyone adds it to their day, and the group streak holds while at least half do it. Another habit? Create another circle.",
-      "emptyMember": "No circle habits yet. Whoever created the circle can suggest one.",
+      "emptyMember": "This circle has no habit yet. Whoever created it can suggest one.",
       "newTitle": "Circle habit",
       "newHint": "Pick something small everyone can do. Each person sees it in their day and picks their own time.",
       "name": "What will you do together?",
@@ -810,8 +819,6 @@
       "todayGreat": "Almost the whole circle did it! 🎉",
       "todayRest": "Everyone rests today: the streak doesn't move 💤",
       "todayOff": "Not scheduled today: the streak waits 💤",
-      "streakLabel_one": "Group streak: {{count}} day",
-      "streakLabel_other": "Group streak: {{count}} days",
       "rankingTitle": "Everyone's consistency",
       "periods": {
         "week": "This week",
@@ -819,14 +826,20 @@
         "all": "Overall"
       },
       "end": "End the circle's habit",
-      "endConfirm": "End “{{name}}” for the circle? Everyone keeps the habit in their list, no longer shared. You can suggest another one after."
+      "endConfirm": "End “{{name}}” for the circle? Everyone keeps the habit in their list, no longer shared. You can suggest another one after.",
+      "todayAll": "The whole circle did it today! 🎉"
     },
     "friendsCount_one": "You have {{count}} friend",
     "friendsCount_other": "You have {{count}} friends",
     "noFriendsShort": "No friends here yet",
     "circles": {
       "emptyTitle": "Streaks are better together",
-      "emptyBody": "A circle is a habit you do together, with a group streak. With a friend, it is your streak for two; with family or a team, everyone’s. Create one and invite with the link or code."
+      "emptyBody": "A circle is a habit you do together, with a group streak. With a friend, it is your streak for two; with family or a team, everyone’s. Create one and invite with the link or code.",
+      "noHabitOwner": "No habit yet. Open it and suggest one to start the group streak.",
+      "noHabitMember": "No habit yet: whoever created the circle can suggest one.",
+      "youDid": "✓ You watered for the group today",
+      "yourTurn": "Your turn: {{habit}}",
+      "notJoined": "You haven't joined this habit yet"
     }
   }
 }

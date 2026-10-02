@@ -103,7 +103,7 @@ export function CircleHabitCard({
                     ? t('social.circleHabit.todayShort', { count: needed - done })
                     : tier === 'met'
                       ? t('social.circleHabit.todaySaved')
-                      : t('social.circleHabit.todayGreat')}
+                      : t(done === active ? 'social.circleHabit.todayAll' : 'social.circleHabit.todayGreat')}
                 </ThemedText>
               </View>
               <View style={[styles.track, { backgroundColor: theme.backgroundSelected }]}>

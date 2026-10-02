@@ -12,13 +12,13 @@ import {
   useFriendships,
   useRemoveFriendship,
   useReportUser,
+  useAcceptFriend,
   useSendFriendRequest,
   useSocialDays,
   useSocialProfiles,
   type ReportReason,
 } from '@/features/social/api';
 import { CheerRow } from '@/features/social/components/cheers';
-import { circleDot } from '@/features/social/components/circles';
 import { SocialAvatar } from '@/features/social/components/social-avatar';
 import { SocialCard } from '@/features/social/components/social-card';
 import { WeekDots } from '@/features/social/components/week-dots';
@@ -28,6 +28,8 @@ import { useTheme } from '@/hooks/use-theme';
 import { confirmAction } from '@/lib/confirm';
 import { daysBetween } from '@/lib/recurrence';
 
+/** How a person's day reads in the week dots. */
+const DAY_DOT = { active: 'full', rest: 'rest', empty: 'empty', future: 'future' } as const;
 const REPORT_REASONS: ReportReason[] = ['offensive_name', 'harassment', 'spam', 'other'];
 
 /** A friend (or circle mate): their numbers, the streak you share, cheers, and the safety actions. */
@@ -45,10 +47,16 @@ export default function FriendScreen() {
   const block = useBlockUser();
   const report = useReportUser();
   const request = useSendFriendRequest();
+  const accept = useAcceptFriend();
   const [reporting, setReporting] = useState(false);
 
   const profile = profiles.data?.[0];
-  const isFriend = friendships.data?.some((f) => f.user_id === id && f.status === 'accepted') ?? false;
+  const friendship = friendships.data?.find((f) => f.user_id === id);
+  const isFriend = friendship?.status === 'accepted';
+  // A pending request (either way) does not connect you yet: no shared days, no cheers.
+  // Without any friendship row, the profile is visible because you share a circle.
+  const pending = friendship?.status === 'pending';
+  const incoming = pending && friendship.incoming;
   const marks = useMemo(() => days.data ?? [], [days.data]);
   const theirWeek = useMemo(() => computePersonWeek(id, marks, today), [id, marks, today]);
 
@@ -107,31 +115,48 @@ export default function FriendScreen() {
           </ThemedText>
         )}
 
-        <SocialCard>
-          <ThemedText type="heading">📅 {t('social.friend.theirWeek', { name })}</ThemedText>
-          {days.data && <WeekDots states={theirWeek.map((d) => circleDot[d])} />}
-          {isFriend ? (
-            // Streaks with friends live in circles: a circle of two is a shared habit with a group streak.
-            <Button
-              variant="secondary"
-              label={t('social.friend.circleTogether', { name })}
-              onPress={() => router.push({ pathname: '/circle/new', params: { friend: name } })}
-            />
-          ) : (
-            <Button
-              variant="secondary"
-              label={t(request.data ? `social.add.result.${request.data}` : 'social.friend.addFriend')}
-              disabled={!!request.data}
-              loading={request.isPending}
-              onPress={() => request.mutate(profile.username)}
-            />
-          )}
-        </SocialCard>
+        {pending ? (
+          <SocialCard>
+            <ThemedText type="small" themeColor="textSecondary">
+              {t(incoming ? 'social.friend.pendingIncoming' : 'social.friend.pendingOutgoing', { name })}
+            </ThemedText>
+            {incoming && (
+              <Button
+                label={t('social.requests.accept')}
+                loading={accept.isPending}
+                onPress={() => accept.mutate(id)}
+              />
+            )}
+          </SocialCard>
+        ) : (
+          <>
+            <SocialCard>
+              <ThemedText type="heading">📅 {t('social.friend.theirWeek', { name })}</ThemedText>
+              {days.data && <WeekDots states={theirWeek.map((d) => DAY_DOT[d])} />}
+              {isFriend ? (
+                // Streaks with friends live in circles: a circle of two is a shared habit with a group streak.
+                <Button
+                  variant="secondary"
+                  label={t('social.friend.circleTogether', { name })}
+                  onPress={() => router.push({ pathname: '/circle/new', params: { friend: name } })}
+                />
+              ) : (
+                <Button
+                  variant="secondary"
+                  label={t(request.data ? `social.add.result.${request.data}` : 'social.friend.addFriend')}
+                  disabled={!!request.data}
+                  loading={request.isPending}
+                  onPress={() => request.mutate(profile.username)}
+                />
+              )}
+            </SocialCard>
 
-        <SocialCard>
-          <ThemedText type="heading">💌 {t('social.cheer.title', { name })}</ThemedText>
-          <CheerRow toUser={id} name={name} />
-        </SocialCard>
+            <SocialCard>
+              <ThemedText type="heading">💌 {t('social.cheer.title', { name })}</ThemedText>
+              <CheerRow toUser={id} name={name} />
+            </SocialCard>
+          </>
+        )}
 
         <ThemedText type="caption" themeColor="textSecondary" style={styles.center}>
           🔒 {t('social.friend.privacy', { name })}

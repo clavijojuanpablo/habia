@@ -46,7 +46,8 @@ export default function OnboardingScreen() {
     // The permission prompt takes a moment: a second tap must not create everything twice.
     if (finishing) return;
     setFinishing(true);
-    if (remindable) await ensureNotificationPermission();
+    // A failing permission prompt must not leave the button spinning forever.
+    if (remindable) await ensureNotificationPermission().catch(() => false);
     const chosen = habit ?? { id: 'custom', icon: '🌱', color: HabitColors[0] };
     complete.mutate(
       {

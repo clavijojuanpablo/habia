@@ -73,6 +73,8 @@ export default function CircleScreen() {
       </ThemedView>
     );
   }
+  // Just left: the refetch drops the circle before the screen closes; show nothing meanwhile.
+  if (!circle && remove.isSuccess) return <ThemedView style={styles.flex} />;
   if (!circle) {
     return (
       <ThemedView style={[styles.flex, styles.centered]}>
@@ -204,10 +206,16 @@ export default function CircleScreen() {
               label={t('social.circle.leaveArchive')}
               loading={archive.isPending}
               onPress={() =>
-                archive.mutate(myLinkedHabit.id, {
-                  onSuccess: () =>
-                    remove.mutate({ circleId: circle.id, userId: me }, { onSuccess: () => router.back() }),
-                })
+                // Leave first: if archiving then fails, the habit is only unlinked, never lost or stuck.
+                remove.mutate(
+                  { circleId: circle.id, userId: me },
+                  {
+                    onSuccess: () => {
+                      archive.mutate(myLinkedHabit.id);
+                      router.back();
+                    },
+                  },
+                )
               }
             />
             <Button variant="danger" label={t('common.cancel')} onPress={() => setLeaving(false)} />

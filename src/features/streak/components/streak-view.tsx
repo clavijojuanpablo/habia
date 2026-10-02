@@ -69,7 +69,13 @@ export function StreakView({ streak, onClose }: Props) {
             {t('streak.days', { count: streak.current })}
           </ThemedText>
           <ThemedText type="small" themeColor="textSecondary" style={styles.center}>
-            {streak.todayDone ? t('streak.safeToday') : t('streak.keepItUp')}
+            {streak.todayDone
+              ? t('streak.safeToday')
+              : streak.todayRest
+                ? t('streak.restToday')
+                : streak.current === 0
+                  ? t('streak.startToday')
+                  : t('streak.keepItUp')}
           </ThemedText>
         </SafeAreaView>
       </View>

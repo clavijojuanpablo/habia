@@ -2,8 +2,10 @@
 -- profiles, habits, logs, cheers, friendships and memberships; the test circle goes with it. A habit the owner
 -- joined from the test circle stays in their list, unlinked (delete it from the app if unwanted).
 --   npx supabase db query --linked -f supabase/seed/test-cleanup.sql
+-- Only circles that are both named "Test · …" and have fake members: a real circle with a test
+-- friend in it is never touched.
 delete from public.circles
-where id in (
+where name like 'Test · %' and id in (
   select m.circle_id from public.circle_members m
   join auth.users u on u.id = m.user_id
   where u.email like '%@habia.test'

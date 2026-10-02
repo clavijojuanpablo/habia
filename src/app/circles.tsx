@@ -5,16 +5,9 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { Brote } from '@/features/mascot/brote';
-import {
-  useCircleHabitProgress,
-  useCircleHabits,
-  useCircles,
-  useMySocialProfile,
-  type Circle,
-  type CircleHabit,
-} from '@/features/social/api';
-import { computeCircleHabit } from '@/features/social/circle-habit-streak';
-import { CircleCard, CirclesActions } from '@/features/social/components/circles';
+import { useCircleHabits, useCircles, useMySocialProfile } from '@/features/social/api';
+import { CircleOverviewCard } from '@/features/social/components/circle-overview-card';
+import { CirclesActions } from '@/features/social/components/circles';
 import { SocialCard } from '@/features/social/components/social-card';
 import { UsernameSetup } from '@/features/social/components/username-setup';
 import { useNow, useTodayRange } from '@/hooks/use-now';
@@ -33,7 +26,6 @@ export default function CirclesScreen() {
   const circles = useCircles();
   const circleHabits = useCircleHabits();
 
-  const memberCount = (circleId: string) => circles.data?.members.filter((m) => m.circle_id === circleId).length ?? 0;
   const habitOf = (circleId: string) => circleHabits.data?.find((h) => h.circle_id === circleId);
 
   return (
@@ -57,17 +49,16 @@ export default function CirclesScreen() {
             )}
             <View style={styles.list}>
               {circles.data?.circles.map((circle) => {
-                const habit = habitOf(circle.id);
-                return habit ? (
-                  <CircleWithStreak
+                const members = circles.data.members.filter((m) => m.circle_id === circle.id);
+                return (
+                  <CircleOverviewCard
                     key={circle.id}
                     circle={circle}
-                    memberCount={memberCount(circle.id)}
-                    habit={habit}
+                    memberIds={members.map((m) => m.user_id)}
+                    habit={habitOf(circle.id)}
+                    isOwner={members.some((m) => m.user_id === me.data?.user_id && m.role === 'owner')}
                     today={today}
                   />
-                ) : (
-                  <CircleCard key={circle.id} circle={circle} memberCount={memberCount(circle.id)} />
                 );
               })}
             </View>
@@ -76,31 +67,6 @@ export default function CirclesScreen() {
         )}
       </ScrollView>
     </ThemedView>
-  );
-}
-
-/** A circle with its habit's group streak on the card: the flame is lit once today is saved. */
-function CircleWithStreak({
-  circle,
-  memberCount,
-  habit,
-  today,
-}: {
-  circle: Circle;
-  memberCount: number;
-  habit: CircleHabit;
-  today: Date;
-}) {
-  const { data } = useCircleHabitProgress(habit.id, today);
-  const group = data ? computeCircleHabit(data.members, data.days, habit.rrule, today) : null;
-  return (
-    <CircleCard
-      circle={circle}
-      memberCount={memberCount}
-      streak={
-        group ? { count: group.streak, lit: group.today.state === 'met', habit: `${habit.icon} ${habit.name}` } : undefined
-      }
-    />
   );
 }
 
@@ -114,7 +80,7 @@ const styles = StyleSheet.create({
     maxWidth: MaxContentWidth,
     alignSelf: 'center',
   },
-  list: { gap: Spacing.two },
+  list: { gap: Spacing.three },
   empty: { alignItems: 'center' },
   center: { textAlign: 'center' },
 });

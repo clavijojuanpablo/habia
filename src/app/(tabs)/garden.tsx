@@ -15,7 +15,7 @@ import { useGarden } from '@/features/garden/use-garden';
 import { useHabits } from '@/features/habits/api';
 import { Brote } from '@/features/mascot/brote';
 import { useIdentities } from '@/features/identities/api';
-import { isDone } from '@/features/schedule/build-schedule';
+import { isDone, isSkipped } from '@/features/schedule/build-schedule';
 import { useSchedule } from '@/features/schedule/use-schedule';
 import { TopBar } from '@/features/streak/components/top-bar';
 import { useNow, useTodayRange } from '@/hooks/use-now';
@@ -57,7 +57,9 @@ export default function GardenScreen() {
     ? Math.min(1, (summary.votes - previousVotes) / (nextStage.votes - previousVotes))
     : 1;
 
-  const pendingRatio = items.length === 0 ? 0 : items.filter((i) => !isDone(i)).length / items.length;
+  // Rests on purpose are not pending: they never bring clouds.
+  const countable = items.filter((i) => !isSkipped(i));
+  const pendingRatio = countable.length === 0 ? 0 : countable.filter((i) => !isDone(i)).length / countable.length;
   const band = getDayBand(now.getHours(), bands);
   const progress = useMemo(() => skyProgress(now, bands), [now, bands]);
 
@@ -104,7 +106,7 @@ export default function GardenScreen() {
                 <ThemedText type="caption" themeColor="textSecondary">
                   {t('garden.toNextStage', {
                     count: nextStage.votes - summary.votes,
-                    stage: t(`garden.stageShort.${nextStage.stage}`),
+                    stage: t(`garden.stageInSentence.${nextStage.stage}`),
                   })}
                 </ThemedText>
               </>

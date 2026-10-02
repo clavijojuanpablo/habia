@@ -11,6 +11,7 @@ import { ProgressRing } from '@/components/progress-ring';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BandEmoji, MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
+import { useSession } from '@/features/auth/session-provider';
 import { completedIdentity } from '@/features/celebration/completed-identity';
 import { DayCompleteOverlay } from '@/features/celebration/day-complete';
 import { IdentityStepToast } from '@/features/celebration/identity-step';
@@ -44,7 +45,8 @@ import { getDayBand } from '@/lib/time/day-bands';
 const SECTION_ORDER: ScheduleBand[] = ['morning', 'afternoon', 'night', 'anytime'];
 const FOCUS_HIGHLIGHT_MS = 3000;
 /** The day the user closed "yesterday" as it was (YYYY-MM-DD). */
-const CATCH_UP_CLOSED_KEY = 'habia.catchUp.closedOn';
+/** Per account: several people may share a phone. */
+const catchUpClosedKey = (userId: string | undefined) => `habia.catchUp.closedOn.${userId ?? 'anon'}`;
 
 export default function TodayScreen() {
   const { t, i18n } = useTranslation();
@@ -59,7 +61,9 @@ export default function TodayScreen() {
   // The coach waits until yesterday is settled, so it never comments on a miss that was only unlogged.
   const yesterdayDate = useMemo(() => addDays(today, -1), [today]);
   const yesterday = useSchedule(yesterdayDate, today);
-  const [catchUpClosedOn, setCatchUpClosedOn] = useState(() => storage.getItem(CATCH_UP_CLOSED_KEY));
+  const { session } = useSession();
+  const catchUpKey = catchUpClosedKey(session?.user.id);
+  const [catchUpClosedOn, setCatchUpClosedOn] = useState(() => storage.getItem(catchUpKey));
   const todayKey = formatLocalDate(today);
   const catchUpPending =
     catchUpClosedOn !== todayKey && yesterday.items.some((item) => !isDone(item) && !isSkipped(item));
@@ -72,7 +76,7 @@ export default function TodayScreen() {
   const showCheers =
     yesterday.isReady && !catchUpPending && !showWeeklyReview && !showNorthStar && unseenCheers.length > 0;
   const closeCatchUp = () => {
-    storage.setItem(CATCH_UP_CLOSED_KEY, todayKey);
+    storage.setItem(catchUpKey, todayKey);
     setCatchUpClosedOn(todayKey);
   };
   const coach = useCoachTip({
@@ -92,6 +96,9 @@ export default function TodayScreen() {
   const [identityStepId, setIdentityStepId] = useState<string | null>(null);
   const identityStep = identities?.find((identity) => identity.id === identityStepId) ?? null;
   const closeIdentityStep = useCallback(() => setIdentityStepId(null), []);
+  // Stable callbacks: the overlays restart their auto-close timers whenever onDismiss changes.
+  const closeCelebration = useCallback(() => setCelebrating(false), []);
+  const closeChain = useCallback(() => setChainNextKey(null), []);
   const chainNext = items.find((item) => item.key === chainNextKey && !isDone(item) && !isSkipped(item));
   const [actionsKey, setActionsKey] = useState<string | null>(null);
   const [tipSeen, setTipSeen] = useState(hasSeenActionsTip);
@@ -154,7 +161,8 @@ export default function TodayScreen() {
   const onToggle = (item: ScheduledItem, status?: LogStatus) => {
     const completing = status !== 'skipped' && !isDone(item);
     toggleItem(item, status);
-    setChainNextKey(completing ? (nextInChain(item, items)?.key ?? null) : null);
+    const next = completing ? nextInChain(item, items) : undefined;
+    setChainNextKey(next?.key ?? null);
 
     // Celebrate only when *this* check-in is the one that finishes the day,
     // never when simply opening an already-complete day.
@@ -166,7 +174,8 @@ export default function TodayScreen() {
       track('day_completed', {
         habits: items.filter((other) => !isSkipped(other) || other.key === item.key).length,
       });
-    } else if (completing) {
+    } else if (completing && !next) {
+      // One bottom card at a time: the next habit of a chain is the more useful nudge.
       const identityId = completedIdentity(item, items);
       if (identityId) {
         hapticLight();
@@ -306,15 +315,12 @@ export default function TodayScreen() {
 
         <HabitActionsSheet item={actionsItem} onToggle={onToggle} onClose={() => setActionsKey(null)} />
 
-        {identityStep && !celebrating && !chainNext && (
+        {identityStep && !celebrating && (
           <IdentityStepToast key={identityStep.id} identity={identityStep} onDismiss={closeIdentityStep} />
         )}
-        {celebrating && <DayCompleteOverlay votes={countable.length} onDismiss={() => setCelebrating(false)} />}
+        {chainNext && <ChainPrompt item={chainNext} onDone={() => onToggle(chainNext)} onDismiss={closeChain} />}
 
-        {chainNext && (
-          <ChainPrompt item={chainNext} onDone={() => onToggle(chainNext)} onDismiss={() => setChainNextKey(null)} />
-        )}
-
+        {/* Under the celebration: the confetti's scrim covers it instead of the other way round. */}
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('today.addHabit')}
@@ -325,6 +331,8 @@ export default function TodayScreen() {
           ]}>
           <Icon name="add" color={theme.onPrimary} size={30} />
         </Pressable>
+
+        {celebrating && <DayCompleteOverlay votes={countable.length} onDismiss={closeCelebration} />}
       </SafeAreaView>
     </ThemedView>
   );

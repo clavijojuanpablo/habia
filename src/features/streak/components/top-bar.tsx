@@ -31,7 +31,7 @@ export function TopBar() {
         emoji="🔥"
         value={streak.current}
         color="streak"
-        dimmed={!streak.todayDone}
+        dimmed={!streak.todayDone && !streak.todayRest}
         label={t('topBar.streak', { count: streak.current })}
         onPress={() => router.push('/streak')}
       />

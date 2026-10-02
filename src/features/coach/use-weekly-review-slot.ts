@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useProfile, useUpdateProfile } from '@/features/profile/api';
 import { track } from '@/lib/analytics';
-import { daysBetween } from '@/lib/recurrence';
+import { daysBetween, formatLocalDate } from '@/lib/recurrence';
 import { storage } from '@/lib/storage';
 
 import {
@@ -12,8 +12,10 @@ import {
   useWeeklyReviewAvailable,
   type WeeklyReview,
 } from './weekly-review-api';
+import { lastWeekStart } from './weekly-summary';
 
-const OFFER_CLOSED_KEY = 'habia.aiReview.offerClosed';
+// Per account: several people may share a phone.
+const offerClosedKey = (userId: string | undefined) => `habia.aiReview.offerClosed.${userId ?? 'anon'}`;
 /** Offer the review once there is a week of habits to talk about. */
 const OFFER_AFTER_DAYS = 7;
 
@@ -32,21 +34,27 @@ export type WeeklyReviewSlot =
  */
 export function useWeeklyReviewSlot(today: Date, settled: boolean) {
   const { data: profile } = useProfile();
-  const [offerClosed, setOfferClosed] = useState(() => storage.getItem(OFFER_CLOSED_KEY) === '1');
+  const offerKey = offerClosedKey(profile?.id);
+  const [offerClosed, setOfferClosed] = useState(() => storage.getItem(offerKey) === '1');
   const enabled = profile?.ai_coach_enabled === true;
   const onboardedDays = profile?.onboarded_at ? daysBetween(new Date(profile.onboarded_at), today) : 0;
   const mayOffer = !offerClosed && onboardedDays >= OFFER_AFTER_DAYS;
   const available = useWeeklyReviewAvailable(enabled || mayOffer).data === true;
   const review = useWeeklyReview(today, enabled && available);
-  const { mutate: writeReview, isIdle, isPending } = useGenerateWeeklyReview(today);
+  const { mutate: writeReview, isPending } = useGenerateWeeklyReview(today);
+  // Which week this session already asked for: crossing into a new week with the app open asks again.
+  const asked = useRef<string | null>(null);
+  const week = formatLocalDate(lastWeekStart(today));
   const markSeen = useMarkReviewSeen(today);
   const updateProfile = useUpdateProfile();
 
   // A network call, not state: once per session and week (a failure waits for the next launch).
-  const missing = settled && enabled && available && review.data?.status === 'none' && isIdle;
+  const missing = settled && enabled && available && review.data?.status === 'none';
   useEffect(() => {
-    if (missing) writeReview();
-  }, [missing, writeReview]);
+    if (!missing || asked.current === week) return;
+    asked.current = week;
+    writeReview();
+  }, [missing, week, writeReview]);
 
   const slot: WeeklyReviewSlot =
     review.data?.status === 'ready' && !review.data.review.seen_at
@@ -65,7 +73,7 @@ export function useWeeklyReviewSlot(today: Date, settled: boolean) {
     },
     decline: () => {
       track('ai_review_declined');
-      storage.setItem(OFFER_CLOSED_KEY, '1');
+      storage.setItem(offerKey, '1');
       setOfferClosed(true);
     },
     markSeen: (id: string) => {

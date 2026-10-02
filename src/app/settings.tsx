@@ -72,7 +72,8 @@ export default function SettingsScreen() {
           <AnalyticsToggle />
         </Card>
 
-        {aiReviewAvailable && (
+        {/* Whoever turned it on can always turn it off, even while the service is unavailable. */}
+        {(aiReviewAvailable || profile?.ai_coach_enabled) && (
           <Card>
             <AiReviewToggle />
           </Card>
