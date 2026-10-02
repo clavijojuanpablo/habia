@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -24,8 +23,7 @@ import { useCoachTip } from '@/features/coach/use-coach-tip';
 import { useWeeklyReviewSlot } from '@/features/coach/use-weekly-review-slot';
 import { NorthStarCard } from '@/features/north-star/components/north-star-card';
 import { CheersNotice, useUnseenCheers } from '@/features/social/components/cheers';
-import { enqueueHabitPhoto, takeHabitPhoto } from '@/features/social/photos';
-import { useCircleHabitInfo } from '@/features/social/use-circle-habit-info';
+import { usePhotoCheckIn } from '@/features/social/use-photo-check-in';
 import { useNorthStar } from '@/features/north-star/use-north-star';
 import { Brote } from '@/features/mascot/brote';
 import { isDone, isSkipped, nextInChain, type ScheduleBand, type ScheduledItem } from '@/features/schedule/build-schedule';
@@ -39,7 +37,6 @@ import { TopBar } from '@/features/streak/components/top-bar';
 import { useNow, useTodayRange } from '@/hooks/use-now';
 import { useBandColors, useTheme } from '@/hooks/use-theme';
 import { addDays, formatLocalDate } from '@/lib/recurrence';
-import { showNotice } from '@/lib/confirm';
 import { storage } from '@/lib/storage';
 import { track } from '@/lib/analytics';
 import { hapticLight, hapticSuccess } from '@/lib/haptics';
@@ -65,7 +62,6 @@ export default function TodayScreen() {
   const yesterdayDate = useMemo(() => addDays(today, -1), [today]);
   const yesterday = useSchedule(yesterdayDate, today);
   const { session } = useSession();
-  const queryClient = useQueryClient();
   const catchUpKey = catchUpClosedKey(session?.user.id);
   const [catchUpClosedOn, setCatchUpClosedOn] = useState(() => storage.getItem(catchUpKey));
   const todayKey = formatLocalDate(today);
@@ -122,7 +118,7 @@ export default function TodayScreen() {
     onActionsOpened();
   };
   const habitsById = new Map(items.map((item) => [item.habit.id, item.habit]));
-  const circleInfo = useCircleHabitInfo(items.some((item) => item.habit.circle_habit_id));
+  const { circleInfo, withPhoto } = usePhotoCheckIn(items);
 
   // `focus` arrives from a tapped reminder: scroll to that habit and highlight it briefly.
   // Row offsets are relative to their section, so both are recorded as they lay out. The
@@ -162,31 +158,8 @@ export default function TodayScreen() {
 
   // Checking an anchor surfaces the next habit of its chain (habit stacking).
   // Skipping is not a completion: it neither reveals the next chained habit nor celebrates the day.
-  // A circle's habit that asks for a photo opens the camera first: no photo, no check-in. The photo
-  // uploads in the background (queued on the phone when offline); the check-in is immediate.
-  const onToggle = (item: ScheduledItem, status?: LogStatus) => {
-    const shared = item.habit.circle_habit_id ? circleInfo[item.habit.circle_habit_id] : undefined;
-    const completing = status !== 'skipped' && !isDone(item);
-    if (completing && shared?.photoRequired && session && formatLocalDate(item.at) === todayKey) {
-      const userId = session.user.id;
-      takeHabitPhoto()
-        .then((photo) => {
-          if (photo.status === 'denied') return showNotice(t('photos.cameraDenied'));
-          if (photo.status !== 'ok') return;
-          applyToggle(item, status);
-          enqueueHabitPhoto({
-            circleId: shared.circleId,
-            circleHabitId: item.habit.circle_habit_id!,
-            userId,
-            day: todayKey,
-            base64: photo.base64,
-          }).then(() => queryClient.invalidateQueries({ queryKey: ['social'] }));
-        })
-        .catch(() => showNotice(t('photos.failed')));
-      return;
-    }
-    applyToggle(item, status);
-  };
+  // Checks go through withPhoto: a circle habit that asks for a photo opens the camera first.
+  const onToggle = (item: ScheduledItem, status?: LogStatus) => withPhoto(item, status, () => applyToggle(item, status));
 
   const applyToggle = (item: ScheduledItem, status?: LogStatus) => {
     const completing = status !== 'skipped' && !isDone(item);

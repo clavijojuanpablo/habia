@@ -2,6 +2,8 @@ import { onlineManager, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { AppState } from 'react-native';
 
+import { useSession } from '@/features/auth/session-provider';
+
 import { flushHabitPhotos, hasPendingPhotos } from './photos';
 
 /**
@@ -10,10 +12,13 @@ import { flushHabitPhotos, hasPendingPhotos } from './photos';
  */
 export function usePhotoQueue() {
   const queryClient = useQueryClient();
+  const { session } = useSession();
+  const userId = session?.user.id;
   useEffect(() => {
+    if (!userId) return;
     const flush = () => {
       if (!hasPendingPhotos() || !onlineManager.isOnline()) return;
-      flushHabitPhotos().then(() => queryClient.invalidateQueries({ queryKey: ['social'] }));
+      flushHabitPhotos(userId).then(() => queryClient.invalidateQueries({ queryKey: ['social'] }));
     };
     flush();
     const appState = AppState.addEventListener('change', (state) => state === 'active' && flush());
@@ -22,5 +27,5 @@ export function usePhotoQueue() {
       appState.remove();
       unsubscribeOnline();
     };
-  }, [queryClient]);
+  }, [queryClient, userId]);
 }

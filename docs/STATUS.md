@@ -117,6 +117,20 @@ open the web fallback there; its "Open habia" button still works.
    Check it: `curl -X POST <SUPABASE_URL>/functions/v1/weekly-review -H "apikey: <publishable>" -H "Authorization: Bearer <publishable>" -d '{"check":true}'`
    must answer `{"available":true}`.
 
+0. **Build 4 / 1.6.0 — on branch `build-4` (2026-10-03)**, NOT merged: `main` keeps fingerprint `f15932ef…` so
+   OTAs still reach build 3. Native: expo-image-picker (camera only), expo-image-manipulator, react-native-purchases(+ui). `-ui` is unused until the paywall, but ships in build 4 on purpose: it is native, so adding it later would need another store build.
+   Photos on circle habits (camera-first check-in, gallery, viewer with retake/delete/report/hide, on-device upload
+   queue, deleted after 7 days), social pushes (Edge Function `notify`: cheers, requests, accepts, "ya regó en tu
+   círculo", once per kind/person/day, `profiles.social_push` switch), RevenueCat identity (paywall later by OTA).
+   Owner steps, in order:
+   1. `npx supabase db push` (`20261002163208_photos_and_push.sql`).
+   2. `npx supabase functions deploy notify` and `npx supabase functions deploy photos-cleanup`.
+   3. Pick a random secret: `npx supabase secrets set CRON_SECRET=<secret>`, put it and the project ref in
+      `supabase/sql/schedule-photo-cleanup.sql` (do not commit it), run it with `npx supabase db query --linked -f …`.
+   4. Optional now: RevenueCat public iOS key as `EXPO_PUBLIC_REVENUECAT_IOS_KEY` in EAS env `production`.
+   5. `git checkout build-4`, then `npx eas-cli@latest build --profile production --platform ios`: answer yes when
+      EAS offers to set up Push Notifications (it creates the APNs key). Then `npx eas-cli@latest submit --platform ios --latest`.
+   6. Once build 4 is on the testers' phones: merge `build-4` into `main`; later OTAs target build 4's fingerprint.
 0. **1.5.0 — stability pass after QA (2026-10-02)** (migration `20261002053613_stability_fixes.sql`:
    owner runs `npx supabase db push`). Archived habits keep their past in streak/stats (`useHabitHistory`,
    cut at the archive day); streak window 400 days; logs and circle days page past 1000 rows; blocking hides

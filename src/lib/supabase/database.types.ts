@@ -683,6 +683,10 @@ export type Database = {
         Returns: undefined
       }
       regenerate_circle_code: { Args: { p_circle: string }; Returns: string }
+      save_circle_photo: {
+        Args: { p_circle_habit: string; p_day: string }
+        Returns: string
+      }
       send_friend_request: { Args: { p_username: string }; Returns: string }
       social_days: {
         Args: { p_since: string; p_users: string[] }

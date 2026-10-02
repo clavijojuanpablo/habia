@@ -861,6 +861,8 @@
     "cameraDenied": "habia needs the camera for the habit's photo. Turn it on in Settings → habia → Camera.",
     "failed": "Couldn't take the photo. Try again.",
     "queued": "Offline: your photo will upload as soon as you're back online.",
+    "notSent": "Your photo couldn't be sent. Open your circle to take another one.",
+    "notReady": "One moment: your circle is still loading. Try again in a few seconds.",
     "requiredHint": "This habit comes with a photo: checking it opens the camera. Photos are deleted after 7 days."
   }
 }

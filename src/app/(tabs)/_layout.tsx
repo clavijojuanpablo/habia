@@ -2,8 +2,10 @@ import { router } from 'expo-router';
 import { Tabs } from 'expo-router/js-tabs';
 import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { AppState } from 'react-native';
 
 import { AppTabBar } from '@/components/app-tab-bar';
+import { useSession } from '@/features/auth/session-provider';
 import { registerPushToken } from '@/features/push/push-token';
 import { useNotificationTap, type NotificationData } from '@/features/reminders/notifications';
 import { useReminderSync } from '@/features/reminders/use-reminder-sync';
@@ -22,10 +24,18 @@ export default function TabsLayout() {
   const { data: friendships } = useFriendships();
   const unseenCheers = useUnseenCheers();
   const friendsNews = unseenCheers.length > 0 || (friendships ?? []).some((f) => f.status === 'pending' && f.incoming);
-  // Keep this phone's push token on the account (only if notifications are already allowed).
+  // Keep this phone's push token on the account (only if notifications are allowed), also on
+  // every return to the app: notifications may have been allowed in Settings meanwhile.
+  const { session } = useSession();
+  const userId = session?.user.id;
   useEffect(() => {
-    registerPushToken();
-  }, []);
+    if (!userId) return;
+    registerPushToken(userId);
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state === 'active') registerPushToken(userId);
+    });
+    return () => subscription.remove();
+  }, [userId]);
   // A tapped notification opens what it was about. A reminder brings its habit into focus on
   // Today, one tap away from the check-in; a social push opens the person or the circle.
   const openNotification = useCallback((data: NotificationData) => {

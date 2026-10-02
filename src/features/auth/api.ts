@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 
 import i18n from '@/lib/i18n';
 import { unregisterPushToken } from '@/features/push/push-token';
+import { clearPhotoQueue } from '@/features/social/photos';
 import { supabase } from '@/lib/supabase/client';
 
 /**
@@ -57,5 +58,6 @@ export async function deleteAccount() {
 /** Signs out after detaching this phone from the account's pushes (best effort). */
 export async function signOut() {
   await unregisterPushToken().catch(() => {});
+  clearPhotoQueue();
   await supabase.auth.signOut();
 }

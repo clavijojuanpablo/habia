@@ -617,6 +617,7 @@ export function useCircleHabitPhotos(circleHabitId: string, day: string) {
     // Shorter than the URLs' life, so a cached URL is never already expired.
     staleTime: 20 * 60 * 1000,
     gcTime: 50 * 60 * 1000,
+    meta: { persist: false },
     queryFn: async (): Promise<CirclePhoto[]> => {
       const { data, error } = await supabase
         .from('circle_habit_photos')

@@ -28,6 +28,9 @@ import { PhotoViewer } from './photo-viewer';
 import { SocialAvatar } from './social-avatar';
 import { SocialCard } from './social-card';
 
+/** The viewer's fade-out, so the camera opens once the modal is gone. */
+const RETAKE_DELAY_MS = 400;
+
 /**
  * A shared habit in a circle. First today: a big "3/8" that turns red → yellow → green as the
  * group saves the day, and everyone's face, lit once they did it. Then each person's consistency
@@ -65,18 +68,27 @@ export function CircleHabitCard({
       if (photo?.status === 'denied') showNotice(t('photos.cameraDenied'));
       return;
     }
-    setViewing(null);
     setUploading(true);
-    const sent = await enqueueHabitPhoto({
-      circleId: habit.circle_id,
-      circleHabitId: habit.id,
-      userId: me,
-      day,
-      base64: photo.base64,
-    });
-    setUploading(false);
-    if (!sent) showNotice(t('photos.queued'));
-    queryClient.invalidateQueries({ queryKey: ['social'] });
+    try {
+      const result = await enqueueHabitPhoto({
+        circleId: habit.circle_id,
+        circleHabitId: habit.id,
+        userId: me,
+        day,
+        base64: photo.base64,
+      });
+      if (result !== 'sent') showNotice(t(result === 'queued' ? 'photos.queued' : 'photos.notSent'));
+    } catch {
+      showNotice(t('photos.failed'));
+    } finally {
+      setUploading(false);
+      queryClient.invalidateQueries({ queryKey: ['social'] });
+    }
+  };
+  // iOS cannot open the camera while the viewer's modal is still on screen: close it, then open.
+  const retake = () => {
+    setViewing(null);
+    setTimeout(addPhoto, RETAKE_DELAY_MS);
   };
 
   if (!progress.data) {
@@ -262,11 +274,12 @@ export function CircleHabitCard({
         </ThemedText>
       )}
       <PhotoViewer
+        key={viewing?.id}
         photo={viewing}
         name={viewing ? nameOf(viewing.user_id) : ''}
         mine={viewing?.user_id === me}
         isOwner={isOwner}
-        onRetake={addPhoto}
+        onRetake={retake}
         onClose={() => setViewing(null)}
       />
 

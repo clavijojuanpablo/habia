@@ -10,6 +10,8 @@ const PENDING_KEY = 'habia.pendingPhotos';
 
 /** What an upload needs; kept on the phone until it reaches the server. */
 export type PendingPhoto = {
+  /** Unique per photo taken: a newer photo of the same day never gets dropped as the older one. */
+  id: string;
   circleId: string;
   circleHabitId: string;
   userId: string;
@@ -35,7 +37,8 @@ export async function takeHabitPhoto(): Promise<{ status: 'ok'; base64: string }
   return saved.base64 ? { status: 'ok', base64: saved.base64 } : { status: 'canceled' };
 }
 
-export const photoPath = (p: Pick<PendingPhoto, 'circleId' | 'circleHabitId' | 'userId' | 'day'>) =>
+/** Same shape the server builds in save_circle_photo: <circle>/<circle habit>/<author>/<day>.jpg. */
+const photoPath = (p: Pick<PendingPhoto, 'circleId' | 'circleHabitId' | 'userId' | 'day'>) =>
   `${p.circleId}/${p.circleHabitId}/${p.userId}/${p.day}.jpg`;
 
 function toBytes(base64: string): Uint8Array {
@@ -45,24 +48,26 @@ function toBytes(base64: string): Uint8Array {
   return bytes;
 }
 
-/** Uploads the file, then records it (replacing that day's photo if there was one). */
-export async function uploadHabitPhoto(photo: PendingPhoto): Promise<void> {
-  const path = photoPath(photo);
+/** A failure that no retry will fix (left the habit, photo hidden, refused by the rules). */
+class PermanentPhotoError extends Error {}
+
+type ApiError = { status?: number; statusCode?: string | number; code?: string };
+const isPermanent = (error: ApiError) => {
+  const status = Number(error.status ?? error.statusCode);
+  // 401 is an expired session about to refresh, 408/429 a slow or busy server: worth retrying.
+  return (status >= 400 && status < 500 && ![401, 408, 429].includes(status)) || error.code === 'P0001' || error.code === '42501';
+};
+
+/** Uploads the file into the author's folder, then lets the server record it. */
+async function uploadHabitPhoto(photo: PendingPhoto): Promise<void> {
   const { error: uploadError } = await supabase.storage
     .from(BUCKET)
-    .upload(path, toBytes(photo.base64), { contentType: 'image/jpeg', upsert: true });
-  if (uploadError) throw uploadError;
-  const { error } = await supabase.from('circle_habit_photos').upsert(
-    {
-      circle_habit_id: photo.circleHabitId,
-      user_id: photo.userId,
-      day: photo.day,
-      path,
-      created_at: new Date().toISOString(),
-    },
-    { onConflict: 'circle_habit_id,user_id,day' },
-  );
-  if (error) throw error;
+    .upload(photoPath(photo), toBytes(photo.base64), { contentType: 'image/jpeg', upsert: true });
+  if (uploadError) {
+    throw isPermanent(uploadError as ApiError) ? new PermanentPhotoError(uploadError.message) : uploadError;
+  }
+  const { error } = await supabase.rpc('save_circle_photo', { p_circle_habit: photo.circleHabitId, p_day: photo.day });
+  if (error) throw isPermanent(error) ? new PermanentPhotoError(error.message) : error;
 }
 
 // ---- the queue: a photo taken offline (or whose upload failed) waits on the phone ----
@@ -75,36 +80,62 @@ function readQueue(): PendingPhoto[] {
   }
 }
 
-const writeQueue = (queue: PendingPhoto[]) => storage.setItem(PENDING_KEY, JSON.stringify(queue));
-const sameSlot = (a: PendingPhoto, b: PendingPhoto) =>
-  a.circleHabitId === b.circleHabitId && a.userId === b.userId && a.day === b.day;
-
-/** Queues the photo (a newer one for the same day replaces it) and tries to send everything. */
-export async function enqueueHabitPhoto(photo: PendingPhoto): Promise<boolean> {
-  writeQueue([...readQueue().filter((p) => !sameSlot(p, photo)), photo]);
-  return flushHabitPhotos();
+function writeQueue(queue: PendingPhoto[]) {
+  try {
+    storage.setItem(PENDING_KEY, JSON.stringify(queue));
+  } catch {
+    // Storage full (the web's ~5 MB): the photo is lost, the check-in is not.
+  }
 }
 
-let flushing: Promise<boolean> | null = null;
+const removeFromQueue = (id: string) => writeQueue(readQueue().filter((p) => p.id !== id));
 
-/** Sends queued photos one by one; whatever fails stays for the next try. True when all went. */
-export function flushHabitPhotos(): Promise<boolean> {
-  flushing ??= (async () => {
-    try {
-      for (const photo of readQueue()) {
-        try {
-          await uploadHabitPhoto(photo);
-          writeQueue(readQueue().filter((p) => !sameSlot(p, photo)));
-        } catch {
-          // Offline or a server hiccup: keep it.
-        }
+/**
+ * Queues the photo (replacing an older one of the same day) and tries to send it: `sent`, `queued`
+ * (waits for the connection) or `failed` (refused, or the phone had no room to keep it).
+ */
+export async function enqueueHabitPhoto(photo: Omit<PendingPhoto, 'id'>): Promise<'sent' | 'queued' | 'failed'> {
+  const entry = { ...photo, id: `${Date.now()}-${Math.random().toString(36).slice(2)}` };
+  const sameDay = (p: PendingPhoto) =>
+    p.circleHabitId === entry.circleHabitId && p.userId === entry.userId && p.day === entry.day;
+  writeQueue([...readQueue().filter((p) => !sameDay(p)), entry]);
+  await flushHabitPhotos(entry.userId);
+  if (uploaded.delete(entry.id)) return 'sent';
+  return readQueue().some((p) => p.id === entry.id) ? 'queued' : 'failed';
+}
+
+let flushing: Promise<void> | null = null;
+/** Ids that reached the server, read (and forgotten) by enqueueHabitPhoto. */
+const uploaded = new Set<string>();
+
+/**
+ * Sends the account's queued photos one by one. A call while a send is running waits for it and
+ * then runs again, so a photo queued meanwhile is never skipped. Another account's leftovers
+ * (a shared phone) are dropped: they could never upload under this session.
+ */
+export function flushHabitPhotos(userId: string): Promise<void> {
+  const run = async () => {
+    writeQueue(readQueue().filter((p) => p.userId === userId));
+    for (const photo of readQueue()) {
+      try {
+        await uploadHabitPhoto(photo);
+        removeFromQueue(photo.id);
+        uploaded.add(photo.id);
+      } catch (error) {
+        if (error instanceof PermanentPhotoError) removeFromQueue(photo.id);
+        // Otherwise offline or a server hiccup: keep it for the next try.
       }
-      return readQueue().length === 0;
-    } finally {
-      flushing = null;
     }
-  })();
-  return flushing;
+  };
+  const next = (flushing ?? Promise.resolve()).then(run, run);
+  flushing = next;
+  next.finally(() => {
+    if (flushing === next) flushing = null;
+  });
+  return next;
 }
 
 export const hasPendingPhotos = () => readQueue().length > 0;
+
+/** On sign out: queued photos belong to the account that took them. */
+export const clearPhotoQueue = () => writeQueue([]);

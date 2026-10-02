@@ -6,6 +6,7 @@ import { Button } from '@/components/button';
 import { TextField } from '@/components/text-field';
 import { ThemedText } from '@/components/themed-text';
 import { HabitColors, Spacing } from '@/constants/theme';
+import { useSession } from '@/features/auth/session-provider';
 import { Brote } from '@/features/mascot/brote';
 import { useProfile } from '@/features/profile/api';
 import { registerPushToken } from '@/features/push/push-token';
@@ -21,6 +22,7 @@ export function UsernameSetup() {
   const { t } = useTranslation();
   const theme = useTheme();
   const { data: profile } = useProfile();
+  const { session } = useSession();
   const create = useCreateSocialProfile();
   const initialName = profile?.display_name ?? '';
   const [displayName, setDisplayName] = useState(initialName);
@@ -76,7 +78,7 @@ export function UsernameSetup() {
             create.mutate(
               { username, display_name: displayName.trim(), color },
               // Joining the social side is when pushes make sense: ask now, with the reason fresh.
-              { onSuccess: async () => (await ensureNotificationPermission()) && registerPushToken() },
+              { onSuccess: async () => session && (await ensureNotificationPermission()) && registerPushToken(session.user.id) },
             )
           }
         />

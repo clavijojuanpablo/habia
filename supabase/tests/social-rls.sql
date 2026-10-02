@@ -373,21 +373,26 @@ begin
   perform set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
   perform public.join_circle(code);
   begin
-    insert into public.circle_habit_photos (circle_habit_id, user_id, day, path) values (shared, b, current_date, 'x');
+    perform public.save_circle_photo(shared, current_date);
     assert false, 'a photo needs a linked habit';
-  exception when insufficient_privilege then null;
+  exception when raise_exception then null;
   end;
   insert into public.habits (user_id, name, circle_habit_id) values (b, 'Caminar', shared);
-  insert into public.circle_habit_photos (circle_habit_id, user_id, day, path)
-    values (shared, b, current_date, circle || '/' || shared || '/' || b || '/day.jpg') returning id into photo;
+  perform public.save_circle_photo(shared, current_date);
+  -- Saving the same day again replaces it (the upsert a column grant would have refused).
+  perform public.save_circle_photo(shared, current_date);
+  select id into photo from public.circle_habit_photos where circle_habit_id = shared and user_id = b;
+  select count(*) into n from public.circle_habit_photos where circle_habit_id = shared and user_id = b;
+  assert n = 1, 'one photo per person and day';
   begin
     insert into public.circle_habit_photos (circle_habit_id, user_id, day, path) values (shared, a, current_date, 'x');
     assert false, 'nobody posts a photo as someone else';
   exception when insufficient_privilege then null;
   end;
-  insert into storage.objects (bucket_id, name, owner) values ('circle-photos', circle || '/' || shared || '/' || b || '/day.jpg', b);
+  insert into storage.objects (bucket_id, name, owner)
+    values ('circle-photos', circle || '/' || shared || '/' || b || '/' || current_date || '.jpg', b);
   begin
-    insert into storage.objects (bucket_id, name, owner) values ('circle-photos', circle || '/' || shared || '/' || a || '/day.jpg', b);
+    insert into storage.objects (bucket_id, name, owner) values ('circle-photos', circle || '/' || shared || '/' || a || '/x.jpg', b);
     assert false, 'nobody uploads into someone else''s folder';
   exception when insufficient_privilege then null;
   end;
@@ -411,10 +416,25 @@ begin
   perform public.hide_circle_photo(photo);
   select count(*) into n from public.circle_habit_photos where id = photo;
   assert n = 0, 'a hidden photo is gone for others';
+  select count(*) into n from storage.objects where bucket_id = 'circle-photos' and name like circle || '/%';
+  assert n = 0, 'a hidden photo''s file is unreadable for others';
   insert into public.reports (reported, reason, photo_id) values (b, 'inappropriate_photo', photo);
   perform set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
   select count(*) into n from public.circle_habit_photos where id = photo;
   assert n = 1, 'its author still sees a hidden photo';
+  delete from public.circle_habit_photos where id = photo;
+  get diagnostics n = row_count;
+  assert n = 0, 'a hidden photo cannot be deleted to re-post it';
+  update storage.objects set metadata = '{}' where bucket_id = 'circle-photos' and name like circle || '/%';
+  get diagnostics n = row_count;
+  assert n = 0, 'a hidden photo''s file cannot be replaced';
+  -- (Deleting goes through the Storage API only, so SQL cannot test it; its policy has the same check.)
+  begin
+    perform public.save_circle_photo(shared, current_date);
+    assert false, 'a hidden day cannot be posted again';
+  exception when raise_exception then
+    assert sqlerrm = 'photo_hidden', 'expected photo_hidden, got ' || sqlerrm;
+  end;
 
   -- Push tokens: one owner per device token, never readable by others.
   perform public.register_push_token('ExponentPushToken[test]', 'ios');
@@ -427,6 +447,23 @@ begin
   assert owner_of_token = a, 'a device token moves to the account signed in on it';
   select count(*) into n from public.push_tokens where token = 'ExponentPushToken[test]';
   assert n = 1, 'one row per device token';
+
+  -- Circle nudges go only to whoever still has the habit due today.
+  update public.circle_habits set rrule = 'FREQ=DAILY', archived_at = null where id = shared;
+  update public.habits set archived_at = null, starts_on = current_date - 1 where user_id = b and circle_habit_id = shared;
+  select count(*) into n from public.circle_habit_pending_today(shared) where user_id = b;
+  assert n = 1, 'a member with nothing logged today is pending';
+  update public.circle_habits
+    set rrule = 'FREQ=WEEKLY;BYDAY=' || (array['MO','TU','WE','TH','FR','SA','SU'])[extract(isodow from public.local_today('UTC') + 1)::int]
+    where id = shared;
+  update public.profiles set timezone = 'UTC' where id = b;
+  select count(*) into n from public.circle_habit_pending_today(shared) where user_id = b;
+  assert n = 0, 'nobody is nudged on a day the habit is not due';
+  update public.circle_habits set rrule = 'FREQ=DAILY' where id = shared;
+  insert into public.habit_logs (user_id, habit_id, occurrence_at, status)
+    select b, id, now(), 'skipped' from public.habits where user_id = b and circle_habit_id = shared;
+  select count(*) into n from public.circle_habit_pending_today(shared) where user_id = b;
+  assert n = 0, 'a chosen rest is not nudged';
 end;
 $$;
 

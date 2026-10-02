@@ -12,6 +12,7 @@ import { useProfile } from '@/features/profile/api';
 import { isDone, isSkipped } from '@/features/schedule/build-schedule';
 import { WeekGrid } from '@/features/schedule/components/week-grid';
 import { useSchedule } from '@/features/schedule/use-schedule';
+import { usePhotoCheckIn } from '@/features/social/use-photo-check-in';
 import { TopBar } from '@/features/streak/components/top-bar';
 import { useNow } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
@@ -30,6 +31,8 @@ export default function WeekScreen() {
   }, [currentWeekKey, offset]);
 
   const { items, bands, toggleItem } = useSchedule(weekStart, weekEnd);
+  // Today's column follows the same rule as Today: a photo habit opens the camera first.
+  const { withPhoto } = usePhotoCheckIn(items);
   const { data: profile } = useProfile();
   // Nothing existed before the user joined: do not let them browse into the void.
   const joinedOn = profile ? new Date(profile.created_at) : null;
@@ -78,7 +81,7 @@ export default function WeekScreen() {
             </View>
           )}
 
-          <WeekGrid weekStart={weekStart} items={items} bands={bands} now={now} onToggle={toggleItem} />
+          <WeekGrid weekStart={weekStart} items={items} bands={bands} now={now} onToggle={(item) => withPhoto(item, undefined, () => toggleItem(item))} />
         </View>
       </SafeAreaView>
     </ThemedView>

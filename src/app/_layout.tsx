@@ -8,6 +8,7 @@ import {
   Nunito_900Black,
   useFonts,
 } from '@expo-google-fonts/nunito';
+import { defaultShouldDehydrateQuery } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider, useSegments, type ErrorBoundaryProps } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -65,7 +66,14 @@ function RootLayout() {
   return (
     <PersistQueryClientProvider
       client={queryClient}
-      persistOptions={{ persister, maxAge: 7 * 24 * 60 * 60 * 1000 }}
+      persistOptions={{
+        persister,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        // Queries marked `meta: { persist: false }` (signed photo URLs, which expire) stay in memory.
+        dehydrateOptions: {
+          shouldDehydrateQuery: (query) => defaultShouldDehydrateQuery(query) && query.meta?.persist !== false,
+        },
+      }}
       // Replays check-ins that were queued while offline, even across restarts. Learn the real
       // connection first: TanStack assumes "online" until told, and would burn the retries.
       onSuccess={() => syncOnlineState().then(() => queryClient.resumePausedMutations())}>
@@ -109,7 +117,7 @@ function RootNavigator() {
   const { session, isLoading } = useSession();
   const { data: profile, isLoading: profileLoading } = useProfile();
   useTimezoneSync();
-  usePurchasesIdentity(session?.user.id);
+  usePurchasesIdentity(session?.user.id, isLoading);
   // The route pattern, not the URL: /join/[code] and /friend/[id] never send invite codes,
   // usernames or ids to analytics. Route groups like (tabs) are dropped.
   const segments = useSegments();

@@ -3,6 +3,7 @@ import { StyleSheet, Switch, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
+import { useSession } from '@/features/auth/session-provider';
 import { useProfile, useUpdateProfile } from '@/features/profile/api';
 import { ensureNotificationPermission } from '@/features/reminders/notifications';
 import { useTheme } from '@/hooks/use-theme';
@@ -13,6 +14,7 @@ import { registerPushToken } from '../push-token';
 export function SocialPushToggle() {
   const { t } = useTranslation();
   const theme = useTheme();
+  const { session } = useSession();
   const { data: profile } = useProfile();
   const update = useUpdateProfile();
   const enabled = profile?.social_push ?? true;
@@ -20,7 +22,7 @@ export function SocialPushToggle() {
   const onChange = async (value: boolean) => {
     update.mutate({ social_push: value });
     // Turning it on is the moment to ask for notifications, with the reason right on screen.
-    if (value && (await ensureNotificationPermission())) await registerPushToken();
+    if (value && session && (await ensureNotificationPermission())) await registerPushToken(session.user.id);
   };
 
   return (
