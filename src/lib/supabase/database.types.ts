@@ -62,8 +62,39 @@ export type Database = {
         }
         Relationships: []
       }
+      circle_habit_photos: {
+        Row: {
+          circle_habit_id: string
+          created_at: string
+          day: string
+          hidden_at: string | null
+          id: string
+          path: string
+          user_id: string
+        }
+        Insert: {
+          circle_habit_id: string
+          created_at?: string
+          day: string
+          hidden_at?: string | null
+          id?: string
+          path: string
+          user_id: string
+        }
+        Update: {
+          circle_habit_id?: string
+          created_at?: string
+          day?: string
+          hidden_at?: string | null
+          id?: string
+          path?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       circle_habits: {
         Row: {
+          photo_required: boolean
           archived_at: string | null
           circle_id: string
           created_at: string
@@ -75,6 +106,7 @@ export type Database = {
           two_minute_version: string | null
         }
         Insert: {
+          photo_required?: boolean
           archived_at?: string | null
           circle_id: string
           created_at?: string
@@ -86,6 +118,7 @@ export type Database = {
           two_minute_version?: string | null
         }
         Update: {
+          photo_required?: boolean
           archived_at?: string | null
           circle_id?: string
           created_at?: string
@@ -409,6 +442,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          social_push: boolean
           afternoon_starts_at: number
           ai_coach_enabled: boolean
           best_streak: number
@@ -426,6 +460,7 @@ export type Database = {
           week_starts_on: number
         }
         Insert: {
+          social_push?: boolean
           afternoon_starts_at?: number
           ai_coach_enabled?: boolean
           best_streak?: number
@@ -443,6 +478,7 @@ export type Database = {
           week_starts_on?: number
         }
         Update: {
+          social_push?: boolean
           afternoon_starts_at?: number
           ai_coach_enabled?: boolean
           best_streak?: number
@@ -461,8 +497,54 @@ export type Database = {
         }
         Relationships: []
       }
+      push_log: {
+        Row: {
+          created_at: string
+          day: string
+          kind: string
+          recipient: string
+          ref: string
+        }
+        Insert: {
+          created_at?: string
+          day: string
+          kind: string
+          recipient: string
+          ref: string
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          kind?: string
+          recipient?: string
+          ref?: string
+        }
+        Relationships: []
+      }
+      push_tokens: {
+        Row: {
+          platform: string
+          token: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          platform: string
+          token: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          platform?: string
+          token?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       reports: {
         Row: {
+          photo_id: string | null
           created_at: string
           details: string | null
           id: string
@@ -471,6 +553,7 @@ export type Database = {
           reporter: string
         }
         Insert: {
+          photo_id?: string | null
           created_at?: string
           details?: string | null
           id?: string
@@ -479,6 +562,7 @@ export type Database = {
           reporter?: string
         }
         Update: {
+          photo_id?: string | null
           created_at?: string
           details?: string | null
           id?: string
@@ -548,6 +632,13 @@ export type Database = {
           user_id: string
         }[]
       }
+      circle_habit_pending_today: {
+        Args: { p_circle_habit: string }
+        Returns: {
+          local_day: string
+          user_id: string
+        }[]
+      }
       circle_habit_members: {
         Args: { p_circle_habit: string }
         Returns: {
@@ -559,6 +650,10 @@ export type Database = {
         Args: { p_emoji: string; p_name: string }
         Returns: string
       }
+      expired_photo_files: {
+        Args: { p_before: string; p_limit: number }
+        Returns: string[]
+      }
       find_profile: {
         Args: { p_username: string }
         Returns: {
@@ -568,6 +663,7 @@ export type Database = {
           username: string
         }[]
       }
+      hide_circle_photo: { Args: { p_photo: string }; Returns: undefined }
       join_circle: { Args: { p_code: string }; Returns: string }
       list_friendships: {
         Args: never
@@ -582,6 +678,10 @@ export type Database = {
         }[]
       }
       local_today: { Args: { p_timezone: string }; Returns: string }
+      register_push_token: {
+        Args: { p_platform: string; p_token: string }
+        Returns: undefined
+      }
       regenerate_circle_code: { Args: { p_circle: string }; Returns: string }
       send_friend_request: { Args: { p_username: string }; Returns: string }
       social_days: {

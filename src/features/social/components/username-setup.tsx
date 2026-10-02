@@ -8,6 +8,8 @@ import { ThemedText } from '@/components/themed-text';
 import { HabitColors, Spacing } from '@/constants/theme';
 import { Brote } from '@/features/mascot/brote';
 import { useProfile } from '@/features/profile/api';
+import { registerPushToken } from '@/features/push/push-token';
+import { ensureNotificationPermission } from '@/features/reminders/notifications';
 import { useTheme } from '@/hooks/use-theme';
 
 import { SocialError, useCreateSocialProfile } from '../api';
@@ -70,7 +72,13 @@ export function UsernameSetup() {
           label={t('social.setup.submit')}
           disabled={!valid}
           loading={create.isPending}
-          onPress={() => create.mutate({ username, display_name: displayName.trim(), color })}
+          onPress={() =>
+            create.mutate(
+              { username, display_name: displayName.trim(), color },
+              // Joining the social side is when pushes make sense: ask now, with the reason fresh.
+              { onSuccess: async () => (await ensureNotificationPermission()) && registerPushToken() },
+            )
+          }
         />
       </View>
     </SocialCard>

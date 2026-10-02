@@ -10,7 +10,9 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.habia.mobile",
-      "associatedDomains": ["applinks:habia.app"],
+      "associatedDomains": [
+        "applinks:habia.app"
+      ],
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -55,6 +57,14 @@
         {
           "organization": "clavolab",
           "project": "habia"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "habia usa la cámara para tomar la foto del hábito que compartes con tu círculo.",
+          "photosPermission": false,
+          "microphonePermission": false
         }
       ]
     ],

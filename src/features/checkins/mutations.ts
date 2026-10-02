@@ -20,13 +20,15 @@ export type ToggleInput = {
   /** Existing log to remove. When absent, a new log with `status` is created. */
   existing?: HabitLog;
   status?: LogStatus;
+  /** Set for a habit shared with a circle: once saved, the circle may get a gentle nudge. */
+  circleHabitId?: string | null;
 };
 
 /**
  * The write itself, defined outside the hook so TanStack Query can replay it
  * after a restart (mutation defaults are registered by mutation key).
  */
-export async function toggleLogRequest({ habitId, at, existing, status = 'done' }: ToggleInput) {
+export async function toggleLogRequest({ habitId, at, existing, status = 'done', circleHabitId }: ToggleInput) {
   if (existing) {
     const { error } = await supabase
       .from('habit_logs')
@@ -41,4 +43,9 @@ export async function toggleLogRequest({ habitId, at, existing, status = 'done' 
     .from('habit_logs')
     .upsert({ user_id, habit_id: habitId, occurrence_at: at, status }, { onConflict: 'habit_id,occurrence_at' });
   if (error) throw error;
+  // After the write, not before: the server checks the log exists. Fire and forget (it also runs
+  // when a check-in queued offline is replayed); the server dedupes and respects everyone's switch.
+  if (circleHabitId && status !== 'skipped') {
+    supabase.functions.invoke('notify', { body: { type: 'circle_checkin', circleHabitId } }).catch(() => {});
+  }
 }

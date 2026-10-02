@@ -2,6 +2,7 @@ import * as Linking from 'expo-linking';
 import { Platform } from 'react-native';
 
 import i18n from '@/lib/i18n';
+import { unregisterPushToken } from '@/features/push/push-token';
 import { supabase } from '@/lib/supabase/client';
 
 /**
@@ -50,5 +51,11 @@ export async function updatePassword(password: string) {
 export async function deleteAccount() {
   const { error } = await supabase.functions.invoke('delete-account', { method: 'POST' });
   if (error) throw error;
+  await supabase.auth.signOut();
+}
+
+/** Signs out after detaching this phone from the account's pushes (best effort). */
+export async function signOut() {
+  await unregisterPushToken().catch(() => {});
   await supabase.auth.signOut();
 }

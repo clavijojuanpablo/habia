@@ -1,10 +1,11 @@
 import { router } from 'expo-router';
 import { Tabs } from 'expo-router/js-tabs';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AppTabBar } from '@/components/app-tab-bar';
-import { useNotificationTap } from '@/features/reminders/notifications';
+import { registerPushToken } from '@/features/push/push-token';
+import { useNotificationTap, type NotificationData } from '@/features/reminders/notifications';
 import { useReminderSync } from '@/features/reminders/use-reminder-sync';
 import { useFriendships, useMySocialProfile } from '@/features/social/api';
 import { useUnseenCheers } from '@/features/social/components/cheers';
@@ -19,13 +20,28 @@ export default function TabsLayout() {
   const { data: friendships } = useFriendships();
   const unseenCheers = useUnseenCheers();
   const friendsNews = unseenCheers.length > 0 || (friendships ?? []).some((f) => f.status === 'pending' && f.incoming);
-  // Tapping a reminder brings its habit into focus on Today, one tap away from the check-in,
-  // whether it launched the app or not. A reminder asks for action, not for editing.
-  const openHabit = useCallback((habitId: string) => {
-    track('reminder_opened');
-    router.navigate({ pathname: '/', params: { focus: habitId } });
+  // Keep this phone's push token on the account (only if notifications are already allowed).
+  useEffect(() => {
+    registerPushToken();
   }, []);
-  useNotificationTap(openHabit);
+  // A tapped notification opens what it was about. A reminder brings its habit into focus on
+  // Today, one tap away from the check-in; a social push opens the person or the circle.
+  const openNotification = useCallback((data: NotificationData) => {
+    const id = typeof data.id === 'string' ? data.id : null;
+    if (typeof data.habitId === 'string') {
+      track('reminder_opened');
+      router.navigate({ pathname: '/', params: { focus: data.habitId } });
+    } else if (data.type === 'cheer' && typeof data.from === 'string') {
+      router.push({ pathname: '/friend/[id]', params: { id: data.from } });
+    } else if (data.type === 'friend' && id) {
+      router.push({ pathname: '/friend/[id]', params: { id } });
+    } else if (data.type === 'circle' && id) {
+      router.push({ pathname: '/circle/[id]', params: { id } });
+    } else if (data.type === 'friend_request') {
+      router.navigate('/profile');
+    }
+  }, []);
+  useNotificationTap(openNotification);
 
   return (
     <>

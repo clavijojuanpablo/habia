@@ -41,18 +41,21 @@ export async function ensureNotificationPermission(): Promise<boolean> {
   return requested.granted;
 }
 
+/** What a tapped notification carries: a reminder's habitId, or a social push's type and target. */
+export type NotificationData = Record<string, unknown>;
+
 /**
- * Opens the habit a reminder was for. `useLastNotificationResponse` covers both
- * the tap that launched the app and taps while it runs; clearing it afterwards
- * keeps a remount from opening the same habit again.
+ * Opens what a notification was about. `useLastNotificationResponse` covers both the tap that
+ * launched the app and taps while it runs; clearing it afterwards keeps a remount from opening
+ * the same thing again.
  */
-export function useNotificationTap(onTap: (habitId: string) => void) {
+export function useNotificationTap(onTap: (data: NotificationData) => void) {
   const lastResponse = Notifications.useLastNotificationResponse();
 
   useEffect(() => {
-    const habitId = lastResponse?.notification.request.content.data?.habitId;
-    if (typeof habitId !== 'string') return;
-    onTap(habitId);
+    const data = lastResponse?.notification.request.content.data;
+    if (!data) return;
+    onTap(data);
     Notifications.clearLastNotificationResponseAsync();
   }, [lastResponse, onTap]);
 }

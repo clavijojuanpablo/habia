@@ -13,14 +13,15 @@ import { FontFamily, MaxContentWidth, Radius, Shadow, Spacing } from '@/constant
 import { AppearancePicker, LanguagePicker } from '@/features/appearance/components/appearance-picker';
 import { AiReviewToggle } from '@/features/coach/components/ai-review-toggle';
 import { useWeeklyReviewAvailable } from '@/features/coach/weekly-review-api';
+import { signOut } from '@/features/auth/api';
 import { DangerZone } from '@/features/auth/components/danger-zone';
 import { useSession } from '@/features/auth/session-provider';
 import { IdentitiesSection } from '@/features/identities/components/identities-section';
 import { AnalyticsToggle } from '@/features/profile/components/analytics-toggle';
+import { SocialPushToggle } from '@/features/push/components/social-push-toggle';
 import { useProfile } from '@/features/profile/api';
 import { DayBandsEditor } from '@/features/profile/components/day-bands-editor';
 import { useTheme } from '@/hooks/use-theme';
-import { supabase } from '@/lib/supabase/client';
 
 /** Account and app settings (the old Profile tab): opened from the gear on Friends. */
 export default function SettingsScreen() {
@@ -69,6 +70,10 @@ export default function SettingsScreen() {
         )}
 
         <Card>
+          <SocialPushToggle />
+        </Card>
+
+        <Card>
           <AnalyticsToggle />
         </Card>
 
@@ -85,7 +90,7 @@ export default function SettingsScreen() {
           <Button label={t('legal.terms')} variant="secondary" onPress={() => router.push('/legal/terms')} />
         </Card>
 
-        <Button label={t('auth.signOut')} variant="secondary" onPress={() => supabase.auth.signOut()} />
+        <Button label={t('auth.signOut')} variant="secondary" onPress={() => signOut()} />
 
         <DangerZone />
 

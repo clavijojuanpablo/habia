@@ -97,6 +97,19 @@ function toSocialError(error: { code?: string; message?: string }): SocialError 
  * fail at once instead of being queued, because a queued call could not be replayed after a restart. */
 const ONLINE_ONLY = { networkMode: 'always' } as const;
 
+/**
+ * Tells the server a social moment happened so it can push it (supabase/functions/notify). Fire and
+ * forget: the server checks the event itself, and a lost push never undoes the action.
+ */
+export function notify(
+  body:
+    | { type: 'cheer'; cheerId: string }
+    | { type: 'friend_request' | 'friend_accepted'; userId?: string; username?: string }
+    | { type: 'circle_checkin'; circleHabitId: string },
+) {
+  supabase.functions.invoke('notify', { body }).catch(() => {});
+}
+
 const socialKey = (userId: string | undefined, ...rest: unknown[]) => ['social', userId, ...rest];
 
 function useSocialInvalidate() {
@@ -217,8 +230,10 @@ export function useSendFriendRequest() {
       if (error) throw toSocialError(error);
       return data as FriendRequestResult;
     },
-    onSuccess: (result) => {
+    onSuccess: (result, username) => {
       track(result === 'accepted' ? 'friend_added' : 'friend_request_sent');
+      if (result === 'requested') notify({ type: 'friend_request', username });
+      if (result === 'accepted') notify({ type: 'friend_accepted', username });
       return invalidate();
     },
   });
@@ -232,8 +247,9 @@ export function useAcceptFriend() {
       const { error } = await supabase.rpc('accept_friend_request', { p_user: userId });
       if (error) throw toSocialError(error);
     },
-    onSuccess: () => {
+    onSuccess: (_, userId) => {
       track('friend_added');
+      notify({ type: 'friend_accepted', userId });
       return invalidate();
     },
   });
@@ -343,9 +359,10 @@ export function useSendCheer() {
   return useMutation({
     ...ONLINE_ONLY,
     mutationFn: async (input: { to_user: string; kind: CheerKind }) => {
-      const { error } = await supabase.from('cheers').insert(input);
-      // Already sent this one today: the cheer is there, which is what the user wanted.
+      const { data, error } = await supabase.from('cheers').insert(input).select('id').single();
+      // Already sent this one today: the cheer is there, which is what the user wanted (no new push).
       if (error && error.code !== '23505') throw toSocialError(error);
+      if (data) notify({ type: 'cheer', cheerId: data.id });
     },
     onSuccess: (_, input) => {
       track('cheer_sent', { kind: input.kind });

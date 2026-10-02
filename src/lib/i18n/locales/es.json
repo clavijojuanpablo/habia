@@ -841,5 +841,9 @@
       "yourTurn": "Te toca: {{habit}}",
       "notJoined": "Aún no te uniste a este hábito"
     }
+  },
+  "push": {
+    "social": "Avisos de amigos y círculos",
+    "socialHint": "Te avisamos cuando alguien te anime, te envíe una solicitud o riegue en tu círculo. Nunca más de un aviso igual al día."
   }
 }

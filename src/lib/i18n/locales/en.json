@@ -841,5 +841,9 @@
       "yourTurn": "Your turn: {{habit}}",
       "notJoined": "You haven't joined this habit yet"
     }
+  },
+  "push": {
+    "social": "Friends & circles notifications",
+    "socialHint": "We let you know when someone cheers you on, sends a request or waters in your circle. Never the same nudge twice a day."
   }
 }

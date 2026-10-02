@@ -346,5 +346,89 @@ begin
 end;
 $$;
 
+-- ============ photos and push tokens ============
+do $$
+declare
+  a uuid := '00000000-0000-4000-8000-00000000000a';
+  b uuid := '00000000-0000-4000-8000-0000000000f0'; -- a fresh person: earlier blocks blocked B
+  c uuid := '00000000-0000-4000-8000-00000000000c';
+  circle uuid;
+  code text;
+  shared uuid;
+  photo uuid;
+  n int;
+  owner_of_token uuid;
+begin
+  perform set_config('role', 'none', true);
+  insert into auth.users (id, email, aud, role) values (b, 'f@rls-test.invalid', 'authenticated', 'authenticated');
+  insert into public.social_profiles (user_id, username, display_name) values (b, 'user_f', 'F');
+  perform set_config('role', 'authenticated', true);
+
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  select public.create_circle('Fotos', '📸') into circle;
+  select invite_code into code from public.circles where id = circle;
+  insert into public.circle_habits (circle_id, name, created_by, photo_required) values (circle, 'Caminar', a, true)
+    returning id into shared;
+
+  perform set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
+  perform public.join_circle(code);
+  begin
+    insert into public.circle_habit_photos (circle_habit_id, user_id, day, path) values (shared, b, current_date, 'x');
+    assert false, 'a photo needs a linked habit';
+  exception when insufficient_privilege then null;
+  end;
+  insert into public.habits (user_id, name, circle_habit_id) values (b, 'Caminar', shared);
+  insert into public.circle_habit_photos (circle_habit_id, user_id, day, path)
+    values (shared, b, current_date, circle || '/' || shared || '/' || b || '/day.jpg') returning id into photo;
+  begin
+    insert into public.circle_habit_photos (circle_habit_id, user_id, day, path) values (shared, a, current_date, 'x');
+    assert false, 'nobody posts a photo as someone else';
+  exception when insufficient_privilege then null;
+  end;
+  insert into storage.objects (bucket_id, name, owner) values ('circle-photos', circle || '/' || shared || '/' || b || '/day.jpg', b);
+  begin
+    insert into storage.objects (bucket_id, name, owner) values ('circle-photos', circle || '/' || shared || '/' || a || '/day.jpg', b);
+    assert false, 'nobody uploads into someone else''s folder';
+  exception when insufficient_privilege then null;
+  end;
+
+  -- C is outside the circle: no rows, no files.
+  perform set_config('request.jwt.claims', json_build_object('sub', c, 'role', 'authenticated')::text, true);
+  select count(*) into n from public.circle_habit_photos where circle_habit_id = shared;
+  assert n = 0, 'a non-member sees no photos';
+  select count(*) into n from storage.objects where bucket_id = 'circle-photos' and name like circle || '/%';
+  assert n = 0, 'a non-member reads no photo files';
+  begin
+    perform public.hide_circle_photo(photo);
+    assert false, 'only the owner hides photos';
+  exception when raise_exception then null;
+  end;
+
+  -- A (owner) sees it, hides it; B still sees their own, A no longer does.
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  select count(*) into n from storage.objects where bucket_id = 'circle-photos' and name like circle || '/%';
+  assert n = 1, 'a member reads the circle''s photo files';
+  perform public.hide_circle_photo(photo);
+  select count(*) into n from public.circle_habit_photos where id = photo;
+  assert n = 0, 'a hidden photo is gone for others';
+  insert into public.reports (reported, reason, photo_id) values (b, 'inappropriate_photo', photo);
+  perform set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
+  select count(*) into n from public.circle_habit_photos where id = photo;
+  assert n = 1, 'its author still sees a hidden photo';
+
+  -- Push tokens: one owner per device token, never readable by others.
+  perform public.register_push_token('ExponentPushToken[test]', 'ios');
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  select count(*) into n from public.push_tokens;
+  assert n = 0, 'nobody reads another person''s tokens';
+  perform public.register_push_token('ExponentPushToken[test]', 'ios');
+  perform set_config('role', 'none', true);
+  select user_id into owner_of_token from public.push_tokens where token = 'ExponentPushToken[test]';
+  assert owner_of_token = a, 'a device token moves to the account signed in on it';
+  select count(*) into n from public.push_tokens where token = 'ExponentPushToken[test]';
+  assert n = 1, 'one row per device token';
+end;
+$$;
+
 select 'ALL SOCIAL RLS CHECKS PASSED' as result;
 rollback;

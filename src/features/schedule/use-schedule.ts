@@ -28,7 +28,13 @@ export function useSchedule(from: Date, to: Date) {
     const undo = status === 'skipped' ? item.log?.status === 'skipped' : isDone(item);
     if (undo) hapticLight();
     else hapticSuccess();
-    toggle.mutate({ habitId: item.habit.id, at: item.at.toISOString(), existing: undo ? item.log : undefined, status });
+    toggle.mutate({
+      habitId: item.habit.id,
+      at: item.at.toISOString(),
+      existing: undo ? item.log : undefined,
+      status,
+      circleHabitId: item.habit.circle_habit_id,
+    });
     if (!undo) track('checkin_logged', { status, band: item.band });
   };
 
