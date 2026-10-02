@@ -21,6 +21,7 @@ import { AnalyticsToggle } from '@/features/profile/components/analytics-toggle'
 import { SocialPushToggle } from '@/features/push/components/social-push-toggle';
 import { useProfile } from '@/features/profile/api';
 import { DayBandsEditor } from '@/features/profile/components/day-bands-editor';
+import { ProRow } from '@/features/paywall/components/pro-row';
 import { useTheme } from '@/hooks/use-theme';
 
 /** Account and app settings (the old Profile tab): opened from the gear on Friends. */
@@ -53,6 +54,8 @@ export default function SettingsScreen() {
             )}
           </View>
         </View>
+
+        <ProRow />
 
         <Card>
           <AppearancePicker />

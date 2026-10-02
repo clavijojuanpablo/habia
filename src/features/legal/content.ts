@@ -29,6 +29,7 @@ const privacyEs: LegalDocument = {
         '• Si activas la revisión semanal con IA: las revisiones que Brote te escribe.',
         '• Si agregas amigos o te unes a círculos: tu usuario, nombre visible y color; tus amistades, solicitudes y círculos; los ánimos que envías y recibes; y las personas que bloqueas o reportas.',
         '• Si un hábito de tu círculo va con foto: las fotos que tomas con la cámara (se borran a los 7 días). Si activas los avisos: el identificador de notificaciones de tu teléfono.',
+        '• Si te suscribes a habia Pro: el estado de tu suscripción (plan, hasta cuándo dura y si se renueva). Nunca tus datos de pago: el cobro lo hace Apple.',
         '• Datos técnicos mínimos que genera la conexión con nuestro proveedor (por ejemplo, la dirección IP en los registros del servidor).',
         '• Informes de errores: si la app falla, un informe técnico (qué falló, modelo de teléfono, versión del sistema) asociado al identificador interno de tu cuenta (un código, no tu nombre ni tu correo).',
         '• Datos de uso, si no los desactivas: qué pantallas abres, acciones como crear un hábito o marcarlo y tus respuestas a la pregunta breve "¿habia te está ayudando?", asociados al mismo identificador interno, junto con el modelo de tu teléfono, su idioma y su zona horaria. Nunca los nombres de tus hábitos ni tu correo. Nos dicen qué funciona y qué no.',
@@ -37,7 +38,7 @@ const privacyEs: LegalDocument = {
     {
       heading: 'Qué NO recogemos',
       body: [
-        'No pedimos tu nombre real, teléfono, ubicación, contactos, fotos ni datos de salud de otras apps. No usamos publicidad ni seguimos tu actividad en otras apps o sitios web. No vendemos ni alquilamos tus datos a nadie.',
+        'No pedimos tu nombre real, teléfono, ubicación, contactos, las fotos de tu galería ni datos de salud de otras apps. No usamos publicidad ni seguimos tu actividad en otras apps o sitios web. No vendemos ni alquilamos tus datos a nadie.',
       ],
     },
     {
@@ -51,6 +52,7 @@ const privacyEs: LegalDocument = {
       body: [
         '• Supabase, que aloja la base de datos y gestiona el inicio de sesión.',
         '• Sentry, que recibe los informes de errores para que podamos arreglarlos.',
+        '• RevenueCat, que gestiona las suscripciones a habia Pro con Apple: recibe el identificador interno de tu cuenta (un código, no tu nombre ni tu correo) y tus compras dentro de la app, para saber si eres Pro en todos tus dispositivos.',
         '• Expo (el servicio de notificaciones push), solo si las activas: recibe el identificador de notificaciones de tu teléfono y el texto de cada aviso (por ejemplo, el nombre de quien te animó) para entregarlo a Apple o Google.',
         '• PostHog, que recibe los datos de uso. Puedes desactivarlos en Ajustes → Ayudar a mejorar habia.',
         '• Anthropic (Claude), solo si activas la revisión semanal con IA (desactivada por defecto; Ajustes → Revisión semanal con IA). Una vez por semana le enviamos un resumen de tu semana para que escriba la revisión: los nombres de tus hábitos, sus identidades y lugares, cuántas veces los hiciste y tu nombre visible si lo pusiste; nunca tu correo. Según sus condiciones para la API, Anthropic no usa estos datos para entrenar sus modelos. Puedes desactivarla cuando quieras.',
@@ -69,7 +71,7 @@ const privacyEs: LegalDocument = {
     {
       heading: 'Cuánto tiempo los guardamos',
       body: [
-        'Mientras tu cuenta exista. Si la eliminas, borramos tus hábitos, registros, identidades y preferencias. El borrado es inmediato y no se puede deshacer; pueden quedar copias temporales en las copias de seguridad del proveedor durante un periodo corto. Los informes de errores y los datos de uso ya enviados a Sentry y PostHog se conservan según sus plazos de retención; al eliminar tu cuenta, su identificador deja de corresponder a ninguna persona.',
+        'Mientras tu cuenta exista. Si la eliminas, borramos tus hábitos, registros, identidades y preferencias. El borrado es inmediato y no se puede deshacer; pueden quedar copias temporales en las copias de seguridad del proveedor durante un periodo corto. Los informes de errores y los datos de uso ya enviados a Sentry y PostHog se conservan según sus plazos de retención; al eliminar tu cuenta, su identificador deja de corresponder a ninguna persona. Apple y RevenueCat conservan el historial de compras que la ley contable les exige; eliminar tu cuenta no cancela una suscripción activa: cancélala en los Ajustes del iPhone.',
       ],
     },
     {
@@ -133,7 +135,9 @@ const termsEs: LegalDocument = {
     {
       heading: 'Planes de pago',
       body: [
-        'Algunas funciones podrán requerir una suscripción. Los precios, la renovación y las cancelaciones se gestionan a través de App Store o Google Play, según sus propias reglas de reembolso. Te informaremos del precio antes de cobrar.',
+        'habia Pro es una suscripción mensual o anual que se compra dentro de la app. Antes de pagar ves el precio, el periodo y, si te corresponde, los días de prueba gratis (una prueba por persona).',
+        'El cobro lo hace Apple con tu cuenta al confirmar la compra o, si empezaste una prueba, cuando esta termina. La suscripción se renueva automáticamente al mismo precio salvo que la canceles al menos 24 horas antes del final del periodo; puedes gestionarla o cancelarla en Ajustes del iPhone → tu nombre → Suscripciones. Al cancelar, sigues siendo Pro hasta el final del periodo pagado.',
+        'Los reembolsos los decide Apple según sus reglas (reportaproblem.apple.com). Si cambiamos el precio, Apple te avisará antes y, cuando la ley lo exija, te pedirá aceptarlo. Las funciones gratuitas pueden cambiar, pero nunca te quitaremos tus datos.',
       ],
     },
     {
@@ -184,6 +188,7 @@ const privacyEn: LegalDocument = {
         '• If you turn on the AI weekly review: the reviews Brote writes for you.',
         '• If you add friends or join circles: your username, display name and color; your friendships, requests and circles; the cheers you send and receive; and the people you block or report.',
         '• If a habit of your circle comes with a photo: the photos you take with the camera (deleted after 7 days). If you turn on notifications: your phone’s notification id.',
+        '• If you subscribe to habia Pro: your subscription status (plan, until when it lasts and whether it renews). Never your payment details: Apple handles the charge.',
         '• Minimal technical data produced by the connection to our provider (for example, the IP address in server logs).',
         '• Error reports: if the app crashes, a technical report (what failed, phone model, OS version) tied to your account’s internal id (a code, not your name or email).',
         '• Usage data, unless you turn it off: which screens you open, actions such as creating or checking a habit and your answers to the short "is habia helping?" question, tied to the same internal id, along with your phone model, language and time zone. Never your habit names or email. It tells us what works and what does not.',
@@ -192,7 +197,7 @@ const privacyEn: LegalDocument = {
     {
       heading: 'What we do NOT collect',
       body: [
-        'We never ask for your real name, phone number, location, contacts, photos or health data from other apps. No ads, and we do not follow your activity across other apps or websites. We do not sell or rent your data.',
+        'We never ask for your real name, phone number, location, contacts, the photos in your library or health data from other apps. No ads, and we do not follow your activity across other apps or websites. We do not sell or rent your data.',
       ],
     },
     {
@@ -206,6 +211,7 @@ const privacyEn: LegalDocument = {
       body: [
         '• Supabase, which hosts the database and handles sign-in.',
         '• Sentry, which receives error reports so we can fix them.',
+        '• RevenueCat, which manages habia Pro subscriptions with Apple: it receives your account’s internal id (a code, not your name or email) and your in-app purchases, so Pro follows you on all your devices.',
         '• Expo (the push notification service), only if you turn them on: it receives your phone’s notification id and the text of each notice (for example, the name of who cheered you on) to deliver it through Apple or Google.',
         '• PostHog, which receives the usage data. You can turn it off in Settings → Help improve habia.',
         '• Anthropic (Claude), only if you turn on the AI weekly review (off by default; Settings → AI weekly review). Once a week we send it a summary of your week so it can write the review: your habit names, their identities and places, how many times you did them and your display name if you set one; never your email. Under its API terms, Anthropic does not use this data to train its models. You can turn it off at any time.',
@@ -224,7 +230,7 @@ const privacyEn: LegalDocument = {
     {
       heading: 'How long we keep it',
       body: [
-        'As long as your account exists. If you delete it, we delete your habits, logs, identities and preferences. Deletion is immediate and cannot be undone; short-lived copies may remain in the provider backups for a brief period. Error reports and usage data already sent to Sentry and PostHog are kept for their retention periods; once your account is deleted, their id no longer maps to anyone.',
+        'As long as your account exists. If you delete it, we delete your habits, logs, identities and preferences. Deletion is immediate and cannot be undone; short-lived copies may remain in the provider backups for a brief period. Error reports and usage data already sent to Sentry and PostHog are kept for their retention periods; once your account is deleted, their id no longer maps to anyone. Apple and RevenueCat keep the purchase history accounting law requires; deleting your account does not cancel an active subscription: cancel it in iPhone Settings.',
       ],
     },
     {
@@ -284,7 +290,9 @@ const termsEn: LegalDocument = {
     {
       heading: 'Paid plans',
       body: [
-        'Some features may require a subscription. Pricing, renewal and cancellation are handled by the App Store or Google Play under their own refund rules. We will show the price before charging.',
+        'habia Pro is a monthly or yearly subscription bought inside the app. Before paying you see the price, the period and, if you qualify, the free trial days (one trial per person).',
+        'Apple charges your account when you confirm the purchase or, if you started a trial, when it ends. The subscription renews automatically at the same price unless cancelled at least 24 hours before the end of the period; manage or cancel it in iPhone Settings → your name → Subscriptions. After cancelling you stay Pro until the end of the paid period.',
+        'Refunds are decided by Apple under its rules (reportaproblem.apple.com). If we change the price, Apple tells you first and, where the law requires it, asks you to accept it. Free features may change, but we will never take your data away.',
       ],
     },
     {

@@ -41,7 +41,10 @@ export type AnalyticsEvent =
   | 'circle_habit_created'
   | 'circle_habit_joined'
   | 'user_blocked'
-  | 'user_reported';
+  | 'user_reported'
+  | 'paywall_viewed'
+  | 'pro_purchased'
+  | 'pro_restored';
 
 const OPT_OUT_KEY = 'habia.analytics.optOut';
 const apiKey = process.env.EXPO_PUBLIC_POSTHOG_KEY;

@@ -65,9 +65,9 @@ Habits with flexible frequency, Today/Week views with day bands, reminders, Iden
 | Plan | Price (reference) | Includes |
 |---|---|---|
 | Free | $0 | Up to 5 habits, basic tree, reminders, 7-day stats, rule-based tips |
-| Pro | ~US$4.99/mo · ~US$34.99/yr | Unlimited habits, guided programs, AI coach, full stats, advanced stacking, garden themes |
-| Pro Parejas | ~US$7.99/mo for 2 | Pro for both + couples features |
-Regional pricing for LatAm. Later: family plan, gifts.
+| Pro | US$4.99/mo · US$34.99/yr (7-day free trial on yearly) | Unlimited habits, guided programs, AI coach, full stats, advanced stacking, garden themes |
+
+Decided 2026-10-02: Pro Parejas dropped (couples became circles, which stay free: they bring people in). Prices set in App Store Connect from the US price; adjust LatAm by hand if conversion asks for it. Later: family plan, gifts.
 
 ## Success metrics
 - **North star:** weekly users who complete ≥1 habit on 4+ days of the week.

@@ -164,6 +164,7 @@ function RootNavigator() {
         <Stack.Screen name="identity/[id]" options={modal(t('identity.edit'))} />
         <Stack.Screen name="streak" options={{ presentation: 'modal' }} />
         <Stack.Screen name="settings" options={modal(t('settings.title'))} />
+        <Stack.Screen name="paywall" options={modal(t('paywall.title'))} />
         <Stack.Screen name="circles" options={modal(t('social.circlesTitle'))} />
         <Stack.Screen name="friend/[id]" options={modal('')} />
         <Stack.Screen name="circle/[id]" options={modal('')} />

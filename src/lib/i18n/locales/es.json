@@ -6,7 +6,8 @@
     "loading": "Cargando…",
     "error": "Algo salió mal. Intenta de nuevo.",
     "optional": "opcional",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "retry": "Reintentar"
   },
   "auth": {
     "title": "Cada acción es una semilla para la persona que quieres ser.",
@@ -864,5 +865,63 @@
     "notSent": "Tu foto no se pudo enviar. Ábrela en tu círculo para tomar otra.",
     "notReady": "Un momento: estamos cargando tu círculo. Intenta de nuevo en unos segundos.",
     "requiredHint": "Este hábito va con foto: al marcarlo se abre la cámara. Las fotos se borran a los 7 días."
+  },
+  "paywall": {
+    "title": "habia Pro",
+    "subtitle": "Lleva tus hábitos más lejos y ayuda a que habia siga creciendo.",
+    "proTitle": "¡Eres Pro! 💚",
+    "proThanks": "Gracias por apoyar habia. Cada semilla que siembras también riega este proyecto.",
+    "benefits": {
+      "habits": "Hábitos ilimitados",
+      "stats": "Estadísticas de toda tu historia, no solo de la última semana",
+      "review": "Tu revisión semanal con Brote (IA)",
+      "more": "Todo lo nuevo de Pro a medida que llegue"
+    },
+    "plans": {
+      "annual": "Anual",
+      "monthly": "Mensual"
+    },
+    "price": {
+      "annual": "{{price}}/año",
+      "monthly": "{{price}}/mes"
+    },
+    "perMonth": "Equivale a {{price}}/mes",
+    "save": "ahorras {{percent}} %",
+    "cancelAnytime": "Cancela cuando quieras",
+    "subscribe": "Suscribirme",
+    "terms": {
+      "annual": "Pagas {{price}} al año.",
+      "monthly": "Pagas {{price}} al mes.",
+      "trial": {
+        "annual_one": "{{count}} día gratis, luego {{price}} al año. Si cancelas antes de que termine la prueba, no se te cobra nada.",
+        "annual_other": "{{count}} días gratis, luego {{price}} al año. Si cancelas antes de que termine la prueba, no se te cobra nada.",
+        "monthly_one": "{{count}} día gratis, luego {{price}} al mes. Si cancelas antes de que termine la prueba, no se te cobra nada.",
+        "monthly_other": "{{count}} días gratis, luego {{price}} al mes. Si cancelas antes de que termine la prueba, no se te cobra nada."
+      },
+      "renewal": "Se renueva automáticamente salvo que canceles al menos 24 horas antes de que termine el periodo. Gestiona o cancela tu suscripción en Ajustes del iPhone → tu nombre → Suscripciones."
+    },
+    "restore": "Restaurar compras",
+    "manage": "Gestionar suscripción",
+    "nothingToRestore": "No encontramos una suscripción activa en tu cuenta de Apple.",
+    "pending": "Tu compra está pendiente de aprobación. Te avisaremos cuando Pro se active.",
+    "failed": "No se pudo completar la compra. Si Apple ya te cobró, toca «Restaurar compras».",
+    "loadFailed": "No pudimos cargar los planes. Revisa tu conexión.",
+    "unavailable": "Muy pronto podrás suscribirte desde aquí.",
+    "settingsRow": "habia Pro",
+    "settingsHint": "Planes, beneficios y restaurar compras",
+    "settingsHintPro": "Eres Pro 💚 · Gestionar suscripción",
+    "habitLimit": {
+      "body": "Con pocos hábitos bien hechos se llega más lejos. Si quieres más, habia Pro te deja crear todos los que necesites.",
+      "cta": "Ver habia Pro",
+      "title_one": "Llegaste a {{count}} hábito",
+      "title_other": "Llegaste a {{count}} hábitos"
+    },
+    "earlyNote": "Por ahora todo habia es gratis mientras crecemos. Suscribirte hoy es apoyar el proyecto, y tu Pro sigue activo cuando estas ventajas empiecen a ser solo de Pro.",
+    "benefitsTitle": "Lo que incluye Pro",
+    "manageFailed": "No se pudo abrir la gestión de tu suscripción. Intenta de nuevo.",
+    "trialBadge_one": "{{count}} día gratis",
+    "trialBadge_other": "{{count}} días gratis",
+    "startTrial_one": "Probar {{count}} día gratis",
+    "startTrial_other": "Probar {{count}} días gratis"
   }
 }

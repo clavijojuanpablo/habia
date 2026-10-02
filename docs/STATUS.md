@@ -121,13 +121,28 @@ open the web fallback there; its "Open habia" button still works.
    OTAs still reach build 3. Native: expo-image-picker (camera only), expo-image-manipulator, react-native-purchases(+ui). `-ui` is unused until the paywall, but ships in build 4 on purpose: it is native, so adding it later would need another store build.
    Photos on circle habits (camera-first check-in, gallery, viewer with retake/delete/report/hide, on-device upload
    queue, deleted after 7 days), social pushes (Edge Function `notify`: cheers, requests, accepts, "ya regó en tu
-   círculo", once per kind/person/day, `profiles.social_push` switch), RevenueCat identity (paywall later by OTA).
+   círculo", once per kind/person/day, `profiles.social_push` switch), habia Pro (below).
+   **habia Pro (decided 2026-10-02):** US$4.99/month · US$34.99/year, 7-day free trial on the yearly plan only,
+   entitlement `pro`, offering `default` (packages `$rc_annual`, `$rc_monthly`); Pro Parejas dropped (circles stay
+   free). Paywall `src/app/paywall.tsx` (Settings → habia Pro; Apple 3.1.2 terms, restore, manage), `usePro()` =
+   store on this phone OR `public.entitlements` (mirror written by Edge Function `revenuecat-webhook`, which re-reads
+   RevenueCat's V1 API on every event). **Limits are OFF** (`PRO_LIMITS_ENABLED` in `src/features/paywall/limits.ts`)
+   until the public launch; turning them on is that flag + an OTA. Only the 5-habit limit is wired; full-history
+   stats and the AI review still need their gates (server-side for the AI, via `entitlements`). **Before turning
+   the limits on:** enforce the habit limit in the database too (trigger reading `entitlements`), since onboarding,
+   the web and direct inserts skip the screen (the paywall's "todo es gratis por ahora" note hides itself with the
+   flag). Check on a device that switching accounts never shows the previous account's Pro.
    Owner steps, in order:
-   1. `npx supabase db push` (`20261002163208_photos_and_push.sql`).
-   2. `npx supabase functions deploy notify` and `npx supabase functions deploy photos-cleanup`.
-   3. Pick a random secret: `npx supabase secrets set CRON_SECRET=<secret>`, put it and the project ref in
-      `supabase/sql/schedule-photo-cleanup.sql` (do not commit it), run it with `npx supabase db query --linked -f …`.
-   4. Optional now: RevenueCat public iOS key as `EXPO_PUBLIC_REVENUECAT_IOS_KEY` in EAS env `production`.
+   1. ✅ `npx supabase db push` (`20261002163208_photos_and_push.sql`).
+   2. ✅ `npx supabase functions deploy notify` and `npx supabase functions deploy photos-cleanup`.
+   3. ✅ CRON_SECRET + vault secret + `supabase/sql/schedule-photo-cleanup.sql` (redeploy photos-cleanup after
+      `verify_jwt = false` landed in `config.toml`).
+   4. habia Pro: App Store Connect (Paid Apps Agreement, Small Business Program, subscription group + 2 products +
+      trial), RevenueCat project (App Store app, products, entitlement `pro`, offering `default`, webhook), then
+      `npx supabase db push` (`20261002192432_entitlements.sql`), secrets `REVENUECAT_WEBHOOK_AUTH` and
+      `REVENUECAT_SECRET_KEY`, `npx supabase functions deploy revenuecat-webhook`, and the public key as
+      `EXPO_PUBLIC_REVENUECAT_IOS_KEY` in EAS env `production` (plain text, not secret). Test with a Sandbox
+      account on the TestFlight build.
    5. `git checkout build-4`, then `npx eas-cli@latest build --profile production --platform ios`: answer yes when
       EAS offers to set up Push Notifications (it creates the APNs key). Then `npx eas-cli@latest submit --platform ios --latest`.
    6. Once build 4 is on the testers' phones: merge `build-4` into `main`; later OTAs target build 4's fingerprint.

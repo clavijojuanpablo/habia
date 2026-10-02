@@ -95,7 +95,7 @@ Testers first (TestFlight with the core), then every Pro feature **before the pu
 - Share cards, referrals, group challenges
 
 ## Phase 4: Monetization ⏳ (before public launch)
-- RevenueCat (in-app) + Stripe (web), paywall, entitlements, Free vs Pro limits
+- ✅ RevenueCat (in-app, iOS): paywall, `entitlements` mirror via webhook, `usePro()`, 5-habit limit behind `PRO_LIMITS_ENABLED` (off until launch) · ⏳ gates for full stats and the AI review · ⏳ Android (Play Billing) · ⏳ Stripe (web)
 - Cosmetics (skins, accessories, garden themes): cosmetic only, some earnable
   - ⚠️ Confirm Stripe accepts a Colombian individual before building web billing; fallbacks: a Merchant of Record (Paddle / Lemon Squeezy) or a US LLC
   - Apple: apply to the Small Business Program (15%). An individual seller shows a personal name and, as an EU DSA trader, a public address

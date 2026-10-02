@@ -6,7 +6,8 @@
     "loading": "Loading…",
     "error": "Something went wrong. Please try again.",
     "optional": "optional",
-    "close": "Close"
+    "close": "Close",
+    "retry": "Retry"
   },
   "auth": {
     "title": "Every action is a seed for the person you want to become.",
@@ -864,5 +865,63 @@
     "notSent": "Your photo couldn't be sent. Open your circle to take another one.",
     "notReady": "One moment: your circle is still loading. Try again in a few seconds.",
     "requiredHint": "This habit comes with a photo: checking it opens the camera. Photos are deleted after 7 days."
+  },
+  "paywall": {
+    "title": "habia Pro",
+    "subtitle": "Take your habits further and help habia keep growing.",
+    "proTitle": "You're Pro! 💚",
+    "proThanks": "Thank you for supporting habia. Every seed you plant also waters this project.",
+    "benefits": {
+      "habits": "Unlimited habits",
+      "stats": "Stats for your whole history, not just the last week",
+      "review": "Your weekly review with Brote (AI)",
+      "more": "Everything new in Pro as it arrives"
+    },
+    "plans": {
+      "annual": "Yearly",
+      "monthly": "Monthly"
+    },
+    "price": {
+      "annual": "{{price}}/year",
+      "monthly": "{{price}}/month"
+    },
+    "perMonth": "Just {{price}}/month",
+    "save": "save {{percent}}%",
+    "cancelAnytime": "Cancel anytime",
+    "subscribe": "Subscribe",
+    "terms": {
+      "annual": "You pay {{price}} per year.",
+      "monthly": "You pay {{price}} per month.",
+      "trial": {
+        "annual_one": "{{count}} day free, then {{price}} per year. Cancel before the trial ends and you won't be charged.",
+        "annual_other": "{{count}} days free, then {{price}} per year. Cancel before the trial ends and you won't be charged.",
+        "monthly_one": "{{count}} day free, then {{price}} per month. Cancel before the trial ends and you won't be charged.",
+        "monthly_other": "{{count}} days free, then {{price}} per month. Cancel before the trial ends and you won't be charged."
+      },
+      "renewal": "Renews automatically unless cancelled at least 24 hours before the end of the period. Manage or cancel in iPhone Settings → your name → Subscriptions."
+    },
+    "restore": "Restore purchases",
+    "manage": "Manage subscription",
+    "nothingToRestore": "We couldn't find an active subscription on your Apple account.",
+    "pending": "Your purchase is waiting for approval. Pro turns on as soon as it's approved.",
+    "failed": "The purchase couldn’t be completed. If Apple already charged you, tap “Restore purchases”.",
+    "loadFailed": "We couldn't load the plans. Check your connection.",
+    "unavailable": "You'll be able to subscribe from here very soon.",
+    "settingsRow": "habia Pro",
+    "settingsHint": "Plans, benefits and restore purchases",
+    "settingsHintPro": "You're Pro 💚 · Manage subscription",
+    "habitLimit": {
+      "body": "A few habits done well go further. If you want more, habia Pro lets you create as many as you need.",
+      "cta": "See habia Pro",
+      "title_one": "You reached {{count}} habit",
+      "title_other": "You reached {{count}} habits"
+    },
+    "earlyNote": "For now all of habia is free while we grow. Subscribing today supports the project, and your Pro stays on when these perks become Pro-only.",
+    "benefitsTitle": "What's in Pro",
+    "manageFailed": "Couldn’t open your subscription settings. Please try again.",
+    "trialBadge_one": "{{count}} day free",
+    "trialBadge_other": "{{count}} days free",
+    "startTrial_one": "Try {{count}} day free",
+    "startTrial_other": "Try {{count}} days free"
   }
 }

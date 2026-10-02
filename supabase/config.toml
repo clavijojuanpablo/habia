@@ -431,3 +431,8 @@ enabled = true
 # CRON_SECRET header instead.
 [functions.photos-cleanup]
 verify_jwt = false
+
+# Called by RevenueCat's servers, not by a signed-in user. The function checks the Authorization
+# header configured in RevenueCat's dashboard (REVENUECAT_WEBHOOK_AUTH) instead.
+[functions.revenuecat-webhook]
+verify_jwt = false

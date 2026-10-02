@@ -228,6 +228,33 @@ export type Database = {
         }
         Relationships: []
       }
+      entitlements: {
+        Row: {
+          pro_until: string | null
+          product_id: string | null
+          store: string | null
+          updated_at: string
+          user_id: string
+          will_renew: boolean
+        }
+        Insert: {
+          pro_until?: string | null
+          product_id?: string | null
+          store?: string | null
+          updated_at?: string
+          user_id: string
+          will_renew?: boolean
+        }
+        Update: {
+          pro_until?: string | null
+          product_id?: string | null
+          store?: string | null
+          updated_at?: string
+          user_id?: string
+          will_renew?: boolean
+        }
+        Relationships: []
+      }
       friendships: {
         Row: {
           accepted_at: string | null
