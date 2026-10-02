@@ -340,7 +340,8 @@ begin
   begin
     perform public.create_circle('Sin usuario', '🌱');
     assert false, 'creating a circle needs a username';
-  exception when raise_exception then null;
+  exception when raise_exception then
+    assert sqlerrm = 'no_username', 'creating a circle fails for the missing username, got ' || sqlerrm;
   end;
 end;
 $$;

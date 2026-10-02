@@ -88,9 +88,9 @@ open the web fallback there; its "Open habia" button still works.
 - `web/`: Astro 7 static site, excluded from the app's tsconfig, ESLint and Metro; pins its own
   tsconfig in `astro.config.mjs` (Vercel installs only `web/` dependencies). `vercel.json` serves
   the AASA as JSON. Apex `habia.app` is primary (`www` redirects to it).
-- Verification baseline: **161 tests / 22 suites green**, typecheck clean, lint clean, site builds
-  8 pages. RLS of the social tables: `supabase/tests/social-rls.sql` (runs on the linked DB inside
-  BEGIN … ROLLBACK, ~30 asserts). Typecheck ~8 s, tests ~8 s, lint ~25 s on this machine.
+- Verification baseline: **176 tests / 26 suites green**, typecheck clean, lint clean, `expo-doctor`
+  21/21, site builds 8 pages. RLS of the social tables: `supabase/tests/social-rls.sql` (runs on the
+  linked DB inside BEGIN … ROLLBACK, ~60 asserts). Typecheck ~8 s, tests ~8 s, lint ~25 s on this machine.
 - CI (typecheck + lint + tests) runs on push and PRs to `main`. Repo: `clavijojuanpablo/habia`.
 - Versioning: `APP_RELEASE` in `src/constants/release.ts` is the version people see (Profile:
   `habia 1.0.1 · build 3 · <update id>`). Bump the patch for every OTA update; a new store binary
@@ -117,6 +117,16 @@ open the web fallback there; its "Open habia" button still works.
    Check it: `curl -X POST <SUPABASE_URL>/functions/v1/weekly-review -H "apikey: <publishable>" -H "Authorization: Bearer <publishable>" -d '{"check":true}'`
    must answer `{"available":true}`.
 
+0. **1.5.0 — stability pass after QA (2026-10-02)** (migration `20261002053613_stability_fixes.sql`:
+   owner runs `npx supabase db push`). Archived habits keep their past in streak/stats (`useHabitHistory`,
+   cut at the archive day); streak window 400 days; logs and circle days page past 1000 rows; blocking hides
+   people inside circles; a circle habit's days are locked to the circle; signup language stored (and the
+   one affected user fixed); data refetches on returning to the app (`focusManager` + `AppState`); analytics
+   get route patterns, not codes; invite links survive signup/onboarding and a missing username is picked on
+   the invite screen; cheers open the sender; a circle with a friend opens its invite. UI: detailed cards on
+   Tus círculos, sticky habit preview, identity below time, full-width icon grid, branch habits editable from
+   the identity. Plus ~15 smaller fixes (timers, FAB, rest-day copy, garden clouds, pending friends, per-account
+   storage keys, AI toggle, weekly review across weeks).
 0. **1.4.0 — one place per thing** (JS only): 🔥 opens your personal streak only; 🫂 opens **Tus círculos** (`src/app/circles.tsx`), the only place to see, create and join circles, each card with its group streak flame. **1:1 shared streaks are gone** (`computeSharedStreak`, the streak tabs and `SharedStreaksPanel` removed): a streak with a friend is a circle of two (the friend page offers "Crear un círculo con …"), so every streak with others is a shared habit and gets photos in build 4. Profile no longer lists circles; friends fold into "Tienes N amigos" (`FriendRow`), leaving room for achievements and the character.
 0. **1.3.2 — one habit per circle** (migration `20261001232448_circle_one_habit.sql`, owner runs `npx supabase db push`; it ends extra shared habits, keeping the oldest). Another habit = another circle. The circle card has one ranking with Esta semana | 30 días | General (up to a year of days); tapping a face or a row opens that person's profile (add as friend). The owner can end the circle's habit (members keep theirs, unlinked); leaving asks whether to keep or archive your linked habit — never deleted. Top bar is now 🔥 streak · 🫂 circles (→ Profile) · 🌱 seeds (→ Garden). Test friends: `supabase/seed/test-friends.sql` (applied 2026-10-02: 4 friends + a pending request from test_carlos; removed by test-cleanup.sql).
 0. **1.3.1 — circle polish:** shared habit card shows today first (big "3/8": red below the threshold, yellow once saved, green at 80 %+; everyone's face lit with ✓ once done) and each person's 30-day consistency as an animated ranking (`consistency-ranking.tsx`, also for the circle's week); the dot grids are gone. Streak tab circles show 🔥 N on the card (lit once today is saved). Shared habits on Today carry a lavender "🤝 circle" tag and edge. Only the circle owner can remove people (RLS + UI).
@@ -199,6 +209,13 @@ stored per account but per device (`habia.northStar.<userId>`): a user on iPhone
 
 ## Known debts
 
+- **Decided in 1.5.0:** two people who block each other inside a shared circle each compute the group's
+  threshold without the other, so they may see slightly different group streaks (privacy wins). The locale
+  backfill moved signups made in English to `en`; someone who later picked Spanish on purpose was
+  indistinguishable from the old default. To try on the iPhone: an invite link opened while signed out,
+  then sign in (it opens ~0.3 s after the tabs appear); "Crear un círculo con …" opens the share sheet
+  ~0.5 s after the circle appears.
+
 - **Social:** `social_days()` only knows logs, so a day with nothing scheduled looks like a miss in
   shared streaks and circle grids ("never miss twice" absorbs one). The stats snapshot is as fresh as
   the friend's last app open ("Actualizado hace N días"). Shared streaks read 60 days ("60+").
@@ -217,9 +234,9 @@ stored per account but per device (`habia.northStar.<userId>`): a user on iPhone
   which no binary has. Before an OTA, `npx expo-updates fingerprint:generate --platform ios` must
   print `f15932ef…` (build 3).
 
-- **Window limit (120 days):** the *current* app-wide streak is computed from the last 121 days,
-  so it caps at 121 (the record is stored in `profiles.best_streak`; fruit uses all-time counts from
-  the `habit_completion_counts` view). Also: the 1% chart tap position is off on web when the tap lands on a line.
+- **Windows:** the streak reads its own 400 days of logs (fixed in 1.5.0; it froze at 121), the garden
+  and stats 120. Past 400 days the record lives in `profiles.best_streak`. Every list query that can
+  pass 1000 rows must page (PostgREST `max_rows` cuts silently): `useLogs` and `circle_habit_days` do.
 
 - Three near-identical Chip components (habit form, identity form, onboarding): move one to
   `src/components/` when a fourth appears. White-on-pastel chip text can be low contrast.

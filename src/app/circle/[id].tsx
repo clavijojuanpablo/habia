@@ -62,7 +62,8 @@ export default function CircleScreen() {
   useEffect(() => {
     if (invite !== '1' || !circle) return;
     router.setParams({ invite: undefined });
-    shareInvite(circle);
+    const timer = setTimeout(() => shareInvite(circle), 500);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [invite, circle]);
 

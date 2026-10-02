@@ -88,6 +88,13 @@ begin
   return new;
 end;
 $$;
+-- Copies whose days were changed under older versions: back to the circle's, or every later
+-- edit of them (time, name, reminder) would hit the lock below.
+update public.habits h
+set rrule = ch.rrule
+from public.circle_habits ch
+where h.circle_habit_id = ch.id and h.rrule is distinct from ch.rrule;
+
 create trigger habits_keep_circle_schedule before insert or update of rrule, circle_habit_id on public.habits
   for each row execute function private.keep_circle_habit_schedule();
 

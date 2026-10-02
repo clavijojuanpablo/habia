@@ -77,4 +77,11 @@ describe('buildSchedule with archived habits', () => {
     const items = buildSchedule([archived], [], addDays(TODAY, -4), TOMORROW, DEFAULT_DAY_BANDS);
     expect(items.map((i) => i.at.getDate())).toEqual([17, 18]);
   });
+
+  it('keeps a check-in made on the archive day itself', () => {
+    const archived = habit({ id: 'old', archived_at: new Date(2026, 8, 19, 12).toISOString() });
+    const log = { habit_id: 'old', occurrence_at: new Date(2026, 8, 19).toISOString(), status: 'done' } as HabitLog;
+    const items = buildSchedule([archived], [log], addDays(TODAY, -4), TOMORROW, DEFAULT_DAY_BANDS);
+    expect(items.map((i) => i.at.getDate())).toEqual([17, 18, 19]);
+  });
 });

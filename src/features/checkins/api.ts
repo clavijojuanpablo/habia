@@ -21,6 +21,9 @@ const logsKey = (from: Date, to: Date) => ['logs', from.toISOString(), to.toISOS
 export function useLogs(from: Date, to: Date) {
   return useQuery({
     queryKey: logsKey(from, to),
+    // The key carries the dates: yesterday's windows (up to 400 days) must not pile up in the
+    // persisted cache, which on the web lives in localStorage (~5 MB).
+    gcTime: 24 * 60 * 60 * 1000,
     queryFn: async () => {
       // The API returns at most 1000 rows per request (PostgREST max_rows) and cuts silently:
       // page through in a stable order so long windows (the streak reads 400 days) are complete.

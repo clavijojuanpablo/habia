@@ -20,7 +20,7 @@ export function TopBar() {
   const { t } = useTranslation();
   const now = useNow();
   const { today } = useTodayRange(now);
-  const { streak } = useStreak(today);
+  const { streak, isLoading: streakLoading } = useStreak(today);
   const { summary } = useGarden(today);
   const { data: circles } = useCircles();
   const circleCount = circles?.circles.length ?? 0;
@@ -31,7 +31,7 @@ export function TopBar() {
         emoji="🔥"
         value={streak.current}
         color="streak"
-        dimmed={!streak.todayDone && !streak.todayRest}
+        dimmed={streakLoading || (!streak.todayDone && !streak.todayRest)}
         label={t('topBar.streak', { count: streak.current })}
         onPress={() => router.push('/streak')}
       />

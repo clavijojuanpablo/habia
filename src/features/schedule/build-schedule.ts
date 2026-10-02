@@ -1,7 +1,7 @@
 import type { HabitLog } from '@/features/checkins/api';
 import type { Habit } from '@/features/habits/api';
 import { activeAnchorId, stackDepth } from '@/features/habits/stacking';
-import { formatLocalDate, getOccurrences, occurrenceKey, startOfDay } from '@/lib/recurrence';
+import { addDays, formatLocalDate, getOccurrences, occurrenceKey, startOfDay } from '@/lib/recurrence';
 import { getDayBand, type DayBand, type DayBandConfig } from '@/lib/time/day-bands';
 
 export type ScheduleBand = DayBand | 'anytime';
@@ -23,11 +23,15 @@ export type ScheduledItem = {
   log?: HabitLog;
 };
 
-/** An archived habit's schedule ends the day it was archived (that day no longer asks for it). */
+/** The start of the day an archived habit was archived, or null. */
+const archivedDay = (habit: Habit) => (habit.archived_at ? startOfDay(new Date(habit.archived_at)) : null);
+
+/** An archived habit's schedule runs through its archive day; that day only keeps what was logged. */
 const endOf = (habit: Habit, to: Date) => {
-  if (!habit.archived_at) return to;
-  const archivedDay = startOfDay(new Date(habit.archived_at));
-  return archivedDay < to ? archivedDay : to;
+  const day = archivedDay(habit);
+  if (!day) return to;
+  const end = addDays(day, 1);
+  return end < to ? end : to;
 };
 
 /** Joins habits' occurrences in [from, to) with their logs, sorted for display. */
@@ -61,9 +65,15 @@ export function buildSchedule(
     }),
   );
 
+  // On its archive day, an archived habit only keeps a check-in already made: it asks for nothing more.
+  const kept = items.filter((item) => {
+    const day = archivedDay(item.habit);
+    return !day || item.at < day || !!item.log;
+  });
+
   // Resolve stacks from the root down, so a chain A → B → C inherits A's slot.
-  const byHabitAndDay = new Map(items.map((item) => [`${item.habit.id}|${formatLocalDate(item.at)}`, item]));
-  const ordered = [...items].sort((a, b) => a.depth - b.depth);
+  const byHabitAndDay = new Map(kept.map((item) => [`${item.habit.id}|${formatLocalDate(item.at)}`, item]));
+  const ordered = [...kept].sort((a, b) => a.depth - b.depth);
   for (const item of ordered) {
     const anchorId = activeAnchorId(item.habit, habits);
     if (!anchorId || item.hasTime) continue;
@@ -75,7 +85,7 @@ export function buildSchedule(
     item.band = anchor.band;
   }
 
-  return items.sort(
+  return kept.sort(
     (a, b) =>
       a.displayAt.getTime() - b.displayAt.getTime() ||
       Number(a.displayHasTime) - Number(b.displayHasTime) ||

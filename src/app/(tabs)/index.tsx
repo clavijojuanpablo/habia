@@ -163,6 +163,7 @@ export default function TodayScreen() {
     toggleItem(item, status);
     const next = completing ? nextInChain(item, items) : undefined;
     setChainNextKey(next?.key ?? null);
+    if (next) setIdentityStepId(null);
 
     // Celebrate only when *this* check-in is the one that finishes the day,
     // never when simply opening an already-complete day.
