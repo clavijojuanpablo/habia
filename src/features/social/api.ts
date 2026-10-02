@@ -425,6 +425,7 @@ export function useJoinCircle() {
 
 /** Leave a circle yourself, or (as its owner) remove someone from it. */
 export function useRemoveCircleMember() {
+  const queryClient = useQueryClient();
   const invalidate = useSocialInvalidate();
   return useMutation({
     ...ONLINE_ONLY,
@@ -436,7 +437,8 @@ export function useRemoveCircleMember() {
         .eq('user_id', input.userId);
       if (error) throw toSocialError(error);
     },
-    onSuccess: invalidate,
+    // The server unlinks your copy of the shared habit when you leave or are removed.
+    onSuccess: () => Promise.all([invalidate(), queryClient.invalidateQueries({ queryKey: ['habits'] })]),
   });
 }
 

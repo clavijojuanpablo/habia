@@ -29,7 +29,9 @@ queryClient.setMutationDefaults(TOGGLE_LOG_KEY, {
     Promise.all([
       queryClient.invalidateQueries({ queryKey: ['logs'] }),
       queryClient.invalidateQueries({ queryKey: ['votes'] }),
-        queryClient.invalidateQueries({ queryKey: ['completions'] }),
+      queryClient.invalidateQueries({ queryKey: ['completions'] }),
+      // A replayed check-in on a shared habit moves its circle's numbers too.
+      queryClient.invalidateQueries({ queryKey: ['social'] }),
     ]),
 });
 

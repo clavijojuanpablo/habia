@@ -141,7 +141,8 @@
     "window": "Time window",
     "where": "Where?",
     "whereHint": "The exact place. Together with the time, deciding where makes you much more likely to do it.",
-    "wherePlaceholder": "In bed, at my desk…"
+    "wherePlaceholder": "In bed, at my desk…",
+    "frequencyFromCircle": "The circle sets the days: {{frequency}}. Your time and reminder are yours."
   },
   "weekdays": {
     "MO": "M",
@@ -274,7 +275,13 @@
     "habitCount_one": "{{count}} habit",
     "habitCount_other": "{{count}} habits",
     "deleteConfirm": "Delete this identity? Its habits are kept without an identity.",
-    "becoming": "Becoming"
+    "becoming": "Becoming",
+    "habitsTitle": "Habits on this branch",
+    "habitsEmpty": "No habit feeds this branch yet.",
+    "remove": "Remove",
+    "removeHabit": "Remove {{habit}} from this branch",
+    "addHabitsHint": "Tap a habit so it feeds this branch too:",
+    "addHabit": "Add {{habit}} to this branch"
   },
   "topBar": {
     "streak_one": "{{count}}-day streak",
@@ -768,16 +775,18 @@
       "leaveHabitTitle": "Before leaving “{{name}}”",
       "leaveHabitBody": "“{{habit}}” holds your seeds and history. What should we do with it?",
       "leaveKeep": "Leave and keep it in my list",
-      "leaveArchive": "Leave and remove it from my list"
+      "leaveArchive": "Leave and remove it from my list",
+      "withFriendName": "{{name}} and me"
     },
     "invite": {
-      "needUsername": "First, pick your username so they recognize you.",
+      "needUsername": "First, pick your username so they recognize you. Then we carry on with the invite.",
       "pickUsername": "Pick my username",
       "goFriends": "Go to my profile",
       "addTitle": "Add @{{username}}?",
       "addBody": "You’ll see each other’s streak and planted days, and cheer each other on. Never your habits.",
       "joinTitle": "Join the circle?",
-      "joinBody": "You were invited to a circle to keep each other company. You’ll see which days each one plants, never their habits."
+      "joinBody": "You were invited to a circle to keep each other company. You’ll see which days each one plants, never their habits.",
+      "retry": "Try again"
     },
     "circleHabit": {
       "title": "Circle habits",

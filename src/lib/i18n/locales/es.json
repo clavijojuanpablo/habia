@@ -141,7 +141,8 @@
     "window": "Ventana horaria",
     "where": "¿Dónde?",
     "whereHint": "El lugar concreto. Junto con la hora, decidir dónde hace mucho más probable que lo hagas.",
-    "wherePlaceholder": "En mi cama, en el escritorio…"
+    "wherePlaceholder": "En mi cama, en el escritorio…",
+    "frequencyFromCircle": "Los días los define el círculo: {{frequency}}. Tu hora y tu recordatorio sí son tuyos."
   },
   "weekdays": {
     "MO": "L",
@@ -274,7 +275,13 @@
     "habitCount_one": "{{count}} hábito",
     "habitCount_other": "{{count}} hábitos",
     "deleteConfirm": "¿Eliminar esta identidad? Sus hábitos se conservan sin identidad.",
-    "becoming": "Convirtiéndome en"
+    "becoming": "Convirtiéndome en",
+    "habitsTitle": "Hábitos de esta rama",
+    "habitsEmpty": "Aún ningún hábito alimenta esta rama.",
+    "remove": "Quitar",
+    "removeHabit": "Quitar {{habit}} de esta rama",
+    "addHabitsHint": "Toca un hábito para que también alimente esta rama:",
+    "addHabit": "Sumar {{habit}} a esta rama"
   },
   "topBar": {
     "streak_one": "Racha de {{count}} día",
@@ -768,16 +775,18 @@
       "leaveHabitTitle": "Antes de salir de «{{name}}»",
       "leaveHabitBody": "«{{habit}}» tiene tus semillas y tu historia. ¿Qué hacemos con él?",
       "leaveKeep": "Salir y conservarlo en mi lista",
-      "leaveArchive": "Salir y quitarlo de mi lista"
+      "leaveArchive": "Salir y quitarlo de mi lista",
+      "withFriendName": "{{name}} y yo"
     },
     "invite": {
-      "needUsername": "Antes, elige tu usuario: así te reconocerán.",
+      "needUsername": "Antes, elige tu usuario: así te reconocerán. Luego seguimos con la invitación.",
       "pickUsername": "Elegir mi usuario",
       "goFriends": "Ir a mi perfil",
       "addTitle": "¿Agregar a @{{username}}?",
       "addBody": "Podrán ver la racha y los días sembrados del otro, y animarse. Nunca sus hábitos.",
       "joinTitle": "¿Unirte al círculo?",
-      "joinBody": "Te invitaron a un círculo para acompañarse. Verán qué días siembra cada uno, nunca sus hábitos."
+      "joinBody": "Te invitaron a un círculo para acompañarse. Verán qué días siembra cada uno, nunca sus hábitos.",
+      "retry": "Reintentar"
     },
     "circleHabit": {
       "title": "Hábitos del círculo",

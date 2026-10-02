@@ -9,7 +9,7 @@ import {
   useFonts,
 } from '@expo-google-fonts/nunito';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider, usePathname, type ErrorBoundaryProps } from 'expo-router';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider, useSegments, type ErrorBoundaryProps } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
@@ -22,8 +22,10 @@ import { SessionProvider, useSession } from '@/features/auth/session-provider';
 import { useProfile } from '@/features/profile/api';
 import { useTheme } from '@/hooks/use-theme';
 import { useTimezoneSync } from '@/features/profile/use-timezone-sync';
+import { usePendingInvite } from '@/features/social/use-pending-invite';
 import { trackScreen } from '@/lib/analytics';
 import { reportError, wrapRoot } from '@/lib/crash-reporting';
+import { startAppFocusWatcher } from '@/lib/app-focus';
 import { startNetworkWatcher, syncOnlineState } from '@/lib/network';
 import { persister, queryClient } from '@/lib/query/client';
 
@@ -57,6 +59,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 
 function RootLayout() {
   useEffect(startNetworkWatcher, []);
+  useEffect(startAppFocusWatcher, []);
 
   return (
     <PersistQueryClientProvider
@@ -105,8 +108,11 @@ function RootNavigator() {
   const { session, isLoading } = useSession();
   const { data: profile, isLoading: profileLoading } = useProfile();
   useTimezoneSync();
-  const pathname = usePathname();
-  useEffect(() => trackScreen(pathname), [pathname]);
+  // The route pattern, not the URL: /join/[code] and /friend/[id] never send invite codes,
+  // usernames or ids to analytics. Route groups like (tabs) are dropped.
+  const segments = useSegments();
+  const screen = '/' + segments.filter((part) => !part.startsWith('(')).join('/');
+  useEffect(() => trackScreen(screen), [screen]);
   // First run: no habits yet, so we welcome the user before showing the app.
   const needsOnboarding = !!session && !!profile && !profile.onboarded_at;
   const [fontsLoaded, fontError] = useFonts({
@@ -126,6 +132,10 @@ function RootNavigator() {
   useEffect(() => {
     if (ready) SplashScreen.hideAsync();
   }, [ready]);
+
+  usePendingInvite(
+    !ready || (session && !profile) ? 'loading' : !session ? 'signedOut' : needsOnboarding ? 'onboarding' : 'ready',
+  );
 
   if (!mounted) return null;
 

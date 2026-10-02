@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
 
 import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
@@ -10,10 +10,11 @@ import { Brote } from '@/features/mascot/brote';
 import { useTheme } from '@/hooks/use-theme';
 
 import { SocialError, useMySocialProfile } from '../api';
+import { UsernameSetup } from './username-setup';
 
 /**
  * Where an invite link lands (habia.app/add/…, habia.app/join/…): one clear question and one button.
- * Without a username yet, it sends you to pick one first.
+ * Without a username yet, you pick one right here and carry on with the same invite.
  */
 export function InviteLanding({
   title,
@@ -39,7 +40,7 @@ export function InviteLanding({
 
   return (
     <ThemedView style={styles.flex}>
-      <View style={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <Brote mood="cheer" size={96} />
         <ThemedText type="subtitle" style={styles.center}>
           {title}
@@ -49,12 +50,21 @@ export function InviteLanding({
         </ThemedText>
         {me.isLoading ? (
           <ActivityIndicator color={theme.primary} />
+        ) : me.isError ? (
+          // Offline with nothing cached: not the same as "you have no username yet".
+          <>
+            <ThemedText type="small" themeColor="danger" style={styles.center}>
+              {t('social.errors.generic')}
+            </ThemedText>
+            <Button variant="secondary" label={t('social.invite.retry')} onPress={() => me.refetch()} />
+          </>
         ) : !me.data ? (
+          // Pick a username right here: once created, this same screen offers the invite.
           <>
             <ThemedText type="small" style={styles.center}>
               {t('social.invite.needUsername')}
             </ThemedText>
-            <Button label={t('social.invite.pickUsername')} onPress={() => router.replace('/profile')} />
+            <UsernameSetup />
           </>
         ) : done ? (
           <>
@@ -71,7 +81,7 @@ export function InviteLanding({
             {t(`social.errors.${errorCode}`)}
           </ThemedText>
         )}
-      </View>
+      </ScrollView>
     </ThemedView>
   );
 }
@@ -79,7 +89,7 @@ export function InviteLanding({
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   content: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     padding: Spacing.four,
     gap: Spacing.three,

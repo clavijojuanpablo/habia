@@ -15,9 +15,11 @@ type Props = {
   submitting?: boolean;
   onSubmit: (input: IdentityInput) => void;
   onDelete?: () => void;
+  /** Shown above Save: the branch's habits when editing. */
+  children?: React.ReactNode;
 };
 
-export function IdentityForm({ identity, submitting, onSubmit, onDelete }: Props) {
+export function IdentityForm({ identity, submitting, onSubmit, onDelete, children }: Props) {
   const { t } = useTranslation();
   const theme = useTheme();
   const [statement, setStatement] = useState(identity?.statement ?? '');
@@ -74,6 +76,8 @@ export function IdentityForm({ identity, submitting, onSubmit, onDelete }: Props
           ))}
         </View>
       </View>
+
+      {children}
 
       <Button label={t('common.save')} onPress={submit} loading={submitting} />
       {onDelete && <Button label={t('common.delete')} variant="danger" onPress={onDelete} />}

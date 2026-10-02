@@ -71,6 +71,9 @@ export function CheerRow({ toUser, name }: { toUser: string; name: string }) {
   );
 }
 
+/** Answering a cheer happens on the sender's page, where the cheers are. */
+const openSender = (cheer: Cheer) => router.push({ pathname: '/friend/[id]', params: { id: cheer.from_user } });
+
 const cheerLine = (t: TFunction, cheer: Cheer) =>
   t(`social.cheer.received.${cheer.kind}`, { name: cheer.from?.display_name ?? '' });
 
@@ -83,12 +86,19 @@ export function CheersInbox({ cheers }: { cheers: Cheer[] }) {
     <SocialCard>
       <ThemedText type="heading">💌 {t('social.cheer.inboxTitle')}</ThemedText>
       {cheers.slice(0, 8).map((cheer) => (
-        <View key={cheer.id} style={styles.inboxRow}>
+        <Pressable
+          key={cheer.id}
+          onPress={() => openSender(cheer)}
+          accessibilityRole="button"
+          style={({ pressed }) => [styles.inboxRow, { opacity: pressed ? 0.6 : 1 }]}>
           <SocialAvatar color={cheer.from?.color ?? theme.primary} size={32} />
           <ThemedText type={cheer.seen_at ? 'small' : 'smallBold'} style={styles.flex}>
             {CHEER_EMOJI[cheer.kind]} {cheerLine(t, cheer)}
           </ThemedText>
-        </View>
+          <ThemedText type="heading" themeColor="textSecondary">
+            ›
+          </ThemedText>
+        </Pressable>
       ))}
     </SocialCard>
   );
@@ -125,7 +135,7 @@ export function CheersNotice({ cheers }: { cheers: Cheer[] }) {
             label={t('social.cheer.answer')}
             onPress={() => {
               markSeen.mutate();
-              router.navigate('/profile');
+              openSender(first);
             }}
           />
         </View>

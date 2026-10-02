@@ -5,6 +5,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useDeleteIdentity, useIdentities, useSaveIdentity } from '@/features/identities/api';
 import { IdentityForm } from '@/features/identities/components/identity-form';
+import { IdentityHabits } from '@/features/identities/components/identity-habits';
 import { useTheme } from '@/hooks/use-theme';
 import { confirmAction } from '@/lib/confirm';
 
@@ -37,8 +38,9 @@ export default function EditIdentityScreen() {
             () => remove.mutate(identity.id, { onSuccess: () => router.back() }),
             { ok: t('common.delete'), cancel: t('common.cancel') },
           )
-        }
-      />
+        }>
+        <IdentityHabits identity={identity} />
+      </IdentityForm>
     </ThemedView>
   );
 }

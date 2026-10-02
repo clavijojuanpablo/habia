@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Share, ScrollView, StyleSheet, View } from 'react-native';
 
@@ -15,6 +15,7 @@ import {
   useRegenerateCircleCode,
   useRemoveCircleMember,
   useSocialProfiles,
+  type Circle,
 } from '@/features/social/api';
 import { useArchiveHabit, useHabits } from '@/features/habits/api';
 import { CircleHabitCard } from '@/features/social/components/circle-habit-card';
@@ -28,7 +29,7 @@ import { confirmAction } from '@/lib/confirm';
 export default function CircleScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, invite } = useLocalSearchParams<{ id: string; invite?: string }>();
   const { session } = useSession();
   const me = session?.user.id ?? '';
   const now = useNow();
@@ -52,6 +53,18 @@ export default function CircleScreen() {
 
   const profileById = Object.fromEntries((profiles.data ?? []).map((p) => [p.user_id, p]));
   const isOwner = members.some((m) => m.user_id === me && m.role === 'owner');
+
+  const shareInvite = (target: Circle) =>
+    Share.share({
+      message: t('social.circle.shareMessage', { name: target.name, link: circleInviteLink(target.invite_code) }),
+    });
+  // Created from a friend's page: open the invite right away, once.
+  useEffect(() => {
+    if (invite !== '1' || !circle) return;
+    router.setParams({ invite: undefined });
+    shareInvite(circle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [invite, circle]);
 
   if (circles.isLoading) {
     return (
@@ -135,14 +148,7 @@ export default function CircleScreen() {
           </View>
           <Button
             label={t('social.circle.share')}
-            onPress={() =>
-              Share.share({
-                message: t('social.circle.shareMessage', {
-                  name: circle.name,
-                  link: circleInviteLink(circle.invite_code),
-                }),
-              })
-            }
+            onPress={() => shareInvite(circle)}
           />
           {isOwner && (
             <Button

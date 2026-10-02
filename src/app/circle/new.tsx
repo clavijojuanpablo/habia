@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
@@ -17,7 +17,9 @@ export default function NewCircleScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
   const create = useCreateCircle();
-  const [name, setName] = useState('');
+  // From a friend's page: a circle of two, named after them, and the invite opens right away.
+  const { friend } = useLocalSearchParams<{ friend?: string }>();
+  const [name, setName] = useState(friend ? t('social.circle.withFriendName', { name: friend }) : '');
   const [emoji, setEmoji] = useState(EMOJIS[0]);
   const errorCode = create.error instanceof SocialError ? create.error.code : create.error ? 'generic' : null;
 
@@ -65,7 +67,10 @@ export default function NewCircleScreen() {
           onPress={() =>
             create.mutate(
               { name: name.trim(), emoji },
-              { onSuccess: (id) => router.replace({ pathname: '/circle/[id]', params: { id } }) },
+              {
+                onSuccess: (id) =>
+                  router.replace({ pathname: '/circle/[id]', params: friend ? { id, invite: '1' } : { id } }),
+              },
             )
           }
         />

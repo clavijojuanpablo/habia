@@ -272,5 +272,78 @@ begin
 end;
 $$;
 
+-- ============ one habit per circle, ending it, schedule lock, blocking inside a circle ============
+do $$
+declare
+  a uuid := '00000000-0000-4000-8000-00000000000a';
+  b uuid := '00000000-0000-4000-8000-00000000000b';
+  c uuid := '00000000-0000-4000-8000-00000000000c';
+  d uuid := '00000000-0000-4000-8000-00000000000d';
+  circle uuid;
+  code text;
+  shared uuid;
+  hab_b uuid;
+  n int;
+begin
+  perform set_config('role', 'authenticated', true);
+
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  select public.create_circle('Bloqueos', '🧪') into circle;
+  select invite_code into code from public.circles where id = circle;
+  insert into public.circle_habits (circle_id, name, created_by) values (circle, 'Leer', a) returning id into shared;
+  begin
+    insert into public.circle_habits (circle_id, name, created_by) values (circle, 'Otro', a);
+    assert false, 'one active habit per circle';
+  exception when unique_violation then null;
+  end;
+  insert into public.habits (user_id, name, circle_habit_id) values (a, 'Leer', shared);
+
+  perform set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
+  perform public.join_circle(code);
+  insert into public.habits (user_id, name, circle_habit_id) values (b, 'Leer', shared) returning id into hab_b;
+  begin
+    update public.habits set rrule = 'FREQ=WEEKLY;BYDAY=MO' where id = hab_b;
+    assert false, 'a member cannot change the shared schedule';
+  exception when raise_exception then null;
+  end;
+  update public.habits set window_start = '07:00' where id = hab_b;
+  get diagnostics n = row_count;
+  assert n = 1, 'a member can still pick their own time';
+  update public.circle_habits set archived_at = now() where id = shared;
+  get diagnostics n = row_count;
+  assert n = 0, 'a member cannot end the shared habit';
+  select count(*) into n from public.circle_habit_members(shared);
+  assert n = 2, 'B sees both participants before any block';
+
+  -- A blocks B: inside the circle they no longer see each other's days.
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  perform public.block_user(b);
+  select count(*) into n from public.circle_habit_members(shared);
+  assert n = 1, 'A no longer sees blocked B in the shared habit';
+  perform set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
+  select count(*) into n from public.circle_habit_members(shared) where user_id = a;
+  assert n = 0, 'B no longer sees A who blocked them';
+
+  -- The owner ends the habit: everyone keeps theirs, unlinked.
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  update public.circle_habits set archived_at = now() where id = shared;
+  perform set_config('role', 'none', true);
+  select count(*) into n from public.habits where circle_habit_id = shared;
+  assert n = 0, 'ending the shared habit unlinks every copy';
+  select count(*) into n from public.habits where id = hab_b and archived_at is null;
+  assert n = 1, 'members keep their habit';
+
+  -- Creating a circle needs a username.
+  delete from public.social_profiles where user_id = d;
+  perform set_config('role', 'authenticated', true);
+  perform set_config('request.jwt.claims', json_build_object('sub', d, 'role', 'authenticated')::text, true);
+  begin
+    perform public.create_circle('Sin usuario', '🌱');
+    assert false, 'creating a circle needs a username';
+  exception when raise_exception then null;
+  end;
+end;
+$$;
+
 select 'ALL SOCIAL RLS CHECKS PASSED' as result;
 rollback;

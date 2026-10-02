@@ -18,6 +18,7 @@ import { formatTimeLabel } from '@/lib/time/format';
 import { useHabits, type Habit, type HabitInput } from '../api';
 import { wouldCreateCycle } from '../stacking';
 
+// prettier-ignore
 const EMOJIS = [
   '💧', '📚', '🧘', '🏃', '💪', '🥗', '😴', '🦷', '🧴', '☕', '✍️', '🎸',
   '🎨', '🧠', '💊', '🚶', '🚴', '🏊', '🙏', '🌱', '📵', '🧹', '💻', '📝',
@@ -70,9 +71,7 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
   const [anchorId, setAnchorId] = useState<string | null>(habit?.anchor_habit_id ?? null);
   const [contextLabel, setContextLabel] = useState(habit?.context_label ?? '');
   const [identityId, setIdentityId] = useState<string | null>(habit?.identity_id ?? null);
-  const [showExtras, setShowExtras] = useState(
-    !!habit?.two_minute_version || !!habit?.implementation_intention,
-  );
+  const [showExtras, setShowExtras] = useState(!!habit?.two_minute_version || !!habit?.implementation_intention);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const { data: allHabits = [] } = useHabits();
@@ -80,6 +79,8 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
   // Possible anchors: any other active habit that would not close a loop.
   const anchorOptions = allHabits.filter((h) => h.id !== habit?.id && !wouldCreateCycle(allHabits, habit?.id, h.id));
 
+  // A habit joined from a circle keeps the circle's days (the database enforces it too).
+  const linkedToCircle = !!habit?.circle_habit_id;
   const stacked = cueType === 'after_habit';
   const hourly = kind === 'interval_hours';
   const hasTime = !stacked && (!!time || hourly);
@@ -107,7 +108,7 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
       name: name.trim(),
       icon,
       color,
-      rrule: toRRule(frequency),
+      rrule: linkedToCircle && habit ? habit.rrule : toRRule(frequency),
       // A stacked habit has no clock time of its own: it happens right after its anchor.
       window_start: stacked ? null : toDbTime(time),
       window_end: hourly && !stacked ? toDbTime(windowEnd) : null,
@@ -132,267 +133,310 @@ export function HabitForm({ habit, submitting, onSubmit, onArchive }: Props) {
 
   return (
     <View style={styles.flex}>
+      {/* Sticky: the habit as it will look in Today stays in view while the rest is filled in. */}
+      <View style={[styles.previewBar, { backgroundColor: theme.background }]}>
+        <Preview icon={icon} color={color} name={name.trim() || t('habit.namePreview')} subtitle={previewSubtitle} />
+      </View>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-      <Preview icon={icon} color={color} name={name.trim() || t('habit.namePreview')} subtitle={previewSubtitle} />
-
-      <Section title={t('habit.name')}>
-        <TextField
-          placeholder={t('habit.namePlaceholder')}
-          value={name}
-          onChangeText={setName}
-          error={errors.name}
-          autoFocus={!habit}
-          maxLength={80}
-        />
-      </Section>
-
-      <Section title={t('habit.icon')}>
-        <View style={styles.wrap}>
-          {EMOJIS.map((emoji) => (
-            <Pressable
-              key={emoji}
-              onPress={() => setIcon(emoji)}
-              style={[
-                styles.emoji,
-                { backgroundColor: emoji === icon ? color + '33' : theme.backgroundElement },
-                emoji === icon && { borderColor: color },
-              ]}>
-              <ThemedText style={styles.emojiText}>{emoji}</ThemedText>
-            </Pressable>
-          ))}
-        </View>
-      </Section>
-
-      <Section title={t('habit.color')}>
-        <View style={styles.wrap}>
-          {HabitColors.map((c) => (
-            <Pressable
-              key={c}
-              onPress={() => setColor(c)}
-              accessibilityLabel={c}
-              style={[styles.swatch, { backgroundColor: c }, c === color && { borderColor: theme.text }]}
-            />
-          ))}
-        </View>
-      </Section>
-
-      <Section title={t('habit.frequency')}>
-        <View style={styles.wrap}>
-          {FREQUENCY_KINDS.filter((k) => !(stacked && k === 'interval_hours')).map((k) => (
-            <Chip key={k} label={t(`habit.freq.${k}`)} selected={kind === k} color={color} onPress={() => setKind(k)} />
-          ))}
-        </View>
-
-        {kind === 'interval_days' && (
-          <Stepper
-            label={t('habit.everyNDays', { count: intervalDays })}
-            value={intervalDays}
-            min={2}
-            max={14}
-            onChange={setIntervalDays}
-          />
-        )}
-        {kind === 'weekdays' && (
-          <>
-            <View style={styles.weekdays}>
-              {WEEKDAYS.map((d) => (
-                <Chip
-                  key={d}
-                  label={t(`weekdays.${d}`)}
-                  selected={days.includes(d)}
-                  color={color}
-                  round
-                  onPress={() => setDays((cur) => (cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d]))}
-                />
-              ))}
-            </View>
-            {errors.days && (
-              <ThemedText type="small" style={{ color: theme.danger }}>
-                {errors.days}
-              </ThemedText>
-            )}
-          </>
-        )}
-        {hourly && (
-          <Stepper
-            label={t('habit.everyNHours', { count: intervalHours })}
-            value={intervalHours}
-            min={1}
-            max={12}
-            onChange={setIntervalHours}
-          />
-        )}
-      </Section>
-
-      {/* Identity: which part of "who you want to be" this habit votes for */}
-      <Section title={`${t('habit.identity')} (${t('common.optional')})`}>
-        <View style={styles.wrap}>
-          <Chip
-            label={t('habit.identityNone')}
-            selected={identityId === null}
-            color={color}
-            onPress={() => setIdentityId(null)}
-          />
-          {identities.map((identity) => (
-            <Chip
-              key={identity.id}
-              label={`${identityEmoji(identity)} ${identity.statement}`}
-              selected={identityId === identity.id}
-              color={color}
-              onPress={() => setIdentityId(identity.id)}
-            />
-          ))}
-          <Chip label={`+ ${t('identity.new')}`} selected={false} color={color} onPress={() => router.push('/identity/new')} />
-        </View>
-      </Section>
-
-      {/* Cue: the first law, "make it obvious" */}
-      <Section title={t('habit.cue')}>
-        <View style={styles.wrap}>
-          {CUE_TYPES.map((c) => (
-            <Chip
-              key={c}
-              label={t(`habit.cueType.${c}`)}
-              selected={cueType === c}
-              color={color}
-              onPress={() => {
-                setCueType(c);
-                // An hourly habit cannot also be "right after" another habit.
-                if (c === 'after_habit' && kind === 'interval_hours') setKind('daily');
-              }}
-            />
-          ))}
-        </View>
-
-        {stacked && (
-          <>
-            <ThemedText type="small" themeColor="textSecondary">
-              {t('habit.anchorHint')}
-            </ThemedText>
-            {anchorOptions.length === 0 ? (
-              <ThemedText type="small" themeColor="textSecondary">
-                {t('habit.noAnchors')}
-              </ThemedText>
-            ) : (
-              <View style={styles.wrap}>
-                {anchorOptions.map((h) => (
-                  <Chip
-                    key={h.id}
-                    label={`${h.icon} ${h.name}`}
-                    selected={anchorId === h.id}
-                    color={color}
-                    onPress={() => setAnchorId(h.id)}
-                  />
-                ))}
-              </View>
-            )}
-            {errors.anchor && (
-              <ThemedText type="small" style={{ color: theme.danger }}>
-                {errors.anchor}
-              </ThemedText>
-            )}
-          </>
-        )}
-
-        {cueType === 'context' && (
+        <Section title={t('habit.name')}>
           <TextField
-            placeholder={t('habit.contextPlaceholder')}
-            hint={t('habit.contextHint')}
-            value={contextLabel}
-            onChangeText={setContextLabel}
-            error={errors.context}
+            placeholder={t('habit.namePlaceholder')}
+            value={name}
+            onChangeText={setName}
+            error={errors.name}
+            autoFocus={!habit}
+            maxLength={80}
           />
-        )}
-      </Section>
-
-      {!stacked && (
-        <Section title={hourly ? t('habit.window') : t('habit.time')}>
-        <View style={styles.row}>
-          <View style={styles.flex}>
-            <TimePicker label={hourly ? t('habit.windowStart') : undefined} value={time} onChange={setTime} />
-          </View>
-          {hourly && (
-            <View style={styles.flex}>
-              <TimePicker label={t('habit.windowEnd')} value={windowEnd} onChange={setWindowEnd} clearable={false} />
-            </View>
-          )}
-        </View>
-        {!hourly && (
-          <ThemedText type="small" themeColor="textSecondary">
-            {t('habit.timeHint')}
-          </ThemedText>
-        )}
         </Section>
-      )}
 
-      {hasTime && (
-        <Section title={t('habit.reminder')}>
+        <Section title={t('habit.icon')}>
+          <IconGrid icon={icon} color={color} onChange={setIcon} />
+        </Section>
+
+        <Section title={t('habit.color')}>
           <View style={styles.wrap}>
-            {REMINDER_OPTIONS.map((option) => (
-              <Chip
-                key={String(option)}
-                label={
-                  option === null
-                    ? t('habit.reminderNone')
-                    : option === 0
-                      ? t('habit.reminderAtTime')
-                      : t('habit.reminderBefore', { count: option })
-                }
-                selected={reminder === option}
-                color={color}
-                onPress={() => setReminder(option)}
+            {HabitColors.map((c) => (
+              <Pressable
+                key={c}
+                onPress={() => setColor(c)}
+                accessibilityLabel={c}
+                style={[styles.swatch, { backgroundColor: c }, c === color && { borderColor: theme.text }]}
               />
             ))}
           </View>
-          {!REMINDERS_SUPPORTED && reminder !== null && (
+        </Section>
+
+        <Section title={t('habit.frequency')}>
+          {linkedToCircle ? (
             <ThemedText type="small" themeColor="textSecondary">
-              {t('habit.reminderWebHint')}
+              🫂 {t('habit.frequencyFromCircle', { frequency: t(`habit.freq.${kind}`) })}
             </ThemedText>
+          ) : (
+            <>
+              <View style={styles.wrap}>
+                {FREQUENCY_KINDS.filter((k) => !(stacked && k === 'interval_hours')).map((k) => (
+                  <Chip
+                    key={k}
+                    label={t(`habit.freq.${k}`)}
+                    selected={kind === k}
+                    color={color}
+                    onPress={() => setKind(k)}
+                  />
+                ))}
+              </View>
+
+              {kind === 'interval_days' && (
+                <Stepper
+                  label={t('habit.everyNDays', { count: intervalDays })}
+                  value={intervalDays}
+                  min={2}
+                  max={14}
+                  onChange={setIntervalDays}
+                />
+              )}
+              {kind === 'weekdays' && (
+                <>
+                  <View style={styles.weekdays}>
+                    {WEEKDAYS.map((d) => (
+                      <Chip
+                        key={d}
+                        label={t(`weekdays.${d}`)}
+                        selected={days.includes(d)}
+                        color={color}
+                        round
+                        onPress={() => setDays((cur) => (cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d]))}
+                      />
+                    ))}
+                  </View>
+                  {errors.days && (
+                    <ThemedText type="small" style={{ color: theme.danger }}>
+                      {errors.days}
+                    </ThemedText>
+                  )}
+                </>
+              )}
+              {hourly && (
+                <Stepper
+                  label={t('habit.everyNHours', { count: intervalHours })}
+                  value={intervalHours}
+                  min={1}
+                  max={12}
+                  onChange={setIntervalHours}
+                />
+              )}
+            </>
           )}
         </Section>
-      )}
 
-      {/* Optional science extras, hidden by default so the form is not overwhelming */}
-      <Pressable
-        onPress={() => setShowExtras(!showExtras)}
-        accessibilityRole="button"
-        accessibilityState={{ expanded: showExtras }}
-        style={[styles.disclosure, { backgroundColor: theme.backgroundElement }]}>
-        <ThemedText type="heading" style={styles.flex}>
-          {t('habit.moreOptions')}
-        </ThemedText>
-        <ThemedText type="heading" themeColor="textSecondary">
-          {showExtras ? '▾' : '▸'}
-        </ThemedText>
-      </Pressable>
+        {/* Cue: the first law, "make it obvious" */}
+        <Section title={t('habit.cue')}>
+          <View style={styles.wrap}>
+            {CUE_TYPES.map((c) => (
+              <Chip
+                key={c}
+                label={t(`habit.cueType.${c}`)}
+                selected={cueType === c}
+                color={color}
+                onPress={() => {
+                  setCueType(c);
+                  // An hourly habit cannot also be "right after" another habit.
+                  if (c === 'after_habit' && kind === 'interval_hours') setKind('daily');
+                }}
+              />
+            ))}
+          </View>
 
-      {showExtras && (
-        <Section title={t('habit.extrasTitle')}>
-          <TextField
-            label={t('habit.twoMinute')}
-            hint={t('habit.twoMinuteHint')}
-            placeholder={t('habit.twoMinutePlaceholder')}
-            value={twoMinute}
-            onChangeText={setTwoMinute}
-          />
-          <TextField
-            label={t('habit.where')}
-            hint={t('habit.whereHint')}
-            placeholder={t('habit.wherePlaceholder')}
-            value={where}
-            onChangeText={setWhere}
-          />
+          {stacked && (
+            <>
+              <ThemedText type="small" themeColor="textSecondary">
+                {t('habit.anchorHint')}
+              </ThemedText>
+              {anchorOptions.length === 0 ? (
+                <ThemedText type="small" themeColor="textSecondary">
+                  {t('habit.noAnchors')}
+                </ThemedText>
+              ) : (
+                <View style={styles.wrap}>
+                  {anchorOptions.map((h) => (
+                    <Chip
+                      key={h.id}
+                      label={`${h.icon} ${h.name}`}
+                      selected={anchorId === h.id}
+                      color={color}
+                      onPress={() => setAnchorId(h.id)}
+                    />
+                  ))}
+                </View>
+              )}
+              {errors.anchor && (
+                <ThemedText type="small" style={{ color: theme.danger }}>
+                  {errors.anchor}
+                </ThemedText>
+              )}
+            </>
+          )}
+
+          {cueType === 'context' && (
+            <TextField
+              placeholder={t('habit.contextPlaceholder')}
+              hint={t('habit.contextHint')}
+              value={contextLabel}
+              onChangeText={setContextLabel}
+              error={errors.context}
+            />
+          )}
         </Section>
-      )}
 
-      {onArchive && <Button label={t('common.delete')} variant="danger" onPress={onArchive} />}
-        </ScrollView>
+        {!stacked && (
+          <Section title={hourly ? t('habit.window') : t('habit.time')}>
+            <View style={styles.row}>
+              <View style={styles.flex}>
+                <TimePicker label={hourly ? t('habit.windowStart') : undefined} value={time} onChange={setTime} />
+              </View>
+              {hourly && (
+                <View style={styles.flex}>
+                  <TimePicker
+                    label={t('habit.windowEnd')}
+                    value={windowEnd}
+                    onChange={setWindowEnd}
+                    clearable={false}
+                  />
+                </View>
+              )}
+            </View>
+            {!hourly && (
+              <ThemedText type="small" themeColor="textSecondary">
+                {t('habit.timeHint')}
+              </ThemedText>
+            )}
+          </Section>
+        )}
 
-        {/* Save always reachable, without scrolling to the bottom */}
-        <View style={[styles.footer, { backgroundColor: theme.background, borderTopColor: theme.border }]}>
-          <Button label={t('common.save')} onPress={submit} loading={submitting} />
-        </View>
+        {hasTime && (
+          <Section title={t('habit.reminder')}>
+            <View style={styles.wrap}>
+              {REMINDER_OPTIONS.map((option) => (
+                <Chip
+                  key={String(option)}
+                  label={
+                    option === null
+                      ? t('habit.reminderNone')
+                      : option === 0
+                        ? t('habit.reminderAtTime')
+                        : t('habit.reminderBefore', { count: option })
+                  }
+                  selected={reminder === option}
+                  color={color}
+                  onPress={() => setReminder(option)}
+                />
+              ))}
+            </View>
+            {!REMINDERS_SUPPORTED && reminder !== null && (
+              <ThemedText type="small" themeColor="textSecondary">
+                {t('habit.reminderWebHint')}
+              </ThemedText>
+            )}
+          </Section>
+        )}
+
+        {/* Identity: which part of "who you want to be" this habit votes for */}
+        <Section title={`${t('habit.identity')} (${t('common.optional')})`}>
+          <View style={styles.wrap}>
+            <Chip
+              label={t('habit.identityNone')}
+              selected={identityId === null}
+              color={color}
+              onPress={() => setIdentityId(null)}
+            />
+            {identities.map((identity) => (
+              <Chip
+                key={identity.id}
+                label={`${identityEmoji(identity)} ${identity.statement}`}
+                selected={identityId === identity.id}
+                color={color}
+                onPress={() => setIdentityId(identity.id)}
+              />
+            ))}
+            <Chip
+              label={`+ ${t('identity.new')}`}
+              selected={false}
+              color={color}
+              onPress={() => router.push('/identity/new')}
+            />
+          </View>
+        </Section>
+
+        {/* Optional science extras, hidden by default so the form is not overwhelming */}
+        <Pressable
+          onPress={() => setShowExtras(!showExtras)}
+          accessibilityRole="button"
+          accessibilityState={{ expanded: showExtras }}
+          style={[styles.disclosure, { backgroundColor: theme.backgroundElement }]}>
+          <ThemedText type="heading" style={styles.flex}>
+            {t('habit.moreOptions')}
+          </ThemedText>
+          <ThemedText type="heading" themeColor="textSecondary">
+            {showExtras ? '▾' : '▸'}
+          </ThemedText>
+        </Pressable>
+
+        {showExtras && (
+          <Section title={t('habit.extrasTitle')}>
+            <TextField
+              label={t('habit.twoMinute')}
+              hint={t('habit.twoMinuteHint')}
+              placeholder={t('habit.twoMinutePlaceholder')}
+              value={twoMinute}
+              onChangeText={setTwoMinute}
+            />
+            <TextField
+              label={t('habit.where')}
+              hint={t('habit.whereHint')}
+              placeholder={t('habit.wherePlaceholder')}
+              value={where}
+              onChangeText={setWhere}
+            />
+          </Section>
+        )}
+
+        {onArchive && <Button label={t('common.delete')} variant="danger" onPress={onArchive} />}
+      </ScrollView>
+
+      {/* Save always reachable, without scrolling to the bottom */}
+      <View style={[styles.footer, { backgroundColor: theme.background, borderTopColor: theme.border }]}>
+        <Button label={t('common.save')} onPress={submit} loading={submitting} />
       </View>
+    </View>
+  );
+}
+
+const ICON_GAP = Spacing.two;
+const ICON_MIN = 44;
+
+/** Emoji tiles that fill the row edge to edge: as many columns as fit, each tile stretched to share the width. */
+function IconGrid({ icon, color, onChange }: { icon: string; color: string; onChange: (icon: string) => void }) {
+  const theme = useTheme();
+  const [width, setWidth] = useState(0);
+  const columns = Math.max(1, Math.floor((width + ICON_GAP) / (ICON_MIN + ICON_GAP)));
+  const size = width > 0 ? (width - ICON_GAP * (columns - 1)) / columns : ICON_MIN;
+  return (
+    <View style={styles.wrap} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
+      {EMOJIS.map((emoji) => (
+        <Pressable
+          key={emoji}
+          onPress={() => onChange(emoji)}
+          accessibilityRole="radio"
+          accessibilityState={{ selected: emoji === icon }}
+          style={[
+            styles.emoji,
+            { width: size, height: Math.min(size, 56) },
+            { backgroundColor: emoji === icon ? color + '33' : theme.backgroundElement },
+            emoji === icon && { borderColor: color },
+          ]}>
+          <ThemedText style={styles.emojiText}>{emoji}</ThemedText>
+        </Pressable>
+      ))}
+    </View>
   );
 }
 
@@ -446,18 +490,13 @@ function Chip({
     <Pressable
       onPress={onPress}
       accessibilityState={{ selected }}
-      style={[
-        styles.chip,
-        round && styles.chipRound,
-        { backgroundColor: selected ? color : theme.backgroundElement },
-      ]}>
+      style={[styles.chip, round && styles.chipRound, { backgroundColor: selected ? color : theme.backgroundElement }]}>
       <ThemedText type="smallBold" style={{ color: selected ? theme.onPrimary : theme.text }}>
         {label}
       </ThemedText>
     </Pressable>
   );
 }
-
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
@@ -499,9 +538,16 @@ const styles = StyleSheet.create({
   weekdays: { flexDirection: 'row', justifyContent: 'space-between' },
   row: { flexDirection: 'row', gap: Spacing.three },
   hint: { marginTop: -Spacing.three },
+  previewBar: {
+    paddingHorizontal: Spacing.three,
+    paddingTop: Spacing.three,
+    paddingBottom: Spacing.two,
+    width: '100%',
+    maxWidth: MaxContentWidth,
+    alignSelf: 'center',
+    zIndex: 1,
+  },
   emoji: {
-    width: 44,
-    height: 44,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',

@@ -115,7 +115,7 @@ export default function FriendScreen() {
             <Button
               variant="secondary"
               label={t('social.friend.circleTogether', { name })}
-              onPress={() => router.push('/circle/new')}
+              onPress={() => router.push({ pathname: '/circle/new', params: { friend: name } })}
             />
           ) : (
             <Button
