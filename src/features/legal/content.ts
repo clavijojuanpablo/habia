@@ -6,7 +6,7 @@
  * TODO before launch: confirm JURISDICTION and have a lawyer review.
  */
 
-export const LEGAL_UPDATED = '2026-10-02';
+export const LEGAL_UPDATED = '2026-10-03';
 export const CONTACT_EMAIL = 'hola@habia.app';
 const JURISDICTION_ES = 'Colombia';
 const JURISDICTION_EN = 'Colombia';
@@ -28,6 +28,7 @@ const privacyEs: LegalDocument = {
         '• Preferencias: idioma, tema (claro u oscuro), franjas del día y zona horaria.',
         '• Si activas la revisión semanal con IA: las revisiones que Brote te escribe.',
         '• Si agregas amigos o te unes a círculos: tu usuario, nombre visible y color; tus amistades, solicitudes y círculos; los ánimos que envías y recibes; y las personas que bloqueas o reportas.',
+        '• Si un hábito de tu círculo va con foto: las fotos que tomas con la cámara (se borran a los 7 días). Si activas los avisos: el identificador de notificaciones de tu teléfono.',
         '• Datos técnicos mínimos que genera la conexión con nuestro proveedor (por ejemplo, la dirección IP en los registros del servidor).',
         '• Informes de errores: si la app falla, un informe técnico (qué falló, modelo de teléfono, versión del sistema) asociado al identificador interno de tu cuenta (un código, no tu nombre ni tu correo).',
         '• Datos de uso, si no los desactivas: qué pantallas abres, acciones como crear un hábito o marcarlo y tus respuestas a la pregunta breve "¿habia te está ayudando?", asociados al mismo identificador interno, junto con el modelo de tu teléfono, su idioma y su zona horaria. Nunca los nombres de tus hábitos ni tu correo. Nos dicen qué funciona y qué no.',
@@ -50,10 +51,11 @@ const privacyEs: LegalDocument = {
       body: [
         '• Supabase, que aloja la base de datos y gestiona el inicio de sesión.',
         '• Sentry, que recibe los informes de errores para que podamos arreglarlos.',
+        '• Expo (el servicio de notificaciones push), solo si las activas: recibe el identificador de notificaciones de tu teléfono y el texto de cada aviso (por ejemplo, el nombre de quien te animó) para entregarlo a Apple o Google.',
         '• PostHog, que recibe los datos de uso. Puedes desactivarlos en Ajustes → Ayudar a mejorar habia.',
         '• Anthropic (Claude), solo si activas la revisión semanal con IA (desactivada por defecto; Ajustes → Revisión semanal con IA). Una vez por semana le enviamos un resumen de tu semana para que escriba la revisión: los nombres de tus hábitos, sus identidades y lugares, cuántas veces los hiciste y tu nombre visible si lo pusiste; nunca tu correo. Según sus condiciones para la API, Anthropic no usa estos datos para entrenar sus modelos. Puedes desactivarla cuando quieras.',
         '• Tus amigos y las personas de tus círculos, solo si agregas amigos o círculos: ven tu usuario, nombre y color, tu racha y tu récord, tu constancia de los últimos 30 días, tus semillas, la etapa de tu árbol y qué días completaste algún hábito o descansaste a propósito. Nunca los nombres de tus hábitos, tus identidades ni tu correo. Puedes eliminar amigos, salir de un círculo o bloquear a alguien en cualquier momento.',
-        '• Las personas de un círculo, solo para los hábitos del círculo a los que te unes: ven ese hábito (que el círculo definió), desde cuándo te uniste y qué días lo cumpliste o descansaste. Si sales del círculo o archivas el hábito, deja de compartirse.',
+        '• Las personas de un círculo, solo para los hábitos del círculo a los que te unes: ven ese hábito (que el círculo definió), desde cuándo te uniste, qué días lo cumpliste o descansaste y, si el hábito va con foto, las fotos que tomes con la cámara. Las fotos se borran a los 7 días; puedes borrar la tuya antes, quien creó el círculo puede ocultarla y cualquiera puede reportarla. Si sales del círculo o archivas el hábito, deja de compartirse.',
         'Nadie más recibe tus datos, salvo obligación legal.',
       ],
     },
@@ -61,6 +63,7 @@ const privacyEs: LegalDocument = {
       heading: 'Notificaciones',
       body: [
         'Los recordatorios se programan en tu propio teléfono: para enviarlos no hace falta que tus horarios salgan del dispositivo. Puedes desactivarlos desde la app o desde los ajustes del sistema.',
+        'Los avisos de amigos y círculos (ánimos, solicitudes, «ya regó en tu círculo») se envían desde nuestro servidor, nunca más de uno igual al día. Se apagan en Ajustes → Avisos de amigos y círculos, o desde los ajustes del sistema.',
       ],
     },
     {
@@ -180,6 +183,7 @@ const privacyEn: LegalDocument = {
         '• Preferences: language, theme, day bands and time zone.',
         '• If you turn on the AI weekly review: the reviews Brote writes for you.',
         '• If you add friends or join circles: your username, display name and color; your friendships, requests and circles; the cheers you send and receive; and the people you block or report.',
+        '• If a habit of your circle comes with a photo: the photos you take with the camera (deleted after 7 days). If you turn on notifications: your phone’s notification id.',
         '• Minimal technical data produced by the connection to our provider (for example, the IP address in server logs).',
         '• Error reports: if the app crashes, a technical report (what failed, phone model, OS version) tied to your account’s internal id (a code, not your name or email).',
         '• Usage data, unless you turn it off: which screens you open, actions such as creating or checking a habit and your answers to the short "is habia helping?" question, tied to the same internal id, along with your phone model, language and time zone. Never your habit names or email. It tells us what works and what does not.',
@@ -202,10 +206,11 @@ const privacyEn: LegalDocument = {
       body: [
         '• Supabase, which hosts the database and handles sign-in.',
         '• Sentry, which receives error reports so we can fix them.',
+        '• Expo (the push notification service), only if you turn them on: it receives your phone’s notification id and the text of each notice (for example, the name of who cheered you on) to deliver it through Apple or Google.',
         '• PostHog, which receives the usage data. You can turn it off in Settings → Help improve habia.',
         '• Anthropic (Claude), only if you turn on the AI weekly review (off by default; Settings → AI weekly review). Once a week we send it a summary of your week so it can write the review: your habit names, their identities and places, how many times you did them and your display name if you set one; never your email. Under its API terms, Anthropic does not use this data to train its models. You can turn it off at any time.',
         '• Your friends and the people in your circles, only if you add friends or circles: they see your username, name and color, your streak and record, your consistency over the last 30 days, your seeds, your tree stage and which days you completed a habit or rested on purpose. Never your habit names, your identities or your email. You can remove friends, leave a circle or block someone at any time.',
-        '• The people in a circle, only for the circle habits you join: they see that habit (defined by the circle), since when you joined and which days you did it or rested. If you leave the circle or archive the habit, it is no longer shared.',
+        '• The people in a circle, only for the circle habits you join: they see that habit (defined by the circle), since when you joined, which days you did it or rested and, if the habit comes with a photo, the photos you take with the camera. Photos are deleted after 7 days; you can delete yours sooner, the circle’s creator can hide it and anyone can report it. If you leave the circle or archive the habit, it is no longer shared.',
         'Nobody else receives your data, unless legally required.',
       ],
     },
@@ -213,6 +218,7 @@ const privacyEn: LegalDocument = {
       heading: 'Notifications',
       body: [
         'Reminders are scheduled on your own device: your schedule does not need to leave the phone to deliver them. You can turn them off in the app or in system settings.',
+        'Friends and circles notifications (cheers, requests, “already watered in your circle”) are sent from our server, never the same one twice a day. Turn them off in Settings → Friends & circles notifications, or in system settings.',
       ],
     },
     {

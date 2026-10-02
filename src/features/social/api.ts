@@ -288,12 +288,12 @@ export function useBlockUser() {
   });
 }
 
-export type ReportReason = 'offensive_name' | 'harassment' | 'spam' | 'other';
+export type ReportReason = 'offensive_name' | 'harassment' | 'spam' | 'other' | 'inappropriate_photo';
 
 export function useReportUser() {
   return useMutation({
     ...ONLINE_ONLY,
-    mutationFn: async (input: { reported: string; reason: ReportReason }) => {
+    mutationFn: async (input: { reported: string; reason: ReportReason; photo_id?: string }) => {
       const { error } = await supabase.from('reports').insert(input);
       // Already reported for this reason: it is on file, which is what the user wanted.
       if (error && error.code !== '23505') throw toSocialError(error);
@@ -480,6 +480,8 @@ export type CircleHabit = {
   icon: string;
   rrule: string;
   two_minute_version: string | null;
+  /** The circle asks for a camera photo with each check-in. */
+  photo_required: boolean;
 };
 
 /** Every active shared habit in the caller's circles (RLS only returns circles they belong to). */
@@ -491,7 +493,7 @@ export function useCircleHabits(enabled = true) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('circle_habits')
-        .select('id, circle_id, name, icon, rrule, two_minute_version')
+        .select('id, circle_id, name, icon, rrule, two_minute_version, photo_required')
         .is('archived_at', null)
         .order('created_at');
       if (error) throw error;
@@ -589,5 +591,85 @@ export function useEndCircleHabit() {
       if (error) throw toSocialError(error);
     },
     onSuccess: () => Promise.all([invalidate(), queryClient.invalidateQueries({ queryKey: ['habits'] })]),
+  });
+}
+
+// ============ photos of a shared habit ============
+
+export type CirclePhoto = {
+  id: string;
+  user_id: string;
+  day: string;
+  path: string;
+  /** Signed URL, valid for an hour (the bucket is private). */
+  url: string;
+  hidden: boolean;
+};
+
+const PHOTO_URL_SECONDS = 60 * 60;
+
+/** Today's photos of a shared habit, each with a short-lived signed URL. */
+export function useCircleHabitPhotos(circleHabitId: string, day: string) {
+  const { session } = useSession();
+  return useQuery({
+    queryKey: socialKey(session?.user.id, 'photos', circleHabitId, day),
+    enabled: !!session,
+    // Shorter than the URLs' life, so a cached URL is never already expired.
+    staleTime: 20 * 60 * 1000,
+    gcTime: 50 * 60 * 1000,
+    queryFn: async (): Promise<CirclePhoto[]> => {
+      const { data, error } = await supabase
+        .from('circle_habit_photos')
+        .select('id, user_id, day, path, hidden_at')
+        .eq('circle_habit_id', circleHabitId)
+        .eq('day', day);
+      if (error) throw error;
+      if (data.length === 0) return [];
+      const { data: signed, error: signError } = await supabase.storage
+        .from('circle-photos')
+        .createSignedUrls(
+          data.map((p) => p.path),
+          PHOTO_URL_SECONDS,
+        );
+      if (signError) throw signError;
+      const urlByPath = Object.fromEntries((signed ?? []).map((s) => [s.path, s.signedUrl]));
+      return data
+        .filter((p) => urlByPath[p.path])
+        .map((p) => ({
+          id: p.id,
+          user_id: p.user_id,
+          day: p.day,
+          path: p.path,
+          url: urlByPath[p.path],
+          hidden: !!p.hidden_at,
+        }));
+    },
+  });
+}
+
+/** The circle's owner hides a photo for everyone but its author. */
+export function useHideCirclePhoto() {
+  const invalidate = useSocialInvalidate();
+  return useMutation({
+    ...ONLINE_ONLY,
+    mutationFn: async (photoId: string) => {
+      const { error } = await supabase.rpc('hide_circle_photo', { p_photo: photoId });
+      if (error) throw toSocialError(error);
+    },
+    onSuccess: invalidate,
+  });
+}
+
+/** Removes your own photo of the day (file and row). */
+export function useDeleteMyPhoto() {
+  const invalidate = useSocialInvalidate();
+  return useMutation({
+    ...ONLINE_ONLY,
+    mutationFn: async (photo: { id: string; path: string }) => {
+      await supabase.storage.from('circle-photos').remove([photo.path]);
+      const { error } = await supabase.from('circle_habit_photos').delete().eq('id', photo.id);
+      if (error) throw toSocialError(error);
+    },
+    onSuccess: invalidate,
   });
 }

@@ -9,12 +9,14 @@ import { useNotificationTap, type NotificationData } from '@/features/reminders/
 import { useReminderSync } from '@/features/reminders/use-reminder-sync';
 import { useFriendships, useMySocialProfile } from '@/features/social/api';
 import { useUnseenCheers } from '@/features/social/components/cheers';
+import { usePhotoQueue } from '@/features/social/use-photo-queue';
 import { SocialStatsSync } from '@/features/social/use-sync-social-stats';
 import { track } from '@/lib/analytics';
 
 export default function TabsLayout() {
   const { t } = useTranslation();
   useReminderSync();
+  usePhotoQueue();
   const { data: socialProfile } = useMySocialProfile();
   // A dot on Profile when someone is waiting: a request to answer or a cheer not yet seen.
   const { data: friendships } = useFriendships();

@@ -753,7 +753,8 @@
         "offensive_name": "Nombre ofensivo",
         "harassment": "Me molesta o acosa",
         "spam": "Spam",
-        "other": "Otra cosa"
+        "other": "Otra cosa",
+        "inappropriate_photo": "Foto inapropiada"
       },
       "thanks": "Gracias por avisarnos. Lo revisaremos. Si te incomoda, también puedes bloquear."
     },
@@ -827,7 +828,9 @@
       },
       "end": "Terminar el hábito del círculo",
       "endConfirm": "¿Terminar «{{name}}» para el círculo? Cada uno conserva el hábito en su lista, ya sin compartir. Luego pueden proponer otro.",
-      "todayAll": "¡Todo el círculo lo hizo hoy! 🎉"
+      "todayAll": "¡Todo el círculo lo hizo hoy! 🎉",
+      "withPhoto": "Con foto",
+      "withPhotoHint": "Al marcarlo, cada uno toma una foto con la cámara (no de la galería). Se ven en el círculo y se borran a los 7 días."
     },
     "friendsCount_one": "Tienes {{count}} amigo",
     "friendsCount_other": "Tienes {{count}} amigos",
@@ -845,5 +848,19 @@
   "push": {
     "social": "Avisos de amigos y círculos",
     "socialHint": "Te avisamos cuando alguien te anime, te envíe una solicitud o riegue en tu círculo. Nunca más de un aviso igual al día."
+  },
+  "photos": {
+    "add": "Sube tu foto de hoy",
+    "retake": "Tomar otra",
+    "delete": "Borrar mi foto",
+    "deleteConfirm": "¿Borrar tu foto de hoy? Tu hábito sigue marcado.",
+    "hide": "Ocultar en el círculo",
+    "report": "Reportar foto",
+    "of": "Foto de {{name}}",
+    "hiddenByOwner": "Quien creó el círculo ocultó esta foto: solo tú la ves.",
+    "cameraDenied": "Para la foto del hábito, habia necesita la cámara. Actívala en Ajustes → habia → Cámara.",
+    "failed": "No se pudo tomar la foto. Intenta de nuevo.",
+    "queued": "Sin conexión: tu foto se subirá en cuanto vuelva internet.",
+    "requiredHint": "Este hábito va con foto: al marcarlo se abre la cámara. Las fotos se borran a los 7 días."
   }
 }

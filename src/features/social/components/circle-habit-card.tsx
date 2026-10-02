@@ -1,17 +1,30 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
 import { FontFamily, Radius, Spacing } from '@/constants/theme';
 import { useSession } from '@/features/auth/session-provider';
 import { useTheme } from '@/hooks/use-theme';
+import { showNotice } from '@/lib/confirm';
+import { formatLocalDate } from '@/lib/recurrence';
 
-import { SocialError, useCircleHabitProgress, useJoinCircleHabit, type CircleHabit, type SocialProfile } from '../api';
+import {
+  SocialError,
+  useCircleHabitPhotos,
+  useCircleHabitProgress,
+  useJoinCircleHabit,
+  type CircleHabit,
+  type CirclePhoto,
+  type SocialProfile,
+} from '../api';
 import { computeCircleHabit, todayTier, type RankingPeriod } from '../circle-habit-streak';
+import { enqueueHabitPhoto, takeHabitPhoto } from '../photos';
 import { ConsistencyRanking } from './consistency-ranking';
+import { PhotoViewer } from './photo-viewer';
 import { SocialAvatar } from './social-avatar';
 import { SocialCard } from './social-card';
 
@@ -24,10 +37,12 @@ export function CircleHabitCard({
   habit,
   profiles,
   today,
+  isOwner,
 }: {
   habit: CircleHabit;
   profiles: Record<string, SocialProfile>;
   today: Date;
+  isOwner: boolean;
 }) {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -36,6 +51,33 @@ export function CircleHabitCard({
   const progress = useCircleHabitProgress(habit.id, today);
   const join = useJoinCircleHabit();
   const [period, setPeriod] = useState<RankingPeriod>('month');
+  const queryClient = useQueryClient();
+  const day = formatLocalDate(today);
+  const photos = useCircleHabitPhotos(habit.id, day);
+  const photoOf = (userId: string) => photos.data?.find((p) => p.user_id === userId);
+  const [viewing, setViewing] = useState<CirclePhoto | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  // Your photo of today: taken now with the camera, sent (or queued) and shown once it arrives.
+  const addPhoto = async () => {
+    const photo = await takeHabitPhoto().catch(() => null);
+    if (photo?.status !== 'ok') {
+      if (photo?.status === 'denied') showNotice(t('photos.cameraDenied'));
+      return;
+    }
+    setViewing(null);
+    setUploading(true);
+    const sent = await enqueueHabitPhoto({
+      circleId: habit.circle_id,
+      circleHabitId: habit.id,
+      userId: me,
+      day,
+      base64: photo.base64,
+    });
+    setUploading(false);
+    if (!sent) showNotice(t('photos.queued'));
+    queryClient.invalidateQueries({ queryKey: ['social'] });
+  };
 
   if (!progress.data) {
     return (
@@ -83,6 +125,28 @@ export function CircleHabitCard({
           </ThemedText>
         </View>
       </View>
+
+      {/* Today's photos first: the proof is the picture. */}
+      {!!photos.data?.length && (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.gallery}>
+          {photos.data.map((photo) => (
+            <Pressable
+              key={photo.id}
+              onPress={() => setViewing(photo)}
+              accessibilityRole="button"
+              accessibilityLabel={t('photos.of', { name: nameOf(photo.user_id) })}
+              style={styles.galleryItem}>
+              <Image
+                source={{ uri: photo.url }}
+                style={[styles.galleryPhoto, { borderColor: colorOf(photo.user_id) }]}
+              />
+              <ThemedText type="caption" numberOfLines={1} style={styles.faceName}>
+                {nameOf(photo.user_id)}
+              </ThemedText>
+            </Pressable>
+          ))}
+        </ScrollView>
+      )}
 
       {/* Today */}
       {members.length === 0 ? (
@@ -189,6 +253,23 @@ export function CircleHabitCard({
         </>
       )}
 
+      {joined && group.today.carriers.includes(me) && !photoOf(me) && photos.isSuccess && (
+        <Button variant="secondary" label={`📸 ${t('photos.add')}`} loading={uploading} onPress={addPhoto} />
+      )}
+      {habit.photo_required && (
+        <ThemedText type="caption" themeColor="textSecondary">
+          📸 {t('photos.requiredHint')}
+        </ThemedText>
+      )}
+      <PhotoViewer
+        photo={viewing}
+        name={viewing ? nameOf(viewing.user_id) : ''}
+        mine={viewing?.user_id === me}
+        isOwner={isOwner}
+        onRetake={addPhoto}
+        onClose={() => setViewing(null)}
+      />
+
       {!joined && (
         <Button label={t('social.circleHabit.join')} loading={join.isPending} onPress={() => join.mutate(habit)} />
       )}
@@ -240,6 +321,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   checkText: { fontSize: 12, lineHeight: 14, fontFamily: FontFamily.black },
+  gallery: { gap: Spacing.two },
+  galleryItem: { width: 100, gap: Spacing.half },
+  galleryPhoto: { width: 100, height: 130, borderRadius: Radius.md, borderWidth: 3 },
   faceName: { textAlign: 'center', alignSelf: 'stretch' },
   rankingHeader: { flexDirection: 'row', alignItems: 'center' },
   periods: { flexDirection: 'row', padding: Spacing.half, borderRadius: Radius.pill },

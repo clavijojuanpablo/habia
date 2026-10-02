@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { TextField } from '@/components/text-field';
@@ -25,6 +25,7 @@ export default function NewCircleHabitScreen() {
   const [minimum, setMinimum] = useState('');
   const [daily, setDaily] = useState(true);
   const [days, setDays] = useState<Weekday[]>(['MO', 'WE', 'FR']);
+  const [withPhoto, setWithPhoto] = useState(false);
 
   const valid = name.trim().length > 0 && (daily || days.length > 0);
   const errorCode = create.error instanceof SocialError ? create.error.code : create.error ? 'generic' : null;
@@ -92,6 +93,21 @@ export default function NewCircleHabitScreen() {
           </View>
         )}
 
+        <View style={[styles.photoRow, { backgroundColor: theme.backgroundElement }]}>
+          <View style={styles.flex}>
+            <ThemedText type="smallBold">📸 {t('social.circleHabit.withPhoto')}</ThemedText>
+            <ThemedText type="caption" themeColor="textSecondary">
+              {t('social.circleHabit.withPhotoHint')}
+            </ThemedText>
+          </View>
+          <Switch
+            value={withPhoto}
+            onValueChange={setWithPhoto}
+            trackColor={{ true: theme.primary, false: theme.border }}
+            accessibilityLabel={t('social.circleHabit.withPhoto')}
+          />
+        </View>
+
         {errorCode && (
           <ThemedText type="small" themeColor="danger">
             {t(`social.errors.${errorCode}`)}
@@ -109,6 +125,7 @@ export default function NewCircleHabitScreen() {
                 icon,
                 two_minute_version: minimum.trim() || null,
                 rrule: toRRule(daily ? { kind: 'daily' } : { kind: 'weekdays', days }),
+                photo_required: withPhoto,
               },
               { onSuccess: () => router.back() },
             )
@@ -120,6 +137,13 @@ export default function NewCircleHabitScreen() {
 }
 
 const styles = StyleSheet.create({
+  photoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.three,
+    padding: Spacing.three,
+    borderRadius: Radius.lg,
+  },
   flex: { flex: 1 },
   content: {
     padding: Spacing.three,

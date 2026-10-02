@@ -753,7 +753,8 @@
         "offensive_name": "Offensive name",
         "harassment": "Bothering or harassing me",
         "spam": "Spam",
-        "other": "Something else"
+        "other": "Something else",
+        "inappropriate_photo": "Inappropriate photo"
       },
       "thanks": "Thanks for telling us. We’ll review it. If it bothers you, you can also block."
     },
@@ -827,7 +828,9 @@
       },
       "end": "End the circle's habit",
       "endConfirm": "End “{{name}}” for the circle? Everyone keeps the habit in their list, no longer shared. You can suggest another one after.",
-      "todayAll": "The whole circle did it today! 🎉"
+      "todayAll": "The whole circle did it today! 🎉",
+      "withPhoto": "With a photo",
+      "withPhotoHint": "When checking it, everyone takes a photo with the camera (not from the gallery). The circle sees them; they are deleted after 7 days."
     },
     "friendsCount_one": "You have {{count}} friend",
     "friendsCount_other": "You have {{count}} friends",
@@ -845,5 +848,19 @@
   "push": {
     "social": "Friends & circles notifications",
     "socialHint": "We let you know when someone cheers you on, sends a request or waters in your circle. Never the same nudge twice a day."
+  },
+  "photos": {
+    "add": "Add your photo for today",
+    "retake": "Take another",
+    "delete": "Delete my photo",
+    "deleteConfirm": "Delete your photo for today? Your habit stays checked.",
+    "hide": "Hide in the circle",
+    "report": "Report photo",
+    "of": "{{name}}'s photo",
+    "hiddenByOwner": "The circle's creator hid this photo: only you can see it.",
+    "cameraDenied": "habia needs the camera for the habit's photo. Turn it on in Settings → habia → Camera.",
+    "failed": "Couldn't take the photo. Try again.",
+    "queued": "Offline: your photo will upload as soon as you're back online.",
+    "requiredHint": "This habit comes with a photo: checking it opens the camera. Photos are deleted after 7 days."
   }
 }

@@ -1,5 +1,14 @@
 import { Alert, Platform } from 'react-native';
 
+/** Cross-platform one-button notice (React Native's Alert has no web implementation). */
+export function showNotice(message: string) {
+  if (Platform.OS === 'web') {
+    window.alert(message);
+    return;
+  }
+  Alert.alert(message);
+}
+
 /**
  * Cross-platform destructive confirmation: a native alert on iOS/Android,
  * `window.confirm` on web (React Native's Alert has no web implementation).

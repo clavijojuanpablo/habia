@@ -27,6 +27,7 @@ import { trackScreen } from '@/lib/analytics';
 import { reportError, wrapRoot } from '@/lib/crash-reporting';
 import { startAppFocusWatcher } from '@/lib/app-focus';
 import { startNetworkWatcher, syncOnlineState } from '@/lib/network';
+import { usePurchasesIdentity } from '@/lib/purchases';
 import { persister, queryClient } from '@/lib/query/client';
 
 SplashScreen.preventAutoHideAsync();
@@ -108,6 +109,7 @@ function RootNavigator() {
   const { session, isLoading } = useSession();
   const { data: profile, isLoading: profileLoading } = useProfile();
   useTimezoneSync();
+  usePurchasesIdentity(session?.user.id);
   // The route pattern, not the URL: /join/[code] and /friend/[id] never send invite codes,
   // usernames or ids to analytics. Route groups like (tabs) are dropped.
   const segments = useSegments();

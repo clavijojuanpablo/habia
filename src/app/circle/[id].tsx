@@ -124,7 +124,7 @@ export default function CircleScreen() {
             {t(isOwner ? 'social.circleHabit.emptyOwner' : 'social.circleHabit.emptyMember')}
           </ThemedText>
         )}
-        {sharedHabit && <CircleHabitCard habit={sharedHabit} profiles={profileById} today={today} />}
+        {sharedHabit && <CircleHabitCard habit={sharedHabit} profiles={profileById} today={today} isOwner={isOwner} />}
         {sharedHabit && isOwner && (
           <Button
             variant="danger"
