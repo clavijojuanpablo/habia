@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { useSession } from '@/features/auth/session-provider';
 import { useProfile, useUpdateProfile } from '@/features/profile/api';
 import { track } from '@/lib/analytics';
 import { daysBetween, formatLocalDate } from '@/lib/recurrence';
@@ -14,8 +15,12 @@ import {
 } from './weekly-review-api';
 import { lastWeekStart } from './weekly-summary';
 
-// Per account: several people may share a phone.
+// Per account: several people may share a phone. The shared key from before still counts as a
+// "no" (it is consent to send data to Claude: an answer once given is respected).
 const offerClosedKey = (userId: string | undefined) => `habia.aiReview.offerClosed.${userId ?? 'anon'}`;
+const LEGACY_OFFER_CLOSED_KEY = 'habia.aiReview.offerClosed';
+const wasClosed = (key: string) =>
+  storage.getItem(key) === '1' || storage.getItem(LEGACY_OFFER_CLOSED_KEY) === '1';
 /** Offer the review once there is a week of habits to talk about. */
 const OFFER_AFTER_DAYS = 7;
 
@@ -34,8 +39,9 @@ export type WeeklyReviewSlot =
  */
 export function useWeeklyReviewSlot(today: Date, settled: boolean) {
   const { data: profile } = useProfile();
-  const offerKey = offerClosedKey(profile?.id);
-  const [offerClosed, setOfferClosed] = useState(() => storage.getItem(offerKey) === '1');
+  const { session } = useSession();
+  const offerKey = offerClosedKey(session?.user.id);
+  const [offerClosed, setOfferClosed] = useState(() => wasClosed(offerKey));
   const enabled = profile?.ai_coach_enabled === true;
   const onboardedDays = profile?.onboarded_at ? daysBetween(new Date(profile.onboarded_at), today) : 0;
   const mayOffer = !offerClosed && onboardedDays >= OFFER_AFTER_DAYS;

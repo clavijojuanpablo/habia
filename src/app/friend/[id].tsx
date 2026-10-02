@@ -209,7 +209,7 @@ export default function FriendScreen() {
           ) : (
             <Button variant="danger" label={t('social.report.action')} onPress={() => setReporting(true)} />
           )}
-          {(block.isError || removeFriend.isError || report.isError) && (
+          {(block.isError || removeFriend.isError || report.isError || accept.isError) && (
             <ThemedText type="small" themeColor="danger" style={styles.center}>
               {t('social.errors.generic')}
             </ThemedText>

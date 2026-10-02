@@ -24,6 +24,7 @@ export function SocialStatsSync() {
   const {
     streak: { current, record },
     isLoading: streakLoading,
+    isError: streakError,
   } = useStreak(today);
   const { mutate: publish } = usePublishStats();
   const attempted = useRef<string | null>(null);
@@ -39,7 +40,7 @@ export function SocialStatsSync() {
     [current, record, stats.last30.ratio, summary.votes, summary.stage],
   );
 
-  const loading = statsLoading || gardenLoading || streakLoading;
+  const loading = statsLoading || gardenLoading || streakLoading || streakError;
   useEffect(() => {
     const key = JSON.stringify(snapshot);
     if (!me || loading || attempted.current === key || sameStats(me.stats, snapshot)) return;

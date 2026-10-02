@@ -2,6 +2,7 @@ import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persi
 import { QueryClient } from '@tanstack/react-query';
 
 import { toggleLogRequest, TOGGLE_LOG_KEY, TOGGLE_LOG_SCOPE } from '@/features/checkins/mutations';
+import { shortLogWindows } from '@/features/checkins/api';
 import { storage } from '@/lib/storage';
 
 export const queryClient = new QueryClient({
@@ -27,7 +28,7 @@ queryClient.setMutationDefaults(TOGGLE_LOG_KEY, {
   scope: TOGGLE_LOG_SCOPE,
   onSettled: () =>
     Promise.all([
-      queryClient.invalidateQueries({ queryKey: ['logs'] }),
+      queryClient.invalidateQueries({ queryKey: ['logs'], predicate: shortLogWindows }),
       queryClient.invalidateQueries({ queryKey: ['votes'] }),
       queryClient.invalidateQueries({ queryKey: ['completions'] }),
       // A replayed check-in on a shared habit moves its circle's numbers too.

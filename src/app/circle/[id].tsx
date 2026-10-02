@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Share, ScrollView, StyleSheet, View } from 'react-native';
 
@@ -58,12 +58,16 @@ export default function CircleScreen() {
     Share.share({
       message: t('social.circle.shareMessage', { name: target.name, link: circleInviteLink(target.invite_code) }),
     });
-  // Created from a friend's page: open the invite right away, once.
+  // Created from a friend's page: open the invite once, after the modal settles. The ref (not the
+  // param) guards it: clearing the param re-runs the effect, and its cleanup must not cancel the share.
+  const invited = useRef(false);
   useEffect(() => {
-    if (invite !== '1' || !circle) return;
-    router.setParams({ invite: undefined });
-    const timer = setTimeout(() => shareInvite(circle), 500);
-    return () => clearTimeout(timer);
+    if (invite !== '1' || !circle || invited.current) return;
+    invited.current = true;
+    setTimeout(() => {
+      router.setParams({ invite: undefined });
+      shareInvite(circle);
+    }, 500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [invite, circle]);
 

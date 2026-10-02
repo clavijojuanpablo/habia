@@ -71,10 +71,10 @@ export function StreakView({ streak, onClose }: Props) {
           <ThemedText type="small" themeColor="textSecondary" style={styles.center}>
             {streak.todayDone
               ? t('streak.safeToday')
-              : streak.todayRest
-                ? t('streak.restToday')
-                : streak.current === 0
-                  ? t('streak.startToday')
+              : streak.current === 0
+                ? t('streak.startToday')
+                : streak.todayRest
+                  ? t('streak.restToday')
                   : t('streak.keepItUp')}
           </ThemedText>
         </SafeAreaView>

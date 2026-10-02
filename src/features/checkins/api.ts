@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient, type Query } from '@tanstack/react-query';
 
 import { supabase } from '@/lib/supabase/client';
 
@@ -15,12 +15,31 @@ export type { HabitLog, LogStatus };
 
 const LOGS_PAGE = 1000;
 
+/** Windows longer than this (the streak's 400 days) are kept fresh by optimistic updates, not refetches. */
+const LONG_WINDOW_MS = 200 * 24 * 60 * 60 * 1000;
+const isLongWindow = (from: string, to: string) => Date.parse(to) - Date.parse(from) > LONG_WINDOW_MS;
+
+/**
+ * After a check-in, refetch the short windows (Today, the week, the garden) but not the long one:
+ * re-downloading 400 days on every tap is slow and heavy, and the optimistic update already holds
+ * it. It still refreshes when the app comes back and every few minutes.
+ */
+export const shortLogWindows = (query: Query) => {
+  const [, from, to] = query.queryKey as string[];
+  return !isLongWindow(from, to);
+};
+
 const logsKey = (from: Date, to: Date) => ['logs', from.toISOString(), to.toISOString()] as const;
 
 /** Logs whose occurrence falls in [from, to). */
 export function useLogs(from: Date, to: Date) {
   return useQuery({
     queryKey: logsKey(from, to),
+    ...(isLongWindow(from.toISOString(), to.toISOString()) && {
+      staleTime: 10 * 60 * 1000,
+      // A new day changes the key: keep showing yesterday's streak while the new window loads.
+      placeholderData: keepPreviousData,
+    }),
     // The key carries the dates: yesterday's windows (up to 400 days) must not pile up in the
     // persisted cache, which on the web lives in localStorage (~5 MB).
     gcTime: 24 * 60 * 60 * 1000,
@@ -65,8 +84,9 @@ export function useToggleLog() {
         if (!logs) continue;
         const [, from, to] = key as ReturnType<typeof logsKey>;
         if (at < from || at >= to) continue;
+        // Matched by habit and time, not id: a window may still hold this occurrence's optimistic row.
         const next = existing
-          ? logs.filter((l) => l.id !== existing.id)
+          ? logs.filter((l) => !(l.habit_id === habitId && Date.parse(l.occurrence_at) === Date.parse(at)))
           : [
               ...logs,
               {
@@ -89,7 +109,7 @@ export function useToggleLog() {
     },
     onSettled: () =>
       Promise.all([
-        queryClient.invalidateQueries({ queryKey: ['logs'] }),
+        queryClient.invalidateQueries({ queryKey: ['logs'], predicate: shortLogWindows }),
         queryClient.invalidateQueries({ queryKey: ['votes'] }),
         queryClient.invalidateQueries({ queryKey: ['completions'] }),
         // Shared circle habits: the group card must count this check-in right away.
