@@ -143,6 +143,8 @@ open the web fallback there; its "Open habia" button still works.
       `REVENUECAT_SECRET_KEY`, `npx supabase functions deploy revenuecat-webhook`, and the public key as
       `EXPO_PUBLIC_REVENUECAT_IOS_KEY` in EAS env `production` (plain text, not secret). Test with a Sandbox
       account on the TestFlight build.
+      ⚠️ Both subscriptions carry a TEMPORARY review screenshot (any app screen): replace it with the real
+      paywall (Ajustes → habia Pro, plans visible) before submitting the public version for review.
    5. `git checkout build-4`, then `npx eas-cli@latest build --profile production --platform ios`: answer yes when
       EAS offers to set up Push Notifications (it creates the APNs key). Then `npx eas-cli@latest submit --platform ios --latest`.
    6. Once build 4 is on the testers' phones: merge `build-4` into `main`; later OTAs target build 4's fingerprint.
