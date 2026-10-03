@@ -165,6 +165,8 @@ function RootNavigator() {
         <Stack.Screen name="streak" options={{ presentation: 'modal' }} />
         <Stack.Screen name="settings" options={modal(t('settings.title'))} />
         <Stack.Screen name="paywall" options={modal(t('paywall.title'))} />
+        <Stack.Screen name="focus" options={{ presentation: 'fullScreenModal', headerShown: false }} />
+        <Stack.Screen name="brote" options={modal(t('chat.title'))} />
         <Stack.Screen name="circles" options={modal(t('social.circlesTitle'))} />
         <Stack.Screen name="cheers" options={modal(t('social.cheer.inboxTitle'))} />
         <Stack.Screen name="friends" options={modal(t('social.friendsTitle'))} />

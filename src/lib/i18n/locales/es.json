@@ -77,7 +77,8 @@
       "restHint": "Un descanso a propósito no cuenta como fallo.",
       "unrest": "Quitar el descanso",
       "edit": "Editar hábito",
-      "tip": "Toca un hábito para ver más opciones: hacer solo la versión de 2 minutos o tomarte un día de descanso."
+      "tip": "Toca un hábito para ver más opciones: hacer solo la versión de 2 minutos o tomarte un día de descanso.",
+      "focus": "Modo enfoque"
     },
     "heroRest": "Hoy no te toca ningún hábito. Descansar también es parte del proceso.",
     "heroAllRest": "Hoy todo es descanso. Descansar a propósito también es parte del proceso."
@@ -643,8 +644,8 @@
     "offerBody": "Lo escribe con una IA externa: le enviamos tus hábitos de la semana, nunca tu correo.",
     "accept": "Activar",
     "decline": "Ahora no",
-    "toggle": "Revisión semanal con IA",
-    "toggleHint": "Brote resume tu semana con una IA externa. Nunca enviamos tu correo.",
+    "toggle": "Brote con IA",
+    "toggleHint": "Tu revisión semanal y el chat con Brote usan una IA externa (Anthropic). Nunca enviamos tu correo.",
     "details": "Más detalles",
     "badge": "✨ Hecha para ti con tus datos",
     "readMore": "Leer la revisión completa"
@@ -943,5 +944,49 @@
     "startTrial_other": "Probar {{count}} días gratis",
     "seePlans": "Ver planes",
     "manageShort": "Gestionar"
+  },
+  "focus": {
+    "start": "Empezar",
+    "pause": "Pausa",
+    "resume": "Seguir",
+    "stop": "Terminar",
+    "countMinimum": "Contar como mínimo",
+    "keepGoing": "Seguir enfocado",
+    "leave": "Salir sin marcar",
+    "planted": "¡Sembrado! 🌱",
+    "doneTitle": "¡Tiempo! Vuelve para sembrar tu hábito 🌱",
+    "minimumChip": "2 minutos, versión mínima",
+    "minutes_one": "{{count}} minuto",
+    "minutes_other": "{{count}} minutos",
+    "timeUp": "¡Tiempo!",
+    "plant": "Sembrar"
+  },
+  "chat": {
+    "title": "Brote",
+    "entryTitle": "Habla con Brote",
+    "entryHint": "Pregúntale por tus hábitos: conoce tus datos.",
+    "hello": "¡Hola! Pregúntame lo que quieras sobre tus hábitos.",
+    "suggestions": {
+      "why": "¿Qué hábito me está costando más y por qué?",
+      "start": "Quiero empezar un hábito nuevo, ¿cómo lo hago fácil?",
+      "stack": "¿Qué hábitos me conviene hacer juntos?"
+    },
+    "placeholder": "Escríbele a Brote…",
+    "send": "Enviar",
+    "thinking": "Pensando… 🌱",
+    "remaining_one": "Te queda {{count}} mensaje hoy",
+    "remaining_other": "Te quedan {{count}} mensajes hoy",
+    "clear": "Borrar",
+    "clearConfirm": "¿Borrar toda la conversación con Brote?",
+    "consentTitle": "Brote necesita tu permiso",
+    "consentBody": "Para conversar, Brote usa IA: enviamos tus hábitos y tus mensajes a Anthropic (Claude), que no los usa para entrenar. Esto también activa tu revisión semanal. Puedes apagarlo en Ajustes.",
+    "consentOk": "Activar Brote con IA",
+    "errors": {
+      "not_enabled": "Activa Brote con IA en Ajustes para conversar.",
+      "daily_limit": "Por hoy ya conversamos bastante. Mañana seguimos 🌱",
+      "pro_required": "El chat con Brote es parte de habia Pro.",
+      "not_configured": "Brote no está disponible en este momento.",
+      "generic": "No pude responder. Revisa tu conexión e intenta de nuevo."
+    }
   }
 }

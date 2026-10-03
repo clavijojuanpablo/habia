@@ -117,6 +117,18 @@ open the web fallback there; its "Open habia" button still works.
    Check it: `curl -X POST <SUPABASE_URL>/functions/v1/weekly-review -H "apikey: <publishable>" -H "Authorization: Bearer <publishable>" -d '{"check":true}'`
    must answer `{"available":true}`.
 
+0. **1.6.4 — focus mode, patterns, chat with Brote (2026-10-02), on `build-4`, by OTA + migration**
+   `20261003030521_coach_chat.sql` + new Edge Function `coach-chat` (owner: `db push`, `functions deploy coach-chat`,
+   `ANTHROPIC_API_KEY` secret must exist). Focus mode (free): first action of a habit's sheet (today only), full-screen
+   timer (`src/app/focus.tsx`, pure `focus-timer.ts` + tests), 2-min chip = minimum version, plants the habit when time
+   is up (photo circles still ask the camera), stopping after 2 min can count as minimum, local end notice tagged
+   `kind: focus` (reminder sync no longer cancels it). Patterns (`src/features/coach/patterns.ts`, synced to `_shared`):
+   same-day and next-day links between habits, next-day controlled for streaks; tested. Chat (Pro later; free while
+   limits are off): Garden → "Habla con Brote" → `/brote`; the function builds the context server-side (60 days,
+   last-30 %, last 14 days, patterns), Haiku 4.5, 20 messages per rolling day (`CHAT_DAILY_LIMIT`), Pro-only with
+   `CHAT_REQUIRES_PRO=true`; consent = the same switch, renamed "Brote con IA"; conversation deletable (`coach_chat`,
+   own read/delete, service writes). Decided 2026-10-02: Pro = "Brote te conoce" (AI review + chat + monthly report)
+   + "Hazlo tuyo" (garden/character cosmetics, unlimited habits); Caminos dropped for now.
 0. **1.6.3 — a circle is its habit (2026-10-02), on `build-4`, by OTA + migration** `20261003021223_circle_habit_start.sql`
    (`db push` BEFORE the OTA). New circles are created with their habit in one form (one icon: the circle's), and
    `start_circle_habit` (owner only, one transaction) links the creator right away; `circle/habit-new` uses it too

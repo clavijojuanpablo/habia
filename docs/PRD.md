@@ -64,8 +64,8 @@ Habits with flexible frequency, Today/Week views with day bands, reminders, Iden
 ## Monetization
 | Plan | Price (reference) | Includes |
 |---|---|---|
-| Free | $0 | Up to 5 habits, basic tree, reminders, 7-day stats, rule-based tips |
-| Pro | US$4.99/mo · US$34.99/yr (7-day free trial on yearly) | Unlimited habits, guided programs, AI coach, full stats, advanced stacking, garden themes |
+| Free | $0 | Everything to form habits: up to 5 habits, stats, highlights, Brote's rule-based tips, focus mode, circles, cheers, photos |
+| Pro | US$4.99/mo · US$34.99/yr (7-day free trial on yearly) | "Brote te conoce": AI weekly review, chat with Brote grounded in your patterns, monthly report · "Hazlo tuyo": garden themes, character accessories, unlimited habits |
 
 Decided 2026-10-02: Pro Parejas dropped (couples became circles, which stay free: they bring people in). Prices set in App Store Connect from the US price; adjust LatAm by hand if conversion asks for it. Later: family plan, gifts.
 

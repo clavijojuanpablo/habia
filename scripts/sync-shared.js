@@ -11,6 +11,7 @@ const FILES = [
   { from: 'src/lib/recurrence/index.ts', to: 'supabase/functions/_shared/recurrence.ts' },
   { from: 'src/lib/time/zoned.ts', to: 'supabase/functions/_shared/zoned.ts' },
   { from: 'src/features/coach/weekly-summary.ts', to: 'supabase/functions/_shared/weekly-summary.ts' },
+  { from: 'src/features/coach/patterns.ts', to: 'supabase/functions/_shared/patterns.ts' },
 ];
 
 const IMPORTS = {

@@ -83,7 +83,13 @@ export function replaceScheduledReminders(reminders: ReminderNotification[]): Pr
 }
 
 async function scheduleAll(reminders: ReminderNotification[]) {
-  await Notifications.cancelAllScheduledNotificationsAsync();
+  // Only reminders are replaced: a running focus timer's end notice stays.
+  const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+  await Promise.all(
+    scheduled
+      .filter((n) => n.content.data?.kind !== 'focus')
+      .map((n) => Notifications.cancelScheduledNotificationAsync(n.identifier)),
+  );
   for (const reminder of reminders) {
     await Notifications.scheduleNotificationAsync({
       content: {

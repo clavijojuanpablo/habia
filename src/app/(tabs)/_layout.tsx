@@ -56,6 +56,7 @@ export default function TabsLayout() {
   const openNotification = useCallback((data: NotificationData) => {
     refreshSocial(data);
     const id = typeof data.id === 'string' ? data.id : null;
+    if (data.kind === 'focus') return;
     if (typeof data.habitId === 'string') {
       track('reminder_opened');
       router.navigate({ pathname: '/', params: { focus: data.habitId } });

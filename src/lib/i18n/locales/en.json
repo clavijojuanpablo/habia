@@ -77,7 +77,8 @@
       "restHint": "A rest day on purpose never counts as a miss.",
       "unrest": "Remove the rest day",
       "edit": "Edit habit",
-      "tip": "Tap a habit for more options: do just the 2-minute version or take a rest day."
+      "tip": "Tap a habit for more options: do just the 2-minute version or take a rest day.",
+      "focus": "Focus mode"
     },
     "heroRest": "No habits due today. Rest is part of the process too.",
     "heroAllRest": "Everything is a rest day today. Resting on purpose is part of the process too."
@@ -643,8 +644,8 @@
     "offerBody": "It is written with an external AI: we send it your habits for the week, never your email.",
     "accept": "Turn on",
     "decline": "Not now",
-    "toggle": "AI weekly review",
-    "toggleHint": "Brote sums up your week with an external AI. We never send your email.",
+    "toggle": "Brote with AI",
+    "toggleHint": "Your weekly review and the chat with Brote use an external AI (Anthropic). We never send your email.",
     "details": "More details",
     "badge": "✨ Made for you from your data",
     "readMore": "Read the full review"
@@ -943,5 +944,49 @@
     "startTrial_other": "Try {{count}} days free",
     "seePlans": "See plans",
     "manageShort": "Manage"
+  },
+  "focus": {
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Resume",
+    "stop": "Stop",
+    "countMinimum": "Count as minimum",
+    "keepGoing": "Keep focusing",
+    "leave": "Leave without checking",
+    "planted": "Planted! 🌱",
+    "doneTitle": "Time's up! Come back to plant your habit 🌱",
+    "minimumChip": "2 minutes, minimum version",
+    "minutes_one": "{{count}} minute",
+    "minutes_other": "{{count}} minutes",
+    "timeUp": "Time's up!",
+    "plant": "Plant it"
+  },
+  "chat": {
+    "title": "Brote",
+    "entryTitle": "Talk to Brote",
+    "entryHint": "Ask about your habits: Brote knows your data.",
+    "hello": "Hi! Ask me anything about your habits.",
+    "suggestions": {
+      "why": "Which habit is hardest for me, and why?",
+      "start": "I want to start a new habit. How do I make it easy?",
+      "stack": "Which habits should I do together?"
+    },
+    "placeholder": "Write to Brote…",
+    "send": "Send",
+    "thinking": "Thinking… 🌱",
+    "remaining_one": "{{count}} message left today",
+    "remaining_other": "{{count}} messages left today",
+    "clear": "Delete",
+    "clearConfirm": "Delete the whole conversation with Brote?",
+    "consentTitle": "Brote needs your permission",
+    "consentBody": "To chat, Brote uses AI: we send your habits and your messages to Anthropic (Claude), which doesn't use them for training. This also turns on your weekly review. You can turn it off in Settings.",
+    "consentOk": "Turn on Brote with AI",
+    "errors": {
+      "not_enabled": "Turn on Brote with AI in Settings to chat.",
+      "daily_limit": "We've talked a lot today. Let's continue tomorrow 🌱",
+      "pro_required": "Chatting with Brote is part of habia Pro.",
+      "not_configured": "Brote isn't available right now.",
+      "generic": "I couldn't answer. Check your connection and try again."
+    }
   }
 }

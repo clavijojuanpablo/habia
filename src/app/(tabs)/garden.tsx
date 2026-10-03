@@ -9,6 +9,7 @@ import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useLogs } from '@/features/checkins/api';
 import { Button } from '@/components/button';
+import { BroteChatEntry } from '@/features/coach/components/brote-chat-entry';
 import { WeeklyReviewHistory } from '@/features/coach/components/weekly-review-history';
 import { BranchCard, NoBranches } from '@/features/garden/components/branches';
 import { GardenScene } from '@/features/garden/components/garden-scene';
@@ -121,6 +122,7 @@ export default function GardenScreen() {
             )}
           </View>
 
+          <BroteChatEntry />
           <WeeklyReviewHistory />
 
           {isLoading && <ActivityIndicator color={theme.primary} />}

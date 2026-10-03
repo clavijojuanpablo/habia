@@ -81,7 +81,8 @@ Testers first (TestFlight with the core), then every Pro feature **before the pu
 
 ## Phase 3B / Pro value ⏳ (next after TestFlight)
 - AI coach (hybrid: ✅ rules free — card on Today (v1 2026-09-30; 1.0.2 scored detectors, tip per day band, "¿Por qué?") · ⏳ 1.0.6 co-occurrence, seeds per identity, 👍/👎, Monday mini-review · ✅ Claude weekly review (on first open of the week; Batch API once a cron writes them) · ⏳ capped Pro chat)
-- Guided programs ("Caminos", 3 initial) + micro-lessons
+- ~~Guided programs ("Caminos")~~ — dropped 2026-10-02 (content-heavy, prescriptive); its core lives on as "subir de nivel" (Brote suggests growing a steady habit), free
+- ✅ Focus mode (free, 1.6.4) · ✅ habit patterns engine · ✅ chat with Brote (1.6.4; Pro once limits are on) · ⏳ monthly report (Pro) · ⏳ "subir de nivel" tip (free) · ⏳ Apple Health auto-check, widgets, focus Live Activity (next native build)
 
 ## Character ⏳
 - ✅ Art guide + Illustrator templates (`docs/CHARACTER-ART.md`, `art/character/`) → 🎨 owner draws batch 1 (13 SVGs) → compose with react-native-svg + Reanimated (no Rive, no development build)

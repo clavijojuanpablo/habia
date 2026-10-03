@@ -6,6 +6,7 @@ import { ThemedText } from '@/components/themed-text';
 import { MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
 import type { LogStatus } from '@/features/checkins/api';
 import { useTheme } from '@/hooks/use-theme';
+import { formatLocalDate } from '@/lib/recurrence';
 
 import { isDone, isSkipped, type ScheduledItem } from '../build-schedule';
 
@@ -40,6 +41,15 @@ export function HabitActionsSheet({ item, onToggle, onClose }: Props) {
       run: () => onToggle(item, 'skipped'),
     });
   } else {
+    // Focus mode: only for today (a timer for another day would plant on the wrong day).
+    if (formatLocalDate(item.at) === formatLocalDate(new Date())) {
+      actions.push({
+        key: 'focus',
+        emoji: '⏱️',
+        label: t('today.actions.focus'),
+        run: () => router.push({ pathname: '/focus', params: { habitId: item.habit.id, at: item.at.toISOString() } }),
+      });
+    }
     actions.push({ key: 'done', emoji: '✅', label: t('today.actions.done'), run: () => onToggle(item) });
     if (item.habit.two_minute_version) {
       actions.push({
