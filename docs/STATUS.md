@@ -117,6 +117,13 @@ open the web fallback there; its "Open habia" button still works.
    Check it: `curl -X POST <SUPABASE_URL>/functions/v1/weekly-review -H "apikey: <publishable>" -H "Authorization: Bearer <publishable>" -d '{"check":true}'`
    must answer `{"available":true}`.
 
+0. **1.6.2 — calmer screens (2026-10-02), on `build-4`, by OTA (no migration).** Fewer words: circle photo hint,
+   ranking title and invite explainer gone (invite = code + button). Garden: stage, seeds and next-stage bar on the
+   sky of the scene (the ground stays the tree's), Brote's weekly reviews moved here from Progress, loose seeds card
+   replaced by "+ Nueva identidad", whose form now picks existing habits (`HabitPicker`; identities no longer in
+   Settings). Progress: summary → calendar → highlights, more air. Settings: Pro first with a gold border, appearance
+   and language as inline rows (no "system" option; a profile still on it keeps following the phone), switches with
+   the explanation behind ⓘ (`src/components/setting-switch.tsx`), legal texts as small links.
 0. **1.6.1 — trust in circles, from testing build 1.6.0 (5) (2026-10-02), on `build-4`, by OTA.** Migration
    `20261003001405_circle_trust.sql` + redeploy `notify` BEFORE the OTA (the app reads the new tables). Cheers: one
    per friend every 3 h (server trigger `cheer_too_soon`). Photos: owner hiding removed (hidden photos came back);

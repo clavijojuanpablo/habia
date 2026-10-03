@@ -233,11 +233,6 @@ export function CircleHabitCard({
       {/* Consistency ranking */}
       {members.length > 0 && (
         <>
-          <View style={styles.rankingHeader}>
-            <ThemedText type="smallBold" style={styles.flex}>
-              {t('social.circleHabit.rankingTitle')}
-            </ThemedText>
-          </View>
           <View style={[styles.periods, { backgroundColor: theme.background }]} accessibilityRole="tablist">
             {(['week', 'month', 'all'] as const).map((p) => (
               <Pressable
@@ -267,11 +262,6 @@ export function CircleHabitCard({
 
       {joined && group.today.carriers.includes(me) && !photoOf(me) && photos.isSuccess && (
         <Button variant="secondary" label={`📸 ${t('photos.add')}`} loading={uploading} onPress={addPhoto} />
-      )}
-      {habit.photo_required && (
-        <ThemedText type="caption" themeColor="textSecondary">
-          📸 {t('photos.requiredHint')}
-        </ThemedText>
       )}
       <PhotoViewer
         key={viewing?.id}
@@ -337,7 +327,6 @@ const styles = StyleSheet.create({
   galleryItem: { width: 100, gap: Spacing.half },
   galleryPhoto: { width: 100, height: 130, borderRadius: Radius.md, borderWidth: 3 },
   faceName: { textAlign: 'center', alignSelf: 'stretch' },
-  rankingHeader: { flexDirection: 'row', alignItems: 'center' },
   periods: { flexDirection: 'row', padding: Spacing.half, borderRadius: Radius.pill },
   period: { flex: 1, alignItems: 'center', paddingVertical: Spacing.one, borderRadius: Radius.pill },
 });

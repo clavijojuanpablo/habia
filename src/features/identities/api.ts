@@ -36,17 +36,25 @@ export function useIdentities() {
 export function useSaveIdentity() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, ...input }: IdentityInput & { id?: string }) => {
+    /** `habitIds` (new identity only): existing habits that start feeding the new branch. */
+    mutationFn: async ({ id, habitIds = [], ...input }: IdentityInput & { id?: string; habitIds?: string[] }) => {
       if (id) {
         const { error } = await supabase.from('identities').update(input).eq('id', id);
         if (error) throw error;
         return;
       }
       const user_id = await requireUserId();
-      const { error } = await supabase.from('identities').insert({ ...input, user_id });
+      const { data, error } = await supabase.from('identities').insert({ ...input, user_id }).select('id').single();
       if (error) throw error;
+      if (habitIds.length === 0) return;
+      // The branch already exists: a failed link must not fail the save (a retry would create a
+      // second branch). The habits can still be linked from the branch's own screen.
+      await supabase.from('habits').update({ identity_id: data.id }).in('id', habitIds);
     },
-    onSettled: () => queryClient.invalidateQueries({ queryKey: identitiesKey }),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['habits'] });
+      return queryClient.invalidateQueries({ queryKey: identitiesKey });
+    },
   });
 }
 

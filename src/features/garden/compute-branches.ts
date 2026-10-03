@@ -6,7 +6,7 @@ export type Branch = { identity: Identity; habits: Habit[]; seedsThisWeek: numbe
 
 /**
  * The tree's branches: each identity with the habits that feed it and the seeds (completions)
- * planted for it this week. Habits without an identity are "loose seeds": they grow no branch.
+ * planted for it this week. Habits without an identity grow no branch.
  */
 export function computeBranches(identities: Identity[], habits: Habit[], logs: HabitLog[], weekStart: Date) {
   const habitIdentity = new Map(habits.map((h) => [h.id, h.identity_id]));
@@ -22,7 +22,5 @@ export function computeBranches(identities: Identity[], habits: Habit[], logs: H
     habits: habits.filter((h) => h.identity_id === identity.id),
     seedsThisWeek: seeds.get(identity.id) ?? 0,
   }));
-  const known = new Set(identities.map((i) => i.id));
-  const loose = habits.filter((h) => !h.identity_id || !known.has(h.identity_id));
-  return { branches, loose };
+  return { branches };
 }

@@ -6,7 +6,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
-import { WeeklyReviewHistory } from '@/features/coach/components/weekly-review-history';
 import { useGarden } from '@/features/garden/use-garden';
 import { useProfile } from '@/features/profile/api';
 import { BandBars } from '@/features/stats/components/band-bars';
@@ -23,8 +22,8 @@ import { useNow, useTodayRange } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
 
 /**
- * Progress answers three questions: how am I doing (summary, highlights), when do I do best
- * (calendar, weeks, weekdays, moments of the day) and what did Brote say (weekly reviews).
+ * Progress answers two questions: how am I doing (summary, calendar, highlights) and when do I do
+ * best (weeks, weekdays, moments of the day). Brote's weekly reviews live in the Garden.
  */
 export default function ProgressScreen() {
   const { t } = useTranslation();
@@ -86,9 +85,8 @@ export default function ProgressScreen() {
             />
           </View>
 
-          <WeeklyReviewHistory />
-          <HighlightCards highlights={highlights} />
           <MonthHeatmap today={today} joinedOn={profile ? new Date(profile.created_at) : null} />
+          <HighlightCards highlights={highlights} />
           <WeeklyColumns weeks={stats.weeks} />
           <WeekdayBars weekdays={stats.weekdays} />
           {stats.bands.length > 0 && <BandBars bands={stats.bands} />}
@@ -102,7 +100,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   content: {
     padding: Spacing.three,
-    gap: Spacing.three,
+    gap: Spacing.four,
     paddingBottom: Spacing.six,
     width: '100%',
     maxWidth: MaxContentWidth,

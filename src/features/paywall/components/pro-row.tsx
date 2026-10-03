@@ -17,7 +17,10 @@ export function ProRow() {
     <Pressable
       onPress={() => router.push({ pathname: '/paywall', params: { source: 'settings' } })}
       accessibilityRole="button"
-      style={({ pressed }) => [styles.row, { backgroundColor: theme.goldSoft, opacity: pressed ? 0.8 : 1 }]}>
+      style={({ pressed }) => [
+        styles.row,
+        { backgroundColor: theme.goldSoft, borderColor: theme.gold, transform: [{ scale: pressed ? 0.98 : 1 }] },
+      ]}>
       <ThemedText style={styles.icon}>{isPro ? '💚' : '✨'}</ThemedText>
       <View style={styles.flex}>
         <ThemedText type="heading">{t('paywall.settingsRow')}</ThemedText>
@@ -25,8 +28,8 @@ export function ProRow() {
           {isPro ? t('paywall.settingsHintPro') : t('paywall.settingsHint')}
         </ThemedText>
       </View>
-      <ThemedText type="heading" themeColor="textSecondary">
-        ›
+      <ThemedText type="smallBold" style={[styles.pill, { backgroundColor: theme.gold, color: theme.onGold }]}>
+        {isPro ? t('paywall.manageShort') : t('paywall.seePlans')}
       </ThemedText>
     </Pressable>
   );
@@ -40,7 +43,9 @@ const styles = StyleSheet.create({
     gap: Spacing.three,
     padding: Spacing.three,
     borderRadius: Radius.lg,
+    borderWidth: 2,
     boxShadow: Shadow.card,
   },
-  icon: { fontSize: 28, lineHeight: 34 },
+  icon: { fontSize: 32, lineHeight: 38 },
+  pill: { paddingHorizontal: Spacing.three, paddingVertical: Spacing.one, borderRadius: Radius.pill, overflow: 'hidden' },
 });

@@ -32,6 +32,8 @@ export const Colors = {
     streakSoft: '#FFE9D2',
     gold: '#F5B92E',
     goldSoft: '#FFF3C9',
+    /** Text on a gold fill: dark in both modes (gold stays bright in dark mode). */
+    onGold: '#2E2A3B',
     lavender: '#7B6CF6',
     lavenderSoft: '#ECE8FF',
     tabBar: '#FFFFFF',
@@ -55,6 +57,7 @@ export const Colors = {
     streakSoft: '#3A2A1A',
     gold: '#FFD466',
     goldSoft: '#3A331A',
+    onGold: '#2E2A3B',
     lavender: '#A89CFF',
     lavenderSoft: '#2A2644',
     tabBar: '#221F2C',

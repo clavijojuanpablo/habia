@@ -22,9 +22,4 @@ describe('computeBranches', () => {
     expect(branches[0].habits.map((h) => h.id)).toEqual(['read', 'write']);
     expect(branches[1]).toMatchObject({ seedsThisWeek: 0 });
   });
-
-  it('collects habits without a (known) identity as loose seeds', () => {
-    const { loose } = computeBranches([identity('reader')], [habit('read', 'reader'), habit('water', null), habit('old', 'gone')], [], WEEK);
-    expect(loose.map((h) => h.id)).toEqual(['water', 'old']);
-  });
 });

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import * as Application from 'expo-application';
 import { router } from 'expo-router';
@@ -16,7 +16,6 @@ import { useWeeklyReviewAvailable } from '@/features/coach/weekly-review-api';
 import { signOut } from '@/features/auth/api';
 import { DangerZone } from '@/features/auth/components/danger-zone';
 import { useSession } from '@/features/auth/session-provider';
-import { IdentitiesSection } from '@/features/identities/components/identities-section';
 import { AnalyticsToggle } from '@/features/profile/components/analytics-toggle';
 import { SocialPushToggle } from '@/features/push/components/social-push-toggle';
 import { useProfile } from '@/features/profile/api';
@@ -59,12 +58,8 @@ export default function SettingsScreen() {
 
         <Card>
           <AppearancePicker />
-        </Card>
-        <Card>
+          <Divider />
           <LanguagePicker />
-        </Card>
-        <Card>
-          <IdentitiesSection />
         </Card>
         {profile && (
           <Card>
@@ -74,29 +69,33 @@ export default function SettingsScreen() {
 
         <Card>
           <SocialPushToggle />
-        </Card>
-
-        <Card>
+          <Divider />
           <AnalyticsToggle />
-        </Card>
-
-        {/* Whoever turned it on can always turn it off, even while the service is unavailable. */}
-        {(aiReviewAvailable || profile?.ai_coach_enabled) && (
-          <Card>
-            <AiReviewToggle />
-          </Card>
-        )}
-
-        <Card>
-          <ThemedText type="heading">{t('legal.title')}</ThemedText>
-          <Button label={t('legal.privacy')} variant="secondary" onPress={() => router.push('/legal/privacy')} />
-          <Button label={t('legal.terms')} variant="secondary" onPress={() => router.push('/legal/terms')} />
+          {/* Whoever turned it on can always turn it off, even while the service is unavailable. */}
+          {(aiReviewAvailable || profile?.ai_coach_enabled) && (
+            <>
+              <Divider />
+              <AiReviewToggle />
+            </>
+          )}
         </Card>
 
         <Button label={t('auth.signOut')} variant="secondary" onPress={() => signOut()} />
 
         <DangerZone />
 
+        {/* Legal texts: always reachable, never in the way. */}
+        <View style={styles.legal}>
+          <Pressable accessibilityRole="link" hitSlop={12} onPress={() => router.push('/legal/privacy')}>
+            <ThemedText type="link">{t('legal.privacy')}</ThemedText>
+          </Pressable>
+          <ThemedText type="small" themeColor="textSecondary">
+            ·
+          </ThemedText>
+          <Pressable accessibilityRole="link" hitSlop={12} onPress={() => router.push('/legal/terms')}>
+            <ThemedText type="link">{t('legal.terms')}</ThemedText>
+          </Pressable>
+        </View>
         <AppVersion />
       </ScrollView>
     </ThemedView>
@@ -119,6 +118,11 @@ function AppVersion() {
       {t('profile.version', { version: APP_RELEASE, build, update })}
     </ThemedText>
   );
+}
+
+function Divider() {
+  const theme = useTheme();
+  return <View style={[styles.divider, { backgroundColor: theme.border }]} />;
 }
 
 function Card({ children }: { children: React.ReactNode }) {
@@ -146,5 +150,7 @@ const styles = StyleSheet.create({
   avatar: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center' },
   avatarText: { fontSize: 28, lineHeight: 34, fontFamily: FontFamily.black },
   version: { textAlign: 'center' },
-  card: { borderRadius: Radius.lg, padding: Spacing.three, gap: Spacing.two, boxShadow: Shadow.card },
+  legal: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: Spacing.two },
+  divider: { height: StyleSheet.hairlineWidth, marginVertical: Spacing.one },
+  card: { borderRadius: Radius.lg, padding: Spacing.three, gap: Spacing.three, boxShadow: Shadow.card },
 });

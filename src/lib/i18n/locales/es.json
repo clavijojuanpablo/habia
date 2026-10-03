@@ -7,7 +7,8 @@
     "error": "Algo salió mal. Intenta de nuevo.",
     "optional": "opcional",
     "close": "Cerrar",
-    "retry": "Reintentar"
+    "retry": "Reintentar",
+    "moreInfo": "Muestra más información"
   },
   "auth": {
     "title": "Cada acción es una semilla para la persona que quieres ser.",
@@ -182,10 +183,6 @@
       "3": "Un árbol",
       "4": "Un árbol con frutos"
     },
-    "votes_one": "{{count}} semilla sembrada para la persona que quieres ser",
-    "votes_other": "{{count}} semillas sembradas para la persona que quieres ser",
-    "healthGood": "Tu árbol está sano. Cada acción cuenta.",
-    "healthLow": "Algunas hojas se ven cansadas. Un fallo es un accidente: hoy retomas.",
     "stageShort": {
       "0": "Semilla",
       "1": "Brote",
@@ -196,14 +193,9 @@
     "toNextStage_one": "A {{count}} semilla de convertirse en {{stage}}",
     "toNextStage_other": "A {{count}} semillas de convertirse en {{stage}}",
     "whoTitle": "¿Quién te estás volviendo?",
-    "whoBody": "Cada rama de tu árbol es una persona en la que te estás convirtiendo. Tus hábitos la hacen crecer.",
     "seedsThisWeek_one": "{{count}} semilla esta semana",
     "seedsThisWeek_other": "{{count}} semillas esta semana",
     "branchEmpty": "Aún ningún hábito alimenta esta rama.",
-    "looseTitle": "Semillas sin rama",
-    "looseBody": "Estos hábitos aún no alimentan ninguna rama. ¿En quién te ayudan a convertirte? Tócala y tu árbol crecerá con ellos.",
-    "assignTo": "Conectar {{habit}} con {{identity}}",
-    "newBranch": "+ Nueva rama",
     "emptyTitle": "Dale ramas a tu árbol",
     "emptyBody": "Piensa en quién te quieres convertir: «una persona que lee», «una persona más tranquila». Cada hábito que conectes hará crecer esa rama.",
     "createBranch": "Crear mi primera rama",
@@ -213,7 +205,9 @@
       "2": "un arbolito",
       "3": "un árbol",
       "4": "un árbol con frutos"
-    }
+    },
+    "seeds_one": "{{count}} semilla",
+    "seeds_other": "{{count}} semillas"
   },
   "progress": {
     "title": "Tu progreso",
@@ -266,7 +260,6 @@
     "new": "Nueva identidad",
     "edit": "Editar identidad",
     "title": "¿En quién te estás convirtiendo?",
-    "sectionHint": "Cada rama de tu árbol es una persona en la que te estás convirtiendo. Tus hábitos son las semillas que la hacen crecer.",
     "explainer": "Los hábitos duran cuando son parte de quién eres. Escribe la persona en la que te quieres convertir (quién eres, no un resultado).",
     "statement": "Me estoy convirtiendo en…",
     "statementPlaceholder": "una persona más fuerte, más tranquila, lectora…",
@@ -279,8 +272,6 @@
       "work": "Trabajo",
       "growth": "Crecimiento"
     },
-    "habitCount_one": "{{count}} hábito",
-    "habitCount_other": "{{count}} hábitos",
     "deleteConfirm": "¿Eliminar esta identidad? Sus hábitos se conservan sin identidad.",
     "becoming": "Convirtiéndome en",
     "habitsTitle": "Hábitos de esta rama",
@@ -288,7 +279,8 @@
     "remove": "Quitar",
     "removeHabit": "Quitar {{habit}} de esta rama",
     "addHabitsHint": "Toca un hábito para que también alimente esta rama:",
-    "addHabit": "Sumar {{habit}} a esta rama"
+    "addHabit": "Sumar {{habit}} a esta rama",
+    "pickHabits": "¿Qué hábitos la hacen crecer?"
   },
   "topBar": {
     "streak_one": "Racha de {{count}} día",
@@ -302,8 +294,7 @@
   "appearance": {
     "title": "Apariencia",
     "light": "Claro",
-    "dark": "Oscuro",
-    "system": "Sistema"
+    "dark": "Oscuro"
   },
   "streak": {
     "title": "Racha",
@@ -498,7 +489,9 @@
   "language": {
     "title": "Idioma",
     "es": "Español",
-    "en": "Inglés"
+    "en": "Inglés",
+    "esShort": "ESP",
+    "enShort": "ENG"
   },
   "legal": {
     "title": "Legal",
@@ -790,8 +783,6 @@
       "hidden": "Alguien",
       "unavailable": "Este círculo ya no está disponible.",
       "inviteTitle": "Invitar",
-      "inviteBody": "Comparte el enlace o el código. Quien entre verá solo lo mismo que tú: rachas y días sembrados, nunca hábitos.",
-      "share": "Compartir invitación",
       "shareMessage": "¡Únete a mi círculo «{{name}}» en habia! 🌱 {{link}}",
       "newCode": "Generar un código nuevo",
       "manage": "Personas del círculo",
@@ -816,7 +807,7 @@
       "addTitle": "¿Agregar a @{{username}}?",
       "addBody": "Podrán ver la racha y los días sembrados del otro, y animarse. Nunca sus hábitos.",
       "joinTitle": "¿Unirte al círculo?",
-      "joinBody": "Te invitaron a un círculo para acompañarse. Verán qué días siembra cada uno, nunca sus hábitos.",
+      "joinBody": "Te invitaron a un círculo para hacer un hábito juntos y cuidar la racha del grupo.",
       "retry": "Reintentar"
     },
     "circleHabit": {
@@ -841,7 +832,6 @@
       "todayGreat": "¡Casi todo el círculo ya lo hizo! 🎉",
       "todayRest": "Hoy todos descansan: la racha no se mueve 💤",
       "todayOff": "Hoy no toca: la racha espera 💤",
-      "rankingTitle": "Constancia de cada uno",
       "periods": {
         "week": "Esta semana",
         "month": "30 días",
@@ -884,7 +874,6 @@
     "queued": "Sin conexión: tu foto se subirá en cuanto vuelva internet.",
     "notSent": "Tu foto no se pudo enviar. Ábrela en tu círculo para tomar otra.",
     "notReady": "Un momento: estamos cargando tu círculo. Intenta de nuevo en unos segundos.",
-    "requiredHint": "Este hábito va con foto: al marcarlo se abre la cámara. Las fotos se borran a los 7 días.",
     "hiddenReported": "Varios miembros reportaron esta foto: solo tú la ves mientras la revisamos.",
     "doubt": "No cuenta",
     "undoDoubt": "Retirar mi «no cuenta»",
@@ -949,6 +938,8 @@
     "trialBadge_one": "{{count}} día gratis",
     "trialBadge_other": "{{count}} días gratis",
     "startTrial_one": "Probar {{count}} día gratis",
-    "startTrial_other": "Probar {{count}} días gratis"
+    "startTrial_other": "Probar {{count}} días gratis",
+    "seePlans": "Ver planes",
+    "manageShort": "Gestionar"
   }
 }

@@ -7,7 +7,8 @@
     "error": "Something went wrong. Please try again.",
     "optional": "optional",
     "close": "Close",
-    "retry": "Retry"
+    "retry": "Retry",
+    "moreInfo": "Shows more information"
   },
   "auth": {
     "title": "Every action is a seed for the person you want to become.",
@@ -182,10 +183,6 @@
       "3": "A tree",
       "4": "A fruiting tree"
     },
-    "votes_one": "{{count}} seed planted for the person you want to become",
-    "votes_other": "{{count}} seeds planted for the person you want to become",
-    "healthGood": "Your tree is healthy. Every action counts.",
-    "healthLow": "Some leaves look tired. One miss is an accident: today you get back on track.",
     "stageShort": {
       "0": "Seed",
       "1": "Sprout",
@@ -196,14 +193,9 @@
     "toNextStage_one": "{{count}} seed away from becoming {{stage}}",
     "toNextStage_other": "{{count}} seeds away from becoming {{stage}}",
     "whoTitle": "Who are you becoming?",
-    "whoBody": "Each branch of your tree is a person you are becoming. Your habits make it grow.",
     "seedsThisWeek_one": "{{count}} seed this week",
     "seedsThisWeek_other": "{{count}} seeds this week",
     "branchEmpty": "No habit feeds this branch yet.",
-    "looseTitle": "Seeds without a branch",
-    "looseBody": "These habits don’t feed any branch yet. Who do they help you become? Tap it and your tree grows with them.",
-    "assignTo": "Connect {{habit}} to {{identity}}",
-    "newBranch": "+ New branch",
     "emptyTitle": "Give your tree branches",
     "emptyBody": "Think of who you want to become: “a reader”, “a calmer person”. Every habit you connect grows that branch.",
     "createBranch": "Create my first branch",
@@ -213,7 +205,9 @@
       "2": "a sapling",
       "3": "a tree",
       "4": "a fruiting tree"
-    }
+    },
+    "seeds_one": "{{count}} seed",
+    "seeds_other": "{{count}} seeds"
   },
   "progress": {
     "title": "Your progress",
@@ -266,7 +260,6 @@
     "new": "New identity",
     "edit": "Edit identity",
     "title": "Who are you becoming?",
-    "sectionHint": "Each branch of your tree is a person you are becoming. Your habits are the seeds that make it grow.",
     "explainer": "Habits stick when they are part of who you are. Write the person you want to become (who you are, not a result).",
     "statement": "I am becoming…",
     "statementPlaceholder": "a stronger person, a calmer person, a reader…",
@@ -279,8 +272,6 @@
       "work": "Work",
       "growth": "Growth"
     },
-    "habitCount_one": "{{count}} habit",
-    "habitCount_other": "{{count}} habits",
     "deleteConfirm": "Delete this identity? Its habits are kept without an identity.",
     "becoming": "Becoming",
     "habitsTitle": "Habits on this branch",
@@ -288,7 +279,8 @@
     "remove": "Remove",
     "removeHabit": "Remove {{habit}} from this branch",
     "addHabitsHint": "Tap a habit so it feeds this branch too:",
-    "addHabit": "Add {{habit}} to this branch"
+    "addHabit": "Add {{habit}} to this branch",
+    "pickHabits": "Which habits make it grow?"
   },
   "topBar": {
     "streak_one": "{{count}}-day streak",
@@ -302,8 +294,7 @@
   "appearance": {
     "title": "Appearance",
     "light": "Light",
-    "dark": "Dark",
-    "system": "System"
+    "dark": "Dark"
   },
   "streak": {
     "title": "Streak",
@@ -498,7 +489,9 @@
   "language": {
     "title": "Language",
     "es": "Spanish",
-    "en": "English"
+    "en": "English",
+    "esShort": "ESP",
+    "enShort": "ENG"
   },
   "legal": {
     "title": "Legal",
@@ -790,8 +783,6 @@
       "hidden": "Someone",
       "unavailable": "This circle is no longer available.",
       "inviteTitle": "Invite",
-      "inviteBody": "Share the link or the code. Whoever joins sees only what you see: streaks and planted days, never habits.",
-      "share": "Share invite",
       "shareMessage": "Join my circle “{{name}}” on habia! 🌱 {{link}}",
       "newCode": "Make a new code",
       "manage": "People in the circle",
@@ -816,7 +807,7 @@
       "addTitle": "Add @{{username}}?",
       "addBody": "You’ll see each other’s streak and planted days, and cheer each other on. Never your habits.",
       "joinTitle": "Join the circle?",
-      "joinBody": "You were invited to a circle to keep each other company. You’ll see which days each one plants, never their habits.",
+      "joinBody": "You're invited to a circle to do a habit together and keep the group's streak alive.",
       "retry": "Try again"
     },
     "circleHabit": {
@@ -841,7 +832,6 @@
       "todayGreat": "Almost the whole circle did it! 🎉",
       "todayRest": "Everyone rests today: the streak doesn't move 💤",
       "todayOff": "Not scheduled today: the streak waits 💤",
-      "rankingTitle": "Everyone's consistency",
       "periods": {
         "week": "This week",
         "month": "30 days",
@@ -884,7 +874,6 @@
     "queued": "Offline: your photo will upload as soon as you're back online.",
     "notSent": "Your photo couldn't be sent. Open your circle to take another one.",
     "notReady": "One moment: your circle is still loading. Try again in a few seconds.",
-    "requiredHint": "This habit comes with a photo: checking it opens the camera. Photos are deleted after 7 days.",
     "hiddenReported": "Several members reported this photo: only you see it while we review it.",
     "doubt": "Doesn't count",
     "undoDoubt": "Take back my “doesn’t count”",
@@ -949,6 +938,8 @@
     "trialBadge_one": "{{count}} day free",
     "trialBadge_other": "{{count}} days free",
     "startTrial_one": "Try {{count}} day free",
-    "startTrial_other": "Try {{count}} days free"
+    "startTrial_other": "Try {{count}} days free",
+    "seePlans": "See plans",
+    "manageShort": "Manage"
   }
 }

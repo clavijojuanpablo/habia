@@ -5,12 +5,9 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
 import { Radius, Shadow, Spacing } from '@/constants/theme';
-import type { Habit } from '@/features/habits/api';
-import { useAssignIdentity } from '@/features/habits/api';
-import { identityEmoji, type Identity } from '@/features/identities/api';
+import { identityEmoji } from '@/features/identities/api';
 import { Brote } from '@/features/mascot/brote';
 import { useTheme } from '@/hooks/use-theme';
-import { track } from '@/lib/analytics';
 
 import type { Branch } from '../compute-branches';
 
@@ -59,53 +56,6 @@ export function BranchCard({ branch }: { branch: Branch }) {
   );
 }
 
-/** Habits that grow no branch yet: say why, and link each one to an identity in one tap. */
-export function LooseSeeds({ habits, identities }: { habits: Habit[]; identities: Identity[] }) {
-  const { t } = useTranslation();
-  const theme = useTheme();
-  const assign = useAssignIdentity();
-  return (
-    <View style={[styles.card, styles.loose, { borderColor: theme.border, backgroundColor: theme.backgroundElement }]}>
-      <ThemedText type="heading">🌱 {t('garden.looseTitle')}</ThemedText>
-      <ThemedText type="small" themeColor="textSecondary">
-        {t('garden.looseBody')}
-      </ThemedText>
-      {habits.map((habit) => (
-        <View key={habit.id} style={styles.looseRow}>
-          <ThemedText type="smallBold">
-            {habit.icon} {habit.name}
-          </ThemedText>
-          <View style={styles.chips}>
-            {identities.map((identity) => (
-              <Pressable
-                key={identity.id}
-                onPress={() => {
-                  track('habit_branch_assigned');
-                  assign.mutate({ habitId: habit.id, identityId: identity.id });
-                }}
-                accessibilityRole="button"
-                accessibilityLabel={t('garden.assignTo', { habit: habit.name, identity: identity.statement })}
-                style={[styles.chip, { backgroundColor: theme.background, borderColor: identity.color ?? theme.primary }]}>
-                <ThemedText type="small" numberOfLines={1}>
-                  {identityEmoji(identity)} {identity.statement}
-                </ThemedText>
-              </Pressable>
-            ))}
-            <Pressable
-              onPress={() => router.push('/identity/new')}
-              accessibilityRole="button"
-              style={[styles.chip, { backgroundColor: theme.primarySoft }]}>
-              <ThemedText type="smallBold" style={{ color: theme.primary }}>
-                {t('garden.newBranch')}
-              </ThemedText>
-            </Pressable>
-          </View>
-        </View>
-      ))}
-    </View>
-  );
-}
-
 /** No identity yet: explain the idea with examples and offer the first branch. */
 export function NoBranches() {
   const { t } = useTranslation();
@@ -131,7 +81,6 @@ const styles = StyleSheet.create({
     gap: Spacing.two,
   },
   branch: { borderLeftWidth: 6, boxShadow: Shadow.card },
-  loose: { borderWidth: 2, borderStyle: 'dashed' },
   empty: { alignItems: 'center', boxShadow: Shadow.card },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
   emoji: { fontSize: 22, lineHeight: 28 },
@@ -145,6 +94,5 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     maxWidth: '100%',
   },
-  looseRow: { gap: Spacing.one },
   center: { textAlign: 'center' },
 });

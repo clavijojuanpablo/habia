@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
@@ -7,13 +8,14 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
 import { useLogs } from '@/features/checkins/api';
-import { BranchCard, LooseSeeds, NoBranches } from '@/features/garden/components/branches';
+import { Button } from '@/components/button';
+import { WeeklyReviewHistory } from '@/features/coach/components/weekly-review-history';
+import { BranchCard, NoBranches } from '@/features/garden/components/branches';
 import { GardenScene } from '@/features/garden/components/garden-scene';
 import { computeBranches } from '@/features/garden/compute-branches';
 import { GARDEN_WINDOW_DAYS } from '@/features/garden/compute-garden';
 import { useGarden } from '@/features/garden/use-garden';
 import { useHabits } from '@/features/habits/api';
-import { Brote } from '@/features/mascot/brote';
 import { useIdentities } from '@/features/identities/api';
 import { isDone, isSkipped } from '@/features/schedule/build-schedule';
 import { useSchedule } from '@/features/schedule/use-schedule';
@@ -37,13 +39,14 @@ export default function GardenScreen() {
   const { data: identities = [] } = useIdentities();
   const branchIdentities = useMemo(() => identities.map((i) => ({ id: i.id, color: i.color })), [identities]);
 
-  // The garden is about identity, not numbers (those live in Progress): one card per branch,
-  // then the habits that feed no branch yet, with a one-tap way to link them.
+  // The garden is about identity, not numbers (those live in Progress): the tree with its stage
+  // drawn on it, Brote's weekly words, then one card per branch. Linking habits happens when a
+  // branch is created or edited.
   const habits = useHabits();
   // Same range as the garden's own logs: served from the same cached request.
   const logsFrom = useMemo(() => addDays(today, -GARDEN_WINDOW_DAYS), [today]);
   const logs = useLogs(logsFrom, tomorrow);
-  const { branches, loose } = useMemo(
+  const { branches } = useMemo(
     () => computeBranches(identities, habits.data ?? [], logs.data ?? [], startOfWeek(today)),
     [identities, habits.data, logs.data, today],
   );
@@ -82,40 +85,36 @@ export default function GardenScreen() {
                 height={SCENE_HEIGHT}
               />
             )}
-          </View>
-
-          {/* Stage + progress toward the next one, with Brote reacting to the tree's health */}
-          <View style={[styles.header, { backgroundColor: theme.backgroundElement }]}>
-            <View style={styles.headerRow}>
-              <View style={styles.flex}>
-                <ThemedText type="subtitle">{t(`garden.stage.${summary.stage}`)}</ThemedText>
-                <ThemedText type="small" themeColor="textSecondary">
-                  {t('garden.votes', { count: summary.votes })}
+            {/* Stage, seeds and the way to the next stage, on the sky: the ground stays the tree's. */}
+            <View style={[styles.stagePill, { backgroundColor: theme.backgroundElement + 'E6' }]}>
+              <View style={styles.stageRow}>
+                <ThemedText type="smallBold">{t(`garden.stage.${summary.stage}`)}</ThemedText>
+                <ThemedText
+                  type="small"
+                  themeColor="textSecondary"
+                  accessibilityLabel={t('garden.seeds', { count: summary.votes })}>
+                  🌱 {summary.votes}
                 </ThemedText>
               </View>
-              <Brote mood={summary.health < 100 ? 'happy' : 'cheer'} size={72} />
+              {nextStage && (
+                <>
+                  <View style={[styles.track, { backgroundColor: theme.backgroundSelected }]}>
+                    <View
+                      style={[styles.fill, { width: `${stageProgress * 100}%`, backgroundColor: theme.primary }]}
+                    />
+                  </View>
+                  <ThemedText type="caption" themeColor="textSecondary">
+                    {t('garden.toNextStage', {
+                      count: nextStage.votes - summary.votes,
+                      stage: t(`garden.stageInSentence.${nextStage.stage}`),
+                    })}
+                  </ThemedText>
+                </>
+              )}
             </View>
-
-            {nextStage && (
-              <>
-                <View style={[styles.track, { backgroundColor: theme.backgroundSelected }]}>
-                  <View
-                    style={[styles.fill, { width: `${stageProgress * 100}%`, backgroundColor: theme.primary }]}
-                  />
-                </View>
-                <ThemedText type="caption" themeColor="textSecondary">
-                  {t('garden.toNextStage', {
-                    count: nextStage.votes - summary.votes,
-                    stage: t(`garden.stageInSentence.${nextStage.stage}`),
-                  })}
-                </ThemedText>
-              </>
-            )}
-
-            <ThemedText type="small" themeColor="textSecondary">
-              {t(summary.health < 100 ? 'garden.healthLow' : 'garden.healthGood')}
-            </ThemedText>
           </View>
+
+          <WeeklyReviewHistory />
 
           {isLoading && <ActivityIndicator color={theme.primary} />}
           {error && (
@@ -124,18 +123,23 @@ export default function GardenScreen() {
             </ThemedText>
           )}
 
-          <View style={styles.section}>
-            <ThemedText type="subtitle">{t('garden.whoTitle')}</ThemedText>
-            <ThemedText type="small" themeColor="textSecondary">
-              {t('garden.whoBody')}
-            </ThemedText>
-          </View>
+          <ThemedText type="subtitle" style={styles.sectionTitle}>
+            {t('garden.whoTitle')}
+          </ThemedText>
           {identities.length === 0 ? (
             <NoBranches />
           ) : (
-            branches.map((branch) => <BranchCard key={branch.identity.id} branch={branch} />)
+            <>
+              {branches.map((branch) => (
+                <BranchCard key={branch.identity.id} branch={branch} />
+              ))}
+              <Button
+                variant="secondary"
+                label={`+ ${t('identity.new')}`}
+                onPress={() => router.push('/identity/new')}
+              />
+            </>
           )}
-          {identities.length > 0 && loose.length > 0 && <LooseSeeds habits={loose} identities={identities} />}
         </ScrollView>
       </SafeAreaView>
     </ThemedView>
@@ -146,16 +150,26 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   content: {
     padding: Spacing.three,
-    gap: Spacing.three,
+    gap: Spacing.four,
     paddingBottom: Spacing.six,
     width: '100%',
     maxWidth: MaxContentWidth,
     alignSelf: 'center',
   },
   scene: { height: SCENE_HEIGHT, borderRadius: Radius.xl, overflow: 'hidden' },
-  header: { gap: Spacing.two, padding: Spacing.three, borderRadius: Radius.lg, boxShadow: Shadow.card },
-  headerRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
-  track: { height: 10, borderRadius: 5, overflow: 'hidden' },
-  fill: { height: '100%', borderRadius: 5 },
-  section: { gap: Spacing.two },
+  stagePill: {
+    position: 'absolute',
+    top: Spacing.three,
+    left: Spacing.three,
+    maxWidth: 230,
+    gap: Spacing.one,
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.two,
+    borderRadius: Radius.md,
+    boxShadow: Shadow.card,
+  },
+  stageRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
+  track: { height: 8, borderRadius: 4, overflow: 'hidden' },
+  fill: { height: '100%', borderRadius: 4 },
+  sectionTitle: { marginTop: Spacing.two },
 });

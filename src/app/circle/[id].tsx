@@ -148,19 +148,14 @@ export default function CircleScreen() {
         )}
 
         <SocialCard>
-          <ThemedText type="heading">✉️ {t('social.circle.inviteTitle')}</ThemedText>
-          <ThemedText type="small" themeColor="textSecondary">
-            {t('social.circle.inviteBody')}
-          </ThemedText>
-          <View style={[styles.code, { backgroundColor: theme.background, borderColor: theme.border }]}>
-            <ThemedText type="subtitle" selectable>
-              {circle.invite_code}
-            </ThemedText>
+          <View style={styles.inviteRow}>
+            <View style={[styles.code, styles.flex, { backgroundColor: theme.background, borderColor: theme.border }]}>
+              <ThemedText type="subtitle" selectable>
+                {circle.invite_code}
+              </ThemedText>
+            </View>
+            <Button label={`✉️ ${t('social.circle.inviteTitle')}`} onPress={() => shareInvite(circle)} />
           </View>
-          <Button
-            label={t('social.circle.share')}
-            onPress={() => shareInvite(circle)}
-          />
           {isOwner && (
             <Button
               variant="secondary"
@@ -271,11 +266,12 @@ const styles = StyleSheet.create({
   center: { textAlign: 'center' },
   code: {
     alignItems: 'center',
-    padding: Spacing.three,
+    padding: Spacing.two,
     borderRadius: Radius.md,
     borderWidth: 2,
     borderStyle: 'dashed',
   },
   sectionRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
+  inviteRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
   memberRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
 });
