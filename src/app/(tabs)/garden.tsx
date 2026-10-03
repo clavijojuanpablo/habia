@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Radius, Shadow, Spacing } from '@/constants/theme';
+import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useLogs } from '@/features/checkins/api';
 import { Button } from '@/components/button';
 import { WeeklyReviewHistory } from '@/features/coach/components/weekly-review-history';
@@ -85,33 +85,40 @@ export default function GardenScreen() {
                 height={SCENE_HEIGHT}
               />
             )}
-            {/* Stage, seeds and the way to the next stage, on the sky: the ground stays the tree's. */}
-            <View style={[styles.stagePill, { backgroundColor: theme.backgroundElement + 'E6' }]}>
-              <View style={styles.stageRow}>
-                <ThemedText type="smallBold">{t(`garden.stage.${summary.stage}`)}</ThemedText>
-                <ThemedText
-                  type="small"
-                  themeColor="textSecondary"
-                  accessibilityLabel={t('garden.seeds', { count: summary.votes })}>
-                  🌱 {summary.votes}
-                </ThemedText>
-              </View>
-              {nextStage && (
-                <>
-                  <View style={[styles.track, { backgroundColor: theme.backgroundSelected }]}>
-                    <View
-                      style={[styles.fill, { width: `${stageProgress * 100}%`, backgroundColor: theme.primary }]}
-                    />
-                  </View>
-                  <ThemedText type="caption" themeColor="textSecondary">
-                    {t('garden.toNextStage', {
-                      count: nextStage.votes - summary.votes,
-                      stage: t(`garden.stageInSentence.${nextStage.stage}`),
-                    })}
-                  </ThemedText>
-                </>
-              )}
+          </View>
+
+          {/* The way to the next stage: stage and seeds above a thin bar, under the scene. */}
+          <View style={styles.stage}>
+            <View style={styles.stageRow}>
+              <ThemedText type="smallBold" style={styles.flex}>
+                {t(`garden.stage.${summary.stage}`)}
+              </ThemedText>
+              <ThemedText
+                type="smallBold"
+                themeColor="textSecondary"
+                accessibilityLabel={t('garden.seeds', { count: summary.votes })}>
+                🌱 {summary.votes}
+                {nextStage ? ` / ${nextStage.votes}` : ''}
+              </ThemedText>
             </View>
+            {nextStage && (
+              <>
+                <View
+                  style={[styles.track, { backgroundColor: theme.backgroundSelected }]}
+                  accessibilityRole="progressbar"
+                  accessibilityValue={{ min: 0, max: 100, now: Math.round(stageProgress * 100) }}>
+                  <View
+                    style={[styles.fill, { width: `${stageProgress * 100}%`, backgroundColor: theme.primary }]}
+                  />
+                </View>
+                <ThemedText type="caption" themeColor="textSecondary">
+                  {t('garden.toNextStage', {
+                    count: nextStage.votes - summary.votes,
+                    stage: t(`garden.stageInSentence.${nextStage.stage}`),
+                  })}
+                </ThemedText>
+              </>
+            )}
           </View>
 
           <WeeklyReviewHistory />
@@ -157,19 +164,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   scene: { height: SCENE_HEIGHT, borderRadius: Radius.xl, overflow: 'hidden' },
-  stagePill: {
-    position: 'absolute',
-    top: Spacing.three,
-    left: Spacing.three,
-    maxWidth: 230,
-    gap: Spacing.one,
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
-    borderRadius: Radius.md,
-    boxShadow: Shadow.card,
-  },
+  stage: { gap: Spacing.one, paddingHorizontal: Spacing.one },
   stageRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
-  track: { height: 8, borderRadius: 4, overflow: 'hidden' },
-  fill: { height: '100%', borderRadius: 4 },
+  track: { height: 6, borderRadius: 3, overflow: 'hidden' },
+  fill: { height: '100%', borderRadius: 3 },
   sectionTitle: { marginTop: Spacing.two },
 });

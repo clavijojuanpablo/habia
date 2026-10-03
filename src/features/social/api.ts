@@ -425,22 +425,6 @@ export function useCircles(enabled = true) {
   });
 }
 
-export function useCreateCircle() {
-  const invalidate = useSocialInvalidate();
-  return useMutation({
-    ...ONLINE_ONLY,
-    mutationFn: async (input: { name: string; emoji: string }) => {
-      const { data, error } = await supabase.rpc('create_circle', { p_name: input.name, p_emoji: input.emoji });
-      if (error) throw toSocialError(error);
-      return data as string;
-    },
-    onSuccess: () => {
-      track('circle_created');
-      return invalidate();
-    },
-  });
-}
-
 export function useJoinCircle() {
   const invalidate = useSocialInvalidate();
   return useMutation({
@@ -545,25 +529,60 @@ export function useCircleHabitProgress(circleHabitId: string, today: Date) {
   });
 }
 
-export function useCreateCircleHabit() {
-  const { session } = useSession();
+type CircleHabitStart = { name: string; rrule: string; minimum: string; withPhoto: boolean };
+
+const startCircleHabit = async (circleId: string, habit: CircleHabitStart) => {
+  const { data, error } = await supabase.rpc('start_circle_habit', {
+    p_circle: circleId,
+    p_name: habit.name,
+    p_rrule: habit.rrule,
+    p_two_minute: habit.minimum,
+    p_photo: habit.withPhoto,
+    // The creator's own copy starts on their local date (the database's current_date is UTC).
+    p_today: formatLocalDate(new Date()),
+  });
+  // A circle already has its habit (one per circle): not a username clash.
+  if (error) throw error.code === '23505' ? new SocialError('generic') : toSocialError(error);
+  return data;
+};
+
+/** The owner sets the circle's habit (when it has none) and is in it right away. */
+export function useStartCircleHabit() {
+  const queryClient = useQueryClient();
   const invalidate = useSocialInvalidate();
   return useMutation({
     ...ONLINE_ONLY,
-    mutationFn: async (input: Omit<CircleHabit, 'id'>) => {
-      const { data, error } = await supabase
-        .from('circle_habits')
-        .insert({ ...input, created_by: session!.user.id })
-        .select('id')
-        .single();
-      // A circle already has its habit (one per circle): not a username clash.
-      if (error) throw error.code === '23505' ? new SocialError('generic') : toSocialError(error);
-      return data.id;
-    },
+    mutationFn: ({ circleId, ...habit }: CircleHabitStart & { circleId: string }) => startCircleHabit(circleId, habit),
     onSuccess: () => {
       track('circle_habit_created');
-      return invalidate();
+      return Promise.all([invalidate(), queryClient.invalidateQueries({ queryKey: ['habits'] })]);
     },
+  });
+}
+
+/**
+ * A new circle is born with its habit, and its creator in it. If the habit step fails, the circle
+ * still exists: the screen opens it, where the owner can set the habit again.
+ */
+export function useCreateCircleWithHabit() {
+  const queryClient = useQueryClient();
+  const invalidate = useSocialInvalidate();
+  return useMutation({
+    ...ONLINE_ONLY,
+    mutationFn: async (input: { name: string; emoji: string; habit: CircleHabitStart }) => {
+      const { data, error } = await supabase.rpc('create_circle', { p_name: input.name, p_emoji: input.emoji });
+      if (error) throw toSocialError(error);
+      const circleId = data as string;
+      track('circle_created');
+      try {
+        await startCircleHabit(circleId, input.habit);
+        track('circle_habit_created');
+      } catch {
+        // Kept: the circle is there; its screen offers to set the habit.
+      }
+      return circleId;
+    },
+    onSuccess: () => Promise.all([invalidate(), queryClient.invalidateQueries({ queryKey: ['habits'] })]),
   });
 }
 

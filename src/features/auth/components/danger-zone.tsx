@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { TextField } from '@/components/text-field';
@@ -39,19 +39,25 @@ export function DangerZone() {
 
   return (
     <View style={[styles.container, { borderColor: theme.danger + '55' }]}>
-      <ThemedText type="heading" style={{ color: theme.danger }}>
-        {t('account.dangerZone')}
-      </ThemedText>
-
       {!open ? (
-        <>
-          <ThemedText type="small" themeColor="textSecondary">
-            {t('account.deleteHint')}
+        <View style={styles.row}>
+          <ThemedText type="smallBold" style={[styles.flex, { color: theme.danger }]}>
+            {t('account.deleteAccount')}
           </ThemedText>
-          <Button label={t('account.deleteAccount')} variant="danger" onPress={() => setOpen(true)} />
-        </>
+          <Pressable
+            onPress={() => setOpen(true)}
+            accessibilityRole="button"
+            accessibilityLabel={t('account.deleteAccount')}
+            hitSlop={8}
+            style={[styles.trash, { backgroundColor: theme.danger + '1F' }]}>
+            <ThemedText style={styles.trashIcon}>🗑️</ThemedText>
+          </Pressable>
+        </View>
       ) : (
         <>
+          <ThemedText type="heading" style={{ color: theme.danger }}>
+            {t('account.dangerZone')}
+          </ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
             {t('account.deleteWarning')}
           </ThemedText>
@@ -79,4 +85,8 @@ export function DangerZone() {
 
 const styles = StyleSheet.create({
   container: { gap: Spacing.two, borderWidth: 2, borderRadius: Radius.lg, padding: Spacing.three },
+  row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
+  flex: { flex: 1 },
+  trash: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  trashIcon: { fontSize: 18, lineHeight: 22 },
 });

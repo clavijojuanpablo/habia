@@ -8,7 +8,8 @@
     "optional": "opcional",
     "close": "Cerrar",
     "retry": "Reintentar",
-    "moreInfo": "Muestra más información"
+    "moreInfo": "Muestra más información",
+    "done": "Listo"
   },
   "auth": {
     "title": "Cada acción es una semilla para la persona que quieres ser.",
@@ -317,7 +318,6 @@
   "account": {
     "dangerZone": "Zona de peligro",
     "deleteAccount": "Eliminar mi cuenta",
-    "deleteHint": "Puedes eliminar tu cuenta y todos tus datos en cualquier momento.",
     "deleteWarning": "Se borrarán para siempre tus hábitos, registros, identidades y tu árbol. Esta acción no se puede deshacer.",
     "deleteKeyword": "ELIMINAR",
     "typeToConfirm": "Escribe {{keyword}} para confirmar",
@@ -489,9 +489,7 @@
   "language": {
     "title": "Idioma",
     "es": "Español",
-    "en": "Inglés",
-    "esShort": "ESP",
-    "enShort": "ENG"
+    "en": "Inglés"
   },
   "legal": {
     "title": "Legal",
@@ -785,13 +783,12 @@
       "inviteTitle": "Invitar",
       "shareMessage": "¡Únete a mi círculo «{{name}}» en habia! 🌱 {{link}}",
       "newCode": "Generar un código nuevo",
-      "manage": "Personas del círculo",
       "remove": "Quitar",
       "removeConfirm": "¿Quitar a {{name}} del círculo?",
       "leave": "Salir del círculo",
       "leaveConfirm": "¿Salir de «{{name}}»?",
       "newTitle": "Nuevo círculo",
-      "newHint": "Ponle un nombre que los identifique: la familia, el equipo, los del gym.",
+      "newHint": "Un círculo es un grupo que hace un hábito juntos. Ponle nombre, un ícono y elijan qué harán.",
       "name": "Nombre",
       "namePlaceholder": "Ej.: Familia",
       "emoji": "Ícono",
@@ -799,7 +796,8 @@
       "leaveHabitBody": "«{{habit}}» tiene tus semillas y tu historia. ¿Qué hacemos con él?",
       "leaveKeep": "Salir y conservarlo en mi lista",
       "leaveArchive": "Salir y quitarlo de mi lista",
-      "withFriendName": "{{name}} y yo"
+      "withFriendName": "{{name}} y yo",
+      "editMembers": "Editar miembros"
     },
     "invite": {
       "needUsername": "Antes, elige tu usuario: así te reconocerán. Luego seguimos con la invitación.",
@@ -811,7 +809,6 @@
       "retry": "Reintentar"
     },
     "circleHabit": {
-      "title": "Hábito del círculo",
       "add": "+ Proponer hábito",
       "emptyOwner": "Cada círculo tiene un hábito que hacen juntos, como caminar 20 minutos. Cada quien lo suma a su día y la racha del grupo se mantiene si al menos la mitad lo cumple. ¿Otro hábito? Crea otro círculo.",
       "emptyMember": "Este círculo aún no tiene hábito. Quien lo creó puede proponer uno.",
@@ -841,7 +838,8 @@
       "endConfirm": "¿Terminar «{{name}}» para el círculo? Cada uno conserva el hábito en su lista, ya sin compartir. Luego pueden proponer otro.",
       "todayAll": "¡Todo el círculo lo hizo hoy! 🎉",
       "withPhoto": "Con foto",
-      "withPhotoHint": "Al marcarlo, cada uno toma una foto con la cámara (no de la galería). Se ven en el círculo y se borran a los 7 días."
+      "streakLabel_one": "{{count}} día de racha del grupo",
+      "streakLabel_other": "{{count}} días de racha del grupo"
     },
     "friendsCount_one": "Tienes {{count}} amigo",
     "friendsCount_other": "Tienes {{count}} amigos",

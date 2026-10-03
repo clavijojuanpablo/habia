@@ -752,6 +752,17 @@ export type Database = {
         Args: { p_circle_habit: string; p_day: string }
         Returns: string
       }
+      start_circle_habit: {
+        Args: {
+          p_circle: string
+          p_name: string
+          p_photo: boolean
+          p_rrule: string
+          p_today: string
+          p_two_minute: string
+        }
+        Returns: string
+      }
       send_friend_request: { Args: { p_username: string }; Returns: string }
       social_days: {
         Args: { p_since: string; p_users: string[] }

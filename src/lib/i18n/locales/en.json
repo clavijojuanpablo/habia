@@ -8,7 +8,8 @@
     "optional": "optional",
     "close": "Close",
     "retry": "Retry",
-    "moreInfo": "Shows more information"
+    "moreInfo": "Shows more information",
+    "done": "Done"
   },
   "auth": {
     "title": "Every action is a seed for the person you want to become.",
@@ -317,7 +318,6 @@
   "account": {
     "dangerZone": "Danger zone",
     "deleteAccount": "Delete my account",
-    "deleteHint": "You can delete your account and all your data at any time.",
     "deleteWarning": "Your habits, logs, identities and tree will be deleted forever. This cannot be undone.",
     "deleteKeyword": "DELETE",
     "typeToConfirm": "Type {{keyword}} to confirm",
@@ -489,9 +489,7 @@
   "language": {
     "title": "Language",
     "es": "Spanish",
-    "en": "English",
-    "esShort": "ESP",
-    "enShort": "ENG"
+    "en": "English"
   },
   "legal": {
     "title": "Legal",
@@ -785,13 +783,12 @@
       "inviteTitle": "Invite",
       "shareMessage": "Join my circle “{{name}}” on habia! 🌱 {{link}}",
       "newCode": "Make a new code",
-      "manage": "People in the circle",
       "remove": "Remove",
       "removeConfirm": "Remove {{name}} from the circle?",
       "leave": "Leave circle",
       "leaveConfirm": "Leave “{{name}}”?",
       "newTitle": "New circle",
-      "newHint": "Give it a name that says who you are: family, the team, the gym crew.",
+      "newHint": "A circle is a group doing one habit together. Give it a name and an icon, and pick what you will do.",
       "name": "Name",
       "namePlaceholder": "E.g. Family",
       "emoji": "Icon",
@@ -799,7 +796,8 @@
       "leaveHabitBody": "“{{habit}}” holds your seeds and history. What should we do with it?",
       "leaveKeep": "Leave and keep it in my list",
       "leaveArchive": "Leave and remove it from my list",
-      "withFriendName": "{{name}} and me"
+      "withFriendName": "{{name}} and me",
+      "editMembers": "Edit members"
     },
     "invite": {
       "needUsername": "First, pick your username so they recognize you. Then we carry on with the invite.",
@@ -811,7 +809,6 @@
       "retry": "Try again"
     },
     "circleHabit": {
-      "title": "Circle habit",
       "add": "+ Suggest a habit",
       "emptyOwner": "Each circle has one habit you do together, like walking 20 minutes. Everyone adds it to their day, and the group streak holds while at least half do it. Another habit? Create another circle.",
       "emptyMember": "This circle has no habit yet. Whoever created it can suggest one.",
@@ -841,7 +838,8 @@
       "endConfirm": "End “{{name}}” for the circle? Everyone keeps the habit in their list, no longer shared. You can suggest another one after.",
       "todayAll": "The whole circle did it today! 🎉",
       "withPhoto": "With a photo",
-      "withPhotoHint": "When checking it, everyone takes a photo with the camera (not from the gallery). The circle sees them; they are deleted after 7 days."
+      "streakLabel_one": "{{count}}-day group streak",
+      "streakLabel_other": "{{count}}-day group streak"
     },
     "friendsCount_one": "You have {{count}} friend",
     "friendsCount_other": "You have {{count}} friends",

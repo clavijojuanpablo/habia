@@ -66,6 +66,15 @@ export const Colors = {
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 
+/**
+ * The day-band editor's four rows, in order through the day: yellow morning, orange afternoon,
+ * blue night, purple end of the day. Pastel, so the column reads as one gradient.
+ */
+export const DayStepColors = {
+  light: ['#FFF3C4', '#FFE2C6', '#DDE7FF', '#ECE3FF'],
+  dark: ['#3A3420', '#3D2C1E', '#1F2A44', '#2C2546'],
+} as const;
+
 /** Day-band palettes: peach dawn, butter afternoon, lavender night, mint any-time. */
 export const BandColors = {
   light: {

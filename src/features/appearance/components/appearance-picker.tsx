@@ -41,9 +41,7 @@ function InlineChoice<T extends string>({
               accessibilityState={{ selected: active }}
               accessibilityLabel={option.label ?? option.text}
               style={[styles.option, active && { backgroundColor: theme.backgroundElement }]}>
-              <ThemedText type="smallBold" style={{ color: active ? theme.text : theme.textSecondary }}>
-                {option.text}
-              </ThemedText>
+              <ThemedText style={[styles.icon, !active && styles.faded]}>{option.text}</ThemedText>
             </Pressable>
           );
         })}
@@ -59,8 +57,8 @@ export function AppearancePicker() {
     <InlineChoice
       label={t('appearance.title')}
       options={[
-        { value: 'light', text: `☀️ ${t('appearance.light')}` },
-        { value: 'dark', text: `🌙 ${t('appearance.dark')}` },
+        { value: 'light', text: '☀️', label: t('appearance.light') },
+        { value: 'dark', text: '🌙', label: t('appearance.dark') },
       ]}
       selected={mode}
       onSelect={setPreference}
@@ -78,8 +76,8 @@ export function LanguagePicker() {
     <InlineChoice
       label={t('language.title')}
       options={[
-        { value: 'es', text: t('language.esShort'), label: t('language.es') },
-        { value: 'en', text: t('language.enShort'), label: t('language.en') },
+        { value: 'es', text: '🇪🇸', label: t('language.es') },
+        { value: 'en', text: '🇬🇧', label: t('language.en') },
       ]}
       selected={current}
       onSelect={(locale) => update.mutate({ locale })}
@@ -91,5 +89,7 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
   flex: { flex: 1 },
   segmented: { flexDirection: 'row', borderRadius: Radius.md, padding: 3, gap: 3 },
-  option: { paddingVertical: Spacing.one + 2, paddingHorizontal: Spacing.three, borderRadius: Radius.sm },
+  option: { paddingVertical: Spacing.one, paddingHorizontal: Spacing.three, borderRadius: Radius.sm },
+  icon: { fontSize: 20, lineHeight: 26 },
+  faded: { opacity: 0.45 },
 });

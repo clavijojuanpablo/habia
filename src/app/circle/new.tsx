@@ -8,15 +8,25 @@ import { TextField } from '@/components/text-field';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
-import { SocialError, useCreateCircle } from '@/features/social/api';
+import { SocialError, useCreateCircleWithHabit } from '@/features/social/api';
+import {
+  CircleHabitFields,
+  circleHabitInput,
+  circleHabitValid,
+  EMPTY_CIRCLE_HABIT,
+} from '@/features/social/components/circle-habit-fields';
 import { useTheme } from '@/hooks/use-theme';
 
-const EMOJIS = ['🌱', '🏃', '📚', '🧘', '💪', '🏡', '❤️', '🎨', '💼', '🍎'];
+// One icon for the circle and its habit: activities, not places.
+const EMOJIS = ['🚶', '🏃', '📚', '🧘', '💧', '🥗', '😴', '💪', '✍️', '📵', '🌱', '❤️'];
+
+/** A circle is born with its habit: who (name, icon) and what they do together, in one step. */
 
 export default function NewCircleScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
-  const create = useCreateCircle();
+  const create = useCreateCircleWithHabit();
+  const [habit, setHabit] = useState(EMPTY_CIRCLE_HABIT);
   // From a friend's page: a circle of two, named after them, and the invite opens right away.
   const { friend } = useLocalSearchParams<{ friend?: string }>();
   const [name, setName] = useState(friend ? t('social.circle.withFriendName', { name: friend }) : '');
@@ -55,6 +65,8 @@ export default function NewCircleScreen() {
             </Pressable>
           ))}
         </View>
+        <View style={[styles.divider, { backgroundColor: theme.border }]} />
+        <CircleHabitFields value={habit} onChange={setHabit} />
         {errorCode && (
           <ThemedText type="small" themeColor="danger">
             {t(`social.errors.${errorCode}`)}
@@ -62,11 +74,11 @@ export default function NewCircleScreen() {
         )}
         <Button
           label={t('social.circle.create')}
-          disabled={name.trim().length === 0}
+          disabled={name.trim().length === 0 || !circleHabitValid(habit)}
           loading={create.isPending}
           onPress={() =>
             create.mutate(
-              { name: name.trim(), emoji },
+              { name: name.trim(), emoji, habit: circleHabitInput(habit) },
               {
                 onSuccess: (id) =>
                   router.replace({ pathname: '/circle/[id]', params: friend ? { id, invite: '1' } : { id } }),
@@ -84,6 +96,7 @@ const styles = StyleSheet.create({
   content: {
     padding: Spacing.three,
     gap: Spacing.three,
+    paddingBottom: Spacing.six,
     width: '100%',
     maxWidth: MaxContentWidth,
     alignSelf: 'center',
@@ -98,4 +111,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   emoji: { fontSize: 26, lineHeight: 32 },
+  divider: { height: StyleSheet.hairlineWidth, marginVertical: Spacing.two },
 });

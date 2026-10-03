@@ -6,7 +6,7 @@ import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, View } fro
 
 import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
-import { FontFamily, Radius, Spacing } from '@/constants/theme';
+import { FontFamily, Radius, Shadow, Spacing } from '@/constants/theme';
 import { useSession } from '@/features/auth/session-provider';
 import { useTheme } from '@/hooks/use-theme';
 import { showNotice } from '@/lib/confirm';
@@ -93,9 +93,6 @@ export function CircleHabitCard({
   if (!progress.data) {
     return (
       <SocialCard>
-        <ThemedText type="heading">
-          {habit.icon} {habit.name}
-        </ThemedText>
         <ActivityIndicator color={theme.primary} />
       </SocialCard>
     );
@@ -118,25 +115,33 @@ export function CircleHabitCard({
   const lit = state === 'met';
 
   return (
-    <SocialCard>
-      <View style={styles.header}>
-        <ThemedText style={styles.icon}>{habit.icon}</ThemedText>
-        <View style={styles.flex}>
-          <ThemedText type="heading">{habit.name}</ThemedText>
-          {habit.two_minute_version && (
-            <ThemedText type="caption" themeColor="textSecondary">
-              {t('social.circleHabit.minimum', { text: habit.two_minute_version })}
-            </ThemedText>
-          )}
-        </View>
-        <View style={[styles.streak, { backgroundColor: lit ? theme.streakSoft : theme.backgroundSelected }]}>
-          <ThemedText style={[styles.flame, !lit && styles.dim]}>🔥</ThemedText>
-          <ThemedText style={[styles.streakNumber, { color: lit ? theme.streak : theme.textSecondary }]}>
+    <>
+      {/* The group's streak leads: it is what the circle looks after together. */}
+      <View style={[styles.hero, { backgroundColor: lit ? theme.streakSoft : theme.backgroundElement }]}>
+        <View style={styles.heroRow}>
+          <ThemedText style={[styles.heroFlame, !lit && styles.dim]}>🔥</ThemedText>
+          <ThemedText style={[styles.heroNumber, { color: lit ? theme.streak : theme.textSecondary }]}>
             {group.streak}
           </ThemedText>
         </View>
+        <ThemedText type="smallBold" themeColor="textSecondary">
+          {t('social.circleHabit.streakLabel', { count: group.streak })}
+        </ThemedText>
+        <ThemedText type="caption" themeColor="textSecondary" style={styles.rule}>
+          {t('social.circleHabit.rule')}
+        </ThemedText>
       </View>
 
+      {!joined && (
+        <Button label={t('social.circleHabit.join')} loading={join.isPending} onPress={() => join.mutate(habit)} />
+      )}
+      {joinError && (
+        <ThemedText type="small" themeColor="danger">
+          {t(`social.errors.${joinError}`)}
+        </ThemedText>
+      )}
+
+      <SocialCard>
       {/* Today's photos first: the proof is the picture. */}
       {!!photos.data?.length && (
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.gallery}>
@@ -230,9 +235,14 @@ export function CircleHabitCard({
         </View>
       )}
 
+      {habit.photo_required && joined && group.today.carriers.includes(me) && !photoOf(me) && photos.isSuccess && (
+        <Button variant="secondary" label={`📸 ${t('photos.add')}`} loading={uploading} onPress={addPhoto} />
+      )}
+      </SocialCard>
+
       {/* Consistency ranking */}
       {members.length > 0 && (
-        <>
+        <SocialCard>
           <View style={[styles.periods, { backgroundColor: theme.background }]} accessibilityRole="tablist">
             {(['week', 'month', 'all'] as const).map((p) => (
               <Pressable
@@ -241,7 +251,7 @@ export function CircleHabitCard({
                 accessibilityRole="tab"
                 accessibilityState={{ selected: period === p }}
                 style={[styles.period, period === p && { backgroundColor: theme.backgroundElement }]}>
-                <ThemedText type="caption" style={{ color: period === p ? theme.text : theme.textSecondary }}>
+                <ThemedText type="smallBold" style={{ color: period === p ? theme.text : theme.textSecondary }}>
                   {t(`social.circleHabit.periods.${p}`)}
                 </ThemedText>
               </Pressable>
@@ -257,12 +267,9 @@ export function CircleHabitCard({
               percent: r.percent,
             }))}
           />
-        </>
+        </SocialCard>
       )}
 
-      {joined && group.today.carriers.includes(me) && !photoOf(me) && photos.isSuccess && (
-        <Button variant="secondary" label={`📸 ${t('photos.add')}`} loading={uploading} onPress={addPhoto} />
-      )}
       <PhotoViewer
         key={viewing?.id}
         photo={viewing}
@@ -271,37 +278,25 @@ export function CircleHabitCard({
         onRetake={retake}
         onClose={() => setViewingId(null)}
       />
-
-      {!joined && (
-        <Button label={t('social.circleHabit.join')} loading={join.isPending} onPress={() => join.mutate(habit)} />
-      )}
-      {joinError && (
-        <ThemedText type="small" themeColor="danger">
-          {t(`social.errors.${joinError}`)}
-        </ThemedText>
-      )}
-      <ThemedText type="caption" themeColor="textSecondary">
-        {t('social.circleHabit.rule')}
-      </ThemedText>
-    </SocialCard>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
-  icon: { fontSize: 28, lineHeight: 34 },
   flex: { flex: 1 },
   dim: { opacity: 0.35 },
-  streak: {
-    flexDirection: 'row',
+  hero: {
     alignItems: 'center',
     gap: Spacing.one,
-    borderRadius: Radius.md,
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.one,
+    paddingVertical: Spacing.four,
+    paddingHorizontal: Spacing.four,
+    borderRadius: Radius.xl,
+    boxShadow: Shadow.card,
   },
-  flame: { fontSize: 24, lineHeight: 30 },
-  streakNumber: { fontSize: 24, lineHeight: 30, fontFamily: FontFamily.black },
+  heroRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
+  heroFlame: { fontSize: 44, lineHeight: 52 },
+  heroNumber: { fontSize: 56, lineHeight: 64, fontFamily: FontFamily.black },
+  rule: { textAlign: 'center', marginTop: Spacing.two, paddingHorizontal: Spacing.two },
   board: { borderRadius: Radius.md, padding: Spacing.three, gap: Spacing.three },
   counterRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
   counter: { fontSize: 40, lineHeight: 46, fontFamily: FontFamily.black },
@@ -327,6 +322,6 @@ const styles = StyleSheet.create({
   galleryItem: { width: 100, gap: Spacing.half },
   galleryPhoto: { width: 100, height: 130, borderRadius: Radius.md, borderWidth: 3 },
   faceName: { textAlign: 'center', alignSelf: 'stretch' },
-  periods: { flexDirection: 'row', padding: Spacing.half, borderRadius: Radius.pill },
-  period: { flex: 1, alignItems: 'center', paddingVertical: Spacing.one, borderRadius: Radius.pill },
+  periods: { flexDirection: 'row', padding: Spacing.one, borderRadius: Radius.pill, gap: Spacing.one },
+  period: { flex: 1, alignItems: 'center', paddingVertical: Spacing.two, borderRadius: Radius.pill },
 });

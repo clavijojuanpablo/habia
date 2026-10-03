@@ -117,6 +117,14 @@ open the web fallback there; its "Open habia" button still works.
    Check it: `curl -X POST <SUPABASE_URL>/functions/v1/weekly-review -H "apikey: <publishable>" -H "Authorization: Bearer <publishable>" -d '{"check":true}'`
    must answer `{"available":true}`.
 
+0. **1.6.3 — a circle is its habit (2026-10-02), on `build-4`, by OTA + migration** `20261003021223_circle_habit_start.sql`
+   (`db push` BEFORE the OTA). New circles are created with their habit in one form (one icon: the circle's), and
+   `start_circle_habit` (owner only, one transaction) links the creator right away; `circle/habit-new` uses it too
+   (circle without habit). Circle screen: the circle header names the habit; the group streak is the hero, the rule
+   under it; today and the ranking are separate cards; roomier period tabs; members behind "Editar miembros"; the
+   photo button only when the circle asks for photos. Garden: back to a thin labelled progress bar under the scene.
+   Settings: icons/flags only for appearance and language, account deletion as one line with a trash button,
+   day-band rows on one line with four pastel steps (`DayStepColors`). Test: `supabase/tests/circle-start.sql`.
 0. **1.6.2 — calmer screens (2026-10-02), on `build-4`, by OTA (no migration).** Fewer words: circle photo hint,
    ranking title and invite explainer gone (invite = code + button). Garden: stage, seeds and next-stage bar on the
    sky of the scene (the ground stays the tree's), Brote's weekly reviews moved here from Progress, loose seeds card

@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, RefreshControl, Share, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, RefreshControl, Share, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
@@ -20,6 +20,7 @@ import {
 import { useArchiveHabit, useHabits } from '@/features/habits/api';
 import { CircleHabitCard } from '@/features/social/components/circle-habit-card';
 import { circleInviteLink } from '@/features/social/components/circles';
+import { SocialAvatar } from '@/features/social/components/social-avatar';
 import { SocialCard } from '@/features/social/components/social-card';
 import { useSocialRefresh } from '@/features/social/use-social-refresh';
 import { useNow, useTodayRange } from '@/hooks/use-now';
@@ -52,6 +53,7 @@ export default function CircleScreen() {
   const { data: myHabits } = useHabits();
   const myLinkedHabit = sharedHabit ? myHabits?.find((h) => h.circle_habit_id === sharedHabit.id) : undefined;
   const [leaving, setLeaving] = useState(false);
+  const [editingMembers, setEditingMembers] = useState(false);
 
   const profileById = Object.fromEntries((profiles.data ?? []).map((p) => [p.user_id, p]));
   const isOwner = members.some((m) => m.user_id === me && m.role === 'owner');
@@ -106,27 +108,33 @@ export default function CircleScreen() {
           <ThemedText type="subtitle" style={styles.center}>
             {circle.name}
           </ThemedText>
+          {sharedHabit && (
+            <ThemedText type="heading" style={styles.center}>
+              {sharedHabit.name}
+            </ThemedText>
+          )}
+          {sharedHabit?.two_minute_version && (
+            <ThemedText type="small" themeColor="textSecondary" style={styles.center}>
+              {t('social.circleHabit.minimum', { text: sharedHabit.two_minute_version })}
+            </ThemedText>
+          )}
           <ThemedText type="small" themeColor="textSecondary">
             {t('social.circle.members', { count: members.length })}
           </ThemedText>
         </View>
 
-        <View style={styles.sectionRow}>
-          <ThemedText type="heading" style={styles.flex}>
-            {t('social.circleHabit.title')}
-          </ThemedText>
-          {isOwner && !sharedHabit && (
-            <Button
-              variant="secondary"
-              label={t('social.circleHabit.add')}
-              onPress={() => router.push({ pathname: '/circle/habit-new', params: { circleId: circle.id } })}
-            />
-          )}
-        </View>
         {!sharedHabit && (
-          <ThemedText type="small" themeColor="textSecondary">
-            {t(isOwner ? 'social.circleHabit.emptyOwner' : 'social.circleHabit.emptyMember')}
-          </ThemedText>
+          <SocialCard>
+            <ThemedText type="small" themeColor="textSecondary">
+              {t(isOwner ? 'social.circleHabit.emptyOwner' : 'social.circleHabit.emptyMember')}
+            </ThemedText>
+            {isOwner && (
+              <Button
+                label={t('social.circleHabit.add')}
+                onPress={() => router.push({ pathname: '/circle/habit-new', params: { circleId: circle.id } })}
+              />
+            )}
+          </SocialCard>
         )}
         {sharedHabit && <CircleHabitCard habit={sharedHabit} profiles={profileById} today={today} />}
         {sharedHabit && isOwner && (
@@ -166,13 +174,24 @@ export default function CircleScreen() {
           )}
         </SocialCard>
 
-        {isOwner && others.length > 0 && (
+        {isOwner && others.length > 0 && !editingMembers && (
+          <Button variant="secondary" label={`👥 ${t('social.circle.editMembers')}`} onPress={() => setEditingMembers(true)} />
+        )}
+        {isOwner && others.length > 0 && editingMembers && (
           <SocialCard>
-            <ThemedText type="heading">{t('social.circle.manage')}</ThemedText>
+            <View style={styles.sectionRow}>
+              <ThemedText type="heading" style={styles.flex}>
+                {t('social.circle.editMembers')}
+              </ThemedText>
+              <Pressable onPress={() => setEditingMembers(false)} accessibilityRole="button" hitSlop={8}>
+                <ThemedText type="link">{t('common.done')}</ThemedText>
+              </Pressable>
+            </View>
             {others.map((m) => {
               const name = profileById[m.user_id]?.display_name ?? t('social.circle.hidden');
               return (
                 <View key={m.user_id} style={styles.memberRow}>
+                  <SocialAvatar color={profileById[m.user_id]?.color ?? theme.primary} size={36} />
                   <ThemedText type="smallBold" style={styles.flex} numberOfLines={1}>
                     {name}
                   </ThemedText>
@@ -254,7 +273,7 @@ const styles = StyleSheet.create({
   centered: { alignItems: 'center', justifyContent: 'center', padding: Spacing.four },
   content: {
     padding: Spacing.three,
-    gap: Spacing.three,
+    gap: Spacing.four,
     paddingBottom: Spacing.six,
     width: '100%',
     maxWidth: MaxContentWidth,
@@ -273,5 +292,5 @@ const styles = StyleSheet.create({
   },
   sectionRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
   inviteRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
-  memberRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
+  memberRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
 });
