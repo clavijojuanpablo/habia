@@ -489,7 +489,9 @@
   "language": {
     "title": "Language",
     "es": "Spanish",
-    "en": "English"
+    "en": "English",
+    "esShort": "ES",
+    "enShort": "EN"
   },
   "legal": {
     "title": "Legal",
@@ -839,7 +841,9 @@
       "todayAll": "The whole circle did it today! 🎉",
       "withPhoto": "With a photo",
       "streakLabel_one": "{{count}}-day group streak",
-      "streakLabel_other": "{{count}}-day group streak"
+      "streakLabel_other": "{{count}}-day group streak",
+      "withPhotoHint": "Camera only; the circle sees it and it is deleted after 7 days.",
+      "startFailed": "The circle was created, but not its habit. Set it from the circle's screen."
     },
     "friendsCount_one": "You have {{count}} friend",
     "friendsCount_other": "You have {{count}} friends",

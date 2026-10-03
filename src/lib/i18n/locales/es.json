@@ -489,7 +489,9 @@
   "language": {
     "title": "Idioma",
     "es": "Español",
-    "en": "Inglés"
+    "en": "Inglés",
+    "esShort": "ES",
+    "enShort": "EN"
   },
   "legal": {
     "title": "Legal",
@@ -839,7 +841,9 @@
       "todayAll": "¡Todo el círculo lo hizo hoy! 🎉",
       "withPhoto": "Con foto",
       "streakLabel_one": "{{count}} día de racha del grupo",
-      "streakLabel_other": "{{count}} días de racha del grupo"
+      "streakLabel_other": "{{count}} días de racha del grupo",
+      "withPhotoHint": "Solo con la cámara; lo ve el círculo y se borra a los 7 días.",
+      "startFailed": "El círculo quedó creado, pero no su hábito. Ponlo desde la pantalla del círculo."
     },
     "friendsCount_one": "Tienes {{count}} amigo",
     "friendsCount_other": "Tienes {{count}} amigos",

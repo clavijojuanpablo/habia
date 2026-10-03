@@ -102,9 +102,12 @@ export function CircleHabitFields({
       )}
 
       <View style={[styles.photoRow, { backgroundColor: theme.backgroundElement }]}>
-        <ThemedText type="smallBold" style={styles.flex}>
-          📸 {t('social.circleHabit.withPhoto')}
-        </ThemedText>
+        <View style={styles.flex}>
+          <ThemedText type="smallBold">📸 {t('social.circleHabit.withPhoto')}</ThemedText>
+          <ThemedText type="caption" themeColor="textSecondary">
+            {t('social.circleHabit.withPhotoHint')}
+          </ThemedText>
+        </View>
         <Switch
           value={value.withPhoto}
           onValueChange={(withPhoto) => set({ withPhoto })}

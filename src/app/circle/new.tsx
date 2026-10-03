@@ -16,6 +16,7 @@ import {
   EMPTY_CIRCLE_HABIT,
 } from '@/features/social/components/circle-habit-fields';
 import { useTheme } from '@/hooks/use-theme';
+import { showNotice } from '@/lib/confirm';
 
 // One icon for the circle and its habit: activities, not places.
 const EMOJIS = ['🚶', '🏃', '📚', '🧘', '💧', '🥗', '😴', '💪', '✍️', '📵', '🌱', '❤️'];
@@ -80,8 +81,10 @@ export default function NewCircleScreen() {
             create.mutate(
               { name: name.trim(), emoji, habit: circleHabitInput(habit) },
               {
-                onSuccess: (id) =>
-                  router.replace({ pathname: '/circle/[id]', params: friend ? { id, invite: '1' } : { id } }),
+                onSuccess: ({ circleId: id, habitFailed }) => {
+                  if (habitFailed) showNotice(t('social.circleHabit.startFailed'));
+                  router.replace({ pathname: '/circle/[id]', params: friend ? { id, invite: '1' } : { id } });
+                },
               },
             )
           }

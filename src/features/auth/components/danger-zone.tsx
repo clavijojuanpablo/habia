@@ -40,19 +40,14 @@ export function DangerZone() {
   return (
     <View style={[styles.container, { borderColor: theme.danger + '55' }]}>
       {!open ? (
-        <View style={styles.row}>
+        <Pressable onPress={() => setOpen(true)} accessibilityRole="button" style={styles.row}>
           <ThemedText type="smallBold" style={[styles.flex, { color: theme.danger }]}>
             {t('account.deleteAccount')}
           </ThemedText>
-          <Pressable
-            onPress={() => setOpen(true)}
-            accessibilityRole="button"
-            accessibilityLabel={t('account.deleteAccount')}
-            hitSlop={8}
-            style={[styles.trash, { backgroundColor: theme.danger + '1F' }]}>
+          <View style={[styles.trash, { backgroundColor: theme.danger + '1F' }]} accessible={false}>
             <ThemedText style={styles.trashIcon}>🗑️</ThemedText>
-          </Pressable>
-        </View>
+          </View>
+        </Pressable>
       ) : (
         <>
           <ThemedText type="heading" style={{ color: theme.danger }}>

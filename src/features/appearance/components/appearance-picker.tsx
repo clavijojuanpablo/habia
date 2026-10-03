@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Radius, Spacing } from '@/constants/theme';
@@ -76,8 +76,8 @@ export function LanguagePicker() {
     <InlineChoice
       label={t('language.title')}
       options={[
-        { value: 'es', text: '🇪🇸', label: t('language.es') },
-        { value: 'en', text: '🇬🇧', label: t('language.en') },
+        { value: 'es', text: Platform.OS === 'web' ? t('language.esShort') : '🇪🇸', label: t('language.es') },
+        { value: 'en', text: Platform.OS === 'web' ? t('language.enShort') : '🇬🇧', label: t('language.en') },
       ]}
       selected={current}
       onSelect={(locale) => update.mutate({ locale })}

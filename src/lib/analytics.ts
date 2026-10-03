@@ -46,7 +46,8 @@ export type AnalyticsEvent =
   | 'pro_purchased'
   | 'pro_restored'
   | 'photo_doubted'
-  | 'photo_doubt_undone';
+  | 'photo_doubt_undone'
+  | 'circle_habit_start_failed';
 
 const OPT_OUT_KEY = 'habia.analytics.optOut';
 const apiKey = process.env.EXPO_PUBLIC_POSTHOG_KEY;

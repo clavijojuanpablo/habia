@@ -577,10 +577,12 @@ export function useCreateCircleWithHabit() {
       try {
         await startCircleHabit(circleId, input.habit);
         track('circle_habit_created');
+        return { circleId, habitFailed: false };
       } catch {
-        // Kept: the circle is there; its screen offers to set the habit.
+        // The circle is there; its screen offers to set the habit. The person is told.
+        track('circle_habit_start_failed');
+        return { circleId, habitFailed: true };
       }
-      return circleId;
     },
     onSuccess: () => Promise.all([invalidate(), queryClient.invalidateQueries({ queryKey: ['habits'] })]),
   });
