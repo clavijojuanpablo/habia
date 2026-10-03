@@ -1,68 +1,83 @@
-# Science → Features
+# Ciencia → funciones
 
-Every feature must map to a mechanism here. If a feature doesn't, question it.
+Cada función debe apoyarse en un mecanismo de este documento. Si no se apoya en ninguno, cuestiónala.
 
-## The 4 Laws of Behavior Change (Atomic Habits)
+## Las 4 leyes del cambio de comportamiento (Hábitos atómicos)
 
-| Law | Mechanism | Feature |
+| Ley | Mecanismo | Función |
 |---|---|---|
-| 1. Make it obvious | Implementation intentions: "I will [X] at [time] in [place]" (Gollwitzer, 1999; meta-analysis Gollwitzer & Sheeran, 2006, d≈0.65) | Built from two short answers: the cue ("¿Cuándo lo harás?") + "¿Dónde?" (stored in `habits.implementation_intention`); the reminder reads "📍 place" |
-| | Habit stacking: "After [current habit], I will [new habit]" | `cue_type = after_habit` + `anchor_habit_id`; completing the anchor surfaces/notifies the next habit |
-| | Context cues ("When I get home → gym") | `cue_type = context` + `context_label`; optional geofence later |
-| 2. Make it attractive | Temptation bundling (Milkman et al., 2014) | Removed from the form in 1.0.3 (friction, nothing used it); the column `habits.temptation_bundle` is kept for a future coach tip |
-| | Identity + social norms | Identity statements (tree branches); shared circle habits: "join a group where the desired behavior is the normal behavior" (Clear, ch. 9) with a group streak at ≥ 50 % so the group carries whoever slips |
-| 3. Make it easy | 2-minute rule; reduce friction | `habits.two_minute_version`; `done_minimum` log status counts toward the streak |
-| 4. Make it satisfying | Immediate reward; habit tracking | Check-in animation + haptics, the tree grows immediately, visual tracker |
+| 1. Hazlo obvio | Intenciones de implementación: «Haré [X] a las [hora] en [lugar]» (Gollwitzer, 1999; metaanálisis de Gollwitzer y Sheeran, 2006, d≈0,65) | Se arma con dos respuestas cortas: la señal («¿Cuándo lo harás?») + «¿Dónde?» (`habits.implementation_intention`); el recordatorio dice «📍 lugar» |
+| | Encadenar hábitos: «Después de [hábito actual], haré [hábito nuevo]» | `cue_type = after_habit` + `anchor_habit_id`; al completar el ancla aparece el siguiente. El **detector de patrones** encuentra qué hábitos ya van juntos en tus datos y Brote sugiere encadenarlos |
+| | Señales de contexto («Cuando llegue a casa → gym») | `cue_type = context` + `context_label` |
+| 2. Hazlo atractivo | Identidad + normas sociales | Identidades (ramas del árbol); círculos alrededor de un hábito compartido: «únete a un grupo donde el comportamiento deseado es lo normal» (Clear, cap. 9), con racha de grupo al ≥ 50 % para que el grupo sostenga a quien flaquea |
+| 3. Hazlo fácil | Regla de los 2 minutos; reducir fricción | `habits.two_minute_version`; el estado `done_minimum` cuenta para la racha. **Modo enfoque:** del «quiero leer» a empezar en un toque; el chip de 2 min es la versión mínima, y parar después de 2 minutos puede contar como mínimo |
+| 4. Hazlo satisfactorio | Recompensa inmediata; registrar el hábito | Animación + vibración al marcar, el árbol crece al instante, celebraciones del día y de la identidad, registro visual |
 
-## Identity-based habits
-"Every action you take is a vote for the type of person you wish to become." In the app this is told as sowing: each completion is a **seed** planted for that person, consistency **waters** it, and ~66 repetitions are the **harvest** (see `GAMIFICATION.md`). Users define who they are **becoming** ("Me estoy convirtiendo en… una persona que lee", since 1.2.0) and link habits to them ("Este hábito me ayuda a convertirme en…"); finishing every habit of an identity in a day says "Hoy estás más cerca de convertirte en…". Nuance kept in the copy: an identity describes who you are or what you do ("una persona activa", "lectora"), not an outcome ("más delgada"); examples steer to identities, outcomes are allowed.
+## Hábitos basados en la identidad
+«Cada acción que haces es un voto por el tipo de persona que quieres ser.» En la app se cuenta como sembrar: cada
+hábito completado es una **semilla** por esa persona, la constancia la **riega** y ~66 repeticiones son la
+**cosecha** (`GAMIFICATION.md`). La persona define en quién se está **convirtiendo** («Me estoy convirtiendo en… una
+persona que lee») y vincula hábitos a esa identidad; completar todos los hábitos de una identidad en un día dice
+«Hoy estás más cerca de convertirte en…». Matiz que cuidan los textos: una identidad describe quién eres o qué haces
+(«una persona activa», «lectora»), no un resultado («más delgada»).
 
-## Time to automaticity
-Lally et al. (2010): median **~66 days** to reach automaticity, range **18–254**. Missing a single day did not significantly affect the process.
-→ Show an honest "automaticity journey" per habit. Never promise "21 days". A habit becomes a **fruit** on the tree after ~66 days of consistency. The coach marks halfway, "close" and the fruit (`automaticity`).
+## Tiempo hasta la automaticidad
+Lally et al. (2010): mediana de **~66 días** para la automaticidad, con un rango de **18 a 254**. Fallar un solo día
+no afectó el proceso de forma significativa.
+→ Un camino honesto hacia la automaticidad por hábito. Nunca prometer «21 días». Un hábito se vuelve **fruto** tras
+~66 días de constancia. El coach marca la mitad, el «ya casi» y el fruto (`automaticity`).
 
-## Never miss twice
-One miss is an accident; two is the start of a new (bad) habit. Avoid the *abstinence violation effect* ("I already ruined it, so why bother").
-→ Streaks tolerate a single miss; the tree wilts slightly and recovers when you return. The coach suggests the 2-minute version after a miss (rule `never_miss_twice`, one tap to log it) and welcomes users back after two missed days (`comeback`).
+## Nunca fallar dos veces
+Un fallo es un accidente; dos son el comienzo de un hábito nuevo (malo). Evita el *efecto de violación de la
+abstinencia* («ya lo arruiné, ¿para qué seguir?»).
+→ Las rachas toleran un fallo; el árbol se marchita un poco y se recupera al volver. El coach sugiere la versión de
+2 minutos tras un fallo (regla `never_miss_twice`) y da la bienvenida tras dos días fuera (`comeback`). La racha del
+círculo usa la misma regla.
 
-## The 1% rule
-1.01^365 ≈ 37.8. Small improvements compound.
-→ "1% curve" chart comparing actual consistency with the compounding curve.
+## Hora del día y energía
+Los hábitos a horas constantes y anclados a rutinas estables se forman más rápido. Mostrar el % de cumplimiento por
+franja (mañana / tarde / noche) para que la persona aprenda *cuándo* le va mejor.
 
-## Time of day and energy
-Habits placed at consistent times and anchored to stable routines form faster. Show completion rate per day band (morning / afternoon / night) so users learn *when* they succeed.
+## Coach (consejo por reglas)
+Un consejo en Hoy por franja. Los detectores (`src/features/coach/detectors.ts`) leen el historial del propio
+usuario y cada uno cita un mecanismo de arriba; gana el de mayor puntaje, lo mostrado en los últimos 3 días se
+aparta, y cada consejo tiene un «¿Por qué?» con los datos y la fuente.
 
-## Coach (rule-based tip)
-A tip on Today per day band. Detectors (`src/features/coach/detectors.ts`) read the user's own
-history and each cites a mechanism above; the highest score wins, insights shown in the last 3 days
-step aside, and every tip has a "¿Por qué?" line with the data and the source.
-
-| Detector | Mechanism |
+| Detector | Mecanismo |
 |---|---|
-| never miss twice (+ "you came back the last N times") | Never miss twice; abstinence violation effect |
-| comeback after two missed days | Abstinence violation effect |
-| usual check-in time, running late | Stable times form habits faster (time of day) |
-| weak weekday → lower the bar | 2-minute rule (Law 3) |
-| automaticity: halfway, close, fruit | Lally et al. (2010), ~66 days, range 18–254 |
-| projected fruit date from recent pace | Lally et al.; worded as an estimate, never a promise |
-| struggling habit → 2-minute version / when and where | Law 3; implementation intentions (Law 1) |
-| heavy day in the weakest band → front-load | Time of day and energy |
-| best day band | Time of day and energy |
-| better week | The 1% rule |
-| minimum version kept the streak alive | 2-minute rule; identity (seeds) |
-| rotating science fact (fallback) | — |
+| nunca fallar dos veces (+ «volviste las últimas N veces») | Nunca fallar dos veces; efecto de violación de la abstinencia |
+| regreso tras dos fallos | Efecto de violación de la abstinencia |
+| hora habitual, vas tarde | Las horas estables forman hábitos más rápido |
+| día débil de la semana → bajar la vara | Regla de los 2 minutos (ley 3) |
+| automaticidad: mitad, ya casi, fruto | Lally et al. (2010), ~66 días, rango 18–254 |
+| fecha estimada del fruto según el ritmo | Lally et al.; como estimación, nunca promesa |
+| hábito que cuesta → versión de 2 minutos / cuándo y dónde | Ley 3; intenciones de implementación (ley 1) |
+| día cargado en la franja más débil → adelantar | Hora del día y energía |
+| mejor franja | Hora del día y energía |
+| semana mejor que la anterior | Mejoras pequeñas que se acumulan |
+| la versión mínima salvó la racha | Regla de los 2 minutos; identidad (semillas) |
+| dato de ciencia rotativo (respaldo) | — |
 
-Every detector stays silent below a minimum sample (e.g. at least 4 of a weekday, 5 timed
-check-ins).
+Cada detector calla por debajo de una muestra mínima (por ejemplo, al menos 4 veces un mismo día de la semana, 5
+check-ins con hora).
 
-## AI weekly review (Claude, opt-in)
-Habit tracking and feedback are a core lever ("make it satisfying"); a weekly reflection turns raw
-ticks into one win, one pattern and one small next step. The numbers are computed in code
-(`weekly-summary.ts`); Claude only words them, under rules that mirror this document: seeds /
-fruit (~66, range 18–254, never "21 days"), never miss twice, patterns as observations, and the
-suggestion must use a mechanism above (2-minute version, a place for the habit, stacking).
+## Patrones entre hábitos
+El detector (`src/features/coach/patterns.ts`) compara cuánto cumples un hábito los días que hiciste otro frente a
+los días que no: **el mismo día** (base para encadenar) y **el día siguiente** (un hábito que sostiene o descuida a
+otro). Exige 5+ días a cada lado y 30 puntos de diferencia; el «día siguiente» solo cuenta días en que el hábito
+destino se hizo el día anterior, para que las rachas buenas o malas no inventen relaciones. Se presentan siempre
+como **observaciones** («en tus datos parece»), nunca como causas.
 
-## Ethics guardrails
-- No variable-ratio "slot machine" rewards meant to create compulsion.
-- No guilt or shame copy. Notifications are capped and respect quiet hours.
-- Success is measured by the user's behavior change, not by time spent in the app.
+## IA: revisión semanal y chat con Brote (opt-in)
+Registrar y recibir retroalimentación es una palanca central («hazlo satisfactorio»). Los números los calcula el
+código (`weekly-summary.ts`, `patterns.ts`); Claude solo los pone en palabras, con reglas que reflejan este
+documento: semillas / fruto (~66, rango 18–254, nunca «21 días»), nunca fallar dos veces, patrones como
+observaciones, y cada sugerencia debe usar un mecanismo de arriba (versión de 2 minutos, un lugar para el hábito,
+encadenar). Sin consejos médicos, psicológicos, financieros ni legales.
+
+## Límites éticos
+- Nada de recompensas de razón variable tipo tragamonedas para crear compulsión (también en el sonido).
+- Nada de textos de culpa o vergüenza. Notificaciones limitadas y con respeto a las horas de silencio.
+- El éxito se mide por el cambio de comportamiento de la persona, no por el tiempo que pasa en la app.
+- Lo que se paga nunca se puede ganar «por la vía lenta» haciendo hábitos (efecto de sobrejustificación): las gotas
+  se ganan con constancia y nunca se venden.

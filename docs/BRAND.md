@@ -1,26 +1,44 @@
-# Brand
+# Marca
 
-## Name: **habia** (decided 2026-09-23)
-App name, slug and deep-link scheme (`habia://`), repo `clavijojuanpablo/habia`. Reads as "había" (Spanish past tense, "there was") and contains *habi*t - a short, ownable, Spanish-first name.
-Pending: domain (.app / .com), App Store / Play Store availability, trademark.
+## Nombre: **habia** (decidido 2026-09-23)
+Nombre de la app, slug y esquema de enlaces (`habia://`), repositorio `clavijojuanpablo/habia`, dominio
+**habia.app**. Se lee como «había» y contiene *habi*t: corto, propio y en español primero. Pendiente: registro de
+marca.
 
-Earlier candidates (not used): Brote, Raíz, Voto, Semilla, Hábitat. "Brote" lives on as the mascot.
+Candidatos descartados: Brote, Raíz, Voto, Semilla, Hábitat. «Brote» vive como la mascota.
 
-## Voice
-Sowing metaphor everywhere: you **plant** seeds (completions), **water** them with consistency, **harvest** fruits (automatic habits). Never "votes" in copy.
-Warm, encouraging, never guilt-tripping. Short sentences. Talks about identity ("eres alguien que…"), not about obligations.
+## Voz
+- La metáfora de sembrar en todo: **siembras** semillas (hábitos completados), las **riegas** con constancia y
+  **cosechas** frutos (hábitos automáticos). Nunca «votos» en los textos.
+- Cálida, alentadora, nunca culpabiliza. Frases cortas. Habla de identidad («te estás convirtiendo en…»), no de
+  obligaciones. Trata de «tú».
+- **Menos es más:** si algo se entiende solo, no lleva texto; las explicaciones van detrás de un toque (ⓘ).
 
-## Mascot
-**Brote** 🌱 - a sprout character drawn as SVG (`src/features/mascot/brote.tsx`), 4 moods: happy, cheer, celebrate, sleepy. Voices the onboarding, the empty state and (next) celebrations. Main marketing asset.
+## Mascota
+**Brote** 🌱 — un brote dibujado en SVG (`src/features/mascot/brote.tsx`) con 4 ánimos: feliz, ánimo, celebra,
+dormido. Presenta el onboarding, celebra, da los consejos, escribe la revisión semanal y conversa en el chat. Es el
+principal activo de marketing hasta que exista el personaje de cada persona.
 
-## App images
-All generated from one SVG source with `npm run icons` (`scripts/generate-icons.mjs`): cream Brote on a green gradient for the app icon and favicon, transparent foreground + white silhouette for Android adaptive/monochrome icons, and a green Brote on cream (dark: plum) for the splash. Re-run after changing brand colors.
+## Imágenes de la app
+Todas salen de un solo SVG con `npm run icons` (`scripts/generate-icons.mjs`): Brote crema sobre degradado verde
+para el ícono y el favicon, primer plano transparente + silueta blanca para los íconos adaptativos de Android, y
+Brote verde sobre crema (oscuro: ciruela) para la pantalla de inicio.
 
-## Visual direction (implemented)
-- **Mood:** friendly, playful and motivating (references: Duolingo's navigation and streaks, pastel education/health apps).
-- **Light mode by default:** warm cream canvas (#FFF8F1) with white rounded cards and soft shadows. Dark mode: deep plum-gray (#16141D) with lifted cards.
-- **Palette:** mint green primary (#3DBE7A), streak orange (#FF9F43), gold seeds, lavender. Day bands: peach morning, butter afternoon, lavender night, mint "any time".
-- **Typography:** Nunito (rounded) - Black for big numbers, ExtraBold for headings.
-- **Navigation:** Duolingo-style top bar (🔥 streak · 🌱 seeds planted · tree stage) and a roomy bottom tab bar with emoji icons and a pastel tile on the active tab.
-- **Components:** chunky 3D buttons, 52px touch-friendly rows, progress rings, big hero numbers.
-- Tokens live in `src/constants/theme.ts`; heatmap ramps validated for contrast in both modes.
+## Dirección visual (implementada)
+- **Ánimo:** amigable, juguetón y motivador (referencias: la navegación y las rachas de Duolingo, apps pastel de
+  salud y educación).
+- **Claro por defecto:** fondo crema cálido (#FFF8F1) con tarjetas blancas redondeadas y sombras suaves. Oscuro:
+  gris ciruela profundo (#16141D) con tarjetas elevadas.
+- **Paleta:** verde menta (#3DBE7A), naranja de racha (#FF9F43), dorado de Pro y semillas, lavanda para lo social y
+  Brote. Franjas: mañana durazno, tarde mantequilla, noche lavanda, «cualquier hora» menta.
+- **Tipografía:** Nunito (redondeada) — Black para números grandes, ExtraBold para títulos.
+- **Navegación:** barra superior estilo Duolingo (🔥 racha · 🫂 círculos · 🌱 semillas) y barra inferior amplia con
+  íconos emoji.
+- **Componentes:** botones 3D gruesos, filas táctiles de 52 px, anillos de progreso, números protagonistas.
+- Los tokens viven en `src/constants/theme.ts`; las rampas del mapa de calor están validadas en contraste para ambos
+  modos.
+
+## Sonido (dirección, aún no implementado)
+Una familia pequeña y orgánica — madera, agua, campanitas suaves — que suena a jardín, no a casino: cortos (<1,5 s),
+amables, nunca castigan un fallo y respetan el modo silencio. Detalle por momento en `ROADMAP.md` → *Diseño de
+sonido*.

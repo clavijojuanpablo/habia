@@ -1,88 +1,84 @@
-# Gamification: the Identity Tree
+# Gamificación: el árbol de identidad
 
-Every completed habit is a **seed** planted for the person you want to become. Seeds feed a living tree rendered with Skia.
+Cada hábito completado es una **semilla** sembrada por la persona que quieres ser. Las semillas alimentan un árbol
+vivo dibujado con Skia.
 
-**The sowing metaphor (decided 2026-09-30, replaces "votes" in all copy):**
-- **Plant (🌱 semillas):** every completed habit. The counter in the top bar, the garden and Progress.
-- **Water (💧 gotas):** earned by consistency; the currency of the character (below).
-- **Harvest (🍎 frutos):** a habit that reached ~66 repetitions.
+**La metáfora de sembrar** (en todos los textos; el código aún dice `votes`):
+- **Sembrar (🌱 semillas):** cada hábito completado. El contador de la barra superior, el jardín y Progreso.
+- **Regar (💧 gotas):** se ganan con constancia; la moneda del personaje (abajo).
+- **Cosechar (🍎 frutos):** un hábito que llegó a ~66 repeticiones.
 
-Code still calls planted seeds `votes` (`useVotes`, `votesKey`, i18n keys `*.votes_*`): only the words changed.
-
-## Anatomy
-| Tree part | Meaning |
+## Anatomía
+| Parte del árbol | Significado |
 |---|---|
-| Trunk | Core identity / total consistency |
-| Branches | Identities / areas (Health, Mind, Relationships, Work) → `identities` |
-| Leaves | Active habits on that branch |
-| Flowers | Consistent weeks (e.g. ≥80% of scheduled occurrences) |
-| Fruits | Habits that reached automaticity (~66 days of consistency) |
-| Roots | Habit stacks (`anchor_habit_id` chains), visible underground |
+| Tronco | La constancia total |
+| Ramas | Identidades (en quién te estás convirtiendo) → `identities` |
+| Hojas | Hábitos activos en esa rama |
+| Flores | Semanas constantes (≥80 % de lo programado) |
+| Frutos | Hábitos que llegaron a la automaticidad (~66) |
+| Raíces | Cadenas de hábitos (`anchor_habit_id`), visibles bajo tierra |
 
-## Growth stages (`garden_state.stage`)
-0 Seed → 1 Sprout → 2 Sapling → 3 Tree → 4 Fruiting tree. Thresholds are based on seeds planted and weeks of consistency, tuned during Phase 2.
+## Etapas
+0 Semilla → 1 Brote → 2 Arbolito → 3 Árbol → 4 Árbol con frutos (umbrales de 0 / 5 / 25 / 75 / 200 semillas). En el
+Jardín, una barra delgada bajo el dibujo muestra la etapa, las semillas y cuántas faltan para la siguiente.
 
-## Health (`garden_state.health`)
-- A single miss makes leaves droop slightly ("never miss twice"); it recovers fully on the next completion.
-- Repeated misses make the tree lose leaves, but it **never dies**. Progress is never erased, only paused.
+## Salud
+- Un fallo inclina un poco las hojas («nunca fallar dos veces»); se recupera del todo con el siguiente hábito.
+- Varios fallos hacen que pierda hojas, pero **nunca muere**. El progreso nunca se borra, solo se pausa.
 
-## Environment
-- The sky follows the real local time and the user's day bands: dawn/morning (warm), afternoon (golden), night (deep blue with stars).
-- Weather reflects today: sunny when on track, cloudy when there are pending habits, a light rain animation when the day is completed (watering).
-- Seasons follow the calendar month.
+## Ambiente
+- El cielo sigue la hora real y las franjas del usuario: amanecer cálido, tarde dorada, noche azul con estrellas.
+- Nubes cuando hay hábitos pendientes; los descansos a propósito nunca traen nubes.
 
-## Your character (decided 2026-09-29, design open)
-Each user has a **customizable character** that is *them* growing: the identity principle made visible. It is the main delight feature, works solo from day 1, and is what friends see. It must be very visual and alive (Duolingo-level).
+## El Jardín como espacio de identidad
+«¿Quién te estás volviendo?»: una tarjeta por rama con las semillas de la semana y sus hábitos, y un botón
+**+ Nueva identidad** que permite elegir qué hábitos existentes la hacen crecer. Completar todos los hábitos de una
+identidad en un día (≥2) muestra su propia celebración, distinta del confeti del día. El Jardín también recibe a
+Brote: las revisiones semanales y la entrada al chat.
 
-**Decided (2026-09-29): a plant avatar built from five swappable parts.** Brote is the default plant.
-| Part | Examples |
+## Tu personaje (decidido 2026-09-29; el arte está en curso)
+Cada persona tiene un **personaje planta personalizable** que es *ella* creciendo: el principio de identidad hecho
+visible. Es su foto de perfil (lo que ven sus amigos y sus círculos) y debe leerse bien a ~40 px.
+
+| Pieza | Ejemplos |
 |---|---|
-| Plant | brote, cactus, sunflower, tulip, tree, mushroom, palm, … (many over time) |
-| Pot | terracotta, wood, Japanese, rainbow, space, gaming, … |
-| Eyes | several styles, each with the moods below |
-| Mouth | several styles, each with the moods below |
-| Accessory | cap, glasses, crown, bow, … |
+| Planta | brote, cactus, girasol, tulipán, árbol, hongo, palmera… |
+| Maceta | terracota, madera, japonesa, arcoíris, espacial, gamer… |
+| Ojos | varios estilos, cada uno con los ánimos de abajo |
+| Boca | varios estilos, cada uno con los ánimos de abajo |
+| Accesorio | gorra, gafas, corona, moño… |
 
-- **It is the user's profile picture**: what friends see in their profile and in circles. Every part must read at ~40 px.
-- **Anchor points, not fixed positions:** each plant declares a `face` and a `head` anchor (named marker circles in its SVG); pots share one rim line (y 84) and `base` line (y 112). Eyes, mouths and accessories are drawn once, centered on their anchor, so any part fits any plant and a new plant never forces redrawing the others.
-- **Launch small, grow in seasons:** ~6 plants, 4 pots, 5 eyes, 5 mouths, 6 accessories at launch (thousands of combinations); new parts in themed drops. Parts are SVG data, so later drops can be fetched remotely without an app update.
-- Open: whether the avatar plant also grows in stages with consistency (lovely, but multiplies plant art — later).
+- **Puntos de anclaje, no posiciones fijas:** cada planta declara un ancla `face` y una `head`; las macetas
+  comparten la línea del borde (y 84) y la base (y 112). Así cualquier pieza encaja en cualquier planta.
+- **Empezar pequeño y crecer por temporadas:** ~6 plantas, 4 macetas, 5 ojos, 5 bocas y 6 accesorios al lanzar
+  (miles de combinaciones); las piezas son SVG, así que las nuevas temporadas podrían llegar sin actualizar la app.
+- **Ánimos mínimos:** feliz, ánimo, celebra, dormido (día de descanso), triste-pero-amable (falló ayer — nunca
+  avergüenza).
+- **Se anima en código** (react-native-svg + Reanimated), no con Rive. Guía de arte paso a paso: `CHARACTER-ART.md`
+  (archivos fuente en `art/character/`, fuera de `assets/` para no mover la huella).
+- **Desbloqueos:** gratis, ganados con **💧 gotas** o comprados. Las gotas se ganan con **constancia, nunca con
+  check-ins sueltos** (metas de racha, semanas constantes, los ~66), con tope diario, y **nunca se venden**. Las
+  calcula el servidor (un libro de movimientos que escribe Postgres), nunca el cliente.
 
-**Unlocks: free, earned with drops, or bought.**
-- **Drops (💧 gotas)** are earned by **consistency, never by raw check-ins**: streak milestones, consistent weeks, the ~66-day automaticity mark; daily cap. Adding trivial habits must not earn more.
-- **Drops are never sold for money.** Paid items are bought directly; otherwise completing habits becomes "the slow way to pay" (overjustification risk, see SCIENCE.md ethics).
-- **Computed on the server:** an append-only drop ledger written by Postgres from real logs (function/trigger), never granted by the client. Inventory table records each owned part and its source (free / earned / purchased); `profiles` stores the equipped combination.
+## Cosméticos (Pro)
+Temas del jardín y piezas del personaje. **Solo cosméticos, nunca pagar para ganar**; sin cajas sorpresa ni escasez
+falsa («¡solo hoy!»). Algunos cosméticos se ganan con hitos, así que quien no paga también personaliza.
 
-**Asset spec** — the full, step-by-step guide for the artist is `docs/CHARACTER-ART.md` (zones, anchors, palette, export settings, naming, checklist); source files live in `art/character/` (outside `assets/`, so they never touch the build fingerprint).
-- SVG, `viewBox="0 0 120 120"`, flat shapes (no filters, no raster), palette from `src/constants/theme.ts` + the Brote colors in `src/features/mascot/brote.tsx`.
-- **One file per part and mood**: plant, pot, eyes × mood, mouth × mood, accessory (head or face). Parts share the same 120 canvas; eyes, mouths and accessories are centered on (60,60) and placed on the plant anchors.
-- Moods at minimum: happy, cheer, celebrate, sleepy (rest day), sad-but-kind (missed yesterday — never shaming).
-- Growth stages if the character grows (seed → sprout → young → grown), same layers per stage.
-- **Decided (2026-10-01): animated in code, not Rive.** The artist delivers static SVGs; the app composes them with react-native-svg and animates with Reanimated (bounce, blink, sparkles), like Brote today. No development build needed. Rive stays an option if we ever need rigged motion.
+## Círculos (decidido 2026-10-02)
+Un círculo (máximo 8 personas) **es** un hábito compartido: se crea junto con su hábito y un solo ícono, y quien lo
+crea entra automáticamente. Cada miembro pone su propia hora y recordatorio.
+- **Racha del grupo:** el día cuenta cuando al menos la mitad de quienes participan y no descansan lo hizo (todos en
+  un círculo de dos), con la regla de nunca fallar dos veces. La pantalla del círculo pone la racha como
+  protagonista, luego «Hoy» (3/8 que pasa de rojo a amarillo y a verde) y un ranking de constancia (esta semana /
+  30 días / general). Nunca se señala a quién faltó.
+- **Fotos** (si el círculo las pide): solo cámara, se borran a los 7 días. **«¿Cuenta?»:** votos privados; una
+  mayoría estricta de los demás quita ese día solo de la racha del grupo. Los reportes ocultan la foto para quien
+  reporta y para todos desde 2 reportes.
+- **Ánimos:** 5 predefinidos (nada que moderar), uno por amigo cada 3 h. Push sociales con un interruptor.
+- Requisito de App Store para contenido de usuarios (guía 1.2): bloquear, reportar, moderar, borrar la cuenta.
 
-**Tools.** Raster generators such as Ludo.ai (spritesheet PNG / GIF / MP4) are great for concept exploration, one-off non-customizable animations (day-complete celebration, confetti, onboarding moments), check-in sound effects and store/marketing video — but **not** for the customizable character: pre-rendered frames multiply by every combination of parts, while vector parts animated in code cover any combination once. Spritesheets can be played with Skia. Confirm commercial-use licensing before shipping any generated asset.
-
-## Cosmetics (Pro)
-Skins, accessories, pots and garden themes. **Cosmetic only, never pay-to-win**; no loot boxes, no fake scarcity ("only today!"). Some cosmetics are earned by milestones, so free users also customize.
-
-## Identity as becoming (1.2.0)
-Each branch is a person the user is **becoming** ("una persona más fuerte"), stored in `identities.statement`. Finishing every habit of a branch today (≥2) shows its own celebration — a card rising in the branch color with seeds turning into leaves — distinct from the day's confetti (which wins on the same tap) and from streak milestones (a horizontal timeline of the 4 nearby goals on the streak screen).
-
-## Friends & circles (replaces "Couples") — built 2026-10-01 (1.1.0)
-A couple is a circle of two, so the base is **friends and small circles**. Built: usernames, requests by exact @ or invite link, circles of up to 8 built around one shared habit with a group streak at ≥ 50 % (1.3.0), 5 preset cheers (no free text, nothing to moderate), block/report. Still open: pushes, intertwined trees for two, nudges beyond cheers.
-- Follow / friend requests; see a friend's character, tree, streak and consistency %. **Habit names stay private by default** (people track sensitive habits).
-- **Streaks with friends are circles** (1.4.0): the 1:1 shared streak (any habit, any day) was dropped — it measured nothing in common. A streak with one friend is a circle of two around one shared habit; it follows "never miss twice" and, from build 4, photos.
-- Cheers (reactions) and gentle nudges; intertwined trees for circles of two.
-- App Store requirement for user interaction (guideline 1.2): block, report, moderation, usernames; account deletion cascades.
-
-## Shared circle habits (1.3.0, replaces leagues)
-A circle defines one habit everyone joins; each member keeps their own time and reminder. The group streak holds while at least half of the joined, non-resting members do it each day (everyone in a circle of two), with never-miss-twice forgiveness. The card shows today's count ("2 so far: 1 more for the day to count"), everyone's week, group consistency against last week and who "watered for everyone" — never who missed. Phase B (build 4): optional camera-only photo per shared habit, deleted after 7 days. **Trust (1.6.1, decided 2026-10-02):** no owner hiding. "¿Cuenta?": members vote privately that a photo doesn't show the habit; a strict majority of the other members takes that day off the GROUP streak only (the author's own check-in, streak and seeds stay), the author gets a kind push and can post another photo that day (votes reset). No automatic expulsion: removing someone stays the owner's manual call. Reports (inappropriate content) hide a photo for the reporter at once and for everyone from 2 reporters, pending review. Cheers: one per friend every 3 hours, any kind.
-
-## Leagues (dropped 2026-10-02)
-Kept for the record: rankings with strangers don't motivate (you can't influence them and don't care about them); the same energy goes into circles. Original idea:
-Weekly leagues of ~30 people, top ranks move up, bottom ranks move down (Duolingo-style) — not ELO, which models head-to-head matches. Score = **consistency % on your own scheduled habits**, never raw check-in counts (adding trivial habits must not win). Opt-in: competition motivates some people and causes the anxiety we promised to avoid in others.
-
-## Rewards
-- Immediate: check-in animation, haptic tap, a leaf/particle flies to the tree, the character reacts.
-- Milestones: new branch, first flower, first fruit, character growth stages. Unlockable garden themes and cosmetics.
-- No loot boxes and no randomized compulsion loops (see SCIENCE.md, ethics).
+## Recompensas
+- Inmediatas: animación al marcar, vibración, el árbol crece, el personaje reacciona (y, con la build de sonido,
+  un sonido corto — ver ROADMAP).
+- Hitos: rama nueva, primera flor, primer fruto, metas de racha, etapas del árbol.
+- Sin cajas sorpresa ni ciclos de compulsión aleatorios (ver `SCIENCE.md`, límites éticos).

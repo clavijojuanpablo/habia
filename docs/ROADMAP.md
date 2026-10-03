@@ -1,111 +1,130 @@
-# Roadmap
+# ROADMAP
 
-> For where the project stands **today** — what works, what is next, known debts — read
-> [`STATUS.md`](./STATUS.md) first. This file is the long backlog behind it.
+De dónde viene habia, qué sigue y todas las ideas que vale la pena guardar. Estados: ✅ hecho · 🚧 en curso ·
+⏳ siguiente · 💡 idea (sin decidir). Por qué se eligió o se descartó algo: `DECISIONS.md`. Qué salió y cuándo:
+`RELEASES.md`. El estado de hoy: `STATUS.md`.
 
-Status: ✅ done · 🚧 in progress · ⏳ pending
+Etiquetas: **[Gratis]** / **[Pro]** · esfuerzo **S / M / L** · **OTA** (solo JavaScript) o **Build** (necesita un
+binario nativo nuevo) · **Servidor** (migración o Edge Function).
 
-## Phase 0: Setup ✅
-- Expo SDK 57 + Expo Router + TS scaffold, git
-- CLAUDE.md + docs
-- Supabase init + initial schema migration, pushed to the cloud project (profiles, identities, habits, habit_logs, garden_state, RLS)
+---
 
-## Phase 1: Personal MVP ✅
-- ✅ Supabase client + email/password auth (Apple / Google later)
-- ✅ i18n (es/en), band colors, day-band utilities
-- ✅ Recurrence engine (`src/lib/recurrence`) + unit tests
-- ✅ Habit CRUD with emoji picker and a friendly frequency builder
-- ✅ Hoy view (grouped by day band) + check-in animation/haptics; tapping a habit opens its actions sheet (done, 2-min version, rest day, edit), taught once by a Brote tip
-- ✅ Semana view (Mon–Sun × hours, day bands, now-line)
-- ✅ Local reminders (expo-notifications): per-habit offset, next 3 days, auto-cancel when done. Not available on web
-- ✅ Edit day bands from Perfil
+## Hecho (resumen)
 
-## Phase 2: Gamification & stats ✅
-- ✅ Skia Identity Tree (procedural, growth + sway animations) with dynamic sky (sun/moon arc, stars, clouds = pending habits)
-- ✅ Streaks with "never miss twice", 30-day consistency, automaticity progress toward ~66, weekly flowers, fruits
-- ✅ Garden tab (Jardín) with per-habit growth cards
-- ✅ Progress tab (redesigned 1.0.8): streak / week / seeds tiles, Brote review history, standout habits, month-by-month calendar, weekly consistency, weekday strengths, per-band rates (the 1% curve was dropped: hard to read)
-- ⏳ Move garden aggregates to a Postgres RPC when log volume grows (today computed on the client over 120 days; `garden_state` table unused)
+| Área | Qué existe |
+| --- | --- |
+| Núcleo | Cuenta (correo/contraseña, recuperar, enlaces de correo como Universal Link, borrar cuenta), onboarding de 5 pasos, hábitos con recurrencia RRULE, versión de 2 minutos, encadenamiento, señales, identidades; Hoy / Semana; reglas de check-in; cola sin conexión; recordatorios locales |
+| Visual | Sistema de diseño pastel (claro/oscuro), mascota Brote, árbol de identidad en Skia con cielo vivo, celebraciones (día, identidad), Progreso (tarjetas, calendario, destacados, gráficas), el Jardín como espacio de identidad |
+| Coach | 12 detectores por reglas (un consejo por franja, «¿Por qué?»), revisión semanal con IA (Claude, opt-in), **chat con Brote** (contexto armado en el servidor, límite diario), **detector de patrones** (mismo día / día siguiente) |
+| Enfoque | **Modo enfoque**: temporizador por hábito, chip de 2 min = versión mínima, siembra el hábito al terminar |
+| Social | Usuarios, amigos, ánimos (uno por amigo cada 3 h), círculos = un hábito compartido con racha de grupo al ≥ 50 %, fotos con cámara (7 días), votos «¿Cuenta?», reportes, bloqueo, push sociales |
+| Pro | RevenueCat (iOS), pantalla de pago, espejo `entitlements`, interruptor de límites (apagado) |
+| Plataforma | TestFlight (build 1.6.0 (5)), EAS Update por huella, Sentry + PostHog, habia.app (Astro), correos con marca, textos legales es/en |
 
-## Design pass ✅
-- ✅ Pastel design system (light default + dark + system), Nunito, cards with soft shadows, chunky buttons
-- ✅ Duolingo-style top bar and roomy emoji tab bar
-- ✅ App-wide day streak ("never miss twice", rest days) + streak screen with week, challenge, record, milestones
-- ✅ Today redesign: hero card with progress ring, card rows, friendly empty state
-- ✅ Week view: band cards, only the user's hours
+---
 
-## Phase 3: Advanced science 🚧
-- ✅ Habit stacking: "after [habit]" cue, stacked habits shown right after their anchor (display slot borrowed, log identity kept), "next in your chain" prompt, roots in the tree
-- ✅ Context cues ("when I get home"), temptation bundling field
-- ✅ Identities: CRUD in Perfil, assign habits, identities are tree branches with per-habit leaf colors
-- ✅ DB trigger: anchors/identities must belong to the same user; no stack cycles
-- ✅ 2-minute rule and implementation intentions (since Phase 1)
-- ✅ AI coach Edge Function `weekly-review` (Claude, opt-in, 2026-10-01) · ⏳ capped chat · ⏳ push-dispatcher
+## Ahora
 
-## Block 1: Ready for real users 🚧 (next)
-- ✅ Merged into `main`, pushed to GitHub, CI (typecheck, lint, tests) on push and PRs
-- 🚧 Auth: ✅ password reset, ✅ email links as the Universal Link `https://habia.app/auth-callback` (`token_hash` + `verifyOtp`, works on any device), ✅ in-app account deletion (Edge Function `delete-account`), ✅ redesigned sign-in · ⏳ Sign in with Apple/Google
-- ✅ Offline: persisted query cache (7 days), online state from expo-network / browser events, check-ins queued and replayed after a restart, calm offline banner
-- 🚧 Log past days: ✅ yesterday catch-up card in Hoy + any past day from Semana; future days locked (`canLog`) and the week view cannot go back before the join date · ✅ skip a day (rest day on purpose: long-press the check circle; not a miss for progress, tree or streak)
-- 🚧 ✅ `profiles.timezone` synced from the device every session · ✅ notification tap focuses the habit on Hoy (tested on iPhone, background and killed) · ⏳ compute "today" from `profiles.timezone` (needed once the server sends pushes)
-- ✅ Personalized onboarding: 5 steps (welcome → identity → first habit from 20 suggestions → obstacle → ready), creates identity + habit, asks for notifications only when the user chose "I forget"; gated by `profiles.onboarded_at`
-- ✅ Mascot "Brote": SVG character with 4 moods in onboarding and the empty state; day-complete celebration (confetti + Brote + votes), fired only by the check-in that closes the day
-- ✅ Redesigned habit form (live preview, sections as cards, collapsed extras, sticky save), sign-in, Garden (stage progress + Brote) and Progress (colorful stat tiles)
-- ✅ Brand assets: name **habia**, app icon / Android adaptive + monochrome / splash (light + dark) / favicon, generated from the Brote SVG with `npm run icons`
-- ✅ Privacy policy + terms (es/en) in `src/features/legal/content.ts`, readable from Profile and before sign-up, and published at habia.app/privacidad and /terminos (the site imports the same file). Contact `hola@habia.app` is real. TODO before launch: jurisdiction, lawyer review, analytics opt-in vs opt-out
+- ⏳ Unir `build-4` → `main`; testers a la build 5.
+- ⏳ Cuenta de prueba sembrada para ver el detector de patrones funcionando en el chat.
+- ⏳ Tareas de App Store (dueño, próxima semana): captura real de la pantalla de pago en las dos suscripciones,
+  App Privacy, volver a publicar la web.
 
-## UX polish ✅
-- ✅ Time picker (tap, never type), any minute, 12h/24h following the device setting
-- ✅ Week grid hours formatted per locale; Brote peeking from the header corner
-- ✅ Language picker in Profile (`profiles.locale`, applied live via i18next)
+## Siguiente
 
-## Block 2: Beta testers 🚧
-- ✅ EAS project (`eas.json`: development / preview / production) + Android development build (APK)
-- ✅ Apple Developer account (approved 2026-09-29) + iOS development build installed on the iPhone (EAS credentials, APNs key)
-- ✅ TestFlight (2026-09-30): production build 1.0.0 (3) with EAS env vars (`production`), Sentry source maps + dSYMs, Universal Links; submitted (ASC app 6817880518), installed through internal testing and tested on the iPhone
-- ✅ EAS Update: `expo-updates`, `runtimeVersion` policy `fingerprint`, one channel per build profile · ✅ first OTA update to `production` (2026-09-30) · ⏳ external testers (public TestFlight link)
-- ⏳ Play Internal Testing (no Android device yet; new personal accounts need a closed-testing period before production)
-- ✅ Sentry (crashes, off in development) + PostHog (closed event list, internal user id, opt-out in Profile) · ✅ north-star self-report question (in-app 1–5 card every 14 days, event `north_star_answered`, 1.0.5)
-- ✅ Branded auth emails (es/en) sent from hola@habia.app through Resend SMTP
-- ✅ Universal Links (`https://habia.app/auth-callback`): opens the app directly (tested from TestFlight), bilingual web fallback page with an "Open habia" button (`habia://`) for desktop or no app
-- Ask testers about one-off reminders / calendar
+| Qué | Etiquetas | Notas |
+| --- | --- | --- |
+| **«Subir de nivel»** — Brote sugiere crecer un hábito que lleva ~2 semanas firme (1 página → 5 páginas) | Gratis · S · OTA | La regla de los 2 minutos llevada hacia adelante; un detector nuevo + editar el hábito en un toque |
+| **Informe del mes** — tarjeta para compartir: días sembrados, hábito estrella, el mejor patrón, escrita por Brote | Pro · M · OTA + Servidor | Reutiliza el resumen semanal y los patrones |
+| **Activar los límites de Pro** — 5 hábitos (trigger en la base que lea `entitlements`), chat (`CHAT_REQUIRES_PRO=true`), candado a la revisión semanal | — · M · OTA + Servidor | Solo cuando Pro tenga valor propio; la nota «todo es gratis» se oculta sola |
+| **Personaje, lote 1** — componer las piezas SVG del dueño, editor del personaje, el personaje como foto de perfil | Gratis (+ piezas Pro) · L · OTA + Servidor | Necesita el arte; el libro de gotas lo escribe Postgres |
+| **Patrones como consejo gratis** — «después de meditar, lee» cuando el detector encuentra un vínculo fuerte | Gratis · S · OTA | Sugerencia de encadenar; el chat ya usa los patrones |
 
-## Order after Block 2 (decided 2026-09-29)
-Testers first (TestFlight with the core), then every Pro feature **before the public App Store launch**, shipped to testers as it lands (`expo-updates`). See GAMIFICATION.md for the design of 2–5.
+## Siguiente build nativa (juntarlas: cada build cuesta tiempo y revisión)
 
-1. **AI coach** — moved up: the most direct lever on the north star; testers generate history while it is built
-2. **Your character** — a plant avatar (plant · pot · eyes · mouth · accessory) that is also the profile picture; parts free, earned with seeds or bought; SVG parts drawn by the owner (`docs/CHARACTER-ART.md`), composed and animated in code
-3. **Friends & circles** — ✅ built 2026-10-01 (1.1.0): shared streaks, cheers, privacy by default, block/report · 1.2.0 goals timeline (its Personal | Con amigos tabs and the 1:1 streaks were removed in 1.4.0: streaks with friends are circles, opened from 🫂), identity as "becoming" + identity celebration
-4. ~~**Leagues**~~ — dropped 2026-10-02: rankings with strangers don't motivate. Replaced by ✅ **shared circle habits** (1.3.0: group streak at ≥ 50 %, group consistency) → ⏳ photo proof + push in build 4
-5. **Monetization** — Pro + cosmetics, before launch
+| Qué | Etiquetas | Notas |
+| --- | --- | --- |
+| **Diseño de sonido** (ver backlog) | Gratis (+ ambientes Pro) · M · Build | Necesita `expo-audio` (no está en la build 5) |
+| **Apple Health** — hábitos que se marcan solos (pasos, sueño, entrenamientos) | Pro · L · Build | Probablemente la función Pro más fuerte: cero fricción |
+| **Widgets** (pantalla de inicio y bloqueo) | Gratis · M · Build | «Hazlo obvio» |
+| **Live Activity del modo enfoque** — el contador en la pantalla bloqueada | Gratis · M · Build | |
+| **Iniciar sesión con Apple y Google** | — · M · Build | Agregar Google obliga a agregar Apple (guía 4.8) |
+| Guardar la sesión de enfoque aunque iOS cierre la app | Gratis · S · OTA | Guardar `{habitId, at, endsAt}` y sembrar al volver |
 
-## Phase 3B / Pro value ⏳ (next after TestFlight)
-- AI coach (hybrid: ✅ rules free — card on Today (v1 2026-09-30; 1.0.2 scored detectors, tip per day band, "¿Por qué?") · ⏳ 1.0.6 co-occurrence, seeds per identity, 👍/👎, Monday mini-review · ✅ Claude weekly review (on first open of the week; Batch API once a cron writes them) · ⏳ capped Pro chat)
-- ~~Guided programs ("Caminos")~~ — dropped 2026-10-02 (content-heavy, prescriptive); its core lives on as "subir de nivel" (Brote suggests growing a steady habit), free
-- ✅ Focus mode (free, 1.6.4) · ✅ habit patterns engine · ✅ chat with Brote (1.6.4; Pro once limits are on) · ⏳ monthly report (Pro) · ⏳ "subir de nivel" tip (free) · ⏳ Apple Health auto-check, widgets, focus Live Activity (next native build)
+## Lanzamiento (fase 6)
 
-## Character ⏳
-- ✅ Art guide + Illustrator templates (`docs/CHARACTER-ART.md`, `art/character/`) → 🎨 owner draws batch 1 (13 SVGs) → compose with react-native-svg + Reanimated (no Rive, no development build)
-- Avatar builder screen; equipped combination on `profiles`; inventory + server-side seed ledger (migration); avatar as profile picture
-- Replaces the static Brote in onboarding, Hoy, celebrations, Garden
+- ⏳ Ficha de App Store: capturas, descripción, palabras clave (ASO); enviar la versión **junto con** el grupo de
+  suscripciones.
+- ⏳ Landing: lista de espera, capturas reales; enlace público de TestFlight.
+- ⏳ Revisión legal (jurisdicción, abogado); analítica opt-in para la UE.
+- ⏳ Android: pruebas internas en Play (necesita un dispositivo y el periodo de pruebas cerradas), Play Billing.
+- ⏳ Pagos en la web: confirmar si Stripe acepta a una persona natural en Colombia (si no, Paddle / Lemon Squeezy /
+  una LLC en EE. UU.).
 
-## Phase 5: Social ⏳
-- ✅ Friends & circles (1.1.0): `social` migration (social_profiles, friendships, circles ≤ 8, cheers, blocks, reports; SECURITY DEFINER RPCs; `social_days()` shares which days, never which habits), shared streaks ("never miss twice"), circle weekly grid, 5 preset cheers, invite links (`/add/<username>`, `/join/<code>`), Friends tab (replaces Profile; Settings behind the gear)
-- ✅ Usernames, block/report (App Store 1.2), account deletion cascade · ⏳ pushes for cheers/requests (needs an Expo push token on build 3, else build 4) · ⏳ Realtime feed · ⏳ intertwined trees for circles of two
-- Opt-in weekly leagues by consistency %
-- Share cards, referrals, group challenges
+---
 
-## Phase 4: Monetization ⏳ (before public launch)
-- ✅ RevenueCat (in-app, iOS): paywall, `entitlements` mirror via webhook, `usePro()`, 5-habit limit behind `PRO_LIMITS_ENABLED` (off until launch) · ⏳ gates for full stats and the AI review · ⏳ Android (Play Billing) · ⏳ Stripe (web)
-- Cosmetics (skins, accessories, garden themes): cosmetic only, some earnable
-  - ⚠️ Confirm Stripe accepts a Colombian individual before building web billing; fallbacks: a Merchant of Record (Paddle / Lemon Squeezy) or a US LLC
-  - Apple: apply to the Small Business Program (15%). An individual seller shows a personal name and, as an EU DSA trader, a public address
+## Backlog de ideas
 
-## Phase 6: Launch ⏳
-- 🚧 Landing: ✅ habia.app (Astro in `web/`, Vercel) with home + legal pages in es/en · ⏳ waitlist, real screenshots, ASO, content
+### 🔊 Diseño de sonido — Gratis (ambientes Pro), necesita build (`expo-audio`)
+Una familia de sonidos pequeña y reconocible, cálida y orgánica (madera, agua, campanitas suaves), nunca de
+tragamonedas.
+- **Check-in:** un «pop de semilla en la tierra» por hábito; un clic más suave para la versión mínima; un sonido
+  discreto al deshacer.
+- **Día completo:** una melodía corta y alegre con el confeti. **Identidad completa:** una variación en la tonalidad
+  propia de esa rama.
+- **Hitos:** metas de racha, el primer fruto (~66), una etapa nueva del árbol — cada uno con su motivo corto.
+- **Modo enfoque:** una campanita suave al empezar, un tic opcional en el último minuto y una campana al terminar
+  (también como sonido de la notificación); **ambientes** mientras te enfocas — lluvia, bosque, café, ruido blanco
+  [Pro].
+- **Brote:** pequeños sonidos tipo voz cuando aparece, celebra o responde en el chat (estilo Animal Crossing, sin
+  palabras).
+- **Social:** un sonido discreto y propio al recibir un ánimo; un «ding» de grupo cuando el día del círculo queda
+  salvado.
+- **Reglas:** respeta el interruptor de silencio; un ajuste «Sonidos» (activado por defecto) + volumen; la vibración
+  se queda; cada sonido dura menos de ~1,5 s salvo los ambientes; nunca es la única señal (accesibilidad); ningún
+  sonido para un fallo.
+- **Origen:** encargar o licenciar (revisar el uso comercial); archivos pequeños (AAC), cargados cuando hacen falta.
 
-## Post-launch ⏳
-- Widgets, Apple Health / Health Connect, Apple Watch, Siri shortcuts (native, dev build)
-- Earnable streak shield; read-only calendar; one-off reminders (if validated)
-- Mood + journal correlations, monthly report, "Tu año en hábitos"
-- Family plan, gifts, B2B
+### Coach e IA
+- 💡 Brote **avisa por push** cuando un patrón está por romperse («hoy no meditaste; mañana sueles fallar el gym»)
+  [Pro · M · Servidor] — necesita un cron de envíos y horas de silencio.
+- 💡 **Plan de rescate** tras dos fallos: una versión más pequeña para volver, en un toque [Gratis · S · OTA].
+- 💡 👍 / 👎 en los consejos para afinar los detectores [Gratis · S · OTA].
+- 💡 Revisión semanal con la **Batch API** desde un cron (50 % más barata, lista el lunes) [Servidor · M].
+- 💡 Ánimo + diario corto con correlaciones («los días que meditas, tu ánimo es 30 % mejor») [Pro · L].
+- 💡 «Tu año en hábitos» (resumen anual estilo Wrapped) [Gratis para compartir + detalle Pro · M].
+- 💡 Micro-lecciones: 1 minuto de ciencia de hábitos en contexto, no como curso [Gratis · M].
+
+### Hábitos y Hoy
+- 💡 **Escudo de racha** que se gana: 7 días constantes dan un día protegido [Gratis · S].
+- 💡 **Calendario de solo lectura** en Hoy / Semana como contexto [Gratis · M · Build].
+- 💡 Recordatorios sueltos, separados de los hábitos (solo si los testers lo piden) [Gratis · M].
+- 💡 Atajos de Siri, Apple Watch [L · Build].
+- 💡 Horas de silencio para todas las notificaciones [Gratis · S].
+
+### Jardín y personaje
+- 💡 Temas del jardín (estaciones, cielo nocturno, jardín japonés) [Pro · M].
+- 💡 El personaje crece por etapas con la constancia [L — multiplica el arte].
+- 💡 💧 gotas (ganadas con constancia, nunca vendidas) para desbloquear piezas [Gratis · M · Servidor].
+- 💡 Árboles entrelazados para círculos de dos [Gratis · L].
+- 💡 Momento de cosecha 🌱 → 🌸 → 🍎 cuando un hábito llega a ~66 [Gratis · S].
+
+### Social y crecimiento
+- 💡 Tarjetas para compartir: «Mi árbol a los 66 días», metas de racha, informe del mes [Gratis · M].
+- 💡 Referidos: invita a un amigo y ambos reciben una semana de Pro [Pro · M · Servidor].
+- 💡 Tiempo real en la pantalla del círculo mientras está abierta [Gratis · S].
+- 💡 Temporadas de círculo: un reto de 30 días dentro del círculo [Gratis · M].
+- 💡 Plan familiar, suscripciones de regalo, programas de bienestar B2B [más adelante].
+
+### Plataforma y calidad
+- 💡 Agregados del jardín como RPC de Postgres cuando crezcan los registros (`garden_state` hoy no se usa).
+- 💡 Pasada de accesibilidad: Dynamic Type, etiquetas de VoiceOver en todas las gráficas.
+- 💡 Una vista de costos de la IA (tokens por usuario por mes) antes de lanzar Pro.
+- 💡 Más idiomas después de es/en (pt-BR primero: Latinoamérica).
+
+---
+
+## Descartado (detalles en `DECISIONS.md`)
+Ligas con desconocidos · rachas 1:1 con amigos · «Caminos» (programas guiados) · Pro Parejas · que el dueño oculte
+fotos · expulsión automática de círculos · Rive para el personaje · la gráfica de la «curva del 1 %» · el campo de
+temptation bundling.

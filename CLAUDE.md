@@ -41,14 +41,14 @@ The project is linked to the Supabase cloud project "Habits Project" (no local D
 ## Project structure
 ```
 src/app/                 # Expo Router routes ONLY (screens + _layout.tsx)
-src/features/<feature>/  # habits, schedule, garden, stats, coach, reminders, couples, paywall
+src/features/<feature>/  # habits, schedule, garden, stats, coach, focus, social, push, reminders, paywall, …
                          #   each with components/, hooks/, api.ts, types.ts
 src/components/          # shared UI primitives
 src/lib/                 # supabase client, recurrence engine, i18n, time/day-band utils
 src/constants/theme.ts   # design tokens (from Claude Design)
 supabase/migrations/     # SQL migrations (source of truth for the schema)
 supabase/functions/      # Edge Functions (coach, push-dispatcher, revenuecat-webhook)
-docs/                    # product, science, architecture, gamification, brand, roadmap
+docs/                    # status, roadmap, decisions, releases, product, science, architecture, gamification, brand (written in Spanish)
 ```
 
 ## Conventions
@@ -64,13 +64,17 @@ docs/                    # product, science, architecture, gamification, brand, 
 Legal texts live in `src/features/legal/content.ts` (es/en) and must stay true to what the app actually does; update them whenever data handling changes.
 
 ## Docs
-- **`docs/STATUS.md` — start here.** Where the project stands today, what works, what is next,
-  known debts. A SessionStart hook injects it automatically; keep it true (skill `/cerrar-sesion`).
-- `docs/ROADMAP.md` — phases and the full backlog (STATUS summarizes "today", ROADMAP remembers the road)
-- `docs/PRD.md` — features and scope per phase
+Docs are written in **Spanish** (code, identifiers and commits stay English).
+- **`docs/STATUS.md` — start here.** Where the project stands today, what is next, known debts. A SessionStart
+  hook injects it automatically; keep it short and true (skill `/cerrar-sesion`).
+- `docs/ROADMAP.md` — done (summary), now, next, and the backlog of ideas with tags (Free/Pro, effort, OTA/Build)
+- `docs/DECISIONS.md` — every product/design/technical decision with its date and why; read before reopening one
+- `docs/RELEASES.md` — what shipped in each version and on which build
+- `docs/PRD.md` — vision, positioning, scope, plans (Free/Pro), success metrics
 - `docs/SCIENCE.md` — research → feature mapping
 - `docs/ARCHITECTURE.md` — system diagram and data model
-- `docs/GAMIFICATION.md` — the Identity Tree
+- `docs/GAMIFICATION.md` — the Identity Tree, the character, circles
+- `docs/CHARACTER-ART.md` — the owner's art guide for the character parts
 - `docs/BRAND.md` — name, voice, visual identity
 
 ## Working setup (`.claude/`)

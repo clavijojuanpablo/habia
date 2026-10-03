@@ -25,6 +25,8 @@ Si el bloque fue mas que un retoque, lanza el agente `revisor` sobre `git diff H
 
 **`docs/ROADMAP.md`** es el backlog largo: mueve los items a ✅ / 🚧 / ⏳ segun corresponda. STATUS es el "hoy"; ROADMAP es el "todo el camino". No dupliques: STATUS resume y apunta.
 
+**`docs/DECISIONS.md`**: si en la sesion se decidio algo (o se descarto una idea), agrega una entrada con fecha, que y por que. **`docs/RELEASES.md`**: si salio una version (OTA o build), agrega su fila. Las ideas nuevas van al backlog de ROADMAP con sus etiquetas. Los docs se escriben en espanol.
+
 Si el cambio afecta a que datos se guardan o como, actualiza tambien `src/features/legal/content.ts` (privacidad y terminos deben seguir siendo verdad) y `docs/ARCHITECTURE.md`.
 
 ## 4. Commitear

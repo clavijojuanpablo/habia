@@ -1,77 +1,58 @@
 # PRD
 
-## Vision
-A habit app that makes behavior change visible, forgiving and science-based, so users see real improvements in their lifestyle. Ambition: become the reference habit app for Spanish speakers, the way Duolingo is for language learning.
+## Visión
+Una app de hábitos que hace visible el cambio de comportamiento, que perdona y que se basa en ciencia, para que la
+gente vea mejoras reales en su estilo de vida. Ambición: la app de hábitos de referencia en español, como Duolingo
+lo es para los idiomas.
 
-## Positioning
-**"La app de hábitos basada en ciencia, donde tu árbol crece con cada semilla que siembras por la persona que quieres ser."**
+## Posicionamiento
+**«La app de hábitos basada en ciencia, donde tu árbol crece con cada semilla que siembras por la persona que
+quieres ser.»**
 
-Differentiators (every feature should reinforce at least one):
-1. **The living Identity Tree** - "every action is a seed" made visible (Clear's identity votes, told as sowing). The brand's hero image.
-2. **Real science, no gimmicks** - honest ~66 days, never miss twice, implementation intentions, habit stacking.
-3. **Kind, never guilt-tripping** - the anti-Duolingo-guilt habit app. No shame copy, no manipulative notifications.
-4. **Spanish first** - built for LatAm + Spain, English second.
+Diferenciadores (cada función refuerza al menos uno):
+1. **El árbol de identidad vivo** — «cada acción es una semilla», hecho visible.
+2. **Ciencia real, sin trucos** — ~66 días honestos, nunca fallar dos veces, intenciones de implementación,
+   encadenar hábitos.
+3. **Amable, nunca culpabiliza** — sin textos de vergüenza ni notificaciones manipuladoras.
+4. **Un coach que te conoce** — Brote explica *tus* datos (reglas gratis, IA con Pro).
+5. **Mejor juntos, en círculos pequeños** — un hábito compartido y una racha de grupo que sostiene a quien flaquea.
+6. **Español primero** — Latinoamérica + España, inglés después.
 
-Competitors: Habitica, Streaks, Fabulous, Finch, Structured, TickTick. Built-in Notes/Reminders/Calendar are *not* competed with (see Scope decisions).
+Competencia: Habitica, Streaks, Fabulous, Finch, Structured, TickTick. No competimos con Notas / Recordatorios /
+Calendario del sistema.
 
-## Target users
-1. The founder (personal use, Phase 1).
-2. Spanish-speaking adults (LatAm + Spain) who have tried habit apps and quit. English second.
-3. Couples and friend groups who want to build habits together.
+## Usuarios
+1. El fundador (lo usa a diario desde la fase 1).
+2. Adultos hispanohablantes que probaron apps de hábitos y las abandonaron. Inglés después.
+3. Familias, parejas y grupos de amigos que quieren construir un hábito juntos (círculos).
 
-## Feature filter
-Every feature must answer "yes" to at least one:
-- Does it help the user **actually improve their life** (north star)?
-- Does it make the user **come back** or **bring someone else**?
+## Filtro de funciones
+Cada función responde «sí» al menos a una pregunta, y se apoya en un mecanismo de `SCIENCE.md`:
+- ¿Ayuda a la persona a **mejorar de verdad su vida** (estrella del norte)?
+- ¿Hace que la persona **vuelva** o **traiga a alguien**?
+- ¿Mantiene la app **sencilla**? (Un lugar para cada cosa; las explicaciones detrás de un toque.)
 
-## Built (see ROADMAP.md for detail)
-Habits with flexible frequency, Today/Week views with day bands, reminders, Identity Tree garden, Progress charts, habit stacking and context cues, identities, day streak with "never miss twice", pastel light/dark design.
+## Alcance
+- **Dentro:** los hábitos y su ciencia, la identidad, el jardín y el personaje, el coach, el enfoque, los círculos
+  pequeños.
+- **Fuera:** notas, listas, un calendario completo — las apps del sistema lo hacen bien; mejor integrar (leer el
+  calendario).
+- Las tareas sueltas quedan fuera de los hábitos para que las rachas y el árbol sigan midiendo repetición.
+- Qué existe y qué sigue: `ROADMAP.md`. Por qué: `DECISIONS.md`.
 
-## Planned features, by impact
-
-### A. Product-defining
-- **Mascot "Brote" 🌱** - a sprout character with personality living in the garden; reacts, celebrates, voices notifications with kind humor. Main marketing asset.
-- **Guided programs ("Caminos")** - Duolingo-style paths: "Dormir mejor en 30 días", "Lector", "Mañanas con energía", "Menos pantalla". Start at the 2-minute version and level up; include micro-lessons. Pro content.
-- **Micro-lessons** - 1-minute daily habit-science lessons.
-- **Personalized onboarding** - 60-second quiz (identity, main obstacle) → recommended plan and first habit; asks for notifications at the right moment.
-- **Celebrations** - confetti, sounds and mascot reactions on milestones.
-
-### B. Growth
-- **Share cards** - "Mi árbol a los 66 días", streak milestones, for IG/TikTok stories.
-- **"Tu año en hábitos"** - Wrapped-style yearly recap.
-- **Social** - friends, group challenges, weekly leagues ranked by consistency % (fair, not volume).
-- **Couples (Pro Parejas)** - individual + shared weekly habits, cheers, nudges, joint streak, intertwined trees.
-- **Referrals** - invite a friend, both get a Pro week.
-
-### C. Less friction ("make it easy")
-- Home/lock-screen **widgets**, **Apple Health / Health Connect** auto-completion, **Apple Watch**, **Siri shortcuts** (need native code / development build).
-- **Earnable streak shield** - 7 consistent days earn one protected day.
-- **Calendar (read-only)** - show device calendar events in Hoy/Semana as context.
-- **One-off reminders** - simple to-dos ("comprar comida gata") in their own table, never counted in streaks, seeds or the tree. Build only if TestFlight users ask.
-
-### D. Depth (Pro)
-- **AI coach** - hybrid: rule-based daily tips (free), Claude weekly review (Batch) and capped chat (Pro).
-- **Mood + short journal** with correlations ("on days you meditate your mood is 30% better").
-- **Monthly insights report.**
-
-### E. Business (later)
-- Family plan, gift subscriptions, B2B wellness programs.
-
-## Scope decisions
-- **Not a notes / lists / full calendar app.** Built-in apps do this free and well; it would dilute positioning and distort habit metrics. Integrate (read the calendar) instead of reinventing.
-- One-off tasks stay separate from habits so streaks, seeds and the tree keep measuring repetition.
-
-## Monetization
-| Plan | Price (reference) | Includes |
+## Planes
+| Plan | Precio | Incluye |
 |---|---|---|
-| Free | $0 | Everything to form habits: up to 5 habits, stats, highlights, Brote's rule-based tips, focus mode, circles, cheers, photos |
-| Pro | US$4.99/mo · US$34.99/yr (7-day free trial on yearly) | "Brote te conoce": AI weekly review, chat with Brote grounded in your patterns, monthly report · "Hazlo tuyo": garden themes, character accessories, unlimited habits |
+| Gratis | $0 | Todo para formar hábitos: hasta 5 hábitos (límite apagado durante la beta), estadísticas y destacados, consejos de Brote por reglas, modo enfoque, círculos, ánimos, fotos, recordatorios |
+| **Pro** | US$4.99/mes · US$34.99/año (7 días gratis en el anual) | **«Brote te conoce»:** revisión semanal con IA, chat con Brote basado en tus patrones, informe del mes · **«Hazlo tuyo»:** temas del jardín, piezas del personaje, hábitos ilimitados |
 
-Decided 2026-10-02: Pro Parejas dropped (couples became circles, which stay free: they bring people in). Prices set in App Store Connect from the US price; adjust LatAm by hand if conversion asks for it. Later: family plan, gifts.
+Compras dentro de la app por la App Store (RevenueCat); Play Billing y Stripe (web) después. Opciones futuras: plan
+familiar, suscripciones de regalo.
 
-## Success metrics
-- **North star:** weekly users who complete ≥1 habit on 4+ days of the week.
-- Retention D1 / D7 / D30; % of habits that reach 66 days; weekly consistency trend per user.
-- Self-reported lifestyle improvement: "¿Sientes que habia te está ayudando a mejorar tu día a día?" (1–5, every 14 days; `north_star_answered`).
-- Growth: share-card and referral conversion.
-- Culture: experiment with PostHog feature flags / A/B tests (onboarding first).
+## Métricas de éxito
+- **Estrella del norte:** personas que completan ≥1 hábito en 4 o más días de la semana.
+- Mejora reportada: «¿Sientes que habia te está ayudando a mejorar tu día a día?» (1–5, cada 14 días,
+  `north_star_answered`).
+- Retención D1 / D7 / D30; % de hábitos que llegan a ~66 días; tendencia de constancia semanal por persona.
+- Pro: conversión de prueba a pago, mensajes de chat por usuario Pro activo, costo de IA por usuario Pro.
+- Crecimiento: invitaciones a círculos aceptadas, conversión de tarjetas compartidas y referidos.

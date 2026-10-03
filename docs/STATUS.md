@@ -1,374 +1,113 @@
-# STATUS — where the project stands
+# STATUS — dónde está el proyecto hoy
 
-**Last updated: 2026-10-01.** This is the session entry point: a `SessionStart` hook injects it
-into every new Claude Code session. Keep it short and true. `ROADMAP.md` is the full backlog;
-this file is only "today".
+**Última actualización: 2026-10-03.** Es el punto de entrada de cada sesión: un hook `SessionStart` lo inyecta al
+arrancar. Mantenlo corto y verdadero. La vista larga vive en otros documentos:
 
----
-
-## Right now
-
-**habia** is a feature-complete personal habit tracker (sign up, onboarding, habits with any
-supported recurrence, online/offline check-ins, Identity Tree, stats, local reminders; es/en,
-light/dark; iOS, Android, web) running on the linked Supabase cloud project, and it is **on
-TestFlight** (Block 2 closed 2026-09-30):
-
-- **Production build 1.0.0 (3)** submitted to App Store Connect (app id `6817880518`), installed
-  by the owner through internal testing. Tested on the iPhone: password-reset Universal Link opens
-  the app directly, cold start without the PC, reminder tap, offline check-in replay.
-- **Universal Links:** auth emails link to `https://habia.app/auth-callback?token_hash=…&type=…`
-  (templates in `supabase/templates/`); the app verifies with `verifyOtp`
-  (`src/app/auth-callback.tsx`), so it works on any device, not only the one that asked.
-  AASA in `web/public/.well-known/`; without the app, `web/src/pages/auth-callback.astro`
-  explains and offers an "Open habia" button (`habia://`, since same-site taps never fire
-  Universal Links).
-- **EAS Update:** `expo-updates`, `runtimeVersion` policy `fingerprint` (an update never reaches
-  an incompatible binary), channels `development` / `preview` / `production` per build profile.
-  **Proven on 2026-09-30:** the first OTA update reached build 3 on the iPhone (downloads on one
-  launch, applies on the next). Profile ends with `habia <release> · build <n> · <update id>` (or
-  "de fábrica" for the JS embedded in the binary), the way to tell which JS a phone runs.
-- **EAS env `production`:** the five `EXPO_PUBLIC_*` plus `SENTRY_AUTH_TOKEN` (secret). Production
-  builds upload JS source maps and dSYMs to Sentry `clavolab/habia`.
-- **Coach (rule-based, free, release 1.0.2):** a tip on Today per day band (up to 3 a day), voiced
-  by Brote, dismissible, with a one-tap action and a "¿Por qué?" line (the data + the science).
-  12 detectors read the user's own history (`src/features/coach/history.ts`: real check-in times,
-  weekdays, pace, minimum versions) and propose scored candidates (`detectors.ts`); the brain
-  (`compute-tip.ts`) penalizes insights shown in the last 3 days and alternates two phrasings.
-  Pure and tested; rules mapped in `docs/SCIENCE.md`. Ships by OTA. Public TestFlight link
-  submitted to Beta App Review (2026-09-30).
-- Still here from before: Sentry + PostHog, habia.app (Astro on Vercel) with legal pages, branded
-  auth emails via Resend.
-
-For development, reinstall the iOS **development build** from EAS (TestFlight replaced it: same
-bundle id) and run `npx expo start --tunnel`. It predates the associated domain, so auth links
-open the web fallback there; its "Open habia" button still works.
-
-## How to resume
-
-1. Read this file (the hook already injected it).
-2. `docs/ROADMAP.md` for the long view, `docs/PRD.md` for scope decisions.
-3. `CLAUDE.md` for conventions, `docs/ARCHITECTURE.md` for the data model.
-4. Start with the first item under **Next steps**.
+| Documento | Qué responde |
+| --- | --- |
+| `ROADMAP.md` | Qué está hecho, qué sigue y el backlog de ideas |
+| `DECISIONS.md` | Por qué las cosas son como son (decisiones con fecha, ideas descartadas) |
+| `RELEASES.md` | Qué salió en cada versión |
+| `ARCHITECTURE.md` | Sistema, modelo de datos y reglas técnicas |
+| `PRD.md` · `SCIENCE.md` · `GAMIFICATION.md` · `BRAND.md` | Alcance del producto, la ciencia detrás de cada función, el árbol y el personaje, voz y estilo |
+| `CHARACTER-ART.md` | La guía de arte para dibujar las piezas del personaje |
 
 ---
 
-## What works today
+## Ahora mismo
 
-| Area | State | Lives in |
-| --- | --- | --- |
-| Auth (email + password, reset, Universal Link email links, account deletion, branded emails) | ✅ | `src/features/auth/`, `src/app/auth-callback.tsx`, `supabase/templates/`, `supabase/functions/delete-account/` |
-| Onboarding (5 steps, creates identity + first habit) | ✅ | `src/features/onboarding/` |
-| Habits CRUD, RRULE builder, 2-minute version, stacking, context cues | ✅ | `src/features/habits/`, `src/lib/recurrence/` |
-| Today + Week views, day bands, check-in rules, actions sheet | ✅ | `src/app/(tabs)/`, `src/features/schedule/`, `src/features/checkins/` |
-| Identity Tree (Skia) + Garden tab | ✅ | `src/features/garden/` |
-| Streaks ("never miss twice") + Progress tab | ✅ | `src/features/streak/`, `src/features/stats/` |
-| Local reminders (native only), tap focuses the habit | ✅ | `src/features/reminders/` |
-| Offline: persisted cache, queued check-ins replayed after restart | ✅ | `src/lib/query/`, `src/lib/network*.ts` |
-| Crash reporting (Sentry, source maps + dSYMs) + analytics (PostHog, opt-out) | ✅ | `src/lib/crash-reporting.ts`, `src/lib/analytics.ts` |
-| Design system, dark mode, language picker, Brote mascot, app icons | ✅ | `src/constants/theme.ts`, `src/features/appearance/`, `src/features/mascot/` |
-| Legal texts (es/en), also at habia.app/privacidad and /terminos | ✅ | `src/features/legal/content.ts`, `web/` |
-| Marketing site habia.app + auth fallback page + AASA (Astro, Vercel, root dir `web`) | ✅ | `web/` |
-| iOS distribution: TestFlight internal + EAS Update | ✅ | `app.json`, `eas.json` |
-| Coach (rule-based): scored detectors, tip per day band, "¿Por qué?" | ✅ | `src/features/coach/` |
-| AI weekly review (Claude, opt-in) | ✅ | `supabase/functions/weekly-review/`, `src/features/coach/` |
-| Friends & circles (1.1.0): usernames, requests, shared streaks, circles ≤ 8, preset cheers, block/report, invite links | ✅ built, migration not applied | `src/features/social/`, `supabase/migrations/20261001180242_social.sql` |
-| Character (plant avatar) | 🎨 art in progress (owner), guide ready | `docs/CHARACTER-ART.md`, `art/character/` |
-| Chat with Brote, server pushes, leagues, paywall | ⏳ not started | — |
+**habia 1.6.4 sobre la build 1.6.0 (5)**, en TestFlight (pruebas internas). Todo esto funciona en el iPhone del
+dueño (confirmado el 2026-10-03): hábitos con cualquier recurrencia soportada, Hoy / Semana, árbol de identidad,
+Progreso, coach por reglas, revisión semanal con IA, **modo enfoque**, **chat con Brote**, amigos, círculos
+alrededor de un hábito compartido (racha de grupo, fotos, votos «¿Cuenta?»), notificaciones push sociales y
+habia Pro (pantalla de pago y compras de prueba; límites apagados).
 
-## Technical state
+- **Ramas:** toda la 1.6.x vive en **`build-4`**, sin unir. `main` sigue apuntando a la huella de la build 3
+  (`f15932ef…`). La huella de la build 5 es **`23ecb1f2…`**; todas las OTA desde la 1.6.0 salieron de `build-4`.
+- **Servidor:** 18 migraciones aplicadas, 6 Edge Functions desplegadas (`delete-account`, `weekly-review`,
+  `coach-chat`, `notify`, `photos-cleanup`, `revenuecat-webhook`), limpieza de fotos programada con pg_cron
+  (03:30 UTC).
+- **Pro:** RevenueCat y App Store Connect configurados (productos `habia_pro_annual` / `habia_pro_monthly`,
+  entitlement `pro`, offering `default`, webhook → `entitlements`). `PRO_LIMITS_ENABLED = false`: todo es gratis y
+  la pantalla de pago lo dice.
 
-- Expo SDK 57 (`expo ~57.0.26`, React Native 0.86.3), Expo Router, TypeScript strict. All SDK
-  patch versions current (`npx expo install --check`), `expo-doctor` 21/21.
-- Supabase cloud project "Habits Project" (no local Docker). 8 migrations applied (+ `social`
-  pending); RLS on every
-  table. Auth `site_url`, redirect allow-list and email templates ship with
-  `npx supabase config push`; SMTP and the email rate limit (30/h) live only in the dashboard.
-- Skia 2.6.2 + Reanimated 4.5.1 for the tree; `react-native-svg` for charts and the mascot.
-- TanStack Query 5 (persisted 7 days) + Zustand. Sentry `@sentry/react-native` 7, PostHog RN 4.
-- `web/`: Astro 7 static site, excluded from the app's tsconfig, ESLint and Metro; pins its own
-  tsconfig in `astro.config.mjs` (Vercel installs only `web/` dependencies). `vercel.json` serves
-  the AASA as JSON. Apex `habia.app` is primary (`www` redirects to it).
-- Verification baseline: **176 tests / 26 suites green**, typecheck clean, lint clean, `expo-doctor`
-  21/21, site builds 8 pages. RLS of the social tables: `supabase/tests/social-rls.sql` (runs on the
-  linked DB inside BEGIN … ROLLBACK, ~60 asserts). Typecheck ~8 s, tests ~8 s, lint ~25 s on this machine.
-- CI (typecheck + lint + tests) runs on push and PRs to `main`. Repo: `clavijojuanpablo/habia`.
-- Versioning: `APP_RELEASE` in `src/constants/release.ts` is the version people see (Profile:
-  `habia 1.0.1 · build 3 · <update id>`). Bump the patch for every OTA update; a new store binary
-  bumps the minor **and** sets the same number as `version` in app.json (which changes the
-  fingerprint, so never in an OTA). Build numbers are auto-incremented by EAS (remote).
-- Shipping: JS-only change → `eas update --channel production --environment production --platform ios --non-interactive --message "…"`
-  (~1 min; drop `--platform ios` once Android testers exist; without `--non-interactive` it once
-  sat for 20+ min on a silent prompt);
-  native change (fingerprint moves) → `eas build --profile production --platform ios` →
-  `eas submit --platform ios --latest`. EAS CLI is not installed globally: run every `eas …`
-  here as `npx eas-cli@latest …` (bare `eas` fails in PowerShell). Estimate for the five post-TestFlight blocks
-  (2026-09-30): ~145–245 h of code plus character art and admin; re-estimate after the AI coach.
+## Próximos pasos
 
-## Next steps
+1. **Unir `build-4` a `main`** (la build 5 ya es la de los testers) y pedir a los testers que actualicen en
+   TestFlight. Desde ese momento las OTA salen de `main` y deben dar la huella `23ecb1f2…`.
+2. **Probar el detector de patrones** con una cuenta de prueba sembrada (30 días de registros con patrones a
+   propósito) y preguntarle a Brote «¿Qué hábitos me conviene hacer juntos?». Con uso real hacen falta 2–3
+   semanas (5+ días a cada lado de un par de hábitos).
+3. **Siguientes funciones** (ROADMAP → *Siguiente*): consejo «subir de nivel» (gratis), informe del mes (Pro) y
+   luego activar los límites de Pro con candado en el servidor.
+4. **Personaje:** el dueño dibuja el lote 1 (`CHARACTER-ART.md`); el código arranca cuando existan las primeras
+   piezas.
+5. **La próxima semana (dueño):** tareas de App Store — reemplazar la captura temporal de revisión de las dos
+   suscripciones por la pantalla de pago real, App Privacy (historial de compras, fotos) y volver a publicar la
+   web con los textos legales nuevos.
 
-**Start here — turn on the AI weekly review (owner, 3 steps), ship 1.0.6, open the beta.**
+## Cómo retomar
 
-0. **Turn on the AI weekly review** (built and deployed 2026-10-01, idle until a key exists):
-   1. Create an API key at console.anthropic.com (set a monthly spend limit there).
-   2. `npx supabase secrets set ANTHROPIC_API_KEY=<key>` (never in the repo or `EXPO_PUBLIC_*`).
-      Optional: `COACH_MODEL` overrides the model (default `claude-sonnet-5-5`, ~$0.02 per review).
-   3. Ship 1.0.6 by OTA. In the app: Profile → "Revisión semanal con IA" on (or accept Brote's
-      offer on Today after a week of use). Opening Today in a new week writes last week's review.
-   Check it: `curl -X POST <SUPABASE_URL>/functions/v1/weekly-review -H "apikey: <publishable>" -H "Authorization: Bearer <publishable>" -d '{"check":true}'`
-   must answer `{"available":true}`.
+1. Este archivo. 2. `ROADMAP.md` → *Ahora / Siguiente*. 3. `CLAUDE.md` para las convenciones. 4. `DECISIONS.md`
+antes de reabrir una pregunta ya decidida.
 
-0. **1.6.4 — focus mode, patterns, chat with Brote (2026-10-02), on `build-4`, by OTA + migration**
-   `20261003030521_coach_chat.sql` + new Edge Function `coach-chat` (owner: `db push`, `functions deploy coach-chat`,
-   `ANTHROPIC_API_KEY` secret must exist). Focus mode (free): first action of a habit's sheet (today only), full-screen
-   timer (`src/app/focus.tsx`, pure `focus-timer.ts` + tests), 2-min chip = minimum version, plants the habit when time
-   is up (photo circles still ask the camera), stopping after 2 min can count as minimum, local end notice tagged
-   `kind: focus` (reminder sync no longer cancels it). Patterns (`src/features/coach/patterns.ts`, synced to `_shared`):
-   same-day and next-day links between habits, next-day controlled for streaks; tested. Chat (Pro later; free while
-   limits are off): Garden → "Habla con Brote" → `/brote`; the function builds the context server-side (60 days,
-   last-30 %, last 14 days, patterns), Haiku 4.5, 20 messages per rolling day (`CHAT_DAILY_LIMIT`), Pro-only with
-   `CHAT_REQUIRES_PRO=true`; consent = the same switch, renamed "Brote con IA"; conversation deletable (`coach_chat`,
-   own read/delete, service writes). Decided 2026-10-02: Pro = "Brote te conoce" (AI review + chat + monthly report)
-   + "Hazlo tuyo" (garden/character cosmetics, unlimited habits); Caminos dropped for now.
-0. **1.6.3 — a circle is its habit (2026-10-02), on `build-4`, by OTA + migration** `20261003021223_circle_habit_start.sql`
-   (`db push` BEFORE the OTA). New circles are created with their habit in one form (one icon: the circle's), and
-   `start_circle_habit` (owner only, one transaction) links the creator right away; `circle/habit-new` uses it too
-   (circle without habit). Circle screen: the circle header names the habit; the group streak is the hero, the rule
-   under it; today and the ranking are separate cards; roomier period tabs; members behind "Editar miembros"; the
-   photo button only when the circle asks for photos. Garden: back to a thin labelled progress bar under the scene.
-   Settings: icons/flags only for appearance and language, account deletion as one line with a trash button,
-   day-band rows on one line with four pastel steps (`DayStepColors`). Test: `supabase/tests/circle-start.sql`.
-0. **1.6.2 — calmer screens (2026-10-02), on `build-4`, by OTA (no migration).** Fewer words: circle photo hint,
-   ranking title and invite explainer gone (invite = code + button). Garden: stage, seeds and next-stage bar on the
-   sky of the scene (the ground stays the tree's), Brote's weekly reviews moved here from Progress, loose seeds card
-   replaced by "+ Nueva identidad", whose form now picks existing habits (`HabitPicker`; identities no longer in
-   Settings). Progress: summary → calendar → highlights, more air. Settings: Pro first with a gold border, appearance
-   and language as inline rows (no "system" option; a profile still on it keeps following the phone), switches with
-   the explanation behind ⓘ (`src/components/setting-switch.tsx`), legal texts as small links.
-0. **1.6.1 — trust in circles, from testing build 1.6.0 (5) (2026-10-02), on `build-4`, by OTA.** Migration
-   `20261003001405_circle_trust.sql` + redeploy `notify` BEFORE the OTA (the app reads the new tables). Cheers: one
-   per friend every 3 h (server trigger `cheer_too_soon`). Photos: owner hiding removed (hidden photos came back);
-   "¿Cuenta?" private votes (`circle_photo_doubts`) → majority marks `circle_doubted_days`, which
-   `circle_habit_days` excludes from the group (author's own log untouched), push `photo_doubted`; a new photo that
-   day resets it. Reports hide a photo for the reporter, and for all from 2 reporters (also fixed: a 2nd photo of
-   the same person could not be reported). Fresher social data: pushes (received or tapped) invalidate `['social']`,
-   photo URLs cached per file version so the photo list refetches normally, pull-to-refresh on Profile, cheers,
-   friends and circle. Profile: two doors, 💌 Cheers and 👥 Friends, opening `/cheers` and `/friends` sheets with
-   "hace 5 min" times (`src/lib/time/relative.ts`).
-0. **Build 4 / 1.6.0 — on branch `build-4` (2026-10-03)**, NOT merged: `main` keeps fingerprint `f15932ef…` so
-   OTAs still reach build 3. Native: expo-image-picker (camera only), expo-image-manipulator, react-native-purchases(+ui). `-ui` is unused until the paywall, but ships in build 4 on purpose: it is native, so adding it later would need another store build.
-   Photos on circle habits (camera-first check-in, gallery, viewer with retake/delete/report/hide, on-device upload
-   queue, deleted after 7 days), social pushes (Edge Function `notify`: cheers, requests, accepts, "ya regó en tu
-   círculo", once per kind/person/day, `profiles.social_push` switch), habia Pro (below).
-   **habia Pro (decided 2026-10-02):** US$4.99/month · US$34.99/year, 7-day free trial on the yearly plan only,
-   entitlement `pro`, offering `default` (packages `$rc_annual`, `$rc_monthly`); Pro Parejas dropped (circles stay
-   free). Paywall `src/app/paywall.tsx` (Settings → habia Pro; Apple 3.1.2 terms, restore, manage), `usePro()` =
-   store on this phone OR `public.entitlements` (mirror written by Edge Function `revenuecat-webhook`, which re-reads
-   RevenueCat's V1 API on every event). **Limits are OFF** (`PRO_LIMITS_ENABLED` in `src/features/paywall/limits.ts`)
-   until the public launch; turning them on is that flag + an OTA. Only the 5-habit limit is wired; full-history
-   stats and the AI review still need their gates (server-side for the AI, via `entitlements`). **Before turning
-   the limits on:** enforce the habit limit in the database too (trigger reading `entitlements`), since onboarding,
-   the web and direct inserts skip the screen (the paywall's "todo es gratis por ahora" note hides itself with the
-   flag). Check on a device that switching accounts never shows the previous account's Pro.
-   Owner steps, in order:
-   1. ✅ `npx supabase db push` (`20261002163208_photos_and_push.sql`).
-   2. ✅ `npx supabase functions deploy notify` and `npx supabase functions deploy photos-cleanup`.
-   3. ✅ CRON_SECRET + vault secret + `supabase/sql/schedule-photo-cleanup.sql` (redeploy photos-cleanup after
-      `verify_jwt = false` landed in `config.toml`).
-   4. habia Pro: App Store Connect (Paid Apps Agreement, Small Business Program, subscription group + 2 products +
-      trial), RevenueCat project (App Store app, products, entitlement `pro`, offering `default`, webhook), then
-      `npx supabase db push` (`20261002192432_entitlements.sql`), secrets `REVENUECAT_WEBHOOK_AUTH` and
-      `REVENUECAT_SECRET_KEY`, `npx supabase functions deploy revenuecat-webhook`, and the public key as
-      `EXPO_PUBLIC_REVENUECAT_IOS_KEY` in EAS env `production` (plain text, not secret). Test with a Sandbox
-      account on the TestFlight build.
-      ⚠️ Both subscriptions carry a TEMPORARY review screenshot (any app screen): replace it with the real
-      paywall (Ajustes → habia Pro, plans visible) before submitting the public version for review.
-   5. `git checkout build-4`, then `npx eas-cli@latest build --profile production --platform ios`: answer yes when
-      EAS offers to set up Push Notifications (it creates the APNs key). Then `npx eas-cli@latest submit --platform ios --latest`.
-   6. Once build 4 is on the testers' phones: merge `build-4` into `main`; later OTAs target build 4's fingerprint.
-0. **1.5.0 — stability pass after QA (2026-10-02)** (migration `20261002053613_stability_fixes.sql`:
-   owner runs `npx supabase db push`). Archived habits keep their past in streak/stats (`useHabitHistory`,
-   cut at the archive day); streak window 400 days; logs and circle days page past 1000 rows; blocking hides
-   people inside circles; a circle habit's days are locked to the circle; signup language stored (and the
-   one affected user fixed); data refetches on returning to the app (`focusManager` + `AppState`); analytics
-   get route patterns, not codes; invite links survive signup/onboarding and a missing username is picked on
-   the invite screen; cheers open the sender; a circle with a friend opens its invite. UI: detailed cards on
-   Tus círculos, sticky habit preview, identity below time, full-width icon grid, branch habits editable from
-   the identity. Plus ~15 smaller fixes (timers, FAB, rest-day copy, garden clouds, pending friends, per-account
-   storage keys, AI toggle, weekly review across weeks).
-0. **1.4.0 — one place per thing** (JS only): 🔥 opens your personal streak only; 🫂 opens **Tus círculos** (`src/app/circles.tsx`), the only place to see, create and join circles, each card with its group streak flame. **1:1 shared streaks are gone** (`computeSharedStreak`, the streak tabs and `SharedStreaksPanel` removed): a streak with a friend is a circle of two (the friend page offers "Crear un círculo con …"), so every streak with others is a shared habit and gets photos in build 4. Profile no longer lists circles; friends fold into "Tienes N amigos" (`FriendRow`), leaving room for achievements and the character.
-0. **1.3.2 — one habit per circle** (migration `20261001232448_circle_one_habit.sql`, owner runs `npx supabase db push`; it ends extra shared habits, keeping the oldest). Another habit = another circle. The circle card has one ranking with Esta semana | 30 días | General (up to a year of days); tapping a face or a row opens that person's profile (add as friend). The owner can end the circle's habit (members keep theirs, unlinked); leaving asks whether to keep or archive your linked habit — never deleted. Top bar is now 🔥 streak · 🫂 circles (→ Profile) · 🌱 seeds (→ Garden). Test friends: `supabase/seed/test-friends.sql` (applied 2026-10-02: 4 friends + a pending request from test_carlos; removed by test-cleanup.sql).
-0. **1.3.1 — circle polish:** shared habit card shows today first (big "3/8": red below the threshold, yellow once saved, green at 80 %+; everyone's face lit with ✓ once done) and each person's 30-day consistency as an animated ranking (`consistency-ranking.tsx`, also for the circle's week); the dot grids are gone. Streak tab circles show 🔥 N on the card (lit once today is saved). Shared habits on Today carry a lavender "🤝 circle" tag and edge. Only the circle owner can remove people (RLS + UI).
-0. **1.3.0 — shared circle habits** (built 2026-10-02, JS + migration `20261001220811_circle_habits.sql`,
-   fingerprint `f15932ef…`). Owner steps: `npx supabase db push`; optional test data
-   `npx supabase db query --linked -f supabase/seed/test-circle.sql` (6 fake `@habia.test` people in a private
-   "Test · Familia" circle you own; remove with `supabase/seed/test-cleanup.sql`); `git push`; OTA 1.3.0.
-   The circle owner defines a habit (daily or fixed weekdays); joining adds a normal habit to your Today
-   linked by `habits.circle_habit_id` (shows "🤝 <circle>"). The group day counts when at least half of the
-   joined, non-resting members did it (everyone when ≤ 2), never-miss-twice streak, consistency this week vs
-   last, "regaron por todos" names only who did it (`circle-habit-streak.ts`). Only that habit's daily state
-   is shared (`circle_habit_members` / `circle_habit_days`). A server-stamped `logged_at` waits for photos (build 4). **Leagues dropped** (2026-10-02): strangers' rankings don't motivate; circles do.
-   **Phase B = build 4:** optional photo per shared habit (camera only, deleted after 7 days, reportable),
-   push for cheers / requests / "Ana already walked", RevenueCat.
-1. **1.2.0 — identity as "becoming", Profile, streaks with friends, goals timeline** (built 2026-10-01,
-   JS + one data migration, fingerprint `f15932ef…`). Owner steps: `npx supabase db push` (applies
-   `20261001190801_identity_becoming.sql`: "Soy una persona que X" and bare endings become "una persona
-   que X"; validated in BEGIN … ROLLBACK), `npx supabase functions deploy weekly-review` (prompt speaks
-   of "becoming"), `git push`, OTA 1.2.0. What changed: identity form "Me estoy convirtiendo en…", habit
-   form "Este hábito me ayuda a convertirme en…", Garden captions "Convirtiéndome en"; a new identity
-   celebration on Today (card rising from the bottom in the branch color, seeds turning into leaves) when
-   a check-in finishes all of an identity's ≥2 items today (`completed-identity.ts`; the day's confetti
-   wins on the same tap); the Friends tab is **Profile** again with a real "⚙️ Ajustes" button; the streak
-   screen has **Personal | Con amigos** tabs (best shared streak, friends, circles) and a horizontal goals
-   timeline with 4 nearby milestones (`milestone-window.ts`).
-1b. **Friends & circles → 1.1.0** (shipped 2026-10-01, migration applied). Owner steps, done:
-   1. `npx supabase db push` (applies `20261001180242_social.sql`), then
-      `npx supabase gen types typescript --linked --schema public > src/lib/supabase/database.types.ts`
-      (types were hand-written to match; the diff should be empty or cosmetic) and
-      `npx supabase db query --linked -f supabase/tests/social-rls.sql` → `ALL SOCIAL RLS CHECKS PASSED`.
-   2. Push to GitHub so Vercel deploys `web/` (AASA `/add/*` + `/join/*`, `/invite` fallback page).
-      iOS refreshes the AASA through Apple's CDN (hours to days); until then links open the page,
-      whose button opens the app.
-   3. Ship 1.1.0 by OTA, then test with a second account (another email, on web or a tester's phone):
-      username, request by @, accept, cheer, circle by code, block, report.
-   Design: the Profile tab holds your card first, then friends and circles (⚙️ Ajustes = the old profile).
-   Friends see only `social_profiles` (name, color, a stats snapshot your app publishes) and
-   `social_days()` (which days you planted or rested, computed by the server from `habit_logs`);
-   never habits. Shared streak (`src/features/social/shared-days.ts`): grows on days both planted,
-   a lone day is a wait, two in a row reset it, rest days are neutral. Circles have no group streak
-   (weekly grid + "days everyone planted"). Cheers are 5 presets, one of each per pair per day.
-   Pushes for cheers/requests are the next step: check that build 3 can get an Expo push token
-   (aps-environment + APNs key in EAS); if not, it needs build 4.
-2. **Character art:** the owner draws the parts following `docs/CHARACTER-ART.md` (batch 1 = 13
-   SVGs into `art/character/`); then compose them in code (react-native-svg + Reanimated, no Rive)
-   and replace `SocialAvatar`.
-3. **Ship 1.0.13 by OTA** — superseded by 1.1.0 (it includes it). For the record (check the fingerprint is `f15932ef…` first). Since 1.0.8: crash fix for
-   reopening the app (1.0.10, JSON-safe cache), root error screen (1.0.9), Progress polish (2×2 tiles,
-   Brote's review as a green-framed card, visual standout-habit cards), and the **Garden as the
-   identity space** (1.0.13): "¿Quién te estás volviendo?", one card per branch (identity) with this
-   week's seeds and its habits, "Semillas sin rama" to link a habit to an identity in one tap, and an
-   empty state that explains identities. Per-habit numbers left the Garden (they live in Progress).
-   Next for the Garden: the character (plant avatar) and 💧 drops; maybe a 🌱→🌸→🍎 harvest.
-4. **External testers:** waiting for Beta App Review of the "Beta pública" group (demo account in
-   App Store Connect; never delete it). When approved: enable the public link with a tester limit.
-   The App Privacy questionnaire is only needed for the App Store, not TestFlight.
-5. **After the weekly review proves useful:** capped chat with Brote (Pro), server pushes
-   (push-dispatcher reusing `_shared/` and `local_today`), and moving reviews to the Batch API
-   (50 % cheaper) once a cron writes them for everyone instead of on first open.
-6. **Coach, shaped by tester data** (PostHog: `coach_tip_*` events per rule): habits that
-   pull each other (co-occurrence, worded as observation), seeds per identity, 👍/👎 per tip,
-   rule-based Monday mini-review.
-7. Then, in this order (ROADMAP → "Order after Block 2"): **your character** (art in progress) →
-   opt-in **leagues** → **monetization**, all before the public launch.
-   Start the "can a Colombian individual use Stripe?" question early (calendar weeks, not code),
-   and the legal review (jurisdiction, EU opt-in for analytics).
+## Estado técnico
 
-**AI weekly review (1.0.6):** opt-in (`profiles.ai_coach_enabled`, default off; Profile switch or a
-one-time offer on Today). Edge Function `weekly-review` computes last finished week in the user's
-zone with the app's own engine (`supabase/functions/_shared/`, synced by `node scripts/sync-shared.js`;
-a test fails on drift), Claude only writes the words (title / win / pattern / suggestion, structured
-output), stored in `coach_messages` (RLS: owner reads, marks seen; only the service role inserts).
-Today's slot: catch-up > weekly review > north-star > cheers from friends > coach tip.
+- Expo SDK 57 (RN 0.86), Expo Router, TypeScript estricto; proyecto Supabase en la nube «Habits Project».
+- **Línea base de verificación:** 193 tests en verde, typecheck y lint limpios. Las pruebas de base de datos
+  corren contra el proyecto enlazado dentro de `BEGIN … ROLLBACK`:
+  `supabase/tests/{social-rls,entitlements-rls,circle-start,coach-chat-rls}.sql`.
+- **Publicar:**
+  - Solo JavaScript → `npx eas-cli@latest update --channel production --environment production --platform ios --message "…"`.
+    Antes: `npx expo-updates runtimeversion:resolve --platform ios` debe imprimir la huella de la build de los testers.
+  - Cambio nativo → `npx eas-cli@latest build --profile production --platform ios --auto-submit` (número de build
+    nuevo y luego TestFlight).
+  - La base primero: `npx supabase db push` (y `functions deploy …`) **antes** de una OTA cuya app lea tablas nuevas.
+- **Versiones:** `APP_RELEASE` (`src/constants/release.ts`) es lo que ve la gente: patch = OTA, minor = binario
+  nuevo (y `version` de `app.json` sube con él). Los números de build los lleva EAS y suben solos; una build fallida
+  igual gasta su número.
+- **Código compartido con el servidor:** módulos puros copiados a `supabase/functions/_shared/` con
+  `node scripts/sync-shared.js` (recurrencia, hora local, resumen semanal, patrones); un test falla si se
+  desincronizan.
 
-**North-star question:** "¿Sientes que habia te está ayudando a mejorar tu día a día?" (1–5 faces)
-in the Today prompt slot, after 7 days from onboarding, then every 14 days ("Ahora no" = 3 days);
-only when PostHog is configured and not opted out. Event `north_star_answered { score }` —
-read it in PostHog as the product's success metric (trend per user and cohort). Its schedule is
-stored per account but per device (`habia.northStar.<userId>`): a user on iPhone and web is asked on both.
+## Deudas conocidas
 
-## Known debts
+- **Trampas de la huella:** `.gitignore`, `eas.json`, `app.json`, los assets y los paquetes nativos mueven la
+  huella. Una OTA con la huella movida no le llega a ningún teléfono.
+- **Lo que se persiste en la caché debe ser JSON** (nada de Map/Set/Date en un `queryFn`); las URLs firmadas de
+  fotos quedan fuera de la caché persistida (`meta: { persist: false }`).
+- **PostgREST corta las listas en 1000 filas:** toda lista que pueda crecer pagina con `.order(…).range(…)` y un
+  desempate único (`useLogs`, `circle_habit_days`, `coach-chat`).
+- **Pro antes del lanzamiento:** el límite de 5 hábitos solo lo aplica la interfaz; falta un trigger en la base que
+  lea `entitlements` antes de activar los límites. El chat se cierra a Pro desde el servidor
+  (`CHAT_REQUIRES_PRO`); la revisión semanal todavía no tiene candado.
+- **Modo enfoque:** si iOS cierra la app en segundo plano, la sesión se pierde (el aviso dice «vuelve para
+  sembrar» y el check-in espera al usuario). Guardar la sesión en el teléfono lo arreglaría.
+- **Hora:** el «hoy» de la app sale del reloj del teléfono; el servidor usa `profiles.timezone`. Coinciden mientras
+  `use-timezone-sync.ts` mantenga la zona sincronizada.
+- **Social:** los reportes se revisan a mano (`public.reports`); los códigos de invitación no tienen límite de
+  intentos; en un hábito de dos personas un voto «¿Cuenta?» se puede deducir (la app y el texto legal lo dicen).
+- **La revisión semanal** se escribe en la primera visita a Hoy de la semana (no hay cron); pasarla a la Batch API
+  necesita un cron.
+- **Skia:** Shopify deja de patrocinar `react-native-skia` a fin de 2026; revisar el fork en la próxima
+  actualización del SDK (plan B: el árbol en react-native-svg).
+- **Vistas previas web:** exportar con `EXPO_NO_DOTENV=1` + variables falsas de Supabase (una vez una vista previa
+  reportó al Sentry real). Windows no dibuja banderas emoji: en la web se ve ES / EN.
+- **Legal:** jurisdicción sin confirmar, sin revisión de abogado; la analítica es opt-out (la UE pediría opt-in).
+- Menores: tres componentes de chip casi iguales (unificar al cuarto); el fondo de la hoja de acciones se desliza
+  con la hoja; el idioma de los correos se fija solo al registrarse; la tabla `garden_state` no se usa (el jardín se
+  calcula en el teléfono sobre 120 días); la build de desarrollo de iOS es anterior al dominio asociado.
 
-- **Decided in 1.5.0:** two people who block each other inside a shared circle each compute the group's
-  threshold without the other, so they may see slightly different group streaks (privacy wins). The locale
-  backfill moved signups made in English to `en`; someone who later picked Spanish on purpose was
-  indistinguishable from the old default. To try on the iPhone: an invite link opened while signed out,
-  then sign in (it opens ~0.3 s after the tabs appear); "Crear un círculo con …" opens the share sheet
-  ~0.5 s after the circle appears.
+## Solo el dueño puede hacer esto
 
-- **Social:** `social_days()` only knows logs, so a day with nothing scheduled looks like a miss in
-  shared streaks and circle grids ("never miss twice" absorbs one). The stats snapshot is as fresh as
-  the friend's last app open ("Actualizado hace N días"). Shared streaks read 60 days ("60+").
-  Social writes are online-only on purpose (`networkMode: 'always'`): offline they fail with a
-  message instead of queueing. No pushes yet; reports are reviewed by hand in the dashboard
-  (`public.reports`). Circle invite codes are 8 hex chars (32 bits) with no join rate limit: fine
-  for now, revisit with scale. Avatars are Brote on the person's color until the character exists.
-
-- **Persisted query data must be JSON-safe** (`src/lib/query/client.ts` persists the cache as JSON):
-  never return a Map, Set or Date from a `queryFn`. A Map came back as `{}` after a restart and crashed
-  1.0.6–1.0.9 on reopening the app (`useCompletions`, fixed in 1.0.10). The root `ErrorBoundary` (1.0.9)
-  showed the error on screen; keep it.
-- **The native fingerprint includes `.gitignore`** (and `eas.json`, `app.json`, assets, native
-  packages). Editing any of them moves the runtime version, and OTA updates stop reaching build 3:
-  on 2026-10-01 a one-line `.gitignore` change sent the first 1.0.6 update to runtime `847d838…`,
-  which no binary has. Before an OTA, `npx expo-updates fingerprint:generate --platform ios` must
-  print `f15932ef…` (build 3).
-
-- **Windows:** the streak reads its own 400 days of logs (fixed in 1.5.0; it froze at 121), the garden
-  and stats 120. Past 400 days the record lives in `profiles.best_streak`. Every list query that can
-  pass 1000 rows must page (PostgREST `max_rows` cuts silently): `useLogs` and `circle_habit_days` do.
-
-- Three near-identical Chip components (habit form, identity form, onboarding): move one to
-  `src/components/` when a fourth appears. White-on-pastel chip text can be low contrast.
-
-- **Web previews must not use the real env**: export with `EXPO_NO_DOTENV=1` + fake Supabase vars, or a
-  preview error reaches the owner's Sentry (it happened on 2026-10-01).
-- Web previews: Metro caches inlined `EXPO_PUBLIC_*` values; after changing env vars, export with
-  `--clear`. (The PostHog web crash is fixed: `customStorage` on web, `src/lib/analytics.ts`.)
-- Coach: `coach_tip_shown` fires on every Today mount (read it as impressions, not once per tip).
-  Time-aware tips (`usual_time`, `agenda`) are only evaluated when a band's tip is first pinned,
-  so opening the app late in a band can miss them. Dismissing hides the tip for that band only (up
-  to 3 tips a day): watch whether testers find it insistent. Just after midnight the band is still
-  "night" but `today` has changed, so last night's unchecked habits already count as misses.
-  Untested edge: a cold start with persisted logs could pin the day's tip before the refetch.
-
-- **Skia risk:** Shopify announced (2026-09-10) it is leaving React Native; it sponsors
-  `@shopify/react-native-skia` only through end of 2026, then its creator forks it. Re-check the
-  fork's health at the next Expo SDK upgrade; plan B is redrawing the tree with
-  `react-native-svg` + Reanimated (`src/features/garden/`).
-- Sentry token rotated on 2026-09-30: both old tokens return `401 Invalid org token`; the new
-  one lives only in EAS (secret, unreadable) and is first exercised by the next production build
-  (source map upload). Owner believes the `test.js` bundle was deleted (Sentry → Projects →
-  habia → Source Maps); not verified.
-- **Secrets in EAS:** never type them into the masked prompt of `eas env:create`/`env:set` — on
-  2026-09-30 it stored a wrong value and the build failed with a Sentry `400`. Use
-  `--value (Get-Clipboard)` after checking the token with sentry-cli.
-- The iOS development build lacks the associated domain; rebuild it (`--profile development`)
-  when native work resumes, so auth links open it directly.
-- Email language is stored at sign-up only (`src/features/auth/api.ts`); changing the app
-  language later does not update `user_metadata.language`.
-- The actions sheet's scrim slides up with the sheet (`animationType="slide"`); cosmetic.
-- `guard-paths` hook covers Write/Edit only, not Bash, and its `.env` rule also blocks the
-  committed template `.env.example`.
-- The app's "today" still comes from the device clock; the server uses `profiles.timezone`
-  (`_shared/zoned.ts`, SQL `public.local_today`). They agree while the app keeps the timezone
-  in sync (`use-timezone-sync.ts`).
-- AI weekly review: generated on the first Today visit of a new week (no cron yet), one per user and
-  week; not yet tested end to end against Claude (no key during the build). Free for now (Pro later).
-  If a review fails, the app retries on the next launch (a persistent refusal would retry every
-  launch). `public.local_today` (SQL) has no caller yet: it is for the future push-dispatcher cron.
-  If the device zone differs from `profiles.timezone` (travel), app and server may disagree on
-  "last week" until the zone syncs.
-- Sign in with Apple / Google not implemented. Not required today: App Store guideline 4.8 asks for
-  Sign in with Apple only when the app offers a third-party login (Google, Facebook…), so adding
-  Google means adding Apple too.
-- Web billing: Stripe may not accept a Colombian individual — check before Phase 4 (ROADMAP).
-- Garden aggregates are computed on the client over 120 days; move to a Postgres RPC when log
-  volume grows. `garden_state` table is unused.
-- Legal: jurisdiction (Colombia) unconfirmed, no lawyer review; analytics is opt-out (EU users
-  would need opt-in).
-- `assets/dns.png` and `.claude/screenshots/android.jfif` were committed by mistake
-  (`git rm --cached` them); the owner's git email has a typo (`gmal.com`). Commit `255ded7`
-  has a Spanish message (convention: English).
-
-## Only the user can do these
-
-- Register any EAS secret (via `--value (Get-Clipboard)`, never the masked prompt).
-- Invite TestFlight testers; answer App Store Connect questionnaires (privacy "nutrition labels").
-- Draw the character's SVG parts (`docs/CHARACTER-ART.md`, templates in `art/character/`).
-- Apply the `social` migration (`npx supabase db push`) and review `public.reports` from time to time.
-- Apple Developer renews yearly (US$99, next 2027-09-28). Google Play (US$25 one-off) can wait
-  until there are Android testers.
+- Guardar secretos (EAS env, secretos de Supabase) — pegándolos con las funciones del portapapeles, nunca en el
+  prompt oculto.
+- Correr `db push`, `functions deploy`, las OTA y las builds.
+- Los paneles de App Store Connect y RevenueCat; testers de TestFlight; respuestas de App Privacy.
+- Dibujar las piezas del personaje. Revisar `public.reports` de vez en cuando.
+- Apple Developer se renueva cada año (US$99, próxima vez 2027-09-28).
 
 ---
 
-**Maintenance:** update this file at the end of every working block (skill `/cerrar-sesion`).
-A stale STATUS is worse than none: the next session trusts it.
+**Mantenimiento:** actualizar al final de cada bloque de trabajo (skill `/cerrar-sesion`). Un STATUS
+desactualizado es peor que ninguno: la siguiente sesión confía en él.
