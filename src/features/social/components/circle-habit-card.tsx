@@ -18,7 +18,6 @@ import {
   useCircleHabitProgress,
   useJoinCircleHabit,
   type CircleHabit,
-  type CirclePhoto,
   type SocialProfile,
 } from '../api';
 import { computeCircleHabit, todayTier, type RankingPeriod } from '../circle-habit-streak';
@@ -40,12 +39,10 @@ export function CircleHabitCard({
   habit,
   profiles,
   today,
-  isOwner,
 }: {
   habit: CircleHabit;
   profiles: Record<string, SocialProfile>;
   today: Date;
-  isOwner: boolean;
 }) {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -58,7 +55,9 @@ export function CircleHabitCard({
   const day = formatLocalDate(today);
   const photos = useCircleHabitPhotos(habit.id, day);
   const photoOf = (userId: string) => photos.data?.find((p) => p.user_id === userId);
-  const [viewing, setViewing] = useState<CirclePhoto | null>(null);
+  // By id, so the viewer shows the photo as it is now (a vote, a report that hides it).
+  const [viewingId, setViewingId] = useState<string | null>(null);
+  const viewing = photos.data?.find((p) => p.id === viewingId) ?? null;
   const [uploading, setUploading] = useState(false);
 
   // Your photo of today: taken now with the camera, sent (or queued) and shown once it arrives.
@@ -87,7 +86,7 @@ export function CircleHabitCard({
   };
   // iOS cannot open the camera while the viewer's modal is still on screen: close it, then open.
   const retake = () => {
-    setViewing(null);
+    setViewingId(null);
     setTimeout(addPhoto, RETAKE_DELAY_MS);
   };
 
@@ -144,15 +143,16 @@ export function CircleHabitCard({
           {photos.data.map((photo) => (
             <Pressable
               key={photo.id}
-              onPress={() => setViewing(photo)}
+              onPress={() => setViewingId(photo.id)}
               accessibilityRole="button"
               accessibilityLabel={t('photos.of', { name: nameOf(photo.user_id) })}
               style={styles.galleryItem}>
               <Image
                 source={{ uri: photo.url }}
-                style={[styles.galleryPhoto, { borderColor: colorOf(photo.user_id) }]}
+                style={[styles.galleryPhoto, { borderColor: photo.doubted ? theme.gold : colorOf(photo.user_id) }]}
               />
               <ThemedText type="caption" numberOfLines={1} style={styles.faceName}>
+                {photo.doubted ? '🤔 ' : ''}
                 {nameOf(photo.user_id)}
               </ThemedText>
             </Pressable>
@@ -278,9 +278,8 @@ export function CircleHabitCard({
         photo={viewing}
         name={viewing ? nameOf(viewing.user_id) : ''}
         mine={viewing?.user_id === me}
-        isOwner={isOwner}
         onRetake={retake}
-        onClose={() => setViewing(null)}
+        onClose={() => setViewingId(null)}
       />
 
       {!joined && (

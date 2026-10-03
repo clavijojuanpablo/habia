@@ -7,7 +7,8 @@
 // (one nudge of a kind per person, thing and day).
 //
 // Body: { type: 'cheer', cheerId } | { type: 'friend_request', userId } |
-//       { type: 'friend_accepted', userId } | { type: 'circle_checkin', circleHabitId }
+//       { type: 'friend_accepted', userId } | { type: 'circle_checkin', circleHabitId } |
+//       { type: 'photo_doubted', photoId }
 //       (friend types also take { username } instead of userId)
 import { createClient, type SupabaseClient } from 'jsr:@supabase/supabase-js@2';
 
@@ -24,7 +25,8 @@ const json = (body: unknown, status = 200) =>
 type Body =
   | { type: 'cheer'; cheerId: string }
   | { type: 'friend_request' | 'friend_accepted'; userId?: string; username?: string }
-  | { type: 'circle_checkin'; circleHabitId: string };
+  | { type: 'circle_checkin'; circleHabitId: string }
+  | { type: 'photo_doubted'; photoId: string };
 
 type Lang = 'es' | 'en';
 type Push = { recipient: string; kind: string; ref: string; day: string; title: string; body: string; data: Record<string, string> };
@@ -41,6 +43,11 @@ const text = {
   friendRequest: { es: (n: string) => `${n} quiere ser tu amigo en habia`, en: (n: string) => `${n} wants to be your friend on habia` },
   friendAccepted: { es: (n: string) => `${n} aceptó tu solicitud 🎉`, en: (n: string) => `${n} accepted your request 🎉` },
   circleTitle: { es: (c: string) => `${c} 🔥`, en: (c: string) => `${c} 🔥` },
+  // Never names who voted (in a habit of two, the author can still tell: the app says so).
+  photoDoubted: {
+    es: (h: string) => `El círculo dudó de tu foto de «${h}»: ese día no suma a la racha del grupo. Puedes subir otra 📸`,
+    en: (h: string) => `Your circle doubted your “${h}” photo: that day doesn't count toward the group streak. You can post another 📸`,
+  },
   circleBody: {
     es: (n: string, h: string) => `${n} ya hizo «${h}» hoy. ¿Te sumas? 💧`,
     en: (n: string, h: string) => `${n} already did “${h}” today. Join in? 💧`,
@@ -146,6 +153,39 @@ Deno.serve(async (req) => {
         data: { type: 'circle', id: habit.circle_id },
       });
     }
+  } else if (body.type === 'photo_doubted') {
+    const { data: photo } = await admin
+      .from('circle_habit_photos')
+      .select('id, user_id, day, circle_habit_id, circle_habits(name, circle_id)')
+      .eq('id', body.photoId)
+      .maybeSingle();
+    if (!photo) return json({ sent: 0 });
+    // Only for real: the caller voted, and the votes reached the majority (the day is marked).
+    const { data: vote } = await admin
+      .from('circle_photo_doubts')
+      .select('voter')
+      .eq('photo_id', photo.id)
+      .eq('voter', me)
+      .maybeSingle();
+    const { data: marked } = await admin
+      .from('circle_doubted_days')
+      .select('day')
+      .eq('circle_habit_id', photo.circle_habit_id)
+      .eq('user_id', photo.user_id)
+      .eq('day', photo.day)
+      .maybeSingle();
+    if (!vote || !marked) return json({ sent: 0 });
+    const habit = photo.circle_habits as unknown as { name: string; circle_id: string };
+    const lang = await langOf(admin, photo.user_id);
+    pushes.push({
+      recipient: photo.user_id,
+      kind: 'photo_doubted',
+      ref: photo.id,
+      day: photo.day,
+      title: 'habia',
+      body: text.photoDoubted[lang](habit.name),
+      data: { type: 'circle', id: habit.circle_id },
+    });
   } else {
     return json({ error: 'bad_request' }, 400);
   }

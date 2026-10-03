@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Share, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, RefreshControl, Share, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
@@ -21,6 +21,7 @@ import { useArchiveHabit, useHabits } from '@/features/habits/api';
 import { CircleHabitCard } from '@/features/social/components/circle-habit-card';
 import { circleInviteLink } from '@/features/social/components/circles';
 import { SocialCard } from '@/features/social/components/social-card';
+import { useSocialRefresh } from '@/features/social/use-social-refresh';
 import { useNow, useTodayRange } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
 import { confirmAction } from '@/lib/confirm';
@@ -29,6 +30,7 @@ import { confirmAction } from '@/lib/confirm';
 export default function CircleScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
+  const { refreshing, onRefresh } = useSocialRefresh();
   const { id, invite } = useLocalSearchParams<{ id: string; invite?: string }>();
   const { session } = useSession();
   const me = session?.user.id ?? '';
@@ -94,7 +96,9 @@ export default function CircleScreen() {
 
   return (
     <ThemedView style={styles.flex}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.primary} />}>
         <View style={styles.header}>
           <View style={[styles.emojiTile, { backgroundColor: theme.lavenderSoft }]}>
             <ThemedText style={styles.emoji}>{circle.emoji}</ThemedText>
@@ -124,7 +128,7 @@ export default function CircleScreen() {
             {t(isOwner ? 'social.circleHabit.emptyOwner' : 'social.circleHabit.emptyMember')}
           </ThemedText>
         )}
-        {sharedHabit && <CircleHabitCard habit={sharedHabit} profiles={profileById} today={today} isOwner={isOwner} />}
+        {sharedHabit && <CircleHabitCard habit={sharedHabit} profiles={profileById} today={today} />}
         {sharedHabit && isOwner && (
           <Button
             variant="danger"

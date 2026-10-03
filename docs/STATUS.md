@@ -117,6 +117,16 @@ open the web fallback there; its "Open habia" button still works.
    Check it: `curl -X POST <SUPABASE_URL>/functions/v1/weekly-review -H "apikey: <publishable>" -H "Authorization: Bearer <publishable>" -d '{"check":true}'`
    must answer `{"available":true}`.
 
+0. **1.6.1 — trust in circles, from testing build 1.6.0 (5) (2026-10-02), on `build-4`, by OTA.** Migration
+   `20261003001405_circle_trust.sql` + redeploy `notify` BEFORE the OTA (the app reads the new tables). Cheers: one
+   per friend every 3 h (server trigger `cheer_too_soon`). Photos: owner hiding removed (hidden photos came back);
+   "¿Cuenta?" private votes (`circle_photo_doubts`) → majority marks `circle_doubted_days`, which
+   `circle_habit_days` excludes from the group (author's own log untouched), push `photo_doubted`; a new photo that
+   day resets it. Reports hide a photo for the reporter, and for all from 2 reporters (also fixed: a 2nd photo of
+   the same person could not be reported). Fresher social data: pushes (received or tapped) invalidate `['social']`,
+   photo URLs cached per file version so the photo list refetches normally, pull-to-refresh on Profile, cheers,
+   friends and circle. Profile: two doors, 💌 Cheers and 👥 Friends, opening `/cheers` and `/friends` sheets with
+   "hace 5 min" times (`src/lib/time/relative.ts`).
 0. **Build 4 / 1.6.0 — on branch `build-4` (2026-10-03)**, NOT merged: `main` keeps fingerprint `f15932ef…` so
    OTAs still reach build 3. Native: expo-image-picker (camera only), expo-image-manipulator, react-native-purchases(+ui). `-ui` is unused until the paywall, but ships in build 4 on purpose: it is native, so adding it later would need another store build.
    Photos on circle habits (camera-first check-in, gallery, viewer with retake/delete/report/hide, on-device upload

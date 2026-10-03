@@ -62,6 +62,27 @@ export type Database = {
         }
         Relationships: []
       }
+      circle_doubted_days: {
+        Row: {
+          circle_habit_id: string
+          created_at: string
+          day: string
+          user_id: string
+        }
+        Insert: {
+          circle_habit_id: string
+          created_at?: string
+          day: string
+          user_id: string
+        }
+        Update: {
+          circle_habit_id?: string
+          created_at?: string
+          day?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       circle_habit_photos: {
         Row: {
           circle_habit_id: string
@@ -167,6 +188,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      circle_photo_doubts: {
+        Row: {
+          created_at: string
+          photo_id: string
+          voter: string
+        }
+        Insert: {
+          created_at?: string
+          photo_id: string
+          voter?: string
+        }
+        Update: {
+          created_at?: string
+          photo_id?: string
+          voter?: string
+        }
+        Relationships: []
       }
       circles: {
         Row: {
@@ -690,7 +729,6 @@ export type Database = {
           username: string
         }[]
       }
-      hide_circle_photo: { Args: { p_photo: string }; Returns: undefined }
       join_circle: { Args: { p_code: string }; Returns: string }
       list_friendships: {
         Args: never

@@ -476,9 +476,24 @@
     "identityDone": "Cumpliste todo lo de esta rama hoy 🌱"
   },
   "time": {
-    "anyTime": "En cualquier momento",
-    "hour": "Hora",
-    "minutes": "Minutos"
+    "ago": {
+      "now": "hace un momento",
+      "minutes_one": "hace {{count}} min",
+      "minutes_other": "hace {{count}} min",
+      "hours_one": "hace {{count}} h",
+      "hours_other": "hace {{count}} h",
+      "yesterday": "ayer",
+      "days_one": "hace {{count}} día",
+      "days_other": "hace {{count}} días",
+      "weeks_one": "hace {{count}} semana",
+      "weeks_other": "hace {{count}} semanas"
+    },
+    "until": {
+      "minutes_one": "en {{count}} min",
+      "minutes_other": "en {{count}} min",
+      "hours_one": "en {{count}} h",
+      "hours_other": "en {{count}} h"
+    }
   },
   "language": {
     "title": "Idioma",
@@ -679,7 +694,8 @@
       "circle_full": "Ese círculo ya está completo (8 personas).",
       "taken": "Ese usuario ya está en uso. Prueba otro.",
       "generic": "No se pudo completar. Revisa tu conexión e intenta de nuevo.",
-      "not_a_member": "Solo los miembros del círculo pueden unirse a este hábito."
+      "not_a_member": "Solo los miembros del círculo pueden unirse a este hábito.",
+      "cheer_too_soon": "Ya animaste a esta persona hace poco. Puedes enviar un ánimo cada 3 horas."
     },
     "add": {
       "title": "Agregar un amigo",
@@ -745,7 +761,11 @@
       "more_one": "y {{count}} ánimo más",
       "more_other": "y {{count}} ánimos más",
       "thanks": "Gracias 💚",
-      "answer": "Responder"
+      "answer": "Responder",
+      "nextIn": "Podrás animar a {{name}} de nuevo {{when}}.",
+      "onePerGap": "Elige uno: puedes enviar un ánimo cada 3 horas.",
+      "empty": "Aún no te llegan ánimos. Cuando tus amigos te animen, aparecerán aquí.",
+      "door": "Ánimos"
     },
     "report": {
       "action": "Reportar",
@@ -844,7 +864,9 @@
       "youDid": "✓ Ya regaste hoy por el grupo",
       "yourTurn": "Te toca: {{habit}}",
       "notJoined": "Aún no te uniste a este hábito"
-    }
+    },
+    "friendsDoor": "Amigos",
+    "friendsTitle": "Tus amigos"
   },
   "push": {
     "social": "Avisos de amigos y círculos",
@@ -855,16 +877,21 @@
     "retake": "Tomar otra",
     "delete": "Borrar mi foto",
     "deleteConfirm": "¿Borrar tu foto de hoy? Tu hábito sigue marcado.",
-    "hide": "Ocultar en el círculo",
-    "report": "Reportar foto",
+    "report": "Reportar contenido inapropiado",
     "of": "Foto de {{name}}",
-    "hiddenByOwner": "Quien creó el círculo ocultó esta foto: solo tú la ves.",
     "cameraDenied": "Para la foto del hábito, habia necesita la cámara. Actívala en Ajustes → habia → Cámara.",
     "failed": "No se pudo tomar la foto. Intenta de nuevo.",
     "queued": "Sin conexión: tu foto se subirá en cuanto vuelva internet.",
     "notSent": "Tu foto no se pudo enviar. Ábrela en tu círculo para tomar otra.",
     "notReady": "Un momento: estamos cargando tu círculo. Intenta de nuevo en unos segundos.",
-    "requiredHint": "Este hábito va con foto: al marcarlo se abre la cámara. Las fotos se borran a los 7 días."
+    "requiredHint": "Este hábito va con foto: al marcarlo se abre la cámara. Las fotos se borran a los 7 días.",
+    "hiddenReported": "Varios miembros reportaron esta foto: solo tú la ves mientras la revisamos.",
+    "doubt": "No cuenta",
+    "undoDoubt": "Retirar mi «no cuenta»",
+    "doubtHint": "Nadie ve quién votó (aunque en un hábito de dos personas se puede deducir). Si la mayoría cree que la foto no muestra el hábito, ese día no suma a la racha del grupo.",
+    "doubted": "El círculo dudó de esta foto: ese día no suma a la racha del grupo.",
+    "doubtedMine": "El círculo dudó de tu foto: ese día no suma a la racha del grupo. Puedes tomar otra.",
+    "reportConfirm": "¿Reportar esta foto como inapropiada? Dejarás de verla al instante y la revisaremos. Si solo crees que no muestra el hábito, usa «No cuenta»."
   },
   "paywall": {
     "title": "habia Pro",

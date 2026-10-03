@@ -84,9 +84,20 @@ begin
   exception when insufficient_privilege then null;
   end;
   begin
-    insert into public.cheers (to_user, kind) values (b, 'water');
-    assert false, 'one cheer per kind per day';
-  exception when unique_violation then null;
+    insert into public.cheers (to_user, kind) values (b, 'clap');
+    assert false, 'one cheer per friend every 3 hours, whatever the kind';
+  exception when raise_exception then
+    assert sqlerrm = 'cheer_too_soon', 'expected cheer_too_soon, got ' || sqlerrm;
+  end;
+  begin
+    insert into public.cheers (to_user, kind, created_at) values (b, 'fire', now() - interval '4 hours');
+    assert false, 'a cheer cannot be backdated past the gap';
+  exception when raise_exception then null;
+  end;
+  begin
+    insert into public.cheers (from_user, to_user, kind) values (b, a, 'fire');
+    assert false, 'nobody cheers in someone else''s name';
+  exception when insufficient_privilege then null; -- RLS, not cheer_too_soon: no leak
   end;
   begin
     insert into public.habits (user_id, name) values (b, 'Injected');
@@ -358,6 +369,9 @@ declare
   photo uuid;
   n int;
   owner_of_token uuid;
+  g uuid := '00000000-0000-4000-8000-0000000000f1';
+  old_photo uuid;
+  counted boolean;
 begin
   perform set_config('role', 'none', true);
   insert into auth.users (id, email, aud, role) values (b, 'f@rls-test.invalid', 'authenticated', 'authenticated');
@@ -404,21 +418,121 @@ begin
   select count(*) into n from storage.objects where bucket_id = 'circle-photos' and name like circle || '/%';
   assert n = 0, 'a non-member reads no photo files';
   begin
-    perform public.hide_circle_photo(photo);
-    assert false, 'only the owner hides photos';
-  exception when raise_exception then null;
+    insert into public.circle_photo_doubts (photo_id) values (photo);
+    assert false, 'a non-member cannot doubt a photo';
+  exception when insufficient_privilege then null;
   end;
 
-  -- A (owner) sees it, hides it; B still sees their own, A no longer does.
+  -- A (owner) and a third member G take part too: B's photo has two other judges.
+  perform set_config('role', 'none', true);
+  insert into auth.users (id, email, aud, role) values (g, 'g@rls-test.invalid', 'authenticated', 'authenticated');
+  insert into public.social_profiles (user_id, username, display_name) values (g, 'user_g', 'G');
+  perform set_config('role', 'authenticated', true);
+  perform set_config('request.jwt.claims', json_build_object('sub', g, 'role', 'authenticated')::text, true);
+  perform public.join_circle(code);
+  insert into public.habits (user_id, name, circle_habit_id) values (g, 'Caminar', shared);
   perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  insert into public.habits (user_id, name, circle_habit_id) values (a, 'Caminar', shared);
   select count(*) into n from storage.objects where bucket_id = 'circle-photos' and name like circle || '/%';
   assert n = 1, 'a member reads the circle''s photo files';
-  perform public.hide_circle_photo(photo);
+  begin
+    perform public.hide_circle_photo(photo);
+    assert false, 'owners no longer hide photos';
+  exception when undefined_function then null;
+  end;
+
+  -- B checked in today with that photo.
+  perform set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
+  insert into public.habit_logs (user_id, habit_id, occurrence_at, status)
+    select b, id, now(), 'done' from public.habits where user_id = b and circle_habit_id = shared;
+  begin
+    insert into public.circle_photo_doubts (photo_id) values (photo);
+    assert false, 'nobody doubts their own photo';
+  exception when insufficient_privilege then null;
+  end;
+
+  -- "¿Cuenta?": one doubt of two judges is not a majority.
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  insert into public.circle_photo_doubts (photo_id) values (photo);
+  begin
+    insert into public.circle_photo_doubts (photo_id, voter) values (photo, g);
+    assert false, 'nobody votes for someone else';
+  exception when insufficient_privilege then null;
+  end;
+  select count(*) into n from public.circle_doubted_days where circle_habit_id = shared and user_id = b;
+  assert n = 0, 'one doubt of two judges is not a majority';
+  perform set_config('request.jwt.claims', json_build_object('sub', g, 'role', 'authenticated')::text, true);
+  select count(*) into n from public.circle_photo_doubts;
+  assert n = 0, 'votes are private';
+  insert into public.circle_photo_doubts (photo_id) values (photo);
+  select count(*) into n from public.circle_doubted_days where circle_habit_id = shared and user_id = b;
+  assert n = 1, 'a majority marks the day as doubted, visible to the circle';
+  select done into counted from public.circle_habit_days(shared, current_date - 1) where user_id = b;
+  assert not counted, 'a doubted day does not count for the group';
+  -- Undo brings it back.
+  delete from public.circle_photo_doubts where photo_id = photo;
+  select done into counted from public.circle_habit_days(shared, current_date - 1) where user_id = b;
+  assert counted, 'taking a doubt back makes the day count again';
+  insert into public.circle_photo_doubts (photo_id) values (photo);
+
+  -- B posts another photo that day: the votes and the mark go.
+  perform set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
+  select count(*) into n from public.habit_logs where user_id = b; -- (B's own log is untouched)
+  assert n = 1, 'the author''s own check-in stays';
+  perform public.save_circle_photo(shared, current_date);
+  select count(*) into n from public.circle_doubted_days where circle_habit_id = shared and user_id = b;
+  assert n = 1, 'saving again without a new file does not wipe the doubt';
+  begin
+    perform public.save_circle_photo(shared, current_date - 5);
+    assert false, 'a photo for a closed day is refused';
+  exception when raise_exception then
+    assert sqlerrm = 'day_closed', 'expected day_closed, got ' || sqlerrm;
+  end;
+  -- The app uploads a new file after the record. One transaction has one now(), so the record
+  -- is moved back instead (storage stamps updated_at itself).
+  perform set_config('role', 'none', true);
+  update public.circle_habit_photos set created_at = now() - interval '1 minute' where id = photo;
+  perform set_config('role', 'authenticated', true);
+  perform public.save_circle_photo(shared, current_date);
+  perform set_config('role', 'none', true);
+  select count(*) into n from public.circle_photo_doubts where photo_id = photo;
+  assert n = 0, 'a new photo clears its votes';
+  select count(*) into n from public.circle_doubted_days where circle_habit_id = shared and user_id = b;
+  assert n = 0, 'a new photo clears the doubted mark';
+  -- An older photo of B, to report two photos of the same person.
+  insert into public.circle_habit_photos (circle_habit_id, user_id, day, path)
+    values (shared, b, current_date - 1, 'x') returning id into old_photo;
+  perform set_config('role', 'authenticated', true);
+
+  -- Reports: gone for the reporter at once; for everyone from two reporters on.
+  perform set_config('request.jwt.claims', json_build_object('sub', c, 'role', 'authenticated')::text, true);
+  begin
+    insert into public.reports (reported, reason, photo_id) values (b, 'inappropriate_photo', photo);
+    assert false, 'only circle mates report a photo';
+  exception when insufficient_privilege then null;
+  end;
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  begin
+    insert into public.reports (reported, reason, photo_id) values (g, 'inappropriate_photo', photo);
+    assert false, 'a photo report names its author';
+  exception when insufficient_privilege then null;
+  end;
+  insert into public.reports (reported, reason, photo_id) values (b, 'inappropriate_photo', old_photo);
+  insert into public.reports (reported, reason, photo_id) values (b, 'inappropriate_photo', photo);
   select count(*) into n from public.circle_habit_photos where id = photo;
-  assert n = 0, 'a hidden photo is gone for others';
+  assert n = 0, 'a reported photo is gone for its reporter';
+  perform set_config('request.jwt.claims', json_build_object('sub', g, 'role', 'authenticated')::text, true);
+  select count(*) into n from public.circle_habit_photos where id = photo;
+  assert n = 1, 'one report hides it only for the reporter';
+  insert into public.reports (reported, reason, photo_id) values (b, 'inappropriate_photo', photo);
+  perform set_config('role', 'none', true);
+  select count(*) into n from public.circle_habit_photos where id = photo and hidden_at is not null;
+  assert n = 1, 'two reporters hide a photo for everyone';
+  perform set_config('role', 'authenticated', true);
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
   select count(*) into n from storage.objects where bucket_id = 'circle-photos' and name like circle || '/%';
   assert n = 0, 'a hidden photo''s file is unreadable for others';
-  insert into public.reports (reported, reason, photo_id) values (b, 'inappropriate_photo', photo);
+
   perform set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
   select count(*) into n from public.circle_habit_photos where id = photo;
   assert n = 1, 'its author still sees a hidden photo';
@@ -449,6 +563,7 @@ begin
   assert n = 1, 'one row per device token';
 
   -- Circle nudges go only to whoever still has the habit due today.
+  delete from public.habit_logs where user_id = b; -- (the photo block checked B in)
   update public.circle_habits set rrule = 'FREQ=DAILY', archived_at = null where id = shared;
   update public.habits set archived_at = null, starts_on = current_date - 1 where user_id = b and circle_habit_id = shared;
   select count(*) into n from public.circle_habit_pending_today(shared) where user_id = b;

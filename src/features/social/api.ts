@@ -71,6 +71,7 @@ export type SocialErrorCode =
   | 'circle_full'
   | 'not_a_member'
   | 'taken'
+  | 'cheer_too_soon'
   | 'generic';
 
 export class SocialError extends Error {
@@ -86,6 +87,7 @@ const KNOWN: SocialErrorCode[] = [
   'too_many_circles',
   'circle_full',
   'not_a_member',
+  'cheer_too_soon',
 ];
 
 function toSocialError(error: { code?: string; message?: string }): SocialError {
@@ -105,7 +107,8 @@ export function notify(
   body:
     | { type: 'cheer'; cheerId: string }
     | { type: 'friend_request' | 'friend_accepted'; userId?: string; username?: string }
-    | { type: 'circle_checkin'; circleHabitId: string },
+    | { type: 'circle_checkin'; circleHabitId: string }
+    | { type: 'photo_doubted'; photoId: string },
 ) {
   supabase.functions.invoke('notify', { body }).catch(() => {});
 }
@@ -291,14 +294,20 @@ export function useBlockUser() {
 export type ReportReason = 'offensive_name' | 'harassment' | 'spam' | 'other' | 'inappropriate_photo';
 
 export function useReportUser() {
+  const invalidate = useSocialInvalidate();
   return useMutation({
     ...ONLINE_ONLY,
     mutationFn: async (input: { reported: string; reason: ReportReason; photo_id?: string }) => {
       const { error } = await supabase.from('reports').insert(input);
-      // Already reported for this reason: it is on file, which is what the user wanted.
+      // Already reported (this person for this reason, or this photo): it is on file, which is
+      // what the user wanted.
       if (error && error.code !== '23505') throw toSocialError(error);
     },
-    onSuccess: () => track('user_reported'),
+    onSuccess: (_, input) => {
+      track('user_reported');
+      // A reported photo is gone for its reporter at once.
+      if (input.photo_id) return invalidate();
+    },
   });
 }
 
@@ -334,22 +343,27 @@ export function useCheersInbox() {
   });
 }
 
-/** Today's cheers already sent to one person (the server allows one of each per local day). */
-export function useSentCheersToday(toUser: string, today: Date) {
+/** One cheer per friend every 3 hours, whatever the kind (enforced by the server too). */
+export const CHEER_GAP_MS = 3 * 60 * 60 * 1000;
+
+/** The cheer sent to this person within the last gap, if any: until it passes, no other. */
+export function useRecentCheerTo(toUser: string) {
   const { session } = useSession();
-  const day = formatLocalDate(today);
   return useQuery({
-    queryKey: socialKey(session?.user.id, 'cheers-sent', toUser, day),
+    queryKey: socialKey(session?.user.id, 'cheer-recent', toUser),
     enabled: !!session,
-    queryFn: async () => {
+    queryFn: async (): Promise<{ kind: CheerKind; created_at: string } | null> => {
       const { data, error } = await supabase
         .from('cheers')
-        .select('kind')
+        .select('kind, created_at')
         .eq('from_user', session!.user.id)
         .eq('to_user', toUser)
-        .eq('day', day);
+        .gte('created_at', new Date(Date.now() - CHEER_GAP_MS).toISOString())
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
       if (error) throw error;
-      return data.map((c) => c.kind as CheerKind);
+      return data ? { kind: data.kind as CheerKind, created_at: data.created_at } : null;
     },
   });
 }
@@ -360,13 +374,16 @@ export function useSendCheer() {
     ...ONLINE_ONLY,
     mutationFn: async (input: { to_user: string; kind: CheerKind }) => {
       const { data, error } = await supabase.from('cheers').insert(input).select('id').single();
-      // Already sent this one today: the cheer is there, which is what the user wanted (no new push).
-      if (error && error.code !== '23505') throw toSocialError(error);
-      if (data) notify({ type: 'cheer', cheerId: data.id });
+      if (error) throw toSocialError(error);
+      notify({ type: 'cheer', cheerId: data.id });
     },
     onSuccess: (_, input) => {
       track('cheer_sent', { kind: input.kind });
       return invalidate();
+    },
+    // Sent from another device, or the local view was stale: fetch it so the wait shows.
+    onError: (error) => {
+      if (error instanceof SocialError && error.code === 'cheer_too_soon') return invalidate();
     },
   });
 }
@@ -603,10 +620,36 @@ export type CirclePhoto = {
   path: string;
   /** Signed URL, valid for an hour (the bucket is private). */
   url: string;
+  /** Hidden for everyone but its author after 2+ reports, until reviewed. */
   hidden: boolean;
+  /** A majority of the circle doubted it: that day doesn't count for the group. */
+  doubted: boolean;
+  /** You voted "no cuenta" (votes are private: only your own is known). */
+  doubtedByMe: boolean;
 };
 
 const PHOTO_URL_SECONDS = 60 * 60;
+// Signed URLs by file version (path + time: a retake keeps the path), reused while they have
+// 10+ minutes left, so refreshing the list often never re-signs or re-downloads the same photo.
+const signedUrls = new Map<string, { url: string; until: number }>();
+
+async function signPhotoUrls(photos: { path: string; created_at: string }[]) {
+  const key = (p: { path: string; created_at: string }) => p.path + '@' + p.created_at;
+  const now = Date.now();
+  const missing = photos.filter((p) => (signedUrls.get(key(p))?.until ?? 0) < now + 10 * 60 * 1000);
+  if (missing.length > 0) {
+    const { data, error } = await supabase.storage.from('circle-photos').createSignedUrls(
+      missing.map((p) => p.path),
+      PHOTO_URL_SECONDS,
+    );
+    if (error) throw error;
+    const byPath = Object.fromEntries((data ?? []).map((s) => [s.path, s.signedUrl]));
+    for (const p of missing) {
+      if (byPath[p.path]) signedUrls.set(key(p), { url: byPath[p.path], until: now + PHOTO_URL_SECONDS * 1000 });
+    }
+  }
+  return (p: { path: string; created_at: string }) => signedUrls.get(key(p))?.url;
+}
 
 /** Today's photos of a shared habit, each with a short-lived signed URL. */
 export function useCircleHabitPhotos(circleHabitId: string, day: string) {
@@ -614,50 +657,69 @@ export function useCircleHabitPhotos(circleHabitId: string, day: string) {
   return useQuery({
     queryKey: socialKey(session?.user.id, 'photos', circleHabitId, day),
     enabled: !!session,
-    // Shorter than the URLs' life, so a cached URL is never already expired.
-    staleTime: 20 * 60 * 1000,
-    gcTime: 50 * 60 * 1000,
+    // URLs expire: kept in memory only (see signPhotoUrls), never written to disk.
     meta: { persist: false },
     queryFn: async (): Promise<CirclePhoto[]> => {
       const { data, error } = await supabase
         .from('circle_habit_photos')
-        .select('id, user_id, day, path, hidden_at')
+        .select('id, user_id, day, path, created_at, hidden_at')
         .eq('circle_habit_id', circleHabitId)
         .eq('day', day);
       if (error) throw error;
       if (data.length === 0) return [];
-      const { data: signed, error: signError } = await supabase.storage
-        .from('circle-photos')
-        .createSignedUrls(
-          data.map((p) => p.path),
-          PHOTO_URL_SECONDS,
-        );
-      if (signError) throw signError;
-      const urlByPath = Object.fromEntries((signed ?? []).map((s) => [s.path, s.signedUrl]));
-      return data
-        .filter((p) => urlByPath[p.path])
-        .map((p) => ({
-          id: p.id,
-          user_id: p.user_id,
-          day: p.day,
-          path: p.path,
-          url: urlByPath[p.path],
-          hidden: !!p.hidden_at,
-        }));
+      const [urlOf, doubted, mine] = await Promise.all([
+        signPhotoUrls(data),
+        supabase.from('circle_doubted_days').select('user_id').eq('circle_habit_id', circleHabitId).eq('day', day),
+        supabase
+          .from('circle_photo_doubts')
+          .select('photo_id')
+          .in(
+            'photo_id',
+            data.map((p) => p.id),
+          ),
+      ]);
+      if (doubted.error) throw doubted.error;
+      if (mine.error) throw mine.error;
+      const doubtedUsers = new Set(doubted.data.map((d) => d.user_id));
+      const myDoubts = new Set(mine.data.map((d) => d.photo_id));
+      return data.flatMap((p) => {
+        const url = urlOf(p);
+        if (!url) return [];
+        return [
+          {
+            id: p.id,
+            user_id: p.user_id,
+            day: p.day,
+            path: p.path,
+            url,
+            hidden: !!p.hidden_at,
+            doubted: doubtedUsers.has(p.user_id),
+            doubtedByMe: myDoubts.has(p.id),
+          },
+        ];
+      });
     },
   });
 }
 
-/** The circle's owner hides a photo for everyone but its author. */
-export function useHideCirclePhoto() {
+/** "¿Cuenta?": a private vote that someone else's photo doesn't prove the habit, or taking it back. */
+export function useDoubtPhoto() {
   const invalidate = useSocialInvalidate();
   return useMutation({
     ...ONLINE_ONLY,
-    mutationFn: async (photoId: string) => {
-      const { error } = await supabase.rpc('hide_circle_photo', { p_photo: photoId });
-      if (error) throw toSocialError(error);
+    mutationFn: async ({ photoId, doubt }: { photoId: string; doubt: boolean }) => {
+      const { error } = doubt
+        ? await supabase.from('circle_photo_doubts').insert({ photo_id: photoId })
+        : await supabase.from('circle_photo_doubts').delete().eq('photo_id', photoId);
+      // Already voted: the vote is there, which is what the user wanted.
+      if (error && error.code !== '23505') throw toSocialError(error);
+      // The server tells the author only if this vote made the majority.
+      if (doubt) notify({ type: 'photo_doubted', photoId });
     },
-    onSuccess: invalidate,
+    onSuccess: (_, { doubt }) => {
+      track(doubt ? 'photo_doubted' : 'photo_doubt_undone');
+      return invalidate();
+    },
   });
 }
 

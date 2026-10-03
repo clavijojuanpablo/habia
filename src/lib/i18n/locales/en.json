@@ -476,9 +476,24 @@
     "identityDone": "You did everything on this branch today 🌱"
   },
   "time": {
-    "anyTime": "Any time",
-    "hour": "Hour",
-    "minutes": "Minutes"
+    "ago": {
+      "now": "just now",
+      "minutes_one": "{{count}} min ago",
+      "minutes_other": "{{count}} min ago",
+      "hours_one": "{{count}} h ago",
+      "hours_other": "{{count}} h ago",
+      "yesterday": "yesterday",
+      "days_one": "{{count}} day ago",
+      "days_other": "{{count}} days ago",
+      "weeks_one": "{{count}} week ago",
+      "weeks_other": "{{count}} weeks ago"
+    },
+    "until": {
+      "minutes_one": "in {{count}} min",
+      "minutes_other": "in {{count}} min",
+      "hours_one": "in {{count}} h",
+      "hours_other": "in {{count}} h"
+    }
   },
   "language": {
     "title": "Language",
@@ -679,7 +694,8 @@
       "circle_full": "That circle is already full (8 people).",
       "taken": "That username is taken. Try another one.",
       "generic": "That didn’t work. Check your connection and try again.",
-      "not_a_member": "Only circle members can join this habit."
+      "not_a_member": "Only circle members can join this habit.",
+      "cheer_too_soon": "You cheered this person a moment ago. You can send one cheer every 3 hours."
     },
     "add": {
       "title": "Add a friend",
@@ -745,7 +761,11 @@
       "more_one": "and {{count}} more cheer",
       "more_other": "and {{count}} more cheers",
       "thanks": "Thanks 💚",
-      "answer": "Reply"
+      "answer": "Reply",
+      "nextIn": "You can cheer {{name}} again {{when}}.",
+      "onePerGap": "Pick one: you can send a cheer every 3 hours.",
+      "empty": "No cheers yet. When your friends cheer you on, they show up here.",
+      "door": "Cheers"
     },
     "report": {
       "action": "Report",
@@ -844,7 +864,9 @@
       "youDid": "✓ You watered for the group today",
       "yourTurn": "Your turn: {{habit}}",
       "notJoined": "You haven't joined this habit yet"
-    }
+    },
+    "friendsDoor": "Friends",
+    "friendsTitle": "Your friends"
   },
   "push": {
     "social": "Friends & circles notifications",
@@ -855,16 +877,21 @@
     "retake": "Take another",
     "delete": "Delete my photo",
     "deleteConfirm": "Delete your photo for today? Your habit stays checked.",
-    "hide": "Hide in the circle",
-    "report": "Report photo",
+    "report": "Report inappropriate content",
     "of": "{{name}}'s photo",
-    "hiddenByOwner": "The circle's creator hid this photo: only you can see it.",
     "cameraDenied": "habia needs the camera for the habit's photo. Turn it on in Settings → habia → Camera.",
     "failed": "Couldn't take the photo. Try again.",
     "queued": "Offline: your photo will upload as soon as you're back online.",
     "notSent": "Your photo couldn't be sent. Open your circle to take another one.",
     "notReady": "One moment: your circle is still loading. Try again in a few seconds.",
-    "requiredHint": "This habit comes with a photo: checking it opens the camera. Photos are deleted after 7 days."
+    "requiredHint": "This habit comes with a photo: checking it opens the camera. Photos are deleted after 7 days.",
+    "hiddenReported": "Several members reported this photo: only you see it while we review it.",
+    "doubt": "Doesn't count",
+    "undoDoubt": "Take back my “doesn’t count”",
+    "doubtHint": "Nobody sees who voted (though in a habit of two it can be worked out). If most think the photo doesn't show the habit, that day doesn't count toward the group streak.",
+    "doubted": "The circle doubted this photo: that day doesn't count toward the group streak.",
+    "doubtedMine": "The circle doubted your photo: that day doesn't count toward the group streak. You can take another one.",
+    "reportConfirm": "Report this photo as inappropriate? You'll stop seeing it right away and we'll review it. If you only think it doesn't show the habit, use “Doesn't count”."
   },
   "paywall": {
     "title": "habia Pro",

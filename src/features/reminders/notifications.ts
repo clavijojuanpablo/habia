@@ -60,6 +60,16 @@ export function useNotificationTap(onTap: (data: NotificationData) => void) {
   }, [lastResponse, onTap]);
 }
 
+/** Calls back with each notification that arrives while the app is open. */
+export function useNotificationReceived(onReceive: (data: NotificationData) => void) {
+  useEffect(() => {
+    const subscription = Notifications.addNotificationReceivedListener((notification) =>
+      onReceive(notification.request.content.data ?? {}),
+    );
+    return () => subscription.remove();
+  }, [onReceive]);
+}
+
 let replacing: Promise<void> = Promise.resolve();
 
 /**

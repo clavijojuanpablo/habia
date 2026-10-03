@@ -166,6 +166,8 @@ function RootNavigator() {
         <Stack.Screen name="settings" options={modal(t('settings.title'))} />
         <Stack.Screen name="paywall" options={modal(t('paywall.title'))} />
         <Stack.Screen name="circles" options={modal(t('social.circlesTitle'))} />
+        <Stack.Screen name="cheers" options={modal(t('social.cheer.inboxTitle'))} />
+        <Stack.Screen name="friends" options={modal(t('social.friendsTitle'))} />
         <Stack.Screen name="friend/[id]" options={modal('')} />
         <Stack.Screen name="circle/[id]" options={modal('')} />
         <Stack.Screen name="circle/new" options={modal(t('social.circle.newTitle'))} />

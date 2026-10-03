@@ -1,6 +1,11 @@
-import { Redirect } from 'expo-router';
+import { ThemedView } from '@/components/themed-view';
+import { FriendsList } from '@/features/social/components/friends-list';
 
-/** The tab was called Friends in 1.1.0: old links and the 1.1.0 web fallback still open /friends. */
-export default function FriendsRedirect() {
-  return <Redirect href="/profile" />;
+/** Your friends, one per row (opened from Profile). Also where old /friends links land. */
+export default function FriendsScreen() {
+  return (
+    <ThemedView style={{ flex: 1 }}>
+      <FriendsList />
+    </ThemedView>
+  );
 }

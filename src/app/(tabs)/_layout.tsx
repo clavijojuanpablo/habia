@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { Tabs } from 'expo-router/js-tabs';
 import { useCallback, useEffect } from 'react';
@@ -7,7 +8,11 @@ import { AppState } from 'react-native';
 import { AppTabBar } from '@/components/app-tab-bar';
 import { useSession } from '@/features/auth/session-provider';
 import { registerPushToken } from '@/features/push/push-token';
-import { useNotificationTap, type NotificationData } from '@/features/reminders/notifications';
+import {
+  useNotificationReceived,
+  useNotificationTap,
+  type NotificationData,
+} from '@/features/reminders/notifications';
 import { useReminderSync } from '@/features/reminders/use-reminder-sync';
 import { useFriendships, useMySocialProfile } from '@/features/social/api';
 import { useUnseenCheers } from '@/features/social/components/cheers';
@@ -38,7 +43,18 @@ export default function TabsLayout() {
   }, [userId]);
   // A tapped notification opens what it was about. A reminder brings its habit into focus on
   // Today, one tap away from the check-in; a social push opens the person or the circle.
+  // A social push means something changed on the server (a request, a cheer, a photo): refetch
+  // right away instead of waiting for the cache to go stale, so the screen it opens is current.
+  const queryClient = useQueryClient();
+  const refreshSocial = useCallback(
+    (data: NotificationData) => {
+      if (typeof data.type === 'string') queryClient.invalidateQueries({ queryKey: ['social'] });
+    },
+    [queryClient],
+  );
+  useNotificationReceived(refreshSocial);
   const openNotification = useCallback((data: NotificationData) => {
+    refreshSocial(data);
     const id = typeof data.id === 'string' ? data.id : null;
     if (typeof data.habitId === 'string') {
       track('reminder_opened');
@@ -52,7 +68,7 @@ export default function TabsLayout() {
     } else if (data.type === 'friend_request') {
       router.navigate('/profile');
     }
-  }, []);
+  }, [refreshSocial]);
   useNotificationTap(openNotification);
 
   return (

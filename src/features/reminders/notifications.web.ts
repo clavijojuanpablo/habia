@@ -15,3 +15,5 @@ export async function replaceScheduledReminders(_reminders: ReminderNotification
 export type NotificationData = Record<string, unknown>;
 
 export function useNotificationTap(_onTap: (data: NotificationData) => void) {}
+
+export function useNotificationReceived(_onReceive: (data: NotificationData) => void) {}

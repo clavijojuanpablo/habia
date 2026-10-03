@@ -8,31 +8,30 @@ import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { confirmAction } from '@/lib/confirm';
 
-import { useDeleteMyPhoto, useHideCirclePhoto, useReportUser, type CirclePhoto } from '../api';
+import { useDeleteMyPhoto, useDoubtPhoto, useReportUser, type CirclePhoto } from '../api';
 
 /**
- * A circle photo, full screen. Your own: take another or delete it. Someone else's: report it,
- * and hide it when you own the circle (moderation stays inside the circle).
+ * A circle photo, full screen. Yours: take another or delete it. Someone else's: "¿Cuenta?" (a
+ * private vote that it doesn't prove the habit; a majority takes that day off the group streak)
+ * and report (inappropriate content: gone for you at once, for everyone from two reports).
  */
 export function PhotoViewer({
   photo,
   name,
   mine,
-  isOwner,
   onRetake,
   onClose,
 }: {
   photo: CirclePhoto | null;
   name: string;
   mine: boolean;
-  isOwner: boolean;
   onRetake: () => void;
   onClose: () => void;
 }) {
   const { t } = useTranslation();
   const theme = useTheme();
   const remove = useDeleteMyPhoto();
-  const hide = useHideCirclePhoto();
+  const doubt = useDoubtPhoto();
   const report = useReportUser();
 
   return (
@@ -60,7 +59,7 @@ export function PhotoViewer({
             <Image
               source={{ uri: photo.url }}
               resizeMode="contain"
-              style={styles.image}
+              style={[styles.image, photo.doubted && { borderWidth: 4, borderColor: theme.gold }]}
               accessibilityLabel={t('photos.of', { name })}
             />
           )}
@@ -68,7 +67,12 @@ export function PhotoViewer({
           <View style={[styles.actions, { backgroundColor: theme.backgroundElement }]}>
             {photo?.hidden && (
               <ThemedText type="small" themeColor="textSecondary" style={styles.center}>
-                {t('photos.hiddenByOwner')}
+                {t('photos.hiddenReported')}
+              </ThemedText>
+            )}
+            {photo?.doubted && (
+              <ThemedText type="small" style={[styles.doubted, { backgroundColor: theme.goldSoft }]}>
+                🤔 {mine ? t('photos.doubtedMine') : t('photos.doubted')}
               </ThemedText>
             )}
             {mine ? (
@@ -88,32 +92,39 @@ export function PhotoViewer({
                   }
                 />
               </>
-            ) : report.isSuccess ? (
-              <ThemedText type="small" themeColor="textSecondary" style={styles.center}>
-                {t('social.report.thanks')}
-              </ThemedText>
             ) : (
-              <>
-                {isOwner && (
+              photo && (
+                <>
                   <Button
                     variant="secondary"
-                    label={t('photos.hide')}
-                    loading={hide.isPending}
-                    onPress={() => photo && hide.mutate(photo.id, { onSuccess: onClose })}
+                    label={photo.doubtedByMe ? t('photos.undoDoubt') : `🤔 ${t('photos.doubt')}`}
+                    loading={doubt.isPending}
+                    onPress={() => doubt.mutate({ photoId: photo.id, doubt: !photo.doubtedByMe })}
                   />
-                )}
-                <Button
-                  variant="danger"
-                  label={t('photos.report')}
-                  loading={report.isPending}
-                  onPress={() =>
-                    photo &&
-                    report.mutate({ reported: photo.user_id, reason: 'inappropriate_photo', photo_id: photo.id })
-                  }
-                />
-              </>
+                  <ThemedText type="caption" themeColor="textSecondary" style={styles.center}>
+                    {t('photos.doubtHint')}
+                  </ThemedText>
+                  <Button
+                    variant="danger"
+                    label={t('photos.report')}
+                    loading={report.isPending}
+                    onPress={() =>
+                      confirmAction(
+                        t('photos.reportConfirm'),
+                        // The photo disappears for whoever reports it: the viewer closes with it.
+                        () =>
+                          report.mutate(
+                            { reported: photo.user_id, reason: 'inappropriate_photo', photo_id: photo.id },
+                            { onSuccess: onClose },
+                          ),
+                        { ok: t('photos.report'), cancel: t('common.cancel') },
+                      )
+                    }
+                  />
+                </>
+              )
             )}
-            {(remove.isError || hide.isError || report.isError) && (
+            {(remove.isError || doubt.isError || report.isError) && (
               <ThemedText type="small" themeColor="danger" style={styles.center}>
                 {t('social.errors.generic')}
               </ThemedText>
@@ -136,7 +147,6 @@ const styles = StyleSheet.create({
     gap: Spacing.three,
   },
   header: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
-  flex: { flex: 1 },
   close: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
   image: { flex: 1, borderRadius: Radius.lg },
   actions: { gap: Spacing.two, padding: Spacing.three, borderRadius: Radius.lg },
@@ -147,5 +157,6 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     overflow: 'hidden',
   },
+  doubted: { padding: Spacing.two, borderRadius: Radius.md, overflow: 'hidden', textAlign: 'center' },
   center: { textAlign: 'center' },
 });
